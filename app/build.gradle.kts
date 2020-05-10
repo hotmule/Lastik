@@ -32,7 +32,9 @@ android {
 
 dependencies {
 
-    implementation(Deps.kotlin)
+    implementation(project(Module.shared))
+
+    implementation(Deps.kotlinJdk7)
 
     implementation(Deps.core)
     implementation(Deps.appCompat)

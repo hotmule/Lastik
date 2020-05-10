@@ -3,7 +3,7 @@ object App {
 }
 
 object Module {
-
+    const val shared = ":shared"
 }
 
 object AppVersion {
@@ -24,7 +24,9 @@ object Deps {
     const val gradle = "com.android.tools.build:gradle:${DepVersion.gradle}"
 
     //kotlin
-    const val kotlin = "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${DepVersion.kotlin}"
+    const val kotlin = "org.jetbrains.kotlin:kotlin-stdlib"
+    const val kotlinCommon = "org.jetbrains.kotlin:kotlin-stdlib-common"
+    const val kotlinJdk7 = "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${DepVersion.kotlin}"
     const val kotlinGradle = "org.jetbrains.kotlin:kotlin-gradle-plugin:${DepVersion.kotlin}"
 
     //androidX

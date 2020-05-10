@@ -1,4 +1,5 @@
 rootProject.name = "Multi To-Do"
 include(
-    ":app"
+    ":app",
+    ":shared"
 )
