@@ -6,20 +6,20 @@ plugins {
 
 android {
 
-    compileSdkVersion(SdkVersion.compile)
-    buildToolsVersion(SdkVersion.buildTools)
+    compileSdkVersion(Version.Sdk.compile)
+    buildToolsVersion(Version.Sdk.buildTools)
 
     defaultConfig {
 
         applicationId = App.id
 
-        minSdkVersion(SdkVersion.min)
-        targetSdkVersion(SdkVersion.target)
+        minSdkVersion(Version.Sdk.min)
+        targetSdkVersion(Version.Sdk.target)
 
-        versionCode = AppVersion.code
-        versionName = AppVersion.name
+        versionCode = Version.App.code
+        versionName = Version.App.name
 
-        testInstrumentationRunner = Deps.androidJUnitRunner
+        testInstrumentationRunner = Deps.Testing.androidJUnitRunner
     }
 
     buildTypes {
@@ -34,13 +34,13 @@ dependencies {
 
     implementation(project(Module.shared))
 
-    implementation(Deps.kotlinJdk7)
+    implementation(Deps.Kotlin.stdLibJdk8)
 
-    implementation(Deps.core)
-    implementation(Deps.appCompat)
-    implementation(Deps.constraintLayout)
+    implementation(Deps.AndroidX.core)
+    implementation(Deps.AndroidX.appCompat)
+    implementation(Deps.AndroidX.constraintLayout)
 
-    testImplementation(Deps.jUnit)
-    androidTestImplementation(Deps.androidJUnit)
-    androidTestImplementation(Deps.espresso)
+    testImplementation(Deps.Testing.jUnit)
+    androidTestImplementation(Deps.Testing.androidJUnit)
+    androidTestImplementation(Deps.Testing.espresso)
 }
