@@ -10,10 +10,11 @@ android {
 
     defaultConfig {
         minSdkVersion(Sdk.Version.min)
-        testInstrumentationRunner = Deps.Testing.androidJUnitRunner
+        testInstrumentationRunner = Deps.AndroidX.jUnitRunner
     }
 }
 
 dependencies {
-
+    testImplementation(Deps.jUnit)
+    androidTestImplementation(Deps.AndroidX.jUnit)
 }

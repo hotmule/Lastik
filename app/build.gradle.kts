@@ -19,7 +19,7 @@ android {
         versionCode = App.Version.code
         versionName = App.Version.name
 
-        testInstrumentationRunner = Deps.Testing.androidJUnitRunner
+        testInstrumentationRunner = Deps.AndroidX.jUnitRunner
     }
 
     buildTypes {
@@ -40,7 +40,6 @@ dependencies {
     implementation(Deps.AndroidX.appCompat)
     implementation(Deps.AndroidX.constraintLayout)
 
-    testImplementation(Deps.Testing.jUnit)
-    androidTestImplementation(Deps.Testing.androidJUnit)
-    androidTestImplementation(Deps.Testing.espresso)
+    testImplementation(Deps.jUnit)
+    androidTestImplementation(Deps.AndroidX.jUnit)
 }
