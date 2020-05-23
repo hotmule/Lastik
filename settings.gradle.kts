@@ -1,4 +1,4 @@
-rootProject.name = "Multi To-Do"
+rootProject.name = "LastFM-Client"
 include(
     ":app",
     ":shared"

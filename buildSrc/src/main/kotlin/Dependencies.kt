@@ -1,5 +1,5 @@
 object App {
-    const val id = "ru.hotmule.multitodo"
+    const val id = "ru.hotmule.lastfmclient"
 }
 
 object Module {
