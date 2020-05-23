@@ -1,6 +1,10 @@
 rootProject.name = "LastFM-Client"
 include(
     ":app",
+
     ":ui:auth",
-    ":shared"
+
+    ":shared:androidMain",
+    ":shared:commonMain",
+    ":shared:iosMain"
 )

@@ -13,6 +13,9 @@
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/buildSrc" />
             <option value="$PROJECT_DIR$/shared" />
+            <option value="$PROJECT_DIR$/shared/androidMain" />
+            <option value="$PROJECT_DIR$/shared/commonMain" />
+            <option value="$PROJECT_DIR$/shared/iosMain" />
             <option value="$PROJECT_DIR$/ui" />
             <option value="$PROJECT_DIR$/ui/auth" />
           </set>
