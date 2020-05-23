@@ -1,24 +1,22 @@
 object App {
     const val id = "ru.hotmule.lastfmclient"
-}
-
-object Module {
-    const val shared = ":shared"
-}
-
-object Version {
-
-    object App {
+    object Version {
         const val code = 1
         const val name = "1.0"
     }
+}
 
-    object Sdk {
+object Sdk {
+    object Version {
         const val min = 21
         const val target = 29
         const val compile = 29
         const val buildTools = "29.0.3"
     }
+}
+
+object Module {
+    const val shared = ":shared"
 }
 
 object Deps {
