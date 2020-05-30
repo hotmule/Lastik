@@ -1,20 +1,11 @@
 plugins {
-    id("com.android.application")
+    id("com.android.library")
     kotlin("android")
     kotlin("android.extensions")
 }
 
-android {
-
-    compileSdkVersion(Sdk.Version.compile)
-
-    defaultConfig {
-        minSdkVersion(Sdk.Version.min)
-        testInstrumentationRunner = Deps.AndroidX.jUnitRunner
-    }
-}
+android.compileSdkVersion(Sdk.Version.compile)
 
 dependencies {
-    testImplementation(Deps.jUnit)
-    androidTestImplementation(Deps.AndroidX.jUnit)
+    implementation(Deps.AndroidX.material)
 }

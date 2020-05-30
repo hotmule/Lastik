@@ -12,15 +12,19 @@ android {
     defaultConfig {
 
         applicationId = App.id
-
-        minSdkVersion(Sdk.Version.min)
-        targetSdkVersion(Sdk.Version.target)
-
         versionCode = App.Version.code
         versionName = App.Version.name
 
-        testInstrumentationRunner = Deps.AndroidX.jUnitRunner
+        minSdkVersion(Sdk.Version.min)
+        targetSdkVersion(Sdk.Version.target)
     }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions.jvmTarget = "1.8"
 
     buildTypes {
         getByName("release") {
@@ -32,14 +36,9 @@ android {
 
 dependencies {
 
+    implementation(project(Module.Ui.auth))
     implementation(project(Module.shared))
 
-    implementation(Deps.Kotlin.stdLibJdk8)
-
-    implementation(Deps.AndroidX.core)
-    implementation(Deps.AndroidX.appCompat)
-    implementation(Deps.AndroidX.constraintLayout)
-
-    testImplementation(Deps.jUnit)
-    androidTestImplementation(Deps.AndroidX.jUnit)
+    implementation(Deps.AndroidX.material)
+    implementation(Deps.AndroidX.Navigation.fragment)
 }

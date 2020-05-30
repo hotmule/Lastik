@@ -16,7 +16,12 @@ object Sdk {
 }
 
 object Module {
+
     const val shared = ":shared"
+
+    object Ui {
+        const val auth = ":ui:auth"
+    }
 }
 
 object Deps {
@@ -29,17 +34,21 @@ object Deps {
         private const val version = "1.3.72"
         const val stdLib = "org.jetbrains.kotlin:kotlin-stdlib"
         const val stdLibCommon = "org.jetbrains.kotlin:kotlin-stdlib-common"
-        const val stdLibJdk8 = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${version}"
-        const val gradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:${version}"
+        const val stdLibJdk8 = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$version"
+        const val gradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version"
     }
 
     object AndroidX {
-        const val core = "androidx.core:core-ktx:1.2.0"
-        const val appCompat = "androidx.appcompat:appcompat:1.1.0"
-        const val constraintLayout = "androidx.constraintlayout:constraintlayout:1.1.3"
 
+        const val material = "com.google.android.material:material:1.1.0"
         const val jUnit = "androidx.test.ext:junit:1.1.1"
         const val jUnitRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        object Navigation {
+            private const val version = "2.3.0-beta01"
+            const val fragment = "androidx.navigation:navigation-fragment-ktx:$version"
+            const val ui = "androidx.navigation:navigation-ui-ktx:$version"
+        }
     }
 }
 
