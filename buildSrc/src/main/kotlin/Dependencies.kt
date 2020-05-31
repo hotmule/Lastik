@@ -17,10 +17,13 @@ object Sdk {
 
 object Module {
 
+    const val app = ":app"
     const val shared = ":shared"
 
     object Ui {
         const val auth = ":ui:auth"
+        const val scrobbles = ":ui:scrobbles"
+        const val profile = ":ui:profile"
     }
 }
 

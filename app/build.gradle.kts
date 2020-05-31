@@ -37,8 +37,10 @@ android {
 dependencies {
 
     implementation(project(Module.Ui.auth))
-    implementation(project(Module.shared))
+    implementation(project(Module.Ui.scrobbles))
+    implementation(project(Module.Ui.profile))
 
     implementation(Deps.AndroidX.material)
+    implementation(Deps.AndroidX.Navigation.ui)
     implementation(Deps.AndroidX.Navigation.fragment)
 }
