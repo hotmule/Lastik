@@ -27,9 +27,9 @@ object Module {
     }
 }
 
-object Deps {
+object Libs {
 
-    const val gradle = "com.android.tools.build:gradle:3.6.3"
+    const val gradle = "com.android.tools.build:gradle:4.1.0-beta01"
     const val espresso = "androidx.test.espresso:espresso-core:3.2.0"
     const val jUnit = "junit:junit:4.13"
 
@@ -47,8 +47,16 @@ object Deps {
         const val jUnit = "androidx.test.ext:junit:1.1.1"
         const val jUnitRunner = "androidx.test.runner.AndroidJUnitRunner"
 
+        object Ui {
+            private const val version = "0.1.0-dev13"
+            const val framework = "androidx.ui:ui-framework:$version"
+            const val material = "androidx.ui:ui-material:$version"
+            const val tooling = "androidx.ui:ui-tooling:$version"
+            const val layout = "androidx.ui:ui-layout:$version"
+        }
+
         object Navigation {
-            private const val version = "2.3.0-beta01"
+            private const val version = "2.3.0-rc01"
             const val fragment = "androidx.navigation:navigation-fragment-ktx:$version"
             const val ui = "androidx.navigation:navigation-ui-ktx:$version"
         }

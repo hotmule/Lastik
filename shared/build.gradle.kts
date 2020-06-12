@@ -23,11 +23,11 @@ kotlin {
     jvm("android")
 
     sourceSets["commonMain"].dependencies {
-        implementation(Deps.Kotlin.stdLibCommon)
+        implementation(Libs.Kotlin.stdLibCommon)
     }
 
     sourceSets["androidMain"].dependencies {
-        implementation(Deps.Kotlin.stdLib)
+        implementation(Libs.Kotlin.stdLib)
     }
 }
 

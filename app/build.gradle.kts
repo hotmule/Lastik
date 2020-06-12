@@ -40,7 +40,7 @@ dependencies {
     implementation(project(Module.Ui.scrobbles))
     implementation(project(Module.Ui.profile))
 
-    implementation(Deps.AndroidX.material)
-    implementation(Deps.AndroidX.Navigation.ui)
-    implementation(Deps.AndroidX.Navigation.fragment)
+    implementation(Libs.AndroidX.material)
+    implementation(Libs.AndroidX.Navigation.ui)
+    implementation(Libs.AndroidX.Navigation.fragment)
 }

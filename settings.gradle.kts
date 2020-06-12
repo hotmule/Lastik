@@ -1,9 +1,9 @@
 rootProject.name = "LastFM-Client"
 include(
 
-    Module.app,
+    ":app",
 
-    Module.Ui.auth,
-    Module.Ui.scrobbles,
-    Module.Ui.profile
+    ":ui:auth",
+    ":ui:scrobbles",
+    ":ui:profile"
 )

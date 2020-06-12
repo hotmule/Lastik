@@ -10,5 +10,8 @@ android {
 }
 
 dependencies {
-    implementation(Deps.AndroidX.material)
+    implementation(Libs.AndroidX.Ui.framework)
+    implementation(Libs.AndroidX.Ui.material)
+    implementation(Libs.AndroidX.Ui.tooling)
+    implementation(Libs.AndroidX.Ui.layout)
 }

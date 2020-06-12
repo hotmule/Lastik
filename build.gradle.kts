@@ -1,3 +1,7 @@
+plugins {
+    id("com.github.ben-manes.versions") version "0.28.0"
+}
+
 buildscript {
     repositories {
         google()
@@ -5,8 +9,8 @@ buildscript {
 
     }
     dependencies {
-        classpath(Deps.gradle)
-        classpath(Deps.Kotlin.gradlePlugin)
+        classpath(Libs.gradle)
+        classpath(Libs.Kotlin.gradlePlugin)
     }
 }
 
