@@ -32,6 +32,13 @@ android {
             proguardFiles(Proguard.rules)
         }
     }
+
+    buildFeatures.compose = true
+
+    composeOptions {
+        kotlinCompilerVersion = "1.3.70-dev-withExperimentalGoogleExtensions-20200424"
+        kotlinCompilerExtensionVersion = Libs.AndroidX.Compose.version
+    }
 }
 
 dependencies {
@@ -39,6 +46,11 @@ dependencies {
     implementation(project(Module.Ui.auth))
     implementation(project(Module.Ui.scrobbles))
     implementation(project(Module.Ui.profile))
+
+    implementation(Libs.AndroidX.Compose.foundation)
+    implementation(Libs.AndroidX.Compose.material)
+    implementation(Libs.AndroidX.Compose.tooling)
+    implementation(Libs.AndroidX.Compose.layout)
 
     implementation(Libs.AndroidX.material)
     implementation(Libs.AndroidX.Navigation.ui)

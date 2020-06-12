@@ -47,9 +47,9 @@ object Libs {
         const val jUnit = "androidx.test.ext:junit:1.1.1"
         const val jUnitRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        object Ui {
-            private const val version = "0.1.0-dev13"
-            const val framework = "androidx.ui:ui-framework:$version"
+        object Compose {
+            const val version = "0.1.0-dev13"
+            const val foundation = "androidx.ui:ui-foundation:$version"
             const val material = "androidx.ui:ui-material:$version"
             const val tooling = "androidx.ui:ui-tooling:$version"
             const val layout = "androidx.ui:ui-layout:$version"
