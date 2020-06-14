@@ -51,8 +51,6 @@ dependencies {
     implementation(Libs.AndroidX.Compose.material)
     implementation(Libs.AndroidX.Compose.tooling)
     implementation(Libs.AndroidX.Compose.layout)
-
-    implementation(Libs.AndroidX.material)
-    implementation(Libs.AndroidX.Navigation.ui)
-    implementation(Libs.AndroidX.Navigation.fragment)
+    implementation("androidx.navigation:navigation-fragment-ktx:2.2.2")
+    implementation("androidx.navigation:navigation-ui-ktx:2.2.2")
 }

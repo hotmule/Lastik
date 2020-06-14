@@ -29,7 +29,7 @@ object Module {
 
 object Libs {
 
-    const val gradle = "com.android.tools.build:gradle:4.1.0-beta01"
+    const val gradle = "com.android.tools.build:gradle:4.2.0-alpha01"
     const val espresso = "androidx.test.espresso:espresso-core:3.2.0"
     const val jUnit = "junit:junit:4.13"
 
