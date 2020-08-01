@@ -1,5 +1,5 @@
 plugins {
-    id("com.github.ben-manes.versions") version "0.28.0"
+    id(Libs.Update.helper) version Libs.Update.version
 }
 
 buildscript {
@@ -11,6 +11,7 @@ buildscript {
     dependencies {
         classpath(Libs.gradle)
         classpath(Libs.Kotlin.gradlePlugin)
+        classpath(Libs.Kotlin.serialization)
     }
 }
 
