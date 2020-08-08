@@ -22,8 +22,8 @@ object Module {
 object Libs {
 
     const val gradle = "com.android.tools.build:gradle:4.2.0-alpha07"
+    const val preferences = "com.russhwolf:multiplatform-settings:0.6-1.4.0-rc"
     const val espresso = "androidx.test.espresso:espresso-core:3.2.0"
-    const val preferences = "com.russhwolf:multiplatform-settings:0.6"
     const val jUnit = "junit:junit:4.13"
 
     object Update {
@@ -32,13 +32,13 @@ object Libs {
     }
 
     object Kotlin {
-        private const val version = "1.3.72"
+        private const val version = "1.4.0-rc"
         const val gradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version"
         const val serialization = "org.jetbrains.kotlin:kotlin-serialization:$version"
     }
 
     object Ktor {
-        private const val version = "1.3.2"
+        private const val version = "1.3.2-1.4.0-rc"
 
         object Core {
             const val common = "io.ktor:ktor-client-core:$version"
@@ -79,10 +79,12 @@ object Libs {
 
         object Compose {
             const val version = "0.1.0-dev15"
-            const val foundation = "androidx.ui:ui-foundation:$version"
-            const val material = "androidx.ui:ui-material:$version"
+            const val ui = "androidx.compose.ui:ui:$version"
             const val tooling = "androidx.ui:ui-tooling:$version"
-            const val layout = "androidx.ui:ui-layout:$version"
+            const val material = "androidx.compose.material:material:$version"
+            const val foundation = "androidx.compose.foundation:foundation:$version"
+            const val icons = "androidx.compose.material:material-icons-extended:$version"
+            const val layout = "androidx.compose.foundation:foundation-layout:$version"
         }
     }
 }
