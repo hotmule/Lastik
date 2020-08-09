@@ -6,13 +6,9 @@ import androidx.ui.material.MaterialTheme
 import androidx.ui.material.darkColorPalette
 import androidx.ui.material.lightColorPalette
 
-private val LightThemeColors = lightColorPalette().also {
-    //Updated light colors
-}
+private val LightThemeColors = lightColorPalette()
 
-private val DarkThemeColors = darkColorPalette().also {
-    //Updated dark colors
-}
+private val DarkThemeColors = darkColorPalette()
 
 @Composable
 fun AppTheme(
