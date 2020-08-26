@@ -1,6 +1,6 @@
 package ru.hotmule.lastfmclient
 
-import androidx.compose.Composable
+import androidx.compose.runtime.Composable
 
 @Composable
 fun LastFmClientApp() {

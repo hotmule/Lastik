@@ -43,7 +43,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerVersion = "1.4.0-dev-withExperimentalGoogleExtensions-20200720"
+        kotlinCompilerVersion = Libs.Kotlin.version
         kotlinCompilerExtensionVersion = Libs.AndroidX.Compose.version
     }
 
@@ -77,9 +77,11 @@ dependencies {
 tasks.withType(KotlinCompile::class).configureEach {
     kotlinOptions {
         jvmTarget = "1.8"
+        allWarningsAsErrors = true
         freeCompilerArgs = freeCompilerArgs + arrayOf(
-            "-Xallow-jvm-ir-dependencies",
-            "-Xskip-prerelease-check"
+            "-Xopt-in=kotlin.RequiresOptIn",
+            "-Xopt-in=kotlin.Experimental",
+            "-Xallow-jvm-ir-dependencies"
         )
     }
 }

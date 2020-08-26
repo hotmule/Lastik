@@ -1,25 +1,24 @@
 package ru.hotmule.lastfmclient
 
-import androidx.compose.Composable
-import androidx.compose.MutableState
-import androidx.compose.state
-import androidx.ui.core.Alignment
-import androidx.ui.core.Modifier
-import androidx.ui.foundation.Icon
-import androidx.ui.foundation.Image
-import androidx.ui.foundation.ScrollableColumn
-import androidx.ui.foundation.Text
-import androidx.ui.graphics.Color
-import androidx.ui.graphics.ImageAsset
-import androidx.ui.graphics.vector.VectorAsset
-import androidx.ui.layout.Column
-import androidx.ui.layout.Row
-import androidx.ui.layout.padding
-import androidx.ui.material.*
-import androidx.ui.material.icons.Icons
-import androidx.ui.material.icons.rounded.*
+import androidx.compose.foundation.Icon
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.Text
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumnFor
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.VectorAsset
+import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
-import androidx.ui.unit.dp
 
 private enum class Library(val title: String) {
     Scrobbles("Scrobbles"),
@@ -32,7 +31,7 @@ private enum class Library(val title: String) {
 @Preview
 @Composable
 fun LibraryScreen() {
-    val currentItem = state { Library.Scrobbles }
+    val currentItem = remember { mutableStateOf(Library.Scrobbles) }
     Scaffold(
         topBar = { TopAppBar(title = { Text(currentItem.value.title) }) },
         bodyContent = { LibraryListItem(currentItem) },
@@ -44,13 +43,11 @@ fun LibraryScreen() {
 private fun LibraryListItem(
     currentScreen: MutableState<Library>
 ) {
-    ScrollableColumn {
-        mutableListOf<String>().apply {
-            for (i in 1..100)
-                add("${currentScreen.value.title} $i")
-        }.forEach {
-            listItem(text = it)
-        }
+    LazyColumnFor(items = mutableListOf<String>().apply {
+        for (i in 1..100)
+            add("${currentScreen.value.title} $i")
+    }) {
+        listItem(text = it)
     }
 }
 
@@ -116,9 +113,9 @@ private fun LibraryBottomNavigationItem(
     currentScreen.also {
         BottomNavigationItem(
             icon = { Icon(icon) },
-            text = { Text(libraryItem.title) },
+            label = { Text(libraryItem.title) },
             selected = it.value == libraryItem,
-            onSelected = { it.value = libraryItem }
+            onSelect = { it.value = libraryItem }
         )
     }
 }

@@ -32,13 +32,13 @@ object Libs {
     }
 
     object Kotlin {
-        private const val version = "1.4.0-rc"
+        const val version = "1.4.0"
         const val gradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version"
         const val serialization = "org.jetbrains.kotlin:kotlin-serialization:$version"
     }
 
     object Ktor {
-        private const val version = "1.3.2-1.4.0-rc"
+        private const val version = "1.4.0"
 
         object Core {
             const val common = "io.ktor:ktor-client-core:$version"
@@ -78,7 +78,7 @@ object Libs {
         const val jUnitRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         object Compose {
-            const val version = "0.1.0-dev15"
+            const val version = "1.0.0-alpha01"
             const val ui = "androidx.compose.ui:ui:$version"
             const val tooling = "androidx.ui:ui-tooling:$version"
             const val material = "androidx.compose.material:material:$version"
