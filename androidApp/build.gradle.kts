@@ -2,8 +2,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     id("com.android.application")
-    kotlin("android.extensions")
     id("kotlin-android")
+    kotlin("android.extensions")
 }
 
 android {

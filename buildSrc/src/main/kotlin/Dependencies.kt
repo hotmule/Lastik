@@ -21,18 +21,18 @@ object Module {
 
 object Libs {
 
-    const val gradle = "com.android.tools.build:gradle:4.2.0-alpha07"
-    const val preferences = "com.russhwolf:multiplatform-settings:0.6-1.4.0-rc"
+    const val gradle = "com.android.tools.build:gradle:4.2.0-alpha10"
+    const val preferences = "com.russhwolf:multiplatform-settings:0.6.2"
     const val espresso = "androidx.test.espresso:espresso-core:3.2.0"
     const val jUnit = "junit:junit:4.13"
 
     object Update {
-        const val version = "0.29.0"
+        const val version = "0.31.0"
         const val helper = "com.github.ben-manes.versions"
     }
 
     object Kotlin {
-        const val version = "1.4.0"
+        const val version = "1.4.10"
         const val gradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version"
         const val serialization = "org.jetbrains.kotlin:kotlin-serialization:$version"
     }
@@ -73,12 +73,12 @@ object Libs {
 
     object AndroidX {
 
-        const val appCompat = "androidx.appcompat:appcompat:1.1.0"
+        const val appCompat = "androidx.appcompat:appcompat:1.3.0-alpha02"
         const val jUnit = "androidx.test.ext:junit:1.1.1"
         const val jUnitRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         object Compose {
-            const val version = "1.0.0-alpha01"
+            const val version = "1.0.0-alpha02"
             const val ui = "androidx.compose.ui:ui:$version"
             const val tooling = "androidx.ui:ui-tooling:$version"
             const val material = "androidx.compose.material:material:$version"
