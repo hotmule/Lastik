@@ -3,9 +3,8 @@ package ru.hotmule.lastfmclient
 import androidx.compose.foundation.Icon
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.Text
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumnFor
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -16,9 +15,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.VectorAsset
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
+import androidx.ui.tooling.preview.PreviewParameter
 
 private enum class Library(val title: String) {
     Scrobbles("Scrobbles"),
@@ -33,9 +36,21 @@ private enum class Library(val title: String) {
 fun LibraryScreen() {
     val currentItem = remember { mutableStateOf(Library.Scrobbles) }
     Scaffold(
-        topBar = { TopAppBar(title = { Text(currentItem.value.title) }) },
+        topBar = {
+            TopAppBar(
+                modifier = Modifier.preferredHeight(79.dp),
+                title = {
+                    Text(
+                        modifier = Modifier.statusBarsPadding(),
+                        text = currentItem.value.title
+                    )
+                }
+            )
+        },
         bodyContent = { LibraryListItem(currentItem) },
-        bottomBar = { LibraryBottomNavigation(currentItem) }
+        bottomBar = {
+            LibraryBottomNavigation(currentScreen = currentItem)
+        }
     )
 }
 
@@ -52,19 +67,35 @@ private fun LibraryListItem(
 }
 
 @Composable
-private fun listItem(text: String) {
+private fun listItem(
+    text: String,
+    modifier: Modifier = Modifier
+) {
     Column {
-        Row(modifier = Modifier.padding(16.dp)) {
+        Row(
+            modifier = modifier
+                .clickable(onClick = { })
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
             Image(
                 asset = Icons.Rounded.Album,
+                colorFilter = ColorFilter.tint(Color.Red),
                 modifier = Modifier.gravity(align = Alignment.CenterVertically)
             )
             Column(modifier = Modifier.padding(start = 16.dp)) {
-                Text(text = text)
                 Text(
                     text = text,
-                    modifier = Modifier.padding(top = 8.dp)
+                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.body1
                 )
+                ProvideEmphasis(emphasis = EmphasisAmbient.current.medium) {
+                    Text(
+                        text = text,
+                        style = MaterialTheme.typography.body2,
+                        modifier = Modifier.padding(top = 8.dp)
+                    )
+                }
             }
         }
         Divider()
@@ -73,9 +104,12 @@ private fun listItem(text: String) {
 
 @Composable
 private fun LibraryBottomNavigation(
+    modifier: Modifier = Modifier,
     currentScreen: MutableState<Library>
 ) {
-    BottomNavigation {
+    BottomNavigation(
+        modifier = Modifier.preferredHeight(75.dp),
+    ) {
         LibraryBottomNavigationItem(
             currentScreen,
             Library.Scrobbles,
@@ -112,6 +146,7 @@ private fun LibraryBottomNavigationItem(
 ) {
     currentScreen.also {
         BottomNavigationItem(
+            modifier = Modifier.navigationBarsPadding(bottom = true),
             icon = { Icon(icon) },
             label = { Text(libraryItem.title) },
             selected = it.value == libraryItem,

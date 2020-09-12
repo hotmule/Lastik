@@ -73,6 +73,7 @@ object Libs {
 
     object AndroidX {
 
+        const val fragment = "androidx.fragment:fragment-ktx:1.2.5"
         const val appCompat = "androidx.appcompat:appcompat:1.3.0-alpha02"
         const val jUnit = "androidx.test.ext:junit:1.1.1"
         const val jUnitRunner = "androidx.test.runner.AndroidJUnitRunner"

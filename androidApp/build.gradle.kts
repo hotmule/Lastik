@@ -50,6 +50,7 @@ dependencies {
 
     implementation(project(Module.lastSdk))
 
+    implementation(Libs.AndroidX.fragment)
     implementation(Libs.AndroidX.appCompat)
     implementation(Libs.AndroidX.Compose.ui)
     implementation(Libs.AndroidX.Compose.icons)
