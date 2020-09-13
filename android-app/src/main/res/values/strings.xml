@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">LastFM Client</string>
+
+    <!--Auth Screen-->
+    <string name="sign_in">Sign in</string>
+    
+    <!--Library Screen-->
+    <string name="scrobbles">Scrobbles</string>
+    <string name="artists">Artists</string>
+    <string name="albums">Albums</string>
+    <string name="tracks">Tracks</string>
+    <string name="profile">Profile</string>
+    
+    <!--Profile Screen-->
+    <string name="sign_out">Sign out</string>
+
+</resources>

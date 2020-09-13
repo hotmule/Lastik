@@ -17,7 +17,7 @@ object Sdk {
 
 object Module {
 
-    const val lastSdk = ":lastSdk"
+    const val sdk = ":sdk"
 
     object Android {
         object Compose {

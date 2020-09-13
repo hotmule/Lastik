@@ -1,4 +1,4 @@
-package ru.hotmule.lastfmclient
+package ru.hotmule.lastfmclient.screen
 
 import android.compose.utils.navigationBarsPadding
 import android.compose.utils.statusBarsPadding
@@ -12,30 +12,46 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.vector.VectorAsset
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.ui.tooling.preview.Preview
+import ru.hotmule.lastfmclient.R
 
-private enum class Library(val title: String) {
-    Scrobbles("Scrobbles"),
-    Artists("Artists"),
-    Albums("Albums"),
-    Tracks("Tracks"),
-    Profile("Profile")
+sealed class Library(val titleStringId: Int) {
+    class Scrobbles : Library(R.string.scrobbles)
+    class Artists : Library(R.string.artists)
+    class Albums : Library(R.string.albums)
+    class Tracks : Library(R.string.tracks)
+    class Profile : Library(R.string.profile)
 }
 
-@Preview
 @Composable
-fun LibraryScreen() {
-    val currentItem = remember { mutableStateOf(Library.Scrobbles) }
+fun LibraryScreen(onLogOut: () -> Unit) {
+
+    var currentItem by remember { mutableStateOf<Library>(Library.Scrobbles()) }
+
+    val title: String
+    val body: @Composable (InnerPadding) -> Unit
+
+    when (currentItem) {
+        is Library.Profile -> {
+            title = "UserName"
+            body = { Profile(onLogOut) }
+        }
+        else -> {
+            title = stringResource(id = currentItem.titleStringId)
+            body = { LibraryListItem(title) }
+        }
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -43,25 +59,48 @@ fun LibraryScreen() {
                 title = {
                     Text(
                         modifier = Modifier.statusBarsPadding(),
-                        text = currentItem.value.title
+                        text = title
                     )
                 }
             )
         },
-        bodyContent = { LibraryListItem(currentItem) },
+        bodyContent = body,
         bottomBar = {
-            LibraryBottomNavigation(currentScreen = currentItem)
+            BottomNavigation(
+                modifier = Modifier.preferredHeight(75.dp),
+            ) {
+                listOf(
+                    Library.Scrobbles() to Icons.Rounded.History,
+                    Library.Artists() to Icons.Rounded.Face,
+                    Library.Albums() to Icons.Rounded.Album,
+                    Library.Tracks() to Icons.Rounded.Audiotrack,
+                    Library.Profile() to Icons.Rounded.Person
+                ).forEach {
+                    BottomNavigationItem(
+                        modifier = Modifier.navigationBarsPadding(bottom = true),
+                        icon = { Icon(it.second) },
+                        label = { Text(stringResource(id = it.first.titleStringId)) },
+                        onSelect = { currentItem = it.first },
+                        selected = currentItem == it.first
+                    )
+                }
+            }
         }
     )
 }
 
 @Composable
-private fun LibraryListItem(
-    currentScreen: MutableState<Library>
-) {
+private fun Profile(onLogOut: () -> Unit) {
+
+    Button(onClick = onLogOut) {
+        Text(stringResource(id = R.string.sign_out))
+    }
+}
+
+@Composable
+private fun LibraryListItem(title: String) {
     LazyColumnFor(items = mutableListOf<String>().apply {
-        for (i in 1..100)
-            add("${currentScreen.value.title} $i")
+        for (i in 1..100) add("$title $i")
     }) {
         listItem(text = it)
     }
@@ -100,58 +139,5 @@ private fun listItem(
             }
         }
         Divider()
-    }
-}
-
-@Composable
-private fun LibraryBottomNavigation(
-    modifier: Modifier = Modifier,
-    currentScreen: MutableState<Library>
-) {
-    BottomNavigation(
-        modifier = Modifier.preferredHeight(75.dp),
-    ) {
-        LibraryBottomNavigationItem(
-            currentScreen,
-            Library.Scrobbles,
-            Icons.Rounded.History,
-        )
-        LibraryBottomNavigationItem(
-            currentScreen,
-            Library.Artists,
-            Icons.Rounded.Face
-        )
-        LibraryBottomNavigationItem(
-            currentScreen,
-            Library.Albums,
-            Icons.Rounded.Album
-        )
-        LibraryBottomNavigationItem(
-            currentScreen,
-            Library.Tracks,
-            Icons.Rounded.Audiotrack
-        )
-        LibraryBottomNavigationItem(
-            currentScreen,
-            Library.Profile,
-            Icons.Rounded.Person
-        )
-    }
-}
-
-@Composable
-private fun LibraryBottomNavigationItem(
-    currentScreen: MutableState<Library>,
-    libraryItem: Library,
-    icon: VectorAsset
-) {
-    currentScreen.also {
-        BottomNavigationItem(
-            modifier = Modifier.navigationBarsPadding(bottom = true),
-            icon = { Icon(icon) },
-            label = { Text(libraryItem.title) },
-            selected = it.value == libraryItem,
-            onSelect = { it.value = libraryItem }
-        )
     }
 }

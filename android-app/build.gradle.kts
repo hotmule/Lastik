@@ -48,10 +48,9 @@ android {
 
 dependencies {
 
-    implementation(project(Module.lastSdk))
+    implementation(project(Module.sdk))
     implementation(project(Module.Android.Compose.utils))
 
-    implementation(Libs.AndroidX.fragment)
     implementation(Libs.AndroidX.appCompat)
     implementation(Libs.AndroidX.Compose.ui)
     implementation(Libs.AndroidX.Compose.icons)

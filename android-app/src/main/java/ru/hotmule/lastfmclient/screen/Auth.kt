@@ -1,9 +1,8 @@
-package ru.hotmule.lastfmclient
+package ru.hotmule.lastfmclient.screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.layout.RowScope.gravity
 import androidx.compose.material.Button
 import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
@@ -16,7 +15,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun AuthScreen(viewModel: MainViewModel) {
+fun AuthScreen() {
     Scaffold(
         bodyContent = {
             Stack(
@@ -38,7 +37,7 @@ fun AuthScreen(viewModel: MainViewModel) {
                     modifier = Modifier
                         .gravity(Alignment.BottomCenter)
                         .padding(bottom = 64.dp),
-                    onClick = viewModel::onAuth
+                    onClick = { }
                 ) {
                     Text(text = "Авторизоваться")
                 }

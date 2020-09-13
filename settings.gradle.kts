@@ -1,6 +1,6 @@
 rootProject.name = "LastFM-Client"
 include(
     ":android-compose-utils",
-    ":androidApp",
-    ":lastSdk"
+    ":android-app",
+    ":sdk"
 )
