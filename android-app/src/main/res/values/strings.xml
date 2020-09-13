@@ -4,6 +4,11 @@
     <!--Auth Screen-->
     <string name="sign_in">Sign in</string>
     
+    <!--Auth Dialog-->
+    <string name="authorization">Authorization</string>
+    <string name="page_loading_error">Page loading error</string>
+    <string name="close">Close</string>
+
     <!--Library Screen-->
     <string name="scrobbles">Scrobbles</string>
     <string name="artists">Artists</string>

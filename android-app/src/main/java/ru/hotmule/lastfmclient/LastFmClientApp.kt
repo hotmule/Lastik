@@ -7,6 +7,7 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.savedinstancestate.rememberSavedInstanceState
+import ru.hotmule.lastfmclient.screen.AuthDialog
 import ru.hotmule.lastfmclient.screen.AuthScreen
 import ru.hotmule.lastfmclient.screen.LibraryScreen
 import ru.hotmule.lastfmclient.theme.AppTheme
@@ -23,8 +24,9 @@ fun LastFmClientApp(backDispatcher: OnBackPressedDispatcher) {
         AppTheme {
             Crossfade(navigator.current) { destination ->
                 when (destination) {
+                    Destination.AuthDialog -> AuthDialog(actions.upPress)
                     Destination.Library -> LibraryScreen(actions.logOut)
-                    Destination.Auth -> AuthScreen()
+                    Destination.Auth -> AuthScreen(actions.logIn)
                 }
             }
         }

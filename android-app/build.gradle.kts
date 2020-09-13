@@ -17,6 +17,12 @@ android {
 
         minSdkVersion(Sdk.Version.min)
         targetSdkVersion(Sdk.Version.target)
+
+        buildConfigField(
+            "String",
+            "API_KEY",
+            project.property("lastFmApiKey") as String
+        )
     }
 
     buildTypes {
