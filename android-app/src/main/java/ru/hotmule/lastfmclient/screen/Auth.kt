@@ -26,47 +26,47 @@ import ru.hotmule.lastfmclient.BuildConfig
 import ru.hotmule.lastfmclient.R
 
 @Composable
-fun AuthScreen(logIn: () -> Unit) {
-    Scaffold(
-        bodyContent = {
+fun AuthScreen() {
 
-            Stack(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight()
-            ) {
+    var openDialog by mutableStateOf(false)
 
-                Image(
-                    modifier = Modifier
-                        .gravity(Alignment.Center)
-                        .width(100.dp)
-                        .height(100.dp),
-                    asset = Icons.Rounded.Album,
-                    colorFilter = ColorFilter.tint(Color.Red)
-                )
+    Stack(
+        modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight()
+    ) {
 
-                Button(
-                    modifier = Modifier
-                        .gravity(Alignment.BottomCenter)
-                        .padding(bottom = 64.dp),
-                    onClick = logIn
-                ) {
-                    Text(text = stringResource(R.string.sign_in))
-                }
-            }
+        Image(
+            modifier = Modifier
+                .gravity(Alignment.Center)
+                .width(100.dp)
+                .height(100.dp),
+            asset = Icons.Rounded.Album,
+            colorFilter = ColorFilter.tint(Color.Red)
+        )
+
+        Button(
+            modifier = Modifier
+                .gravity(Alignment.BottomCenter)
+                .padding(bottom = 64.dp),
+            onClick = { openDialog = true }
+        ) {
+            Text(text = stringResource(R.string.sign_in))
         }
-    )
+
+        if (openDialog) AuthDialog(onDismissRequest = { openDialog = false })
+    }
 }
 
 @Composable
 fun AuthDialog(
-    upPress: () -> Unit,
+    onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
     shape: Shape = MaterialTheme.shapes.medium,
     backgroundColor: Color = MaterialTheme.colors.surface,
     contentColor: Color = contentColorFor(backgroundColor)
 ) {
-    Dialog(onDismissRequest = upPress) {
+    Dialog(onDismissRequest = onDismissRequest) {
         Surface(
             modifier = modifier.fillMaxWidth(),
             shape = shape,
@@ -135,7 +135,7 @@ fun AuthDialog(
                     modifier = Modifier
                         .gravity(Alignment.End)
                         .padding(8.dp),
-                    onClick = upPress
+                    onClick = onDismissRequest
                 ) {
                     Text(stringResource(R.string.close))
                 }
