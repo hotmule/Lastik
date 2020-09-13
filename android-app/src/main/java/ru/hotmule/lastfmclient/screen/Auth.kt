@@ -28,7 +28,7 @@ import ru.hotmule.lastfmclient.R
 @Composable
 fun AuthScreen() {
 
-    var openDialog by mutableStateOf(false)
+    var signInDialogOpened by mutableStateOf(false)
 
     Stack(
         modifier = Modifier
@@ -49,17 +49,19 @@ fun AuthScreen() {
             modifier = Modifier
                 .gravity(Alignment.BottomCenter)
                 .padding(bottom = 64.dp),
-            onClick = { openDialog = true }
+            onClick = { signInDialogOpened = true }
         ) {
             Text(text = stringResource(R.string.sign_in))
         }
 
-        if (openDialog) AuthDialog(onDismissRequest = { openDialog = false })
+        if (signInDialogOpened) {
+            SignInDialog(onDismissRequest = { signInDialogOpened = false })
+        }
     }
 }
 
 @Composable
-fun AuthDialog(
+fun SignInDialog(
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
     shape: Shape = MaterialTheme.shapes.medium,
@@ -101,23 +103,25 @@ fun AuthDialog(
                         AndroidView(
                             viewBlock = ::WebView,
                         ) {
-                            it.apply {
-                                webViewClient = object : WebViewClient() {
 
-                                    override fun onPageFinished(view: WebView?, url: String?) {
-                                        isLoading = false
-                                    }
+                            it.webViewClient = object : WebViewClient() {
 
-                                    override fun onReceivedError(
-                                        view: WebView?,
-                                        request: WebResourceRequest?,
-                                        error: WebResourceError?
-                                    ) {
-                                        errorReceived = true
-                                    }
+                                override fun onPageFinished(view: WebView?, url: String?) {
+                                    isLoading = false
                                 }
-                                loadUrl("https://www.last.fm/api/auth?api_key=${BuildConfig.API_KEY}/")
+
+                                override fun onReceivedError(
+                                    view: WebView?,
+                                    request: WebResourceRequest?,
+                                    error: WebResourceError?
+                                ) {
+                                    errorReceived = true
+                                }
                             }
+
+                            it.loadUrl(
+                                "https://www.last.fm/api/auth?api_key=${BuildConfig.API_KEY}/"
+                            )
                         }
                     } else {
                         Text(
