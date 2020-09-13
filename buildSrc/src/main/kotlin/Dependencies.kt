@@ -16,7 +16,14 @@ object Sdk {
 }
 
 object Module {
+
     const val lastSdk = ":lastSdk"
+
+    object Android {
+        object Compose {
+            const val utils = ":android-compose-utils"
+        }
+    }
 }
 
 object Libs {

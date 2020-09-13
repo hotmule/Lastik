@@ -1,5 +1,7 @@
 package ru.hotmule.lastfmclient
 
+import android.compose.utils.navigationBarsPadding
+import android.compose.utils.statusBarsPadding
 import androidx.compose.foundation.Icon
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.Text
@@ -21,7 +23,6 @@ import androidx.compose.ui.graphics.vector.VectorAsset
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
-import androidx.ui.tooling.preview.PreviewParameter
 
 private enum class Library(val title: String) {
     Scrobbles("Scrobbles"),

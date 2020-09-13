@@ -16,7 +16,7 @@
 
 @file:Suppress("NOTHING_TO_INLINE", "unused")
 
-package ru.hotmule.lastfmclient
+package android.compose.utils
 
 import android.view.View
 import androidx.compose.foundation.layout.InnerPadding

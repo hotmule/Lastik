@@ -49,6 +49,7 @@ android {
 dependencies {
 
     implementation(project(Module.lastSdk))
+    implementation(project(Module.Android.Compose.utils))
 
     implementation(Libs.AndroidX.fragment)
     implementation(Libs.AndroidX.appCompat)

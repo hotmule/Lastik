@@ -5,6 +5,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.setContent
+import android.compose.utils.ProvideDisplayInsets
 import androidx.core.view.WindowCompat
 
 class MainActivity : AppCompatActivity() {
