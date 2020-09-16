@@ -7,9 +7,9 @@ plugins {
 kotlin {
     android()
     sourceSets {
-        commonMain {
+        val commonMain by getting {
             dependencies {
-                implementation(Libs.preferences)
+                implementation(Libs.settings)
                 implementation(Libs.Napier.common)
                 implementation(Libs.Ktor.Core.common)
                 implementation(Libs.Ktor.Auth.common)

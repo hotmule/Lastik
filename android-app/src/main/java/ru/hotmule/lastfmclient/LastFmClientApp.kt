@@ -16,7 +16,7 @@ fun LastFmClientApp(backDispatcher: OnBackPressedDispatcher) {
     val navigator: Navigator<Destination> = rememberSavedInstanceState(
         saver = Navigator.saver(backDispatcher)
     ) {
-        Navigator(Destination.Library, backDispatcher)
+        Navigator(Destination.Auth, backDispatcher)
     }
     val actions = remember(navigator) { Actions(navigator) }
     ProvideDisplayInsets {

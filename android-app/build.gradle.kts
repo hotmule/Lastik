@@ -25,6 +25,12 @@ android {
             "API_KEY",
             project.property("lastFmApiKey") as String
         )
+
+        buildConfigField(
+            "String",
+            "SECRET",
+            project.property("secret") as String
+        )
     }
 
     buildTypes {

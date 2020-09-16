@@ -29,12 +29,13 @@ object Module {
 object Libs {
 
     const val gradle = "com.android.tools.build:gradle:4.2.0-alpha10"
-    const val preferences = "com.russhwolf:multiplatform-settings:0.6.2"
+    const val krypto = "com.soywiz.korlibs:krypro:1.12.0"
+    const val settings = "com.russhwolf:multiplatform-settings:0.6.2"
     const val espresso = "androidx.test.espresso:espresso-core:3.2.0"
     const val jUnit = "junit:junit:4.13"
 
     object Update {
-        const val version = "0.31.0"
+        const val version = "0.33.0"
         const val helper = "com.github.ben-manes.versions"
     }
 
