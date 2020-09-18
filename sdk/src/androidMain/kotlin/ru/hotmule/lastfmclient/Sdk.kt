@@ -11,7 +11,9 @@ const val USER_DATA_PREFS = "userDataPreferences"
 
 fun Sdk.Companion.create(
     context: Context,
-    isDebug: Boolean
+    isDebug: Boolean,
+    apiKey: String,
+    secret: String
 ) = Sdk(
     HttpClientFactory(
         loggingEnabled = isDebug,
@@ -28,5 +30,7 @@ fun Sdk.Companion.create(
             USER_DATA_PREFS,
             Context.MODE_PRIVATE
         )
-    )
+    ),
+    apiKey,
+    secret
 )

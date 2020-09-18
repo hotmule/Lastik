@@ -12,7 +12,7 @@ import ru.hotmule.lastfmclient.screen.LibraryScreen
 import ru.hotmule.lastfmclient.theme.AppTheme
 
 @Composable
-fun LastFmClientApp(backDispatcher: OnBackPressedDispatcher) {
+fun LastFmClientApp(sdk: Sdk, backDispatcher: OnBackPressedDispatcher) {
     val navigator: Navigator<Destination> = rememberSavedInstanceState(
         saver = Navigator.saver(backDispatcher)
     ) {
@@ -23,7 +23,7 @@ fun LastFmClientApp(backDispatcher: OnBackPressedDispatcher) {
         AppTheme {
             Crossfade(navigator.current) { destination ->
                 when (destination) {
-                    is Destination.Auth -> AuthScreen()
+                    is Destination.Auth -> AuthScreen(sdk.getAuthInteractor())
                     Destination.Library -> LibraryScreen(actions.toAuth)
                 }
             }

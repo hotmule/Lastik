@@ -23,7 +23,7 @@ android {
         buildConfigField(
             "String",
             "API_KEY",
-            project.property("lastFmApiKey") as String
+            project.property("apiKey") as String
         )
 
         buildConfigField(

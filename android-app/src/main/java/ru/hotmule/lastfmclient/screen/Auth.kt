@@ -19,12 +19,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Dialog
-import ru.hotmule.lastfmclient.BuildConfig
 import ru.hotmule.lastfmclient.R
+import ru.hotmule.lastfmclient.domain.AuthInteractor
 
 
 @Composable
-fun AuthScreen() {
+fun AuthScreen(
+    interactor: AuthInteractor
+) {
 
     var signInDialogOpened by remember { mutableStateOf(false) }
 
@@ -54,6 +56,7 @@ fun AuthScreen() {
 
         if (signInDialogOpened) {
             SignInDialog(
+                interactor,
                 onDismissRequest = { signInDialogOpened = false }
             )
         }
@@ -62,6 +65,7 @@ fun AuthScreen() {
 
 @Composable
 fun SignInDialog(
+    interactor: AuthInteractor,
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
     shape: Shape = MaterialTheme.shapes.medium,
@@ -85,7 +89,7 @@ fun SignInDialog(
                     style = MaterialTheme.typography.h6
                 )
 
-                SignInBrowser()
+                SignInBrowser(interactor)
 
                 TextButton(
                     modifier = Modifier
@@ -107,7 +111,9 @@ data class SignInBrowserState(
 )
 
 @Composable
-private fun SignInBrowser() {
+private fun SignInBrowser(
+    interactor: AuthInteractor,
+) {
     Stack(
         modifier = Modifier
             .fillMaxWidth()
@@ -170,23 +176,24 @@ private fun SignInBrowser() {
                         override fun shouldOverrideUrlLoading(
                             view: WebView?,
                             request: WebResourceRequest?
-                        ) = with(request?.url.toString()) {
-                            if (contains("token")) {
-                                substringAfter("token=")
-                                state = state.copy(
-                                    isLoading = true,
-                                    hasWebView = false
-                                )
-                                false
-                            } else {
-                                view?.loadUrl(this)
-                                true
+                        ): Boolean {
+
+                            val url = request?.url.toString()
+
+                            launchInComposition {
+                                val containsToken = interactor.checkForToken(url)
+                                if (containsToken) {
+                                    state = state.copy(
+                                        isLoading = true,
+                                        hasWebView = false
+                                    )
+                                }
                             }
+
+                            return true
                         }
                     }
-                    it.loadUrl(
-                        "http://www.last.fm/api/auth/?api_key=${BuildConfig.API_KEY}"
-                    )
+                    it.loadUrl(interactor.getAuthUrl())
                 }
             }
         }

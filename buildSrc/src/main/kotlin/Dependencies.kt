@@ -28,7 +28,7 @@ object Module {
 
 object Libs {
 
-    const val gradle = "com.android.tools.build:gradle:4.2.0-alpha10"
+    const val gradle = "com.android.tools.build:gradle:4.2.0-alpha11"
     const val krypto = "com.soywiz.korlibs:krypro:1.12.0"
     const val settings = "com.russhwolf:multiplatform-settings:0.6.2"
     const val espresso = "androidx.test.espresso:espresso-core:3.2.0"
@@ -87,7 +87,7 @@ object Libs {
         const val jUnitRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         object Compose {
-            const val version = "1.0.0-alpha02"
+            const val version = "1.0.0-alpha03"
             const val ui = "androidx.compose.ui:ui:$version"
             const val tooling = "androidx.ui:ui-tooling:$version"
             const val material = "androidx.compose.material:material:$version"

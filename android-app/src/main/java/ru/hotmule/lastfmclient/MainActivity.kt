@@ -11,6 +11,13 @@ import androidx.core.view.WindowCompat
 
 class MainActivity : AppCompatActivity() {
 
+    private val sdk = Sdk.create(
+        this,
+        BuildConfig.DEBUG,
+        BuildConfig.API_KEY,
+        BuildConfig.SECRET
+    )
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -19,7 +26,7 @@ class MainActivity : AppCompatActivity() {
         setContent {
             val systemUiController = remember { SystemUiController(window) }
             Providers(SysUiController provides systemUiController) {
-                LastFmClientApp(onBackPressedDispatcher)
+                LastFmClientApp(sdk, onBackPressedDispatcher)
             }
         }
     }

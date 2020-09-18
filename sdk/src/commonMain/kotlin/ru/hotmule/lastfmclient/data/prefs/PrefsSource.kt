@@ -5,23 +5,18 @@ import com.russhwolf.settings.Settings
 class PrefsSource(private val settings: Settings) {
 
     companion object {
-        const val API_KEY_ARG = "apiKey"
         const val TOKEN_ARG = "token"
-        const val SECRET_ARG = "secret"
+        const val NAME_ARG = "name"
         const val SESSION_KEY_ARG = "sessionKey"
     }
-
-    var apiKey: String?
-        get() = getSetting(API_KEY_ARG)
-        set(value) { setSetting(value, API_KEY_ARG) }
 
     var token: String?
         get() = getSetting(TOKEN_ARG)
         set(value) { setSetting(value, TOKEN_ARG) }
 
-    var secret: String?
-        get() = getSetting(SECRET_ARG)
-        set(value) { setSetting(value, SECRET_ARG) }
+    var name: String?
+        get() = getSetting(NAME_ARG)
+        set(value) { setSetting(value, NAME_ARG) }
 
     var sessionKey: String?
         get() = getSetting(SESSION_KEY_ARG)
