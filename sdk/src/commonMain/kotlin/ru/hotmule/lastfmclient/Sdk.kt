@@ -9,14 +9,14 @@ import ru.hotmule.lastfmclient.domain.AuthInteractor
 open class Sdk(
     httpClientFactory: HttpClientFactory,
     settings: Settings,
-    private val apiKey: String,
-    private val secret: String
+    apiKey: String,
+    secret: String
 ) {
 
     private val prefs = PrefsSource(settings)
-    private val remote = RemoteSource(httpClientFactory.create())
+    private val remote = RemoteSource(httpClientFactory.create(prefs))
 
-    fun getAuthInteractor() = AuthInteractor(apiKey, secret, prefs, remote.authApi)
+    val authInteractor = AuthInteractor(apiKey, secret, prefs, remote.authApi)
 
     companion object
 }

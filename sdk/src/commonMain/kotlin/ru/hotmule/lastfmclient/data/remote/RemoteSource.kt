@@ -1,8 +1,10 @@
 package ru.hotmule.lastfmclient.data.remote
 
+import com.soywiz.krypto.md5
 import io.ktor.client.HttpClient
 import io.ktor.client.request.*
 import io.ktor.http.takeFrom
+import io.ktor.utils.io.charsets.*
 import io.ktor.utils.io.core.*
 import ru.hotmule.lastfmclient.data.remote.api.AuthApi
 
@@ -21,11 +23,15 @@ fun HttpRequestBuilder.api(
     sessionKey: String? = null
 ) {
 
-    val signature = if (token != null && secret != null)
-        "api_key${apiKey}method${section}.${method}token$token$secret" else null
+    val signature = if (token != null && secret != null) {
+        "api_key${apiKey}method${section}.${method}token$token$secret"
+            .toByteArray()
+            .md5()
+            .hex
+    } else
+        null
 
     url {
-
         takeFrom("http://ws.audioscrobbler.com")
         encodedPath = "/2.0/"
 

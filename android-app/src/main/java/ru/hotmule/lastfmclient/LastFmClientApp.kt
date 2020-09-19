@@ -18,12 +18,12 @@ fun LastFmClientApp(
     sdk: Sdk,
     backDispatcher: OnBackPressedDispatcher
 ) {
-    val isSessionActive by sdk.getAuthInteractor().isSessionActive.collectAsState()
+    val isSessionActive by sdk.authInteractor.isSessionActive().collectAsState()
 
     ProvideDisplayInsets {
         AppTheme {
             if (!isSessionActive)
-                AuthScreen(sdk.getAuthInteractor())
+                AuthScreen(sdk.authInteractor)
             else {
                 val navigator: Navigator<Destination> = rememberSavedInstanceState(
                     saver = Navigator.saver(backDispatcher)
@@ -33,7 +33,7 @@ fun LastFmClientApp(
                 val actions = remember(navigator) { Actions(navigator) }
                 Crossfade(navigator.current) { destination ->
                     when (destination) {
-                        Destination.Library -> LibraryScreen(sdk.getAuthInteractor())
+                        Destination.Library -> LibraryScreen(sdk.authInteractor)
                     }
                 }
             }

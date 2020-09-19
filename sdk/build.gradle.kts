@@ -10,6 +10,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(Libs.settings)
+                implementation(Libs.Krypto.common)
                 implementation(Libs.Napier.common)
                 implementation(Libs.Ktor.Core.common)
                 implementation(Libs.Ktor.Auth.common)
@@ -19,6 +20,7 @@ kotlin {
         }
         val androidMain by getting {
             dependencies {
+                implementation(Libs.Krypto.android)
                 implementation(Libs.Napier.android)
                 implementation(Libs.Ktor.Core.android)
                 implementation(Libs.Ktor.Auth.android)

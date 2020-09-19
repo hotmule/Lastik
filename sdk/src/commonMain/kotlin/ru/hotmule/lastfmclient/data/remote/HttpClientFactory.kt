@@ -15,6 +15,7 @@ import kotlinx.coroutines.delay
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
+import ru.hotmule.lastfmclient.data.prefs.PrefsSource
 
 class HttpClientFactory(
     private val loggingEnabled: Boolean,
@@ -22,7 +23,9 @@ class HttpClientFactory(
     private val engine: HttpClientEngine
 ) {
 
-    fun create() = HttpClient(engine) {
+    fun create(
+        prefs: PrefsSource
+    ) = HttpClient(engine) {
 
         if (loggingEnabled) {
             install(Logging) {
@@ -53,13 +56,19 @@ class HttpClientFactory(
                 delay(500)
 
                 if (!it.status.isSuccess()) {
-                    error(it.status.value)
+                    when (it.status.value) {
+                        401 -> {
+                            prefs.clear()
+                            prefs.isSessionActive.value = false
+                        }
+                        else -> {
+                            error(it.status.value)
+                        }
+                    }
                 }
 
                 handleResponseException { throwable ->
-                    error(
-                        throwable.message ?: "Unknown error"
-                    )
+                    error(throwable.message ?: "Unknown Error")
                 }
             }
         }

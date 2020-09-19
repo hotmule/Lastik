@@ -2,6 +2,8 @@ package ru.hotmule.lastfmclient
 
 import android.content.Context
 import android.webkit.WebSettings
+import com.github.aakira.napier.DebugAntilog
+import com.github.aakira.napier.Napier
 import com.russhwolf.settings.AndroidSettings
 import io.ktor.client.engine.okhttp.OkHttp
 import ru.hotmule.lastfmclient.data.remote.HttpClientFactory
@@ -14,23 +16,26 @@ fun Sdk.Companion.create(
     isDebug: Boolean,
     apiKey: String,
     secret: String
-) = Sdk(
-    HttpClientFactory(
-        loggingEnabled = isDebug,
-        userAgent = WebSettings.getDefaultUserAgent(context),
-        engine = OkHttp.create {
-            config {
-                retryOnConnectionFailure(true)
-                connectTimeout(5L, TimeUnit.SECONDS)
+): Sdk {
+    Napier.base(DebugAntilog())
+    return Sdk(
+        HttpClientFactory(
+            loggingEnabled = isDebug,
+            userAgent = WebSettings.getDefaultUserAgent(context),
+            engine = OkHttp.create {
+                config {
+                    retryOnConnectionFailure(true)
+                    connectTimeout(5L, TimeUnit.SECONDS)
+                }
             }
-        }
-    ),
-    AndroidSettings(
-        context.getSharedPreferences(
-            USER_DATA_PREFS,
-            Context.MODE_PRIVATE
-        )
-    ),
-    apiKey,
-    secret
-)
+        ),
+        AndroidSettings(
+            context.getSharedPreferences(
+                USER_DATA_PREFS,
+                Context.MODE_PRIVATE
+            )
+        ),
+        apiKey,
+        secret
+    )
+}

@@ -29,7 +29,6 @@ object Module {
 object Libs {
 
     const val gradle = "com.android.tools.build:gradle:4.2.0-alpha11"
-    const val krypto = "com.soywiz.korlibs:krypro:1.12.0"
     const val settings = "com.russhwolf:multiplatform-settings:0.6.2"
     const val espresso = "androidx.test.espresso:espresso-core:3.2.0"
     const val jUnit = "junit:junit:4.13"
@@ -77,6 +76,12 @@ object Libs {
         private const val version = "1.3.0"
         const val common = "com.github.aakira:napier:$version"
         const val android = "com.github.aakira:napier-android:$version"
+    }
+
+    object Krypto {
+        private const val version = "1.12.0"
+        const val common = "com.soywiz.korlibs.krypto:krypto:$version"
+        const val android = "com.soywiz.korlibs.krypto:krypto-android:$version"
     }
 
     object AndroidX {

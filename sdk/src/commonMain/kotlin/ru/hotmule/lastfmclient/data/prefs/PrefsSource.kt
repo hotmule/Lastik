@@ -1,6 +1,7 @@
 package ru.hotmule.lastfmclient.data.prefs
 
 import com.russhwolf.settings.Settings
+import kotlinx.coroutines.flow.MutableStateFlow
 
 class PrefsSource(private val settings: Settings) {
 
@@ -24,7 +25,10 @@ class PrefsSource(private val settings: Settings) {
 
     fun clear() {
         settings.clear()
+        isSessionActive.value = false
     }
+
+    val isSessionActive = MutableStateFlow(sessionKey != null)
 
     private fun getSetting(arg: String) = settings.getStringOrNull(arg)
 

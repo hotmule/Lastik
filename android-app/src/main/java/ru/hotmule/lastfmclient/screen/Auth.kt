@@ -25,9 +25,9 @@ import ru.hotmule.lastfmclient.R
 import ru.hotmule.lastfmclient.domain.AuthInteractor
 
 data class AuthScreenState(
-    var signInDialogOpened: Boolean = false,
-    var loading: Boolean = false,
-    var error: String? = null
+    var isLoading: Boolean = false,
+    var errorReceived: String? = null,
+    var signInDialogOpened: Boolean = false
 )
 
 @Composable
@@ -57,11 +57,15 @@ fun AuthScreen(
             if (signInDialogOpened) {
                 SignInDialog(
                     interactor,
-                    onDismissRequest = { signInDialogOpened = false },
+                    onDismissRequest = {
+                        state = state.copy(
+                            signInDialogOpened = false
+                        )
+                    },
                     onTokenReceived = {
                         state = state.copy(
                             signInDialogOpened = false,
-                            loading = true
+                            isLoading = true
                         )
                     }
                 )
@@ -74,15 +78,15 @@ fun AuthScreen(
                     .padding(bottom = 16.dp)
             ) {
 
-                if (loading) {
+                if (isLoading) {
                     CircularProgressIndicator()
                     launchInComposition {
                         try {
-                            interactor.signIn()
+                            interactor.getSessionKey()
                         } catch (e: Exception) {
-                            state = state.copy(error = e.message)
+                            state = state.copy(errorReceived = e.message)
                         }
-                        state = state.copy(loading = false)
+                        state = state.copy(isLoading = false)
                     }
                 } else {
                     Button(
@@ -92,7 +96,7 @@ fun AuthScreen(
                 }
             }
 
-            error?.let {
+            errorReceived?.let {
 
                 Snackbar(
                     modifier = Modifier
@@ -104,7 +108,7 @@ fun AuthScreen(
 
                 launchInComposition {
                     delay(3000)
-                    state = state.copy(error = null)
+                    state = state.copy(errorReceived = null)
                 }
             }
         }
@@ -205,9 +209,7 @@ private fun SignInBrowser(
                     it.webViewClient = object : WebViewClient() {
 
                         override fun onPageFinished(view: WebView?, url: String?) {
-                            state = state.copy(
-                                isLoading = false
-                            )
+                            state = state.copy(isLoading = false)
                         }
 
                         override fun onReceivedError(
