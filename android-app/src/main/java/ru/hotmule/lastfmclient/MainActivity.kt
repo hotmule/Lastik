@@ -11,17 +11,17 @@ import androidx.core.view.WindowCompat
 
 class MainActivity : AppCompatActivity() {
 
-    private val sdk = Sdk.create(
-        this,
-        BuildConfig.DEBUG,
-        BuildConfig.API_KEY,
-        BuildConfig.SECRET
-    )
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        WindowCompat.setDecorFitsSystemWindows(window, false)
+        val sdk = Sdk.create(
+            this,
+            BuildConfig.DEBUG,
+            BuildConfig.API_KEY,
+            BuildConfig.SECRET
+        )
+
+        WindowCompat.setDecorFitsSystemWindows (window, false)
 
         setContent {
             val systemUiController = remember { SystemUiController(window) }

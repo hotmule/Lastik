@@ -1,5 +1,6 @@
 package ru.hotmule.lastfmclient.screen
 
+import android.compose.utils.navigationBarsPadding
 import android.os.Build
 import android.webkit.*
 import androidx.compose.foundation.Image
@@ -19,16 +20,22 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Dialog
+import kotlinx.coroutines.delay
 import ru.hotmule.lastfmclient.R
 import ru.hotmule.lastfmclient.domain.AuthInteractor
 
+data class AuthScreenState(
+    var signInDialogOpened: Boolean = false,
+    var loading: Boolean = false,
+    var error: String? = null
+)
 
 @Composable
 fun AuthScreen(
     interactor: AuthInteractor
 ) {
 
-    var signInDialogOpened by remember { mutableStateOf(false) }
+    var state by remember { mutableStateOf(AuthScreenState()) }
 
     Stack(
         modifier = Modifier
@@ -45,20 +52,61 @@ fun AuthScreen(
             colorFilter = ColorFilter.tint(Color.Red)
         )
 
-        Button(
-            modifier = Modifier
-                .gravity(Alignment.BottomCenter)
-                .padding(bottom = 64.dp),
-            onClick = { signInDialogOpened = true }
-        ) {
-            Text(text = stringResource(R.string.sign_in))
-        }
+        with (state) {
 
-        if (signInDialogOpened) {
-            SignInDialog(
-                interactor,
-                onDismissRequest = { signInDialogOpened = false }
-            )
+            if (signInDialogOpened) {
+                SignInDialog(
+                    interactor,
+                    onDismissRequest = { signInDialogOpened = false },
+                    onTokenReceived = {
+                        state = state.copy(
+                            signInDialogOpened = false,
+                            loading = true
+                        )
+                    }
+                )
+            }
+
+            Stack(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .navigationBarsPadding(bottom = true)
+                    .padding(bottom = 16.dp)
+            ) {
+
+                if (loading) {
+                    CircularProgressIndicator()
+                    launchInComposition {
+                        try {
+                            interactor.signIn()
+                        } catch (e: Exception) {
+                            state = state.copy(error = e.message)
+                        }
+                        state = state.copy(loading = false)
+                    }
+                } else {
+                    Button(
+                        onClick = { state = state.copy(signInDialogOpened = true) },
+                        content = { Text(text = stringResource(R.string.sign_in)) }
+                    )
+                }
+            }
+
+            error?.let {
+
+                Snackbar(
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .padding(8.dp)
+                        .navigationBarsPadding(bottom = true),
+                    text = { Text(it) },
+                )
+
+                launchInComposition {
+                    delay(3000)
+                    state = state.copy(error = null)
+                }
+            }
         }
     }
 }
@@ -67,6 +115,7 @@ fun AuthScreen(
 fun SignInDialog(
     interactor: AuthInteractor,
     onDismissRequest: () -> Unit,
+    onTokenReceived: () -> Unit,
     modifier: Modifier = Modifier,
     shape: Shape = MaterialTheme.shapes.medium,
     backgroundColor: Color = MaterialTheme.colors.surface,
@@ -89,7 +138,11 @@ fun SignInDialog(
                     style = MaterialTheme.typography.h6
                 )
 
-                SignInBrowser(interactor)
+                SignInBrowser(
+                    interactor = interactor,
+                    onDismissRequest = onDismissRequest,
+                    onTokenReceived = onTokenReceived
+                )
 
                 TextButton(
                     modifier = Modifier
@@ -105,29 +158,25 @@ fun SignInDialog(
 }
 
 data class SignInBrowserState(
-    val isLoading: Boolean = false,
-    val hasWebView: Boolean = false,
+    val isLoading: Boolean = true,
+    val hasWebView: Boolean = true,
     val isErrorReceived: Boolean = false
 )
 
 @Composable
 private fun SignInBrowser(
     interactor: AuthInteractor,
+    onDismissRequest: () -> Unit,
+    onTokenReceived: () -> Unit,
 ) {
+
+    var state by remember { mutableStateOf(SignInBrowserState()) }
+
     Stack(
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight(0.58f)
     ) {
-
-        var state by remember {
-            mutableStateOf(
-                SignInBrowserState(
-                    isLoading = true,
-                    hasWebView = true,
-                )
-            )
-        }
 
         with (state) {
 
@@ -177,22 +226,22 @@ private fun SignInBrowser(
                             view: WebView?,
                             request: WebResourceRequest?
                         ): Boolean {
-
-                            val url = request?.url.toString()
-
-                            launchInComposition {
-                                val containsToken = interactor.checkForToken(url)
-                                if (containsToken) {
+                            request?.url?.toString().let { url ->
+                                if (interactor.urlContainsToken(url)) {
                                     state = state.copy(
                                         isLoading = true,
                                         hasWebView = false
                                     )
-                                }
+                                    onTokenReceived.invoke()
+                                    onDismissRequest.invoke()
+                                    return false
+                                } else
+                                    view?.loadUrl(url)
                             }
-
                             return true
                         }
                     }
+
                     it.loadUrl(interactor.getAuthUrl())
                 }
             }

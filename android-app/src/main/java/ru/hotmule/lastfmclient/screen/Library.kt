@@ -24,6 +24,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import ru.hotmule.lastfmclient.R
+import ru.hotmule.lastfmclient.domain.AuthInteractor
 
 sealed class Library(val titleStringId: Int) {
     class Scrobbles : Library(R.string.scrobbles)
@@ -34,7 +35,7 @@ sealed class Library(val titleStringId: Int) {
 }
 
 @Composable
-fun LibraryScreen(onLogOut: () -> Unit) {
+fun LibraryScreen(interactor: AuthInteractor) {
 
     var currentItem by remember { mutableStateOf<Library>(Library.Scrobbles()) }
 
@@ -44,7 +45,7 @@ fun LibraryScreen(onLogOut: () -> Unit) {
     when (currentItem) {
         is Library.Profile -> {
             title = "UserName"
-            body = { Profile(onLogOut) }
+            body = { Profile(interactor) }
         }
         else -> {
             title = stringResource(id = currentItem.titleStringId)
@@ -80,7 +81,7 @@ fun LibraryScreen(onLogOut: () -> Unit) {
                         modifier = Modifier.navigationBarsPadding(bottom = true),
                         icon = { Icon(it.second) },
                         label = { Text(stringResource(id = it.first.titleStringId)) },
-                        onSelect = { currentItem = it.first },
+                        onClick = { currentItem = it.first },
                         selected = currentItem == it.first
                     )
                 }
@@ -90,9 +91,10 @@ fun LibraryScreen(onLogOut: () -> Unit) {
 }
 
 @Composable
-private fun Profile(onLogOut: () -> Unit) {
-
-    Button(onClick = onLogOut) {
+private fun Profile(interactor: AuthInteractor) {
+    Button(
+        onClick = { interactor.signOut() }
+    ) {
         Text(stringResource(id = R.string.sign_out))
     }
 }

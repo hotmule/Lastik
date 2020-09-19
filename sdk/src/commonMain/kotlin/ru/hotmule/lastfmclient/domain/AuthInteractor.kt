@@ -1,5 +1,6 @@
 package ru.hotmule.lastfmclient.domain
 
+import kotlinx.coroutines.flow.MutableStateFlow
 import ru.hotmule.lastfmclient.data.prefs.PrefsSource
 import ru.hotmule.lastfmclient.data.remote.api.AuthApi
 
@@ -9,22 +10,32 @@ class AuthInteractor(
     private val prefs: PrefsSource,
     private val api: AuthApi,
 ) {
+
+    val isSessionActive = MutableStateFlow(prefs.sessionKey != null)
+
     fun getAuthUrl() = "http://www.last.fm/api/auth/?api_key=$apiKey"
 
-    suspend fun checkForToken(url: String) = if (url.contains("token")) {
+    fun urlContainsToken(url: String?): Boolean {
+        url?.let {
+            if (url.contains("token")) {
+                prefs.token = url.substringAfter("token=")
+                return true
+            }
+        }
+        return false
+    }
 
-        val token = url.substringAfter("token=")
-        val session = api.getSession(
-            apiKey,
-            secret,
-            url.substringAfter("token=")
-        )
+    suspend fun signIn() {
+        prefs.token?.let { token ->
+            val session = api.getSession(apiKey, secret, token)
+            prefs.name = session?.name
+            prefs.sessionKey = session?.key
+            isSessionActive.value = true
+        }
+    }
 
-        prefs.token = token
-        prefs.name = session?.name
-        prefs.sessionKey = session?.key
-
-        false
-    } else
-        true
+    fun signOut() {
+        prefs.clear()
+        isSessionActive.value = false
+    }
 }

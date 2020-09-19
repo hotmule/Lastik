@@ -53,17 +53,12 @@ class HttpClientFactory(
                 delay(500)
 
                 if (!it.status.isSuccess()) {
-                    error(
-                        Json.parseToJsonElement(it.readBytes().toString())
-                            .jsonObject["error"]
-                            ?.jsonPrimitive
-                            ?.content ?: "-1"
-                    )
+                    error(it.status.value)
                 }
 
                 handleResponseException { throwable ->
                     error(
-                        throwable.message ?: "-1"
+                        throwable.message ?: "Unknown error"
                     )
                 }
             }

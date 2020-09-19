@@ -22,6 +22,10 @@ class PrefsSource(private val settings: Settings) {
         get() = getSetting(SESSION_KEY_ARG)
         set(value) { setSetting(value, SESSION_KEY_ARG) }
 
+    fun clear() {
+        settings.clear()
+    }
+
     private fun getSetting(arg: String) = settings.getStringOrNull(arg)
 
     private fun setSetting(value: String?, arg: String) {
