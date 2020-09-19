@@ -33,7 +33,7 @@ fun LastFmClientApp(
                 val actions = remember(navigator) { Actions(navigator) }
                 Crossfade(navigator.current) { destination ->
                     when (destination) {
-                        Destination.Library -> LibraryScreen(sdk.authInteractor)
+                        Destination.Library -> LibraryScreen(sdk)
                     }
                 }
             }

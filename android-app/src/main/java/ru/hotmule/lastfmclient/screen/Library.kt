@@ -24,6 +24,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import ru.hotmule.lastfmclient.R
+import ru.hotmule.lastfmclient.Sdk
 import ru.hotmule.lastfmclient.domain.AuthInteractor
 
 sealed class Library(val titleStringId: Int) {
@@ -35,7 +36,7 @@ sealed class Library(val titleStringId: Int) {
 }
 
 @Composable
-fun LibraryScreen(interactor: AuthInteractor) {
+fun LibraryScreen(sdk: Sdk) {
 
     var currentItem by remember { mutableStateOf<Library>(Library.Scrobbles()) }
 
@@ -44,8 +45,8 @@ fun LibraryScreen(interactor: AuthInteractor) {
 
     when (currentItem) {
         is Library.Profile -> {
-            title = "UserName"
-            body = { Profile(interactor) }
+            title = sdk.userInteractor.getName()
+            body = { Profile(sdk.authInteractor) }
         }
         else -> {
             title = stringResource(id = currentItem.titleStringId)
