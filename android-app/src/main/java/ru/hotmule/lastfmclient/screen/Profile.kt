@@ -20,12 +20,11 @@ import ru.hotmule.lastfmclient.domain.UserInteractor
 
 @Composable
 fun Profile(
+    modifier: Modifier = Modifier,
     sdk: Sdk
 ) {
     Stack(
-        modifier = Modifier
-            .fillMaxSize()
-            .statusBarsPadding()
+        modifier = modifier.fillMaxSize()
     ) {
         val scroll = rememberScrollState(0f)
         Title(sdk.userInteractor, scroll.value)

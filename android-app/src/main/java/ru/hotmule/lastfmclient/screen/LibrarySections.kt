@@ -11,8 +11,6 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.savedinstancestate.savedInstanceState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.VectorAsset
@@ -21,8 +19,11 @@ import androidx.compose.ui.unit.dp
 import ru.hotmule.lastfmclient.R
 import ru.hotmule.lastfmclient.Sdk
 import ru.hotmule.lastfmclient.components.LibraryListItem
+import ru.hotmule.lastfmclient.components.ListItem
 
-private enum class LibrarySections(
+private val BottomNavigationHeight = 75.dp
+
+enum class LibrarySections(
     @StringRes val title: Int,
     val icon: VectorAsset
 ) {
@@ -40,25 +41,38 @@ fun LibraryScreen(sdk: Sdk) {
 
     Scaffold(
         bodyContent = {
+
+            val paddingsModifier = Modifier
+                .statusBarsPadding()
+                .padding(bottom = BottomNavigationHeight)
+
             when (currentSection) {
-                LibrarySections.Profile -> Profile(sdk)
+                LibrarySections.Profile -> {
+                    Profile(
+                        modifier = paddingsModifier,
+                        sdk = sdk
+                    )
+                }
                 else -> {
                     LibrarySection(
-                        stringResource(id = currentSection.title)
+                        modifier = paddingsModifier,
+                        items = generateItems(currentSection)
                     )
                 }
             }
         },
         bottomBar = {
             BottomNavigation(
-                modifier = Modifier.preferredHeight(75.dp),
+                modifier = Modifier
+                    .preferredHeight(BottomNavigationHeight)
             ) {
                 LibrarySections
                     .values()
                     .toList()
                     .forEach { section ->
                         BottomNavigationItem(
-                            modifier = Modifier.navigationBarsPadding(bottom = true),
+                            modifier = Modifier
+                                .navigationBarsPadding(bottom = true),
                             icon = { Icon(section.icon) },
                             label = { Text(stringResource(id = section.title)) },
                             onClick = { setCurrentSection(section) },
@@ -71,13 +85,69 @@ fun LibraryScreen(sdk: Sdk) {
 }
 
 @Composable
-private fun LibrarySection(title: String) {
+private fun LibrarySection(
+    modifier: Modifier = Modifier,
+    items: List<ListItem>
+) {
     LazyColumnFor(
-        modifier = Modifier.statusBarsPadding(),
-        items = mutableListOf<String>().apply {
-            for (i in 1..100) add("$title $i")
-        }
+        modifier = modifier,
+        items = items
     ) {
-        LibraryListItem(text = it)
+        LibraryListItem(item = it)
+    }
+}
+
+fun generateItems(
+    currentSection: LibrarySections
+) = mutableListOf<ListItem>().apply {
+    for (i in 1..20) {
+        add(
+            when (currentSection) {
+                LibrarySections.Scrobbles -> {
+                    ListItem(
+                        imageUrl = "https://upload.wikimedia.org/wikipedia/en/0/08/Konnichiwa_by_Skepta_cover.jpg",
+                        liked = true,
+                        title = "Man",
+                        subtitle = "Skepta",
+                        time = "21 hours ago"
+                    )
+                }
+                LibrarySections.Artists -> {
+                    ListItem(
+                        position = i,
+                        imageUrl = "https://upload.wikimedia.org/wikipedia/commons/0/03/Skepta_photo.PNG",
+                        title = "Skepta",
+                        scrobbles = 500
+                    )
+                }
+                LibrarySections.Albums -> {
+                    ListItem(
+                        position = i,
+                        imageUrl = "https://upload.wikimedia.org/wikipedia/en/0/08/Konnichiwa_by_Skepta_cover.jpg",
+                        title = "Konnichiva",
+                        subtitle = "Skepta",
+                        scrobbles = 500
+                    )
+                }
+                LibrarySections.Tracks -> {
+                    ListItem(
+                        position = i,
+                        liked = false,
+                        imageUrl = "https://upload.wikimedia.org/wikipedia/en/0/08/Konnichiwa_by_Skepta_cover.jpg",
+                        title = "Shutdown",
+                        subtitle = "Skepta",
+                        scrobbles = 500
+                    )
+                }
+                else -> ListItem(
+                    position = 1,
+                    liked = false,
+                    imageUrl = "https://upload.wikimedia.org/wikipedia/en/0/08/Konnichiwa_by_Skepta_cover.jpg",
+                    title = "Shutdown",
+                    subtitle = "Skepta",
+                    scrobbles = 500
+                )
+            }
+        )
     }
 }
