@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
 import androidx.compose.material.EmphasisAmbient
 import androidx.compose.material.MaterialTheme
@@ -13,6 +14,7 @@ import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.FavoriteBorder
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
@@ -31,7 +33,7 @@ data class ListItem(
     val subtitle: String? = null,
     val scrobbles: Int? = null,
     val time: String? = null,
-    val liked: Boolean? = null,
+    val loved: Boolean? = null,
     val onLike: ((Boolean) -> Unit)? = null
 )
 
@@ -72,7 +74,7 @@ fun LibraryListItem(
             )
         }
 
-        item.liked?.let {
+        item.loved?.let {
             Image(
                 asset = if (it) Icons.Rounded.Favorite else Icons.Rounded.FavoriteBorder,
                 colorFilter = ColorFilter.tint(Color.Red),
@@ -92,11 +94,12 @@ fun LibraryListItem(
             modifier = Modifier
                 .height(50.dp)
                 .width(50.dp)
+                .clip(shape = RoundedCornerShape(8))
                 .constrainAs(image) {
                     top.linkTo(parent.top)
                     bottom.linkTo(parent.bottom)
                     start.linkTo(
-                        if (item.liked != null)
+                        if (item.loved != null)
                             like.end
                         else
                             position.end,
@@ -139,7 +142,7 @@ fun LibraryListItem(
 
         item.scrobbles?.let {
             Text(
-                text = "$it ${stringResource(id = R.string.scrobbles).decapitalize()}",
+                text = "$it ${stringResource(id = R.string.scrobbles)}",
                 style = MaterialTheme.typography.h6,
                 modifier = Modifier
                     .constrainAs(scrobbles) {
@@ -166,7 +169,12 @@ fun LibraryListItem(
         }
     }
 
-    Divider()
+    Divider(
+        modifier = Modifier.padding(
+            start = 16.dp,
+            end = 16.dp
+        )
+    )
 }
 
 @Preview
@@ -174,7 +182,6 @@ fun LibraryListItem(
 fun ScrobblePreview() = LibraryListItem(
     ListItem(
         imageUrl = "imageUrl",
-        liked = true,
         title = "Man",
         subtitle = "Skepta",
         time = "21 hours ago"
@@ -209,9 +216,20 @@ fun AlbumPreview() = LibraryListItem(
 fun TrackPreview() = LibraryListItem(
     ListItem(
         position = 200,
-        liked = false,
         imageUrl = "imageUrl",
         title = "Shutdown",
+        subtitle = "Skepta",
+        scrobbles = 500
+    )
+)
+
+@Preview
+@Composable
+fun LovableTrackPreview() = LibraryListItem(
+    ListItem(
+        loved = true,
+        imageUrl = "imageUrl",
+        title = "Man",
         subtitle = "Skepta",
         scrobbles = 500
     )

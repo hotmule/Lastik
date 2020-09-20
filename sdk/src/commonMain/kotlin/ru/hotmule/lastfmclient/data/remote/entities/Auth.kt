@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Session(
-    @SerialName("session") val params: SessionParams
+    @SerialName("session") val params: SessionParams? = null
 )
 
 @Serializable

@@ -1,13 +1,13 @@
 package ru.hotmule.lastfmclient.domain
 
-import ru.hotmule.lastfmclient.data.prefs.PrefsSource
+import ru.hotmule.lastfmclient.data.settings.PrefsStore
 import ru.hotmule.lastfmclient.data.remote.api.AuthApi
 
 class AuthInteractor(
-    private val apiKey: String,
-    private val secret: String,
-    private val prefs: PrefsSource,
+    private val prefs: PrefsStore,
     private val api: AuthApi,
+    private val apiKey: String,
+    private val secret: String
 ) {
 
     fun isSessionActive() = prefs.isSessionActive
@@ -26,7 +26,7 @@ class AuthInteractor(
 
     suspend fun getSessionKey() {
         prefs.token?.let { token ->
-            api.getSession(apiKey, secret, token).also {
+            api.getSession(secret, token).also {
                 prefs.apply {
                     name = it?.params?.name
                     sessionKey = it?.params?.key

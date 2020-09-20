@@ -23,50 +23,37 @@ import ru.hotmule.lastfmclient.components.ListItem
 
 private val BottomNavigationHeight = 75.dp
 
-enum class LibrarySections(
+enum class LibrarySection(
     @StringRes val title: Int,
     val icon: VectorAsset
 ) {
-    Scrobbles(R.string.scrobbles, Icons.Rounded.History),
+    Profile(R.string.profile, Icons.Rounded.Person),
     Artists(R.string.artists, Icons.Rounded.Face),
     Albums(R.string.albums, Icons.Rounded.Album),
     Tracks(R.string.tracks, Icons.Rounded.Audiotrack),
-    Profile(R.string.profile, Icons.Rounded.Person)
+    Loved(R.string.loved, Icons.Rounded.Favorite)
 }
 
 @Composable
 fun LibraryScreen(sdk: Sdk) {
 
-    val (currentSection, setCurrentSection) = savedInstanceState { LibrarySections.Scrobbles }
+    val (currentSection, setCurrentSection) = savedInstanceState { LibrarySection.Profile }
 
     Scaffold(
         bodyContent = {
-
-            val paddingsModifier = Modifier
-                .statusBarsPadding()
-                .padding(bottom = BottomNavigationHeight)
-
-            when (currentSection) {
-                LibrarySections.Profile -> {
-                    Profile(
-                        modifier = paddingsModifier,
-                        sdk = sdk
-                    )
-                }
-                else -> {
-                    LibrarySection(
-                        modifier = paddingsModifier,
-                        items = generateItems(currentSection)
-                    )
-                }
-            }
+            LibrarySection(
+                modifier = Modifier
+                    .statusBarsPadding()
+                    .padding(bottom = BottomNavigationHeight),
+                items = generateItems(currentSection)
+            )
         },
         bottomBar = {
             BottomNavigation(
                 modifier = Modifier
                     .preferredHeight(BottomNavigationHeight)
             ) {
-                LibrarySections
+                LibrarySection
                     .values()
                     .toList()
                     .forEach { section ->
@@ -98,21 +85,20 @@ private fun LibrarySection(
 }
 
 fun generateItems(
-    currentSection: LibrarySections
+    currentSection: LibrarySection
 ) = mutableListOf<ListItem>().apply {
     for (i in 1..20) {
         add(
             when (currentSection) {
-                LibrarySections.Scrobbles -> {
+                LibrarySection.Profile -> {
                     ListItem(
                         imageUrl = "https://upload.wikimedia.org/wikipedia/en/0/08/Konnichiwa_by_Skepta_cover.jpg",
-                        liked = true,
                         title = "Man",
                         subtitle = "Skepta",
                         time = "21 hours ago"
                     )
                 }
-                LibrarySections.Artists -> {
+                LibrarySection.Artists -> {
                     ListItem(
                         position = i,
                         imageUrl = "https://upload.wikimedia.org/wikipedia/commons/0/03/Skepta_photo.PNG",
@@ -120,7 +106,7 @@ fun generateItems(
                         scrobbles = 500
                     )
                 }
-                LibrarySections.Albums -> {
+                LibrarySection.Albums -> {
                     ListItem(
                         position = i,
                         imageUrl = "https://upload.wikimedia.org/wikipedia/en/0/08/Konnichiwa_by_Skepta_cover.jpg",
@@ -129,24 +115,24 @@ fun generateItems(
                         scrobbles = 500
                     )
                 }
-                LibrarySections.Tracks -> {
+                LibrarySection.Tracks -> {
                     ListItem(
                         position = i,
-                        liked = false,
                         imageUrl = "https://upload.wikimedia.org/wikipedia/en/0/08/Konnichiwa_by_Skepta_cover.jpg",
                         title = "Shutdown",
                         subtitle = "Skepta",
                         scrobbles = 500
                     )
                 }
-                else -> ListItem(
-                    position = 1,
-                    liked = false,
-                    imageUrl = "https://upload.wikimedia.org/wikipedia/en/0/08/Konnichiwa_by_Skepta_cover.jpg",
-                    title = "Shutdown",
-                    subtitle = "Skepta",
-                    scrobbles = 500
-                )
+                LibrarySection.Loved -> {
+                    ListItem(
+                        loved = true,
+                        imageUrl = "https://upload.wikimedia.org/wikipedia/en/0/08/Konnichiwa_by_Skepta_cover.jpg",
+                        title = "Man",
+                        subtitle = "Skepta",
+                        scrobbles = 500
+                    )
+                }
             }
         )
     }

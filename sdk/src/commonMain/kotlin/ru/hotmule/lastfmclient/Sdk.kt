@@ -1,11 +1,13 @@
 package ru.hotmule.lastfmclient
 
 import com.russhwolf.settings.Settings
-import ru.hotmule.lastfmclient.data.prefs.PrefsSource
+import ru.hotmule.lastfmclient.data.settings.PrefsStore
 import ru.hotmule.lastfmclient.data.remote.HttpClientFactory
-import ru.hotmule.lastfmclient.data.remote.RemoteSource
+import ru.hotmule.lastfmclient.data.remote.api.AuthApi
+import ru.hotmule.lastfmclient.data.remote.api.UserApi
 import ru.hotmule.lastfmclient.domain.AuthInteractor
-import ru.hotmule.lastfmclient.domain.UserInteractor
+import ru.hotmule.lastfmclient.domain.ScrobblesInteractor
+import ru.hotmule.lastfmclient.domain.ProfileInteractor
 
 open class Sdk(
     httpClientFactory: HttpClientFactory,
@@ -14,11 +16,15 @@ open class Sdk(
     secret: String
 ) {
 
-    private val prefs = PrefsSource(settings)
-    private val remote = RemoteSource(httpClientFactory.create(prefs))
+    private val prefs = PrefsStore(settings)
+    private val client = httpClientFactory.create(prefs)
 
-    val authInteractor = AuthInteractor(apiKey, secret, prefs, remote.authApi)
-    val userInteractor = UserInteractor(prefs)
+    private val authApi = AuthApi(client, apiKey)
+    private val userApi = UserApi(client, apiKey)
+
+    val authInteractor = AuthInteractor(prefs, authApi, apiKey, secret)
+    val scrobblesInteractor = ScrobblesInteractor(prefs, userApi)
+    val profileInteractor = ProfileInteractor(prefs)
 
     companion object
 }

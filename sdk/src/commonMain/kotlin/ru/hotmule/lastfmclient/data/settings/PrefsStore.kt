@@ -1,9 +1,9 @@
-package ru.hotmule.lastfmclient.data.prefs
+package ru.hotmule.lastfmclient.data.settings
 
 import com.russhwolf.settings.Settings
 import kotlinx.coroutines.flow.MutableStateFlow
 
-class PrefsSource(private val settings: Settings) {
+class PrefsStore(private val settings: Settings) {
 
     companion object {
         const val TOKEN_ARG = "token"

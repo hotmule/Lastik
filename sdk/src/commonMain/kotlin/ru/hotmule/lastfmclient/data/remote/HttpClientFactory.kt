@@ -9,13 +9,10 @@ import io.ktor.client.features.json.serializer.KotlinxSerializer
 import io.ktor.client.features.logging.LogLevel
 import io.ktor.client.features.logging.Logger
 import io.ktor.client.features.logging.Logging
-import io.ktor.client.statement.*
 import io.ktor.http.*
 import kotlinx.coroutines.delay
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.jsonObject
-import kotlinx.serialization.json.jsonPrimitive
-import ru.hotmule.lastfmclient.data.prefs.PrefsSource
+import ru.hotmule.lastfmclient.data.settings.PrefsStore
 
 class HttpClientFactory(
     private val loggingEnabled: Boolean,
@@ -24,7 +21,7 @@ class HttpClientFactory(
 ) {
 
     fun create(
-        prefs: PrefsSource
+        prefs: PrefsStore
     ) = HttpClient(engine) {
 
         if (loggingEnabled) {

@@ -1,6 +1,5 @@
 package ru.hotmule.lastfmclient.screen
 
-import android.compose.utils.statusBarsPadding
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.Text
@@ -16,7 +15,7 @@ import androidx.compose.ui.unit.dp
 import ru.hotmule.lastfmclient.R
 import ru.hotmule.lastfmclient.Sdk
 import ru.hotmule.lastfmclient.domain.AuthInteractor
-import ru.hotmule.lastfmclient.domain.UserInteractor
+import ru.hotmule.lastfmclient.domain.ProfileInteractor
 
 @Composable
 fun Profile(
@@ -27,13 +26,13 @@ fun Profile(
         modifier = modifier.fillMaxSize()
     ) {
         val scroll = rememberScrollState(0f)
-        Title(sdk.userInteractor, scroll.value)
+        Title(sdk.profileInteractor, scroll.value)
         Body(sdk.authInteractor, scroll)
     }
 }
 
 @Composable
-fun Title(interactor: UserInteractor, scroll: Float) {
+fun Title(interactor: ProfileInteractor, scroll: Float) {
 
 }
 
