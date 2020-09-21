@@ -11,6 +11,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.savedinstancestate.rememberSavedInstanceState
 import ru.hotmule.lastik.screen.AuthScreen
 import ru.hotmule.lastik.screen.LibraryScreen
+import ru.hotmule.lastik.screen.ProfileScreen
 import ru.hotmule.lastik.theme.AppTheme
 
 @Composable
@@ -33,7 +34,8 @@ fun LastikApp(
                 val actions = remember(navigator) { Actions(navigator) }
                 Crossfade(navigator.current) { destination ->
                     when (destination) {
-                        Destination.Library -> LibraryScreen(sdk)
+                        Destination.Library -> LibraryScreen(sdk, actions.toProfile)
+                        Destination.Profile -> ProfileScreen(sdk, actions.toBack)
                     }
                 }
             }

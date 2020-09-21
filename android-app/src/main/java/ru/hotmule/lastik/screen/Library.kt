@@ -1,34 +1,34 @@
 package ru.hotmule.lastik.screen
 
-import android.compose.utils.navigationBarsPadding
-import android.compose.utils.statusBarsPadding
+import android.compose.utils.*
 import androidx.annotation.StringRes
-import androidx.compose.foundation.Icon
-import androidx.compose.foundation.ScrollableColumn
-import androidx.compose.foundation.Text
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumnFor
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.savedinstancestate.savedInstanceState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.VectorAsset
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import dev.chrisbanes.accompanist.coil.CoilImage
 import ru.hotmule.lastik.R
 import ru.hotmule.lastik.Sdk
 import ru.hotmule.lastik.components.LibraryListItem
 import ru.hotmule.lastik.components.ListItem
 
-private val BottomNavigationHeight = 75.dp
+val BarsHeight = 56.dp
 
 enum class LibrarySection(
     @StringRes val title: Int,
     val icon: VectorAsset
 ) {
-    Profile(R.string.profile, Icons.Rounded.Person),
+    Scrobbles(R.string.scrobbles, Icons.Rounded.History),
     Artists(R.string.artists, Icons.Rounded.Face),
     Albums(R.string.albums, Icons.Rounded.Album),
     Tracks(R.string.tracks, Icons.Rounded.Audiotrack),
@@ -36,23 +36,47 @@ enum class LibrarySection(
 }
 
 @Composable
-fun LibraryScreen(sdk: Sdk) {
+fun LibraryScreen(
+    sdk: Sdk,
+    toProfile: () -> Unit
+) {
 
-    val (currentSection, setCurrentSection) = savedInstanceState { LibrarySection.Profile }
+    val (currentSection, setCurrentSection) = savedInstanceState { LibrarySection.Scrobbles }
 
     Scaffold(
+        topBar = {
+            TopAppBar(
+                modifier = Modifier.statusBarsHeightPlus(BarsHeight),
+                title = {
+                    Text(
+                        modifier = Modifier.statusBarsPadding(),
+                        text = currentSection.name
+                    )
+                },
+                actions = {
+                    CoilImage(
+                        data = "https://avatars2.githubusercontent.com/u/37577810?s=60&v=4",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .statusBarsPadding()
+                            .padding(12.dp)
+                            .width(30.dp)
+                            .height(30.dp)
+                            .clip(CircleShape)
+                            .clickable(onClick = { toProfile() })
+                    )
+                }
+            )
+        },
         bodyContent = {
             LibrarySection(
-                modifier = Modifier
-                    .statusBarsPadding()
-                    .padding(bottom = BottomNavigationHeight),
+                modifier = Modifier.padding(bottom = it.bottom),
                 items = generateItems(currentSection)
             )
         },
         bottomBar = {
             BottomNavigation(
-                modifier = Modifier
-                    .preferredHeight(BottomNavigationHeight)
+                modifier = Modifier.navigationBarsHeightPlus(BarsHeight)
             ) {
                 LibrarySection
                     .values()
@@ -95,10 +119,10 @@ private fun LibrarySection(
 fun generateItems(
     currentSection: LibrarySection
 ) = mutableListOf<ListItem>().apply {
-    for (i in 1..100) {
+    for (i in 1..20) {
         add(
             when (currentSection) {
-                LibrarySection.Profile -> {
+                LibrarySection.Scrobbles -> {
                     ListItem(
                         imageUrl = "https://upload.wikimedia.org/wikipedia/en/0/08/Konnichiwa_by_Skepta_cover.jpg",
                         title = "Man",

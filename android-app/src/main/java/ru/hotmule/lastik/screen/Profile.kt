@@ -1,54 +1,52 @@
 package ru.hotmule.lastik.screen
 
-import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.ScrollableColumn
-import androidx.compose.foundation.Text
-import androidx.compose.foundation.layout.Stack
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.material.Button
+import android.compose.utils.statusBarsHeightPlus
+import android.compose.utils.statusBarsPadding
+import androidx.compose.foundation.*
+import androidx.compose.material.IconButton
+import androidx.compose.material.Scaffold
+import androidx.compose.material.TopAppBar
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.ArrowBack
+import androidx.compose.material.icons.rounded.ExitToApp
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
-import ru.hotmule.lastik.R
 import ru.hotmule.lastik.Sdk
-import ru.hotmule.lastik.domain.AuthInteractor
-import ru.hotmule.lastik.domain.ProfileInteractor
 
 @Composable
-fun Profile(
-    modifier: Modifier = Modifier,
-    sdk: Sdk
+fun ProfileScreen(
+    sdk: Sdk,
+    toBack: () -> Unit
 ) {
-    Stack(
-        modifier = modifier.fillMaxSize()
-    ) {
-        val scroll = rememberScrollState(0f)
-        Title(sdk.profileInteractor, scroll.value)
-        Body(sdk.authInteractor, scroll)
-    }
-}
-
-@Composable
-fun Title(interactor: ProfileInteractor, scroll: Float) {
-
-}
-
-@Composable
-fun Body(interactor: AuthInteractor, scroll: ScrollState) {
-    ScrollableColumn(
-        scrollState = scroll,
-        modifier = Modifier.fillMaxSize()
-    ) {
-        Button(
-            onClick = { interactor.signOut() }
-        ) {
-            Text(
-                modifier = Modifier.padding(16.dp),
-                text = stringResource(id = R.string.sign_out)
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                modifier = Modifier
+                    .statusBarsHeightPlus(BarsHeight),
+                navigationIcon = {
+                    IconButton(
+                        modifier = Modifier.statusBarsPadding(),
+                        onClick = { toBack() },
+                        icon = { Icon(asset = Icons.Rounded.ArrowBack) }
+                    )
+                },
+                title = {
+                    Text(
+                        modifier = Modifier.statusBarsPadding(),
+                        text = sdk.profileInteractor.getName()
+                    )
+                },
+                actions = {
+                    IconButton(
+                        modifier = Modifier.statusBarsPadding(),
+                        onClick = { sdk.authInteractor.signOut() },
+                        icon = { Icon(asset = Icons.Rounded.ExitToApp) }
+                    )
+                }
             )
+        },
+        bodyContent = {
+
         }
-    }
+    )
 }
