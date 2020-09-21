@@ -4,6 +4,7 @@ import android.compose.utils.navigationBarsPadding
 import android.compose.utils.statusBarsPadding
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Icon
+import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumnFor
@@ -58,8 +59,7 @@ fun LibraryScreen(sdk: Sdk) {
                     .toList()
                     .forEach { section ->
                         BottomNavigationItem(
-                            modifier = Modifier
-                                .navigationBarsPadding(bottom = true),
+                            modifier = Modifier.navigationBarsPadding(bottom = true),
                             icon = { Icon(section.icon) },
                             label = { Text(stringResource(id = section.title)) },
                             onClick = { setCurrentSection(section) },
@@ -76,18 +76,26 @@ private fun LibrarySection(
     modifier: Modifier = Modifier,
     items: List<ListItem>
 ) {
-    LazyColumnFor(
-        modifier = modifier,
-        items = items
-    ) {
-        LibraryListItem(item = it)
+
+    ScrollableColumn(modifier = modifier) {
+        items.forEach {
+            LibraryListItem(item = it)
+        }
     }
+
+    // LazyColumn performance is worse than ScrollableColumn
+    //
+    // LazyColumnFor(
+    //     modifier = modifier,
+    //     items = items,
+    //     itemContent = { LibraryListItem(item = it) }
+    // )
 }
 
 fun generateItems(
     currentSection: LibrarySection
 ) = mutableListOf<ListItem>().apply {
-    for (i in 1..20) {
+    for (i in 1..100) {
         add(
             when (currentSection) {
                 LibrarySection.Profile -> {
