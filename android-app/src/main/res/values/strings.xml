@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">LastFM Client</string>
+    <string name="app_name">Lastik</string>
 
     <!--Auth Screen-->
     <string name="sign_in">Sign in</string>
