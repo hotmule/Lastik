@@ -2,6 +2,7 @@ plugins {
     kotlin("multiplatform")
     kotlin("plugin.serialization")
     id("com.android.library")
+    id("com.squareup.sqldelight")
 }
 
 kotlin {
@@ -27,8 +28,15 @@ kotlin {
                 implementation(Libs.Ktor.Engine.android)
                 implementation(Libs.Ktor.Logging.android)
                 implementation(Libs.Ktor.Serialization.android)
+                implementation(Libs.SqlDelight.Driver.android)
             }
         }
+    }
+}
+
+sqldelight {
+    database("LastikDatabase") {
+        packageName = "ru.hotmule.lastik.data.local"
     }
 }
 

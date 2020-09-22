@@ -1,4 +1,4 @@
-package ru.hotmule.lastik.data.settings
+package ru.hotmule.lastik.data.prefs
 
 import com.russhwolf.settings.Settings
 import kotlinx.coroutines.flow.MutableStateFlow

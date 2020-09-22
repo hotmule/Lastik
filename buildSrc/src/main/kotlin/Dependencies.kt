@@ -11,7 +11,7 @@ object Sdk {
         const val min = 21
         const val target = 29
         const val compile = 29
-        const val buildTools = "29.0.3"
+        const val buildTools = "30.0.0"
     }
 }
 
@@ -28,16 +28,11 @@ object Module {
 
 object Libs {
 
-    const val gradle = "com.android.tools.build:gradle:4.2.0-alpha11"
+    const val gradle = "com.android.tools.build:gradle:4.2.0-alpha12"
     const val settings = "com.russhwolf:multiplatform-settings:0.6.2"
     const val coil = "dev.chrisbanes.accompanist:accompanist-coil:0.2.2"
     const val espresso = "androidx.test.espresso:espresso-core:3.2.0"
     const val jUnit = "junit:junit:4.13"
-
-    object Update {
-        const val version = "0.33.0"
-        const val helper = "com.github.ben-manes.versions"
-    }
 
     object Kotlin {
         const val version = "1.4.10"
@@ -73,10 +68,24 @@ object Libs {
         }
     }
 
+    object SqlDelight {
+        private const val version = "1.4.3"
+        const val gradlePlugin = "com.squareup.sqldelight:gradle-plugin:$version"
+
+        object Driver {
+            const val android = "com.squareup.sqldelight:android-driver:$version"
+        }
+    }
+
     object Napier {
         private const val version = "1.3.0"
         const val common = "com.github.aakira:napier:$version"
         const val android = "com.github.aakira:napier-android:$version"
+    }
+
+    object GradleVersions {
+        const val version = "0.33.0"
+        const val plugin = "com.github.ben-manes.versions"
     }
 
     object Krypto {

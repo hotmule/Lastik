@@ -12,7 +12,7 @@ import io.ktor.client.features.logging.Logging
 import io.ktor.http.*
 import kotlinx.coroutines.delay
 import kotlinx.serialization.json.Json
-import ru.hotmule.lastik.data.settings.PrefsStore
+import ru.hotmule.lastik.data.prefs.PrefsStore
 
 class HttpClientFactory(
     private val loggingEnabled: Boolean,

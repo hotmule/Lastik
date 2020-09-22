@@ -1,5 +1,5 @@
 plugins {
-    id(Libs.Update.helper) version Libs.Update.version
+    id(Libs.GradleVersions.plugin) version Libs.GradleVersions.version
 }
 
 buildscript {
@@ -11,6 +11,7 @@ buildscript {
         classpath(Libs.gradle)
         classpath(Libs.Kotlin.gradlePlugin)
         classpath(Libs.Kotlin.serialization)
+        classpath(Libs.SqlDelight.gradlePlugin)
     }
 }
 

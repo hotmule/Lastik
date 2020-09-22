@@ -5,6 +5,7 @@ import android.webkit.WebSettings
 import com.github.aakira.napier.DebugAntilog
 import com.github.aakira.napier.Napier
 import com.russhwolf.settings.AndroidSettings
+import com.squareup.sqldelight.android.AndroidSqliteDriver
 import io.ktor.client.engine.okhttp.OkHttp
 import ru.hotmule.lastik.data.remote.HttpClientFactory
 import java.util.concurrent.TimeUnit
@@ -28,6 +29,11 @@ fun Sdk.Companion.create(
                     connectTimeout(5L, TimeUnit.SECONDS)
                 }
             }
+        ),
+        AndroidSqliteDriver(
+            Database.Schema,
+            context,
+            "lastik.db"
         ),
         AndroidSettings(
             context.getSharedPreferences(
