@@ -1,0 +1,12 @@
+CREATE TABLE track (
+  name TEXT,
+  artist TEXT,
+  album TEXT,
+  image TEXT
+);
+
+selectAll:
+SELECT * FROM track;
+
+insert:
+INSERT OR REPLACE INTO track(name, artist, album, image) VALUES (?, ?, ?, ?);

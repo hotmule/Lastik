@@ -7,6 +7,7 @@ import com.github.aakira.napier.Napier
 import com.russhwolf.settings.AndroidSettings
 import com.squareup.sqldelight.android.AndroidSqliteDriver
 import io.ktor.client.engine.okhttp.OkHttp
+import ru.hotmule.lastik.data.local.LastikDatabase
 import ru.hotmule.lastik.data.remote.HttpClientFactory
 import java.util.concurrent.TimeUnit
 
@@ -31,7 +32,7 @@ fun Sdk.Companion.create(
             }
         ),
         AndroidSqliteDriver(
-            Database.Schema,
+            LastikDatabase.Schema,
             context,
             "lastik.db"
         ),

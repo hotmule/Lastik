@@ -17,6 +17,7 @@ kotlin {
                 implementation(Libs.Ktor.Auth.common)
                 implementation(Libs.Ktor.Logging.common)
                 implementation(Libs.Ktor.Serialization.common)
+                implementation(Libs.SqlDelight.coroutines)
             }
         }
         val androidMain by getting {
