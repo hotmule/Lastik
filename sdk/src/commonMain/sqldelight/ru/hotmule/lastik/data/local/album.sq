@@ -1,0 +1,12 @@
+CREATE TABLE album (
+    id TEXT NOT NULL,
+    artistId TEXT NOT NULL,
+    lowResImage TEXT,
+    highResImage TEXT,
+    name TEXT,
+    PRIMARY KEY (id),
+    FOREIGN KEY (artistId) REFERENCES artist(id)
+);
+
+insert:
+INSERT OR REPLACE INTO album VALUES ?;

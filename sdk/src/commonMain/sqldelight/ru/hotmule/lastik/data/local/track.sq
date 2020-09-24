@@ -1,12 +1,13 @@
 CREATE TABLE track (
-  name TEXT,
-  artist TEXT,
-  album TEXT,
-  image TEXT
+    id TEXT NOT NULL,
+    artistId TEXT NOT NULL,
+    albumId TEXT NOT NULL,
+    name TEXT,
+    loved INTEGER as Boolean DEFAULT 0 NOT NULL,
+    PRIMARY KEY (id),
+    FOREIGN KEY (artistId) REFERENCES artist(id),
+    FOREIGN KEY (albumId) REFERENCES album(id)
 );
 
-selectAll:
-SELECT * FROM track;
-
 insert:
-INSERT OR REPLACE INTO track(name, artist, album, image) VALUES (?, ?, ?, ?);
+INSERT OR REPLACE INTO track VALUES ?;

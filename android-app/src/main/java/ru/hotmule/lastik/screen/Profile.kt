@@ -10,6 +10,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.ExitToApp
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.launchInComposition
 import androidx.compose.ui.Modifier
 import ru.hotmule.lastik.Sdk
 
@@ -46,7 +47,9 @@ fun ProfileScreen(
             )
         },
         bodyContent = {
-
+            launchInComposition {
+                sdk.scrobblesInteractor.refreshScrobbles()
+            }
         }
     )
 }

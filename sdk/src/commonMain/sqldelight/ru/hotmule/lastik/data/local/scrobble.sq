@@ -1,0 +1,13 @@
+CREATE TABLE scrobble (
+    trackId TEXT NOT NULL,
+    date INTEGER,
+    nowPlaying INTEGER as Boolean DEFAULT 0 NOT NULL,
+    PRIMARY KEY (trackId, date),
+    FOREIGN KEY (trackId) REFERENCES track(id)
+);
+
+selectAll:
+SELECT * FROM track;
+
+insert:
+INSERT OR REPLACE INTO scrobble VALUES ?;

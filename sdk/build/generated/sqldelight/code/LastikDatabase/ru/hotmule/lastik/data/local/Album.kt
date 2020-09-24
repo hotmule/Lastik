@@ -1,22 +1,21 @@
 package ru.hotmule.lastik.data.local
 
-import kotlin.Boolean
 import kotlin.String
 
-data class Track(
+data class Album(
   val id: String,
   val artistId: String,
-  val albumId: String,
-  val name: String?,
-  val loved: Boolean
+  val lowResImage: String?,
+  val highResImage: String?,
+  val name: String?
 ) {
   override fun toString(): String = """
-  |Track [
+  |Album [
   |  id: $id
   |  artistId: $artistId
-  |  albumId: $albumId
+  |  lowResImage: $lowResImage
+  |  highResImage: $highResImage
   |  name: $name
-  |  loved: $loved
   |]
   """.trimMargin()
 }

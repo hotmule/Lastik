@@ -1,0 +1,8 @@
+CREATE TABLE artist (
+    id TEXT NOT NULL,
+    name TEXT,
+    PRIMARY KEY (id)
+);
+
+insert:
+INSERT OR REPLACE INTO artist VALUES ?;

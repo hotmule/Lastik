@@ -27,7 +27,7 @@ open class Sdk(
     private val userApi = UserApi(httpClient, apiKey)
 
     val authInteractor = AuthInteractor(prefs, authApi, apiKey, secret)
-    val scrobblesInteractor = ScrobblesInteractor(prefs, userApi, database.trackQueries)
+    val scrobblesInteractor = ScrobblesInteractor(prefs, userApi, database)
     val profileInteractor = ProfileInteractor(prefs)
 
     companion object
