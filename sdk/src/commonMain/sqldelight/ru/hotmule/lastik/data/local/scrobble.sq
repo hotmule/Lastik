@@ -1,13 +1,32 @@
 CREATE TABLE scrobble (
-    trackId TEXT NOT NULL,
-    date INTEGER,
+    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    trackId INTEGER NOT NULL,
+    uts INTEGER,
+    date TEXT,
     nowPlaying INTEGER as Boolean DEFAULT 0 NOT NULL,
-    PRIMARY KEY (trackId, date),
-    FOREIGN KEY (trackId) REFERENCES track(id)
+    FOREIGN KEY (trackId) REFERENCES track(id) ON DELETE CASCADE
 );
 
-selectAll:
-SELECT * FROM track;
-
 insert:
-INSERT OR REPLACE INTO scrobble VALUES ?;
+INSERT OR REPLACE INTO scrobble(trackId, uts, date, nowPlaying) VALUES (?, ?, ?, ?);
+
+deleteAll:
+DELETE FROM scrobble;
+
+scrobbleData:
+SELECT
+    s.date,
+    s.nowPlaying,
+    t.loved,
+    t_attr.name AS track,
+    ar_attr.name AS artist,
+    al_attr.name AS album,
+    al_attr.lowResImage
+FROM scrobble s
+LEFT JOIN track t ON s.trackId = t.id
+LEFT JOIN attributes t_attr ON t.attrsId = t_attr.id
+LEFT JOIN album al ON t.albumId = al.id
+LEFT JOIN attributes al_attr ON al.attrsId = al_attr.id
+LEFT JOIN artist ar ON al.artistId = ar.id
+LEFT JOIN attributes ar_attr ON ar.attrsId = ar_attr.id
+ORDER BY s.uts DESC;

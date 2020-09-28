@@ -4,12 +4,12 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ScrobblesResponse(
-    @SerialName("recenttracks") val recent: ResentTracks? = null
+data class ArtistsResponse(
+    @SerialName("topartists") val top: TopArtists? = null,
 )
 
 @Serializable
-data class ResentTracks(
+data class TopArtists(
     @SerialName("@attr") val attributes: PageAttributes? = null,
-    @SerialName("track") val tracks: List<LastFmItem>? = null
+    @SerialName("artist") val artists: List<LastFmItem>? = null
 )

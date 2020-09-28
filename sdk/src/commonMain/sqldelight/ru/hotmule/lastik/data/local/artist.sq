@@ -1,8 +1,23 @@
 CREATE TABLE artist (
-    id TEXT NOT NULL,
-    name TEXT,
-    PRIMARY KEY (id)
+    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    attrsId INTEGER NOT NULL,
+    FOREIGN KEY (attrsId) REFERENCES attributes(id) ON DELETE CASCADE
 );
 
 insert:
-INSERT OR REPLACE INTO artist VALUES ?;
+INSERT OR REPLACE INTO artist(attrsId) VALUES (?);
+
+deleteAll:
+DELETE FROM artist;
+
+artistData:
+SELECT
+    attr.name,
+    attr.playCount,
+    attr.lowResImage
+FROM artist a
+LEFT JOIN attributes attr ON a.attrsId = attr.id
+ORDER BY attr.playCount;
+
+lastId:
+SELECT last_insert_rowid();

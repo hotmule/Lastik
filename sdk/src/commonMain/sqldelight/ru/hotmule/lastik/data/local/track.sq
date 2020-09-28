@@ -1,13 +1,17 @@
 CREATE TABLE track (
-    id TEXT NOT NULL,
-    artistId TEXT NOT NULL,
-    albumId TEXT NOT NULL,
-    name TEXT,
+    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL ,
+    albumId INTEGER NOT NULL,
     loved INTEGER as Boolean DEFAULT 0 NOT NULL,
-    PRIMARY KEY (id),
-    FOREIGN KEY (artistId) REFERENCES artist(id),
-    FOREIGN KEY (albumId) REFERENCES album(id)
+    attrsId INTEGER NOT NULL,
+    FOREIGN KEY (albumId) REFERENCES album(id) ON DELETE CASCADE,
+    FOREIGN KEY (attrsId) REFERENCES attributes(id) ON DELETE CASCADE
 );
 
 insert:
-INSERT OR REPLACE INTO track VALUES ?;
+INSERT OR REPLACE INTO track(albumId, loved, attrsId) VALUES (?, ?, ?);
+
+deleteAll:
+DELETE FROM track;
+
+lastId:
+SELECT last_insert_rowid();

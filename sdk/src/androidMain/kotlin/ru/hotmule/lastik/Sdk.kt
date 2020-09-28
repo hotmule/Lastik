@@ -2,6 +2,7 @@ package ru.hotmule.lastik
 
 import android.content.Context
 import android.webkit.WebSettings
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.github.aakira.napier.DebugAntilog
 import com.github.aakira.napier.Napier
 import com.russhwolf.settings.AndroidSettings
@@ -20,6 +21,7 @@ fun Sdk.Companion.create(
     secret: String
 ): Sdk {
     Napier.base(DebugAntilog())
+    context.deleteDatabase("lastik.db")
     return Sdk(
         HttpClientFactory(
             loggingEnabled = isDebug,
@@ -32,12 +34,18 @@ fun Sdk.Companion.create(
             }
         ),
         AndroidSqliteDriver(
-            LastikDatabase.Schema,
-            context,
-            "lastik.db"
+            schema = LastikDatabase.Schema,
+            context = context,
+            name = "lastik.db",
+            callback = object : AndroidSqliteDriver.Callback(LastikDatabase.Schema) {
+                override fun onConfigure(db: SupportSQLiteDatabase) {
+                    super.onConfigure(db)
+                    db.setForeignKeyConstraintsEnabled(true)
+                }
+            }
         ),
         AndroidSettings(
-            context.getSharedPreferences(
+            delegate = context.getSharedPreferences(
                 USER_DATA_PREFS,
                 Context.MODE_PRIVATE
             )

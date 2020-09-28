@@ -1,15 +1,16 @@
 package ru.hotmule.lastik.data.local
 
+import kotlin.Long
 import kotlin.String
 
 data class Artist(
-  val id: String,
-  val name: String?
+  val id: Long,
+  val attrsId: Long
 ) {
   override fun toString(): String = """
   |Artist [
   |  id: $id
-  |  name: $name
+  |  attrsId: $attrsId
   |]
   """.trimMargin()
 }

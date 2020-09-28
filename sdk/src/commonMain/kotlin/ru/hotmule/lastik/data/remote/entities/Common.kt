@@ -4,6 +4,35 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
+data class PageAttributes(
+    val page: String? = null,
+    val perPage: String? = null,
+    val user: String? = null,
+    val total: String? = null,
+    val totalPages: String? = null
+)
+
+@Serializable
+data class LastFmItem(
+    val date: Date? = null,
+    val url: String? = null,
+    val mbid: String? = null,
+    val name: String? = null,
+    val playCount: Long? = null,
+    val streamable: Int? = null,
+    val artist: MusicBrainzIdentifier? = null,
+    val album: MusicBrainzIdentifier? = null,
+    @SerialName("@attr") val attributes: LastFmItemAttributes? = null,
+    @SerialName("image") val images: List<Image>? = null,
+)
+
+@Serializable
+data class LastFmItemAttributes(
+    @SerialName("nowplaying") val nowPlaying: Boolean? = null,
+    val rank: Int? = null
+)
+
+@Serializable
 data class Image(
     val size: String? = null,
     @SerialName("#text") val url: String? = null
@@ -17,6 +46,6 @@ data class Date(
 
 @Serializable
 data class MusicBrainzIdentifier(
-    @SerialName("mbid") val id: String? = null,
+    @SerialName("mbid") val mbid: String? = null,
     @SerialName("#text") val name: String? = null
 )

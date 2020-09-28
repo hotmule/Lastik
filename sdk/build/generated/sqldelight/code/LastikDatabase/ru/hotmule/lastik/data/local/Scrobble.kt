@@ -5,13 +5,17 @@ import kotlin.Long
 import kotlin.String
 
 data class Scrobble(
-  val trackId: String,
-  val date: Long?,
+  val id: Long,
+  val trackId: Long,
+  val uts: Long?,
+  val date: String?,
   val nowPlaying: Boolean
 ) {
   override fun toString(): String = """
   |Scrobble [
+  |  id: $id
   |  trackId: $trackId
+  |  uts: $uts
   |  date: $date
   |  nowPlaying: $nowPlaying
   |]

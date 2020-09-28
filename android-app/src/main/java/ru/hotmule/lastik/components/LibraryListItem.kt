@@ -161,7 +161,6 @@ fun LibraryListItem(
                     modifier = Modifier
                         .constrainAs(time) {
                             end.linkTo(parent.end)
-                            top.linkTo(parent.top)
                             bottom.linkTo(parent.bottom)
                         }
                 )

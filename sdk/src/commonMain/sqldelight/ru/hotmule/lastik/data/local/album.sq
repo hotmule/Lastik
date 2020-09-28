@@ -1,12 +1,16 @@
 CREATE TABLE album (
-    id TEXT NOT NULL,
-    artistId TEXT NOT NULL,
-    lowResImage TEXT,
-    highResImage TEXT,
-    name TEXT,
-    PRIMARY KEY (id),
-    FOREIGN KEY (artistId) REFERENCES artist(id)
+    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    artistId INTEGER NOT NULL,
+    attrsId INTEGER NOT NULL,
+    FOREIGN KEY (artistId) REFERENCES artist(id) ON DELETE CASCADE,
+    FOREIGN KEY (attrsId) REFERENCES attributes(id) ON DELETE CASCADE
 );
 
 insert:
-INSERT OR REPLACE INTO album VALUES ?;
+INSERT OR REPLACE INTO album(artistId, attrsId) VALUES (?, ?);
+
+deleteAll:
+DELETE FROM album;
+
+lastId:
+SELECT last_insert_rowid();
