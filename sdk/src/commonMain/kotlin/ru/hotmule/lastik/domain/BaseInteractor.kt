@@ -4,9 +4,21 @@ import ru.hotmule.lastik.data.local.LastikDatabase
 
 data class Attrs(
     val name: String? = null,
-    val playCount: Long? = null,
+    val rank: Int? = null,
+    val playCount: Int? = null,
     val lowResImage: String? = null,
     val highResImage: String? = null
+)
+
+data class LibraryListItem(
+    val imageUrl: String? = null,
+    val title: String? = null,
+    val position: Int? = null,
+    val subtitle: String? = null,
+    val scrobbles: Int? = null,
+    val time: String? = null,
+    val loved: Boolean? = null,
+    val onLike: ((Boolean) -> Unit)? = null
 )
 
 open class BaseInteractor(
@@ -49,7 +61,7 @@ open class BaseInteractor(
         insertAttrParent: (Long) -> Unit
     ) {
         with(db.attributesQueries) {
-            insert(attrs.name, attrs.playCount, attrs.lowResImage, attrs.highResImage)
+            insert(attrs.name, attrs.rank, attrs.playCount, attrs.lowResImage, attrs.highResImage)
             lastId().executeAsOneOrNull()?.let {
                 insertAttrParent.invoke(it)
             }

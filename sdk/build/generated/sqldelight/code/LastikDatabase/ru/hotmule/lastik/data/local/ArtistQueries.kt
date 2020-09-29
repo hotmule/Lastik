@@ -3,21 +3,23 @@ package ru.hotmule.lastik.data.local
 import com.squareup.sqldelight.Query
 import com.squareup.sqldelight.Transacter
 import kotlin.Any
+import kotlin.Int
 import kotlin.Long
 import kotlin.String
 
 interface ArtistQueries : Transacter {
-  fun <T : Any> artistData(mapper: (
+  fun lastId(): Query<Long>
+
+  fun <T : Any> artistTop(mapper: (
     name: String?,
-    playCount: Long?,
+    rank: Int?,
+    playCount: Int?,
     lowResImage: String?
   ) -> T): Query<T>
 
-  fun artistData(): Query<ArtistData>
-
-  fun lastId(): Query<Long>
+  fun artistTop(): Query<ArtistTop>
 
   fun insert(attrsId: Long)
 
-  fun deleteAll()
+  fun deleteArtistTop()
 }

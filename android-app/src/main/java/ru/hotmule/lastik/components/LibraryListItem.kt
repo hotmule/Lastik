@@ -25,21 +25,11 @@ import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
 import dev.chrisbanes.accompanist.coil.CoilImage
 import ru.hotmule.lastik.R
-
-data class ListItem(
-    val imageUrl: String,
-    val title: String,
-    val position: Int? = null,
-    val subtitle: String? = null,
-    val scrobbles: Int? = null,
-    val time: String? = null,
-    val loved: Boolean? = null,
-    val onLike: ((Boolean) -> Unit)? = null
-)
+import ru.hotmule.lastik.domain.LibraryListItem
 
 @Composable
 fun LibraryListItem(
-    item: ListItem,
+    item: LibraryListItem,
     modifier: Modifier = Modifier
 ) {
     ConstraintLayout(
@@ -88,42 +78,46 @@ fun LibraryListItem(
             )
         }
 
-        CoilImage(
-            data = item.imageUrl,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .height(50.dp)
-                .width(50.dp)
-                .clip(shape = RoundedCornerShape(8))
-                .constrainAs(image) {
-                    top.linkTo(parent.top)
-                    bottom.linkTo(parent.bottom)
-                    start.linkTo(
-                        if (item.loved != null)
-                            like.end
-                        else
-                            position.end,
-                        16.dp
-                    )
-                }
-        )
+        item.imageUrl?.let {
+            CoilImage(
+                data = it,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .height(50.dp)
+                    .width(50.dp)
+                    .clip(shape = RoundedCornerShape(8))
+                    .constrainAs(image) {
+                        top.linkTo(parent.top)
+                        bottom.linkTo(parent.bottom)
+                        start.linkTo(
+                            if (item.loved != null)
+                                like.end
+                            else
+                                position.end,
+                            16.dp
+                        )
+                    }
+            )
+        }
 
-        Text(
-            text = item.title,
-            fontWeight = FontWeight.Bold,
-            style = MaterialTheme.typography.body1,
-            modifier = Modifier
-                .constrainAs(title) {
-                    start.linkTo(image.end, 16.dp)
-                    top.linkTo(parent.top)
-                    bottom.linkTo(
-                        if (item.subtitle != null)
-                            subtitle.top
-                        else
-                            parent.bottom
-                    )
-                }
-        )
+        item.title?.let {
+            Text(
+                text = it,
+                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.body1,
+                modifier = Modifier
+                    .constrainAs(title) {
+                        start.linkTo(image.end, 16.dp)
+                        top.linkTo(parent.top)
+                        bottom.linkTo(
+                            if (item.subtitle != null)
+                                subtitle.top
+                            else
+                                parent.bottom
+                        )
+                    }
+            )
+        }
 
         item.subtitle?.let {
             ProvideEmphasis(emphasis = EmphasisAmbient.current.medium) {
@@ -179,7 +173,7 @@ fun LibraryListItem(
 @Preview
 @Composable
 fun ScrobblePreview() = LibraryListItem(
-    ListItem(
+    LibraryListItem(
         imageUrl = "imageUrl",
         title = "Man",
         subtitle = "Skepta",
@@ -190,7 +184,7 @@ fun ScrobblePreview() = LibraryListItem(
 @Preview
 @Composable
 fun ArtistPreview() = LibraryListItem(
-    ListItem(
+    LibraryListItem(
         position = 2,
         imageUrl = "imageUrl",
         title = "Skepta",
@@ -201,7 +195,7 @@ fun ArtistPreview() = LibraryListItem(
 @Preview
 @Composable
 fun AlbumPreview() = LibraryListItem(
-    ListItem(
+    LibraryListItem(
         position = 20,
         imageUrl = "imageUrl",
         title = "Konnichiva",
@@ -213,7 +207,7 @@ fun AlbumPreview() = LibraryListItem(
 @Preview
 @Composable
 fun TrackPreview() = LibraryListItem(
-    ListItem(
+    LibraryListItem(
         position = 200,
         imageUrl = "imageUrl",
         title = "Shutdown",
@@ -225,7 +219,7 @@ fun TrackPreview() = LibraryListItem(
 @Preview
 @Composable
 fun LovableTrackPreview() = LibraryListItem(
-    ListItem(
+    LibraryListItem(
         loved = true,
         imageUrl = "imageUrl",
         title = "Man",

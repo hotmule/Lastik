@@ -2,6 +2,7 @@ package ru.hotmule.lastik.data.remote.api
 
 import io.ktor.client.*
 import io.ktor.client.request.*
+import ru.hotmule.lastik.data.remote.entities.AlbumsResponse
 import ru.hotmule.lastik.data.remote.entities.ArtistsResponse
 import ru.hotmule.lastik.data.remote.entities.ScrobblesResponse
 
@@ -27,6 +28,13 @@ class UserApi(
         user: String?
     ) = client.get<ArtistsResponse?> {
         userApi("getTopArtists")
+        parameter("user", user)
+    }
+
+    suspend fun getTopAlbums(
+        user: String?
+    ) = client.get<AlbumsResponse?> {
+        userApi("getTopAlbums")
         parameter("user", user)
     }
 }

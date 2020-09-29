@@ -7,10 +7,7 @@ import ru.hotmule.lastik.data.remote.HttpClientFactory
 import ru.hotmule.lastik.data.remote.api.AuthApi
 import ru.hotmule.lastik.data.remote.api.UserApi
 import ru.hotmule.lastik.data.local.LastikDatabase
-import ru.hotmule.lastik.domain.ArtistsInteractor
-import ru.hotmule.lastik.domain.AuthInteractor
-import ru.hotmule.lastik.domain.ScrobblesInteractor
-import ru.hotmule.lastik.domain.ProfileInteractor
+import ru.hotmule.lastik.domain.*
 
 open class Sdk(
     httpClientFactory: HttpClientFactory,
@@ -28,9 +25,11 @@ open class Sdk(
     private val userApi = UserApi(httpClient, apiKey)
 
     val authInteractor = AuthInteractor(prefs, authApi, apiKey, secret)
+    val profileInteractor = ProfileInteractor(prefs)
+
     val scrobblesInteractor = ScrobblesInteractor(prefs, userApi, database)
     val artistsInteractor = ArtistsInteractor(prefs, userApi, database)
-    val profileInteractor = ProfileInteractor(prefs)
+    val albumsInteractor = AlbumsInteractor(prefs, userApi, database)
 
     companion object
 }

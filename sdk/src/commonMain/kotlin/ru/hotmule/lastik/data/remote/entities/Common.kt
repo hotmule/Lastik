@@ -18,7 +18,7 @@ data class LastFmItem(
     val url: String? = null,
     val mbid: String? = null,
     val name: String? = null,
-    val playCount: Long? = null,
+    val playCount: Int? = null,
     val streamable: Int? = null,
     val artist: MusicBrainzIdentifier? = null,
     val album: MusicBrainzIdentifier? = null,
@@ -46,6 +46,7 @@ data class Date(
 
 @Serializable
 data class MusicBrainzIdentifier(
-    @SerialName("mbid") val mbid: String? = null,
-    @SerialName("#text") val name: String? = null
+    val mbid: String? = null,
+    val name: String? = null,
+    @SerialName("#text") val text: String? = null
 )

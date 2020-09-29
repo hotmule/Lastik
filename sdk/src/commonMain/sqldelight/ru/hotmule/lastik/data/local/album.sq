@@ -9,8 +9,23 @@ CREATE TABLE album (
 insert:
 INSERT OR REPLACE INTO album(artistId, attrsId) VALUES (?, ?);
 
-deleteAll:
-DELETE FROM album;
-
 lastId:
 SELECT last_insert_rowid();
+
+albumTop:
+SELECT
+    ar_attr.name AS artist,
+    al_attr.name AS album,
+    al_attr.rank,
+    al_attr.playCount,
+    al_attr.lowResImage
+FROM album al
+LEFT JOIN attributes al_attr ON al.attrsId = al_attr.id
+LEFT JOIN artist ar ON al.artistId = ar.id
+LEFT JOIN attributes ar_attr ON ar.attrsId = ar_attr.id
+WHERE al_attr.rank NOT NULL;
+
+deleteAlbumTop:
+DELETE FROM album WHERE EXISTS (
+    SELECT id FROM attributes attr WHERE album.attrsId = attr.id AND attr.rank NOT NULL
+);

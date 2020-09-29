@@ -7,17 +7,20 @@ CREATE TABLE artist (
 insert:
 INSERT OR REPLACE INTO artist(attrsId) VALUES (?);
 
-deleteAll:
-DELETE FROM artist;
+lastId:
+SELECT last_insert_rowid();
 
-artistData:
+artistTop:
 SELECT
     attr.name,
+    attr.rank,
     attr.playCount,
     attr.lowResImage
 FROM artist a
 LEFT JOIN attributes attr ON a.attrsId = attr.id
-ORDER BY attr.playCount;
+WHERE attr.rank NOT NULL;
 
-lastId:
-SELECT last_insert_rowid();
+deleteArtistTop:
+DELETE FROM artist WHERE EXISTS (
+    SELECT id FROM attributes attr WHERE artist.attrsId = attr.id AND attr.rank NOT NULL
+);

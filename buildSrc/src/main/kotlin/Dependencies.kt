@@ -41,7 +41,7 @@ object Libs {
     }
 
     object Ktor {
-        private const val version = "1.4.0"
+        private const val version = "1.4.1"
 
         object Core {
             const val common = "io.ktor:ktor-client-core:$version"

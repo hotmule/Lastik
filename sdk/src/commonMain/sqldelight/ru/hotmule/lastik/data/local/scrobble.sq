@@ -10,9 +10,6 @@ CREATE TABLE scrobble (
 insert:
 INSERT OR REPLACE INTO scrobble(trackId, uts, date, nowPlaying) VALUES (?, ?, ?, ?);
 
-deleteAll:
-DELETE FROM scrobble;
-
 scrobbleData:
 SELECT
     s.date,
@@ -30,3 +27,10 @@ LEFT JOIN attributes al_attr ON al.attrsId = al_attr.id
 LEFT JOIN artist ar ON al.artistId = ar.id
 LEFT JOIN attributes ar_attr ON ar.attrsId = ar_attr.id
 ORDER BY s.uts DESC;
+
+deleteScrobbles:
+DELETE FROM scrobble WHERE EXISTS (
+    SELECT t.id FROM track t
+    LEFT JOIN attributes t_attr ON t.attrsId = t_attr.id
+    WHERE scrobble.trackId = t.id AND t_attr.rank IS NULL
+);

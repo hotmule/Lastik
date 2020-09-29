@@ -10,8 +10,20 @@ CREATE TABLE track (
 insert:
 INSERT OR REPLACE INTO track(albumId, loved, attrsId) VALUES (?, ?, ?);
 
-deleteAll:
-DELETE FROM track;
-
 lastId:
 SELECT last_insert_rowid();
+
+trackTop:
+SELECT
+    attr.name,
+    attr.rank,
+    attr.playCount,
+    attr.lowResImage
+FROM track t
+LEFT JOIN attributes attr ON t.attrsId = attr.id
+WHERE attr.rank NOT NULL;
+
+deleteTrackTop:
+DELETE FROM track WHERE EXISTS (
+    SELECT id FROM attributes attr WHERE track.attrsId = attr.id AND attr.rank NOT NULL
+);

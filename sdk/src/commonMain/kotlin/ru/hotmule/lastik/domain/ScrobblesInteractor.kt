@@ -2,10 +2,10 @@ package ru.hotmule.lastik.domain
 
 import com.squareup.sqldelight.runtime.coroutines.asFlow
 import com.squareup.sqldelight.runtime.coroutines.mapToList
+import kotlinx.coroutines.flow.map
 import ru.hotmule.lastik.data.local.*
 import ru.hotmule.lastik.data.prefs.PrefsStore
 import ru.hotmule.lastik.data.remote.api.UserApi
-import ru.hotmule.lastik.data.remote.entities.LastFmItem
 
 class ScrobblesInteractor(
     private val prefs: PrefsStore,
@@ -13,7 +13,16 @@ class ScrobblesInteractor(
     private val db: LastikDatabase
 ) : BaseInteractor(db) {
 
-    fun observeScrobbles() = db.scrobbleQueries.scrobbleData().asFlow().mapToList()
+    fun observeScrobbles() = db.scrobbleQueries.scrobbleData().asFlow().mapToList().map { scrobbles ->
+        scrobbles.map {
+            LibraryListItem(
+                time = it.date,
+                title = it.track,
+                subtitle = it.artist,
+                imageUrl = it.lowResImage
+            )
+        }
+    }
 
     suspend fun refreshScrobbles() {
 
@@ -21,12 +30,12 @@ class ScrobblesInteractor(
 
             db.transaction {
 
-                db.scrobbleQueries.deleteAll()
+                db.scrobbleQueries.deleteScrobbles()
 
                 response?.recent?.tracks?.forEach { track ->
 
                     insertArtist(
-                        Attrs(name = track.artist?.name)
+                        Attrs(name = track.artist?.text)
                     )
 
                     lastArtistId()?.let { artistId ->
@@ -34,7 +43,7 @@ class ScrobblesInteractor(
                         insertAlbum(
                             artistId,
                             Attrs(
-                                name = track.album?.name,
+                                name = track.album?.text,
                                 lowResImage = track.images?.get(2)?.url,
                                 highResImage = track.images?.get(3)?.url
                             )

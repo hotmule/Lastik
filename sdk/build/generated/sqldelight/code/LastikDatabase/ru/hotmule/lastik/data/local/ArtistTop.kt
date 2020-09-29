@@ -1,16 +1,18 @@
 package ru.hotmule.lastik.data.local
 
-import kotlin.Long
+import kotlin.Int
 import kotlin.String
 
-data class ArtistData(
+data class ArtistTop(
   val name: String?,
-  val playCount: Long?,
+  val rank: Int?,
+  val playCount: Int?,
   val lowResImage: String?
 ) {
   override fun toString(): String = """
-  |ArtistData [
+  |ArtistTop [
   |  name: $name
+  |  rank: $rank
   |  playCount: $playCount
   |  lowResImage: $lowResImage
   |]

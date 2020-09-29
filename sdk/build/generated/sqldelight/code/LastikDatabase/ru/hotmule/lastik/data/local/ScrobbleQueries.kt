@@ -27,5 +27,5 @@ interface ScrobbleQueries : Transacter {
     nowPlaying: Boolean
   )
 
-  fun deleteAll()
+  fun deleteScrobbles()
 }

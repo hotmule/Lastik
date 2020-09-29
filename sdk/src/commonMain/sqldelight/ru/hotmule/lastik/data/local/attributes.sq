@@ -1,13 +1,15 @@
 CREATE TABLE attributes (
     id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     name TEXT,
-    playCount INTEGER,
+    rank INTEGER AS Int,
+    playCount INTEGER AS Int,
     lowResImage TEXT,
     highResImage TEXT
 );
 
 insert:
-INSERT OR REPLACE INTO attributes(name, playCount, lowResImage, highResImage) VALUES (?, ?, ?, ?);
+INSERT OR REPLACE INTO attributes(name, rank, playCount, lowResImage, highResImage)
+VALUES (?, ?, ?, ?, ?);
 
 lastId:
 SELECT last_insert_rowid();

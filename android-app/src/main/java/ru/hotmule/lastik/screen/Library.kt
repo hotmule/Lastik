@@ -19,10 +19,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import dev.chrisbanes.accompanist.coil.CoilImage
+import kotlinx.coroutines.flow.Flow
 import ru.hotmule.lastik.R
 import ru.hotmule.lastik.Sdk
 import ru.hotmule.lastik.components.LibraryListItem
-import ru.hotmule.lastik.components.ListItem
+import ru.hotmule.lastik.domain.LibraryListItem
 
 val BarsHeight = 56.dp
 
@@ -75,12 +76,40 @@ fun LibraryScreen(
             )
         },
         bodyContent = { padding ->
-            LibrarySection(
-                Modifier.padding(bottom = padding.bottom),
-                currentSection,
-                sdk
-            ) {
-                isUpdating = it
+
+            when (currentSection) {
+                Section.Scrobbles -> {
+                    LibrarySection(
+                        modifier = Modifier.padding(bottom = padding.bottom),
+                        refresh = sdk.scrobblesInteractor::refreshScrobbles,
+                        items = sdk.scrobblesInteractor::observeScrobbles,
+                        isUpdating = { isUpdating = it }
+                    )
+                }
+                Section.Artists -> {
+                    LibrarySection(
+                        modifier = Modifier.padding(bottom = padding.bottom),
+                        refresh = sdk.artistsInteractor::refreshArtists,
+                        items = sdk.artistsInteractor::observeArtists,
+                        isUpdating = { isUpdating = it }
+                    )
+                }
+                Section.Albums -> {
+                    LibrarySection(
+                        modifier = Modifier.padding(bottom = padding.bottom),
+                        refresh = sdk.albumsInteractor::refreshAlbums,
+                        items = sdk.albumsInteractor::observeAlbums,
+                        isUpdating = { isUpdating = it }
+                    )
+                }
+                else -> {
+                    LibrarySection(
+                        modifier = Modifier.padding(bottom = padding.bottom),
+                        refresh = sdk.scrobblesInteractor::refreshScrobbles,
+                        items = sdk.scrobblesInteractor::observeScrobbles,
+                        isUpdating = { isUpdating = it }
+                    )
+                }
             }
         },
         bottomBar = {
@@ -107,58 +136,29 @@ fun LibraryScreen(
 @Composable
 private fun LibrarySection(
     modifier: Modifier = Modifier,
-    currentSection: Section,
-    sdk: Sdk,
+    refresh: suspend () -> Unit,
+    items: () -> Flow<List<LibraryListItem>>,
     isUpdating: (Boolean) -> Unit
 ) {
 
     launchInComposition {
-
         isUpdating.invoke(true)
-
         try {
-            if (currentSection == Section.Scrobbles)
-                sdk.scrobblesInteractor.refreshScrobbles()
-            else
-                sdk.artistsInteractor.refreshArtists()
+            refresh.invoke()
         } catch (e: Exception) {
             e.printStackTrace()
         }
-
         isUpdating.invoke(false)
     }
 
-    val items = if (currentSection == Section.Scrobbles) {
-        sdk.scrobblesInteractor
-            .observeScrobbles()
-            .collectAsState(initial = listOf())
-            .value
-            .map { scrobble ->
-                ListItem(
-                    imageUrl = scrobble.lowResImage.toString(),
-                    title = scrobble.track.toString(),
-                    subtitle = scrobble.artist,
-                    time = scrobble.date.toString()
-                )
-            }
-    } else {
-        sdk.artistsInteractor
-            .observeArtists()
-            .collectAsState(initial = listOf())
-            .value
-            .map { artist ->
-                ListItem(
-                    imageUrl = artist.lowResImage.toString(),
-                    title = artist.name.toString(),
-                    scrobbles = artist.playCount?.toInt()
-                )
-            }
-    }
-
     ScrollableColumn(modifier = modifier) {
-        items.forEach {
-            LibraryListItem(item = it)
-        }
+        items
+            .invoke()
+            .collectAsState(initial = listOf())
+            .value
+            .forEach {
+                LibraryListItem(item = it)
+            }
     }
 
     // LazyColumn performance is worse than ScrollableColumn
@@ -168,58 +168,4 @@ private fun LibrarySection(
     //     items = items,
     //     itemContent = { LibraryListItem(item = it) }
     // )
-}
-
-fun generateItems(
-    currentSection: Section
-) = mutableListOf<ListItem>().apply {
-    for (i in 1..20) {
-        add(
-            when (currentSection) {
-                Section.Scrobbles -> {
-                    ListItem(
-                        imageUrl = "https://upload.wikimedia.org/wikipedia/en/0/08/Konnichiwa_by_Skepta_cover.jpg",
-                        title = "Man",
-                        subtitle = "Skepta",
-                        time = "21 hours ago"
-                    )
-                }
-                Section.Artists -> {
-                    ListItem(
-                        position = i,
-                        imageUrl = "https://upload.wikimedia.org/wikipedia/commons/0/03/Skepta_photo.PNG",
-                        title = "Skepta",
-                        scrobbles = 500
-                    )
-                }
-                Section.Albums -> {
-                    ListItem(
-                        position = i,
-                        imageUrl = "https://upload.wikimedia.org/wikipedia/en/0/08/Konnichiwa_by_Skepta_cover.jpg",
-                        title = "Konnichiva",
-                        subtitle = "Skepta",
-                        scrobbles = 500
-                    )
-                }
-                Section.Tracks -> {
-                    ListItem(
-                        position = i,
-                        imageUrl = "https://upload.wikimedia.org/wikipedia/en/0/08/Konnichiwa_by_Skepta_cover.jpg",
-                        title = "Shutdown",
-                        subtitle = "Skepta",
-                        scrobbles = 500
-                    )
-                }
-                Section.Loved -> {
-                    ListItem(
-                        loved = true,
-                        imageUrl = "https://upload.wikimedia.org/wikipedia/en/0/08/Konnichiwa_by_Skepta_cover.jpg",
-                        title = "Man",
-                        subtitle = "Skepta",
-                        scrobbles = 500
-                    )
-                }
-            }
-        )
-    }
 }
