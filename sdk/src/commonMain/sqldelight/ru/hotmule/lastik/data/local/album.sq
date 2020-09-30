@@ -1,31 +1,33 @@
 CREATE TABLE album (
     id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     artistId INTEGER NOT NULL,
-    attrsId INTEGER NOT NULL,
+    statId INTEGER,
+    name TEXT,
+    lowArtwork TEXT,
+    highArtwork TEXT,
     FOREIGN KEY (artistId) REFERENCES artist(id) ON DELETE CASCADE,
-    FOREIGN KEY (attrsId) REFERENCES attributes(id) ON DELETE CASCADE
+    FOREIGN KEY (statId) REFERENCES statistic(id) ON DELETE CASCADE
 );
 
 insert:
-INSERT OR REPLACE INTO album(artistId, attrsId) VALUES (?, ?);
+INSERT OR REPLACE INTO album(artistId, statId, name, lowArtwork, highArtwork) VALUES (?, ?, ?, ?, ?);
 
 lastId:
 SELECT last_insert_rowid();
 
 albumTop:
 SELECT
-    ar_attr.name AS artist,
-    al_attr.name AS album,
-    al_attr.rank,
-    al_attr.playCount,
-    al_attr.lowResImage
+    ar.name AS artist,
+    al.name AS album,
+    al.lowArtwork,
+    stat.rank,
+    stat.playCount
 FROM album al
-LEFT JOIN attributes al_attr ON al.attrsId = al_attr.id
+LEFT JOIN statistic stat ON al.statId = stat.id
 LEFT JOIN artist ar ON al.artistId = ar.id
-LEFT JOIN attributes ar_attr ON ar.attrsId = ar_attr.id
-WHERE al_attr.rank NOT NULL;
+WHERE stat.rank NOT NULL;
 
 deleteAlbumTop:
 DELETE FROM album WHERE EXISTS (
-    SELECT id FROM attributes attr WHERE album.attrsId = attr.id AND attr.rank NOT NULL
+    SELECT id FROM statistic stat WHERE album.statId = stat.id AND stat.rank NOT NULL
 );

@@ -2,12 +2,9 @@ package ru.hotmule.lastik.domain
 
 import ru.hotmule.lastik.data.local.LastikDatabase
 
-data class Attrs(
-    val name: String? = null,
+data class Stat(
     val rank: Int? = null,
-    val playCount: Int? = null,
-    val lowResImage: String? = null,
-    val highResImage: String? = null
+    val playCount: Int? = null
 )
 
 data class LibraryListItem(
@@ -30,41 +27,51 @@ open class BaseInteractor(
     fun lastTrackId() = db.trackQueries.lastId().executeAsOneOrNull()
 
     fun insertArtist(
-        attrs: Attrs
+        name: String?,
+        stat: Stat? = null
     ) {
-        insertAttributeAndGetId(attrs) {
-            db.artistQueries.insert(it)
-        }
+        db.artistQueries.insert(
+            getStatId(stat),
+            name
+        )
     }
 
     fun insertAlbum(
         artistId: Long,
-        attrs: Attrs
+        name: String?,
+        lowArtwork: String?,
+        highArtwork: String?,
+        stat: Stat? = null
     ) {
-        insertAttributeAndGetId(attrs) {
-            db.albumQueries.insert(artistId, it)
-        }
+        db.albumQueries.insert(
+            artistId,
+            getStatId(stat),
+            name,
+            lowArtwork,
+            highArtwork
+        )
     }
 
     fun insertTrack(
-        albumId: Long,
-        attrs: Attrs,
+        artistId: Long,
+        albumId: Long? = null,
+        name: String?,
         loved: Boolean = false,
+        stat: Stat? = null,
     ) {
-        insertAttributeAndGetId(attrs) {
-            db.trackQueries.insert(albumId, loved, it)
-        }
+        db.trackQueries.insert(
+            artistId,
+            albumId,
+            getStatId(stat),
+            name,
+            loved
+        )
     }
 
-    private fun insertAttributeAndGetId(
-        attrs: Attrs,
-        insertAttrParent: (Long) -> Unit
-    ) {
-        with(db.attributesQueries) {
-            insert(attrs.name, attrs.rank, attrs.playCount, attrs.lowResImage, attrs.highResImage)
-            lastId().executeAsOneOrNull()?.let {
-                insertAttrParent.invoke(it)
-            }
-        }
+    private fun getStatId(
+        stat: Stat?
+    ) = if (stat == null) null else {
+        db.statisticQueries.insert(stat.rank, stat.playCount)
+        db.statisticQueries.lastId().executeAsOneOrNull()
     }
 }

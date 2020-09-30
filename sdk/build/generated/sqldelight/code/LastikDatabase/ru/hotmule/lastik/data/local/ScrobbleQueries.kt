@@ -15,7 +15,7 @@ interface ScrobbleQueries : Transacter {
     track: String?,
     artist: String?,
     album: String?,
-    lowResImage: String?
+    lowArtwork: String?
   ) -> T): Query<T>
 
   fun scrobbleData(): Query<ScrobbleData>

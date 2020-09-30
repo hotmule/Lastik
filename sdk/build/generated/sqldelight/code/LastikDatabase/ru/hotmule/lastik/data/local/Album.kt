@@ -6,13 +6,19 @@ import kotlin.String
 data class Album(
   val id: Long,
   val artistId: Long,
-  val attrsId: Long
+  val statId: Long?,
+  val name: String?,
+  val lowArtwork: String?,
+  val highArtwork: String?
 ) {
   override fun toString(): String = """
   |Album [
   |  id: $id
   |  artistId: $artistId
-  |  attrsId: $attrsId
+  |  statId: $statId
+  |  name: $name
+  |  lowArtwork: $lowArtwork
+  |  highArtwork: $highArtwork
   |]
   """.trimMargin()
 }

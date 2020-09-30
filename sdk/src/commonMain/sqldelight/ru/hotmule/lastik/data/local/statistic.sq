@@ -1,0 +1,11 @@
+CREATE TABLE statistic (
+    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    rank INTEGER AS Int,
+    playCount INTEGER AS Int
+);
+
+insert:
+INSERT OR REPLACE INTO statistic(rank, playCount) VALUES (?, ?);
+
+lastId:
+SELECT last_insert_rowid();

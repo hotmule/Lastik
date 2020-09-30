@@ -4,22 +4,16 @@ import kotlin.Int
 import kotlin.Long
 import kotlin.String
 
-data class Attributes(
+data class Statistic(
   val id: Long,
-  val name: String?,
   val rank: Int?,
-  val playCount: Int?,
-  val lowResImage: String?,
-  val highResImage: String?
+  val playCount: Int?
 ) {
   override fun toString(): String = """
-  |Attributes [
+  |Statistic [
   |  id: $id
-  |  name: $name
   |  rank: $rank
   |  playCount: $playCount
-  |  lowResImage: $lowResImage
-  |  highResImage: $highResImage
   |]
   """.trimMargin()
 }

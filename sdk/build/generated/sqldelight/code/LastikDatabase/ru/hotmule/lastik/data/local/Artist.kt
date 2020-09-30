@@ -5,12 +5,14 @@ import kotlin.String
 
 data class Artist(
   val id: Long,
-  val attrsId: Long
+  val statId: Long?,
+  val name: String?
 ) {
   override fun toString(): String = """
   |Artist [
   |  id: $id
-  |  attrsId: $attrsId
+  |  statId: $statId
+  |  name: $name
   |]
   """.trimMargin()
 }

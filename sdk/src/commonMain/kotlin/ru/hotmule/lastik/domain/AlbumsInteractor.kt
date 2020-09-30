@@ -17,7 +17,7 @@ class AlbumsInteractor(
         albums.map {
             LibraryListItem(
                 position = it.rank,
-                imageUrl = it.lowResImage,
+                imageUrl = it.lowArtwork,
                 title = it.album,
                 subtitle = it.artist,
                 scrobbles = it.playCount
@@ -26,28 +26,23 @@ class AlbumsInteractor(
     }
 
     suspend fun refreshAlbums() {
-
         api.getTopAlbums(prefs.name).also {
-
             db.transaction {
 
                 db.albumQueries.deleteAlbumTop()
 
                 it?.top?.albums?.forEach { album ->
 
-                    insertArtist(
-                        Attrs(name = album.artist?.name)
-                    )
-
-                    lastArtistId()?.let {
+                    insertArtist(album.artist?.name)
+                    lastArtistId()?.let { artistId ->
                         insertAlbum(
-                            it,
-                            Attrs(
-                                name = album.name,
-                                rank = album.attributes?.rank,
-                                playCount = album.playCount,
-                                lowResImage = album.images?.get(2)?.url,
-                                highResImage = album.images?.get(3)?.url
+                            artistId,
+                            album.name,
+                            album.images?.get(2)?.url,
+                            album.images?.get(3)?.url,
+                            Stat(
+                                album.attributes?.rank,
+                                album.playCount
                             )
                         )
                     }

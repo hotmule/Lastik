@@ -6,15 +6,13 @@ import kotlin.String
 data class ArtistTop(
   val name: String?,
   val rank: Int?,
-  val playCount: Int?,
-  val lowResImage: String?
+  val playCount: Int?
 ) {
   override fun toString(): String = """
   |ArtistTop [
   |  name: $name
   |  rank: $rank
   |  playCount: $playCount
-  |  lowResImage: $lowResImage
   |]
   """.trimMargin()
 }

@@ -1,29 +1,49 @@
 CREATE TABLE track (
-    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL ,
-    albumId INTEGER NOT NULL,
+    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    artistId INTEGER NOT NULL,
+    albumId INTEGER,
+    statId INTEGER,
+    name TEXT,
     loved INTEGER as Boolean DEFAULT 0 NOT NULL,
-    attrsId INTEGER NOT NULL,
+    FOREIGN KEY (artistId) REFERENCES artist(id) ON DELETE CASCADE,
     FOREIGN KEY (albumId) REFERENCES album(id) ON DELETE CASCADE,
-    FOREIGN KEY (attrsId) REFERENCES attributes(id) ON DELETE CASCADE
+    FOREIGN KEY (statId) REFERENCES statistic(id) ON DELETE CASCADE
 );
 
 insert:
-INSERT OR REPLACE INTO track(albumId, loved, attrsId) VALUES (?, ?, ?);
+INSERT OR REPLACE INTO track(artistId, albumId, statId, name, loved) VALUES (?, ?, ?, ?, ?);
 
 lastId:
 SELECT last_insert_rowid();
 
-trackTop:
+topTracks:
 SELECT
-    attr.name,
-    attr.rank,
-    attr.playCount,
-    attr.lowResImage
+    ar.name AS artist,
+    t.name AS track,
+    al.lowArtwork,
+    stat.rank,
+    stat.playCount
 FROM track t
-LEFT JOIN attributes attr ON t.attrsId = attr.id
-WHERE attr.rank NOT NULL;
+LEFT JOIN statistic stat ON t.statId = stat.id
+LEFT JOIN album al ON t.albumId = al.id
+LEFT JOIN artist ar ON t.artistId = ar.id
+WHERE stat.rank NOT NULL;
 
-deleteTrackTop:
+lovedTracks:
+SELECT
+    ar.name AS artist,
+    t.name AS track,
+    t.loved,
+    al.lowArtwork
+FROM track t
+LEFT JOIN album al ON t.albumId = al.id
+LEFT JOIN artist ar ON t.artistId = ar.id
+WHERE t.loved = 1;
+
+deleteTopTracks:
 DELETE FROM track WHERE EXISTS (
-    SELECT id FROM attributes attr WHERE track.attrsId = attr.id AND attr.rank NOT NULL
+    SELECT id FROM statistic stat WHERE track.statId = stat.id AND stat.rank NOT NULL
 );
+
+deleteLovedTracks:
+DELETE FROM track WHERE track.loved = 1;

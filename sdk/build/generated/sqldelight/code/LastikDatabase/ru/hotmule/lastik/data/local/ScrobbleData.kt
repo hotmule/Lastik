@@ -10,7 +10,7 @@ data class ScrobbleData(
   val track: String?,
   val artist: String?,
   val album: String?,
-  val lowResImage: String?
+  val lowArtwork: String?
 ) {
   override fun toString(): String = """
   |ScrobbleData [
@@ -20,7 +20,7 @@ data class ScrobbleData(
   |  track: $track
   |  artist: $artist
   |  album: $album
-  |  lowResImage: $lowResImage
+  |  lowArtwork: $lowArtwork
   |]
   """.trimMargin()
 }

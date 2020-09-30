@@ -15,22 +15,19 @@ SELECT
     s.date,
     s.nowPlaying,
     t.loved,
-    t_attr.name AS track,
-    ar_attr.name AS artist,
-    al_attr.name AS album,
-    al_attr.lowResImage
+    t.name AS track,
+    ar.name AS artist,
+    al.name AS album,
+    al.lowArtwork
 FROM scrobble s
 LEFT JOIN track t ON s.trackId = t.id
-LEFT JOIN attributes t_attr ON t.attrsId = t_attr.id
 LEFT JOIN album al ON t.albumId = al.id
-LEFT JOIN attributes al_attr ON al.attrsId = al_attr.id
 LEFT JOIN artist ar ON al.artistId = ar.id
-LEFT JOIN attributes ar_attr ON ar.attrsId = ar_attr.id
 ORDER BY s.uts DESC;
 
 deleteScrobbles:
 DELETE FROM scrobble WHERE EXISTS (
     SELECT t.id FROM track t
-    LEFT JOIN attributes t_attr ON t.attrsId = t_attr.id
-    WHERE scrobble.trackId = t.id AND t_attr.rank IS NULL
+    LEFT JOIN statistic stat ON t.statId = stat.id
+    WHERE scrobble.trackId = t.id AND stat.rank IS NULL
 );

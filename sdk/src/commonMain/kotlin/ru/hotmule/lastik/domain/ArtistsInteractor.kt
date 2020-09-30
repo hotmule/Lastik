@@ -18,8 +18,7 @@ class ArtistsInteractor(
             LibraryListItem(
                 title = it.name,
                 position = it.rank,
-                scrobbles = it.playCount,
-                imageUrl = it.lowResImage
+                scrobbles = it.playCount
             )
         }
     }
@@ -27,15 +26,15 @@ class ArtistsInteractor(
     suspend fun refreshArtists() {
         api.getTopArtists(prefs.name).also {
             db.transaction {
+
                 db.artistQueries.deleteArtistTop()
+
                 it?.top?.artists?.forEach { artist ->
                     insertArtist(
-                        Attrs(
-                            name = artist.name,
-                            rank = artist.attributes?.rank,
-                            playCount = artist.playCount,
-                            lowResImage = artist.images?.get(2)?.url,
-                            highResImage = artist.images?.get(3)?.url
+                        artist.name,
+                        Stat(
+                            artist.attributes?.rank,
+                            artist.playCount
                         )
                     )
                 }

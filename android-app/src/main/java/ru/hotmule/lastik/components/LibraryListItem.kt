@@ -2,13 +2,11 @@ package ru.hotmule.lastik.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.Text
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Divider
-import androidx.compose.material.EmphasisAmbient
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.ProvideEmphasis
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.FavoriteBorder
@@ -45,8 +43,7 @@ fun LibraryListItem(
             image,
             title,
             subtitle,
-            scrobbles,
-            time
+            description
         ) = createRefs()
 
         item.position?.let {
@@ -71,7 +68,7 @@ fun LibraryListItem(
                 modifier = Modifier
                     .clickable(onClick = { })
                     .constrainAs(like) {
-                        start.linkTo(position.end, 16.dp)
+                        end.linkTo(parent.end)
                         top.linkTo(parent.top)
                         bottom.linkTo(parent.bottom)
                     }
@@ -107,7 +104,13 @@ fun LibraryListItem(
                 style = MaterialTheme.typography.body1,
                 modifier = Modifier
                     .constrainAs(title) {
-                        start.linkTo(image.end, 16.dp)
+                        start.linkTo(
+                            if (item.imageUrl != null)
+                                image.end
+                            else
+                                position.end,
+                            16.dp
+                        )
                         top.linkTo(parent.top)
                         bottom.linkTo(
                             if (item.subtitle != null)
@@ -134,26 +137,16 @@ fun LibraryListItem(
             }
         }
 
-        item.scrobbles?.let {
-            Text(
-                text = "$it ${stringResource(id = R.string.scrobbles)}",
-                style = MaterialTheme.typography.h6,
-                modifier = Modifier
-                    .constrainAs(scrobbles) {
-                        end.linkTo(parent.end)
-                        top.linkTo(parent.top)
-                        bottom.linkTo(parent.bottom)
-                    }
-            )
-        }
-
-        item.time?.let {
+        if (item.time != null || item.scrobbles != null) {
             ProvideEmphasis(emphasis = EmphasisAmbient.current.medium) {
                 Text(
-                    text = it,
+                    text = if (item.time != null)
+                        item.time.toString()
+                    else
+                        "${item.scrobbles} ${stringResource(id = R.string.scrobbles)}",
                     style = MaterialTheme.typography.body2,
                     modifier = Modifier
-                        .constrainAs(time) {
+                        .constrainAs(description) {
                             end.linkTo(parent.end)
                             bottom.linkTo(parent.bottom)
                         }
@@ -161,13 +154,6 @@ fun LibraryListItem(
             }
         }
     }
-
-    Divider(
-        modifier = Modifier.padding(
-            start = 16.dp,
-            end = 16.dp
-        )
-    )
 }
 
 @Preview
@@ -186,7 +172,6 @@ fun ScrobblePreview() = LibraryListItem(
 fun ArtistPreview() = LibraryListItem(
     LibraryListItem(
         position = 2,
-        imageUrl = "imageUrl",
         title = "Skepta",
         scrobbles = 500
     )
@@ -224,6 +209,6 @@ fun LovableTrackPreview() = LibraryListItem(
         imageUrl = "imageUrl",
         title = "Man",
         subtitle = "Skepta",
-        scrobbles = 500
+        time = "21 hours ago"
     )
 )

@@ -1,26 +1,26 @@
 CREATE TABLE artist (
     id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-    attrsId INTEGER NOT NULL,
-    FOREIGN KEY (attrsId) REFERENCES attributes(id) ON DELETE CASCADE
+    statId INTEGER,
+    name TEXT,
+    FOREIGN KEY (statId) REFERENCES statistic(id) ON DELETE CASCADE
 );
 
 insert:
-INSERT OR REPLACE INTO artist(attrsId) VALUES (?);
+INSERT OR REPLACE INTO artist(statId, name) VALUES (?, ?);
 
 lastId:
 SELECT last_insert_rowid();
 
 artistTop:
 SELECT
-    attr.name,
+    a.name,
     attr.rank,
-    attr.playCount,
-    attr.lowResImage
+    attr.playCount
 FROM artist a
-LEFT JOIN attributes attr ON a.attrsId = attr.id
+LEFT JOIN statistic attr ON a.statId = attr.id
 WHERE attr.rank NOT NULL;
 
 deleteArtistTop:
 DELETE FROM artist WHERE EXISTS (
-    SELECT id FROM attributes attr WHERE artist.attrsId = attr.id AND attr.rank NOT NULL
+    SELECT id FROM statistic stat WHERE artist.statId = stat.id AND stat.rank NOT NULL
 );

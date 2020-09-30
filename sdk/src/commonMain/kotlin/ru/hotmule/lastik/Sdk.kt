@@ -30,6 +30,7 @@ open class Sdk(
     val scrobblesInteractor = ScrobblesInteractor(prefs, userApi, database)
     val artistsInteractor = ArtistsInteractor(prefs, userApi, database)
     val albumsInteractor = AlbumsInteractor(prefs, userApi, database)
+    val tracksInteractor = TracksInteractor(prefs, userApi, database)
 
     companion object
 }

@@ -13,51 +13,44 @@ class ScrobblesInteractor(
     private val db: LastikDatabase
 ) : BaseInteractor(db) {
 
-    fun observeScrobbles() = db.scrobbleQueries.scrobbleData().asFlow().mapToList().map { scrobbles ->
-        scrobbles.map {
-            LibraryListItem(
-                time = it.date,
-                title = it.track,
-                subtitle = it.artist,
-                imageUrl = it.lowResImage
-            )
+    fun observeScrobbles() =
+        db.scrobbleQueries.scrobbleData().asFlow().mapToList().map { scrobbles ->
+            scrobbles.map {
+                LibraryListItem(
+                    time = it.date,
+                    title = it.track,
+                    subtitle = it.artist,
+                    imageUrl = it.lowArtwork
+                )
+            }
         }
-    }
 
     suspend fun refreshScrobbles() {
-
         api.getRecentTracks(prefs.name).also { response ->
-
             db.transaction {
 
                 db.scrobbleQueries.deleteScrobbles()
 
                 response?.recent?.tracks?.forEach { track ->
 
-                    insertArtist(
-                        Attrs(name = track.artist?.text)
-                    )
+                    insertArtist(track.artist?.text)
 
                     lastArtistId()?.let { artistId ->
-
                         insertAlbum(
                             artistId,
-                            Attrs(
-                                name = track.album?.text,
-                                lowResImage = track.images?.get(2)?.url,
-                                highResImage = track.images?.get(3)?.url
-                            )
+                            track.album?.text,
+                            track.images?.get(2)?.url,
+                            track.images?.get(3)?.url
                         )
 
                         lastAlbumId()?.let { albumId ->
-
                             insertTrack(
+                                artistId,
                                 albumId,
-                                Attrs(name = track.name)
+                                track.name
                             )
 
                             lastTrackId()?.let { trackId ->
-
                                 db.scrobbleQueries.insert(
                                     trackId,
                                     track.date?.uts,

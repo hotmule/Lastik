@@ -2,9 +2,7 @@ package ru.hotmule.lastik.data.remote.api
 
 import io.ktor.client.*
 import io.ktor.client.request.*
-import ru.hotmule.lastik.data.remote.entities.AlbumsResponse
-import ru.hotmule.lastik.data.remote.entities.ArtistsResponse
-import ru.hotmule.lastik.data.remote.entities.ScrobblesResponse
+import ru.hotmule.lastik.data.remote.entities.*
 
 class UserApi(
     private val client: HttpClient,
@@ -36,5 +34,20 @@ class UserApi(
     ) = client.get<AlbumsResponse?> {
         userApi("getTopAlbums")
         parameter("user", user)
+    }
+
+    suspend fun getTopTracks(
+        user: String?
+    ) = client.get<TopTracksResponse?> {
+        userApi("getTopTracks")
+        parameter("user", user)
+    }
+
+    suspend fun getLovedTracks(
+        user: String?
+    ) = client.get<LovedTracksResponse?> {
+        userApi("getLovedTracks")
+        parameter("user", user)
+
     }
 }

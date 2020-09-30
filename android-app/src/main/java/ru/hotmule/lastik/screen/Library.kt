@@ -102,11 +102,19 @@ fun LibraryScreen(
                         isUpdating = { isUpdating = it }
                     )
                 }
-                else -> {
+                Section.Tracks -> {
                     LibrarySection(
                         modifier = Modifier.padding(bottom = padding.bottom),
-                        refresh = sdk.scrobblesInteractor::refreshScrobbles,
-                        items = sdk.scrobblesInteractor::observeScrobbles,
+                        refresh = sdk.tracksInteractor::refreshTopTracks,
+                        items = sdk.tracksInteractor::observeTopTracks,
+                        isUpdating = { isUpdating = it }
+                    )
+                }
+                Section.Loved -> {
+                    LibrarySection(
+                        modifier = Modifier.padding(bottom = padding.bottom),
+                        refresh = sdk.tracksInteractor::refreshLovedTracks,
+                        items = sdk.tracksInteractor::observeLovedTracks,
                         isUpdating = { isUpdating = it }
                     )
                 }
