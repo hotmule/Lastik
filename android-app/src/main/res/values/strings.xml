@@ -16,6 +16,7 @@
     <string name="loved">Loved</string>
     <string name="scrobbles">Scrobbles</string>
     <string name="updating">Updating…</string>
+    <string name="scrobbling_now">Scrobbling now</string>
 
     <!--Profile Screen-->
     <string name="sign_out">Sign out</string>

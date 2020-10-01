@@ -15,7 +15,7 @@ class ArtistsInteractor(
 
     fun observeArtists() = db.artistQueries.artistTop().asFlow().mapToList().map { artists ->
         artists.map {
-            LibraryListItem(
+            ListItem(
                 title = it.name,
                 position = it.rank,
                 scrobbles = it.playCount

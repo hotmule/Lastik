@@ -22,8 +22,7 @@ SELECT
 FROM scrobble s
 LEFT JOIN track t ON s.trackId = t.id
 LEFT JOIN album al ON t.albumId = al.id
-LEFT JOIN artist ar ON al.artistId = ar.id
-ORDER BY s.uts DESC;
+LEFT JOIN artist ar ON al.artistId = ar.id;
 
 deleteScrobbles:
 DELETE FROM scrobble WHERE EXISTS (

@@ -21,7 +21,7 @@ fun Sdk.Companion.create(
     secret: String
 ): Sdk {
     Napier.base(DebugAntilog())
-    context.deleteDatabase("lastik.db")
+    //context.deleteDatabase("lastik.db")
     return Sdk(
         HttpClientFactory(
             loggingEnabled = isDebug,

@@ -23,7 +23,7 @@ import kotlinx.coroutines.flow.Flow
 import ru.hotmule.lastik.R
 import ru.hotmule.lastik.Sdk
 import ru.hotmule.lastik.components.LibraryListItem
-import ru.hotmule.lastik.domain.LibraryListItem
+import ru.hotmule.lastik.domain.ListItem
 
 val BarsHeight = 56.dp
 
@@ -41,6 +41,7 @@ enum class Section(
 @Composable
 fun LibraryScreen(
     sdk: Sdk,
+    displayWidth: Float,
     toProfile: () -> Unit
 ) {
 
@@ -82,31 +83,34 @@ fun LibraryScreen(
                     LibrarySection(
                         modifier = Modifier.padding(bottom = padding.bottom),
                         refresh = sdk.scrobblesInteractor::refreshScrobbles,
-                        items = sdk.scrobblesInteractor::observeScrobbles,
+                        itemsFlow = sdk.scrobblesInteractor::observeScrobbles,
                         isUpdating = { isUpdating = it }
                     )
                 }
                 Section.Artists -> {
                     LibrarySection(
+                        displayWidth = displayWidth,
                         modifier = Modifier.padding(bottom = padding.bottom),
                         refresh = sdk.artistsInteractor::refreshArtists,
-                        items = sdk.artistsInteractor::observeArtists,
+                        itemsFlow = sdk.artistsInteractor::observeArtists,
                         isUpdating = { isUpdating = it }
                     )
                 }
                 Section.Albums -> {
                     LibrarySection(
+                        displayWidth = displayWidth,
                         modifier = Modifier.padding(bottom = padding.bottom),
                         refresh = sdk.albumsInteractor::refreshAlbums,
-                        items = sdk.albumsInteractor::observeAlbums,
+                        itemsFlow = sdk.albumsInteractor::observeAlbums,
                         isUpdating = { isUpdating = it }
                     )
                 }
                 Section.Tracks -> {
                     LibrarySection(
+                        displayWidth = displayWidth,
                         modifier = Modifier.padding(bottom = padding.bottom),
                         refresh = sdk.tracksInteractor::refreshTopTracks,
-                        items = sdk.tracksInteractor::observeTopTracks,
+                        itemsFlow = sdk.tracksInteractor::observeTopTracks,
                         isUpdating = { isUpdating = it }
                     )
                 }
@@ -114,7 +118,7 @@ fun LibraryScreen(
                     LibrarySection(
                         modifier = Modifier.padding(bottom = padding.bottom),
                         refresh = sdk.tracksInteractor::refreshLovedTracks,
-                        items = sdk.tracksInteractor::observeLovedTracks,
+                        itemsFlow = sdk.tracksInteractor::observeLovedTracks,
                         isUpdating = { isUpdating = it }
                     )
                 }
@@ -145,7 +149,8 @@ fun LibraryScreen(
 private fun LibrarySection(
     modifier: Modifier = Modifier,
     refresh: suspend () -> Unit,
-    items: () -> Flow<List<LibraryListItem>>,
+    displayWidth: Float? = null,
+    itemsFlow: () -> Flow<List<ListItem>>,
     isUpdating: (Boolean) -> Unit
 ) {
 
@@ -159,14 +164,22 @@ private fun LibrarySection(
         isUpdating.invoke(false)
     }
 
+    val items = itemsFlow
+        .invoke()
+        .collectAsState(initial = listOf())
+        .value
+
+    var scrobbleWidth: Float? = null
+    if (!items.isNullOrEmpty() && displayWidth != null) {
+        items[0].scrobbles?.let {
+            scrobbleWidth = displayWidth / it
+        }
+    }
+
     ScrollableColumn(modifier = modifier) {
-        items
-            .invoke()
-            .collectAsState(initial = listOf())
-            .value
-            .forEach {
-                LibraryListItem(item = it)
-            }
+        items.forEach {
+            LibraryListItem(scrobbleWidth = scrobbleWidth, item = it)
+        }
     }
 
     // LazyColumn performance is worse than ScrollableColumn

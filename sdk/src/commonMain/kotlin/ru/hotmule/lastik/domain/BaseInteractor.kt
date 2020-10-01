@@ -7,7 +7,7 @@ data class Stat(
     val playCount: Int? = null
 )
 
-data class LibraryListItem(
+data class ListItem(
     val imageUrl: String? = null,
     val title: String? = null,
     val position: Int? = null,
@@ -15,6 +15,7 @@ data class LibraryListItem(
     val scrobbles: Int? = null,
     val time: String? = null,
     val loved: Boolean? = null,
+    val nowPlaying: Boolean? = null,
     val onLike: ((Boolean) -> Unit)? = null
 )
 

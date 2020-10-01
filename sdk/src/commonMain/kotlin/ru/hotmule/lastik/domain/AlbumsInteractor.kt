@@ -15,7 +15,7 @@ class AlbumsInteractor(
 
     fun observeAlbums() = db.albumQueries.albumTop().asFlow().mapToList().map { albums ->
         albums.map {
-            LibraryListItem(
+            ListItem(
                 position = it.rank,
                 imageUrl = it.lowArtwork,
                 title = it.album,

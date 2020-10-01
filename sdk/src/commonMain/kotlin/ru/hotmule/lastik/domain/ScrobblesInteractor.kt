@@ -16,11 +16,12 @@ class ScrobblesInteractor(
     fun observeScrobbles() =
         db.scrobbleQueries.scrobbleData().asFlow().mapToList().map { scrobbles ->
             scrobbles.map {
-                LibraryListItem(
+                ListItem(
                     time = it.date,
                     title = it.track,
                     subtitle = it.artist,
-                    imageUrl = it.lowArtwork
+                    imageUrl = it.lowArtwork,
+                    nowPlaying = it.nowPlaying
                 )
             }
         }
@@ -55,7 +56,7 @@ class ScrobblesInteractor(
                                     trackId,
                                     track.date?.uts,
                                     track.date?.toSting,
-                                    track.attributes?.nowPlaying == true
+                                    track.attributes?.nowPlaying == "true"
                                 )
                             }
                         }

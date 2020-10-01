@@ -15,12 +15,12 @@ val postbox = Color(0xffd92323)
 val jam = Color(0xffbd1e1e)
 
 private val LightColors = lightColors(
-    primary = scarlet,
-    secondary = sangria
+    primary = sangria,
+    secondary = crimson
 )
 
 private val DarkColors = darkColors(
-    secondary = scarlet
+    secondary = crimson
 )
 
 @Composable

@@ -17,6 +17,7 @@ import ru.hotmule.lastik.theme.AppTheme
 @Composable
 fun LastikApp(
     sdk: Sdk,
+    displayWidth: Float,
     backDispatcher: OnBackPressedDispatcher
 ) {
     val isSessionActive by sdk.authInteractor.isSessionActive().collectAsState()
@@ -34,7 +35,7 @@ fun LastikApp(
                 val actions = remember(navigator) { Actions(navigator) }
                 Crossfade(navigator.current) { destination ->
                     when (destination) {
-                        Destination.Library -> LibraryScreen(sdk, actions.toProfile)
+                        Destination.Library -> LibraryScreen(sdk, displayWidth, actions.toProfile)
                         Destination.Profile -> ProfileScreen(sdk, actions.toBack)
                     }
                 }

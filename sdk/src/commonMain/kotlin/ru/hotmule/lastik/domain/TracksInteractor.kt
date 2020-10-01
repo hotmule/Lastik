@@ -15,7 +15,7 @@ class TracksInteractor(
 
     fun observeTopTracks() = db.trackQueries.topTracks().asFlow().mapToList().map { tracks ->
         tracks.map {
-            LibraryListItem(
+            ListItem(
                 position = it.rank,
                 imageUrl = it.lowArtwork,
                 title = it.track,
@@ -27,7 +27,7 @@ class TracksInteractor(
 
     fun observeLovedTracks() = db.trackQueries.lovedTracks().asFlow().mapToList().map { tracks ->
         tracks.map {
-            LibraryListItem(
+            ListItem(
                 imageUrl = it.lowArtwork,
                 title = it.track,
                 subtitle = it.artist,

@@ -27,7 +27,7 @@ data class LastFmItem(
 
 @Serializable
 data class LastFmItemAttributes(
-    @SerialName("nowplaying") val nowPlaying: Boolean? = null,
+    @SerialName("nowplaying") val nowPlaying: String? = null,
     val rank: Int? = null
 )
 
