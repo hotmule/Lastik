@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.launchInComposition
 import androidx.compose.ui.Modifier
 import ru.hotmule.lastik.Sdk
+import ru.hotmule.lastik.theme.BarHeight
 
 @Composable
 fun ProfileScreen(
@@ -23,7 +24,7 @@ fun ProfileScreen(
         topBar = {
             TopAppBar(
                 modifier = Modifier
-                    .statusBarsHeightPlus(BarsHeight),
+                    .statusBarsHeightPlus(BarHeight),
                 navigationIcon = {
                     IconButton(
                         modifier = Modifier.statusBarsPadding(),

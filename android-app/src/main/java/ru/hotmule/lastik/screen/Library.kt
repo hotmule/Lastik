@@ -9,8 +9,6 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.savedinstancestate.savedInstanceState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -24,10 +22,9 @@ import ru.hotmule.lastik.R
 import ru.hotmule.lastik.Sdk
 import ru.hotmule.lastik.components.LibraryListItem
 import ru.hotmule.lastik.domain.ListItem
+import ru.hotmule.lastik.theme.BarHeight
 
-val BarsHeight = 56.dp
-
-enum class Section(
+enum class LibrarySection(
     @StringRes val title: Int,
     val icon: VectorAsset
 ) {
@@ -45,113 +42,154 @@ fun LibraryScreen(
     toProfile: () -> Unit
 ) {
 
-    val (currentSection, setCurrentSection) = savedInstanceState { Section.Scrobbles }
-    var isUpdating by mutableStateOf(false)
+    val (currentSection, setCurrentSection) = savedInstanceState { LibrarySection.Scrobbles }
+    val isUpdating = mutableStateOf(false)
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                modifier = Modifier.statusBarsHeightPlus(BarsHeight),
-                title = {
-                    Text(
-                        modifier = Modifier.statusBarsPadding(),
-                        text = if (isUpdating)
-                            stringResource(id = R.string.updating)
-                        else
-                            currentSection.name
-                    )
-                },
-                actions = {
-                    CoilImage(
-                        data = "https://avatars2.githubusercontent.com/u/37577810?s=60&v=4",
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .statusBarsPadding()
-                            .padding(12.dp)
-                            .width(30.dp)
-                            .height(30.dp)
-                            .clip(CircleShape)
-                            .clickable(onClick = { toProfile() })
-                    )
-                }
+            LibraryTopBar(
+                modifier = Modifier.statusBarsHeightPlus(BarHeight),
+                isUpdating = isUpdating.value,
+                sectionName = currentSection.name,
+                toProfile = toProfile
             )
         },
-        bodyContent = { padding ->
-
-            when (currentSection) {
-                Section.Scrobbles -> {
-                    LibrarySection(
-                        modifier = Modifier.padding(bottom = padding.bottom),
-                        refresh = sdk.scrobblesInteractor::refreshScrobbles,
-                        itemsFlow = sdk.scrobblesInteractor::observeScrobbles,
-                        isUpdating = { isUpdating = it }
-                    )
-                }
-                Section.Artists -> {
-                    LibrarySection(
-                        displayWidth = displayWidth,
-                        modifier = Modifier.padding(bottom = padding.bottom),
-                        refresh = sdk.artistsInteractor::refreshArtists,
-                        itemsFlow = sdk.artistsInteractor::observeArtists,
-                        isUpdating = { isUpdating = it }
-                    )
-                }
-                Section.Albums -> {
-                    LibrarySection(
-                        displayWidth = displayWidth,
-                        modifier = Modifier.padding(bottom = padding.bottom),
-                        refresh = sdk.albumsInteractor::refreshAlbums,
-                        itemsFlow = sdk.albumsInteractor::observeAlbums,
-                        isUpdating = { isUpdating = it }
-                    )
-                }
-                Section.Tracks -> {
-                    LibrarySection(
-                        displayWidth = displayWidth,
-                        modifier = Modifier.padding(bottom = padding.bottom),
-                        refresh = sdk.tracksInteractor::refreshTopTracks,
-                        itemsFlow = sdk.tracksInteractor::observeTopTracks,
-                        isUpdating = { isUpdating = it }
-                    )
-                }
-                Section.Loved -> {
-                    LibrarySection(
-                        modifier = Modifier.padding(bottom = padding.bottom),
-                        refresh = sdk.tracksInteractor::refreshLovedTracks,
-                        itemsFlow = sdk.tracksInteractor::observeLovedTracks,
-                        isUpdating = { isUpdating = it }
-                    )
-                }
-            }
+        bodyContent = {
+            LibraryBody(
+                modifier = Modifier.padding(bottom = it.bottom),
+                sdk = sdk,
+                displayWidth = displayWidth,
+                currentSection = currentSection,
+                isUpdating = { it1 -> isUpdating.value = it1 }
+            )
         },
         bottomBar = {
-            BottomNavigation(
-                modifier = Modifier.navigationBarsHeightPlus(BarsHeight)
-            ) {
-                Section
-                    .values()
-                    .toList()
-                    .forEach { section ->
-                        BottomNavigationItem(
-                            modifier = Modifier.navigationBarsPadding(bottom = true),
-                            icon = { Icon(section.icon) },
-                            label = { Text(stringResource(id = section.title)) },
-                            onClick = { setCurrentSection(section) },
-                            selected = section == currentSection
-                        )
-                    }
-            }
+            LibraryBottomBar(
+                modifier = Modifier.navigationBarsHeightPlus(BarHeight),
+                setCurrentSection = { setCurrentSection(it) },
+                currentSection = currentSection
+            )
         }
     )
 }
 
 @Composable
-private fun LibrarySection(
+private fun LibraryTopBar(
     modifier: Modifier = Modifier,
-    refresh: suspend () -> Unit,
-    displayWidth: Float? = null,
-    itemsFlow: () -> Flow<List<ListItem>>,
+    isUpdating: Boolean,
+    sectionName: String,
+    toProfile: () -> Unit
+) {
+    TopAppBar(
+        modifier = modifier,
+        title = {
+            Text(
+                modifier = Modifier.statusBarsPadding(),
+                text = if (isUpdating) stringResource(id = R.string.updating) else sectionName
+            )
+        },
+        actions = {
+            CoilImage(
+                data = "https://avatars2.githubusercontent.com/u/37577810?s=60&v=4",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .statusBarsPadding()
+                    .padding(12.dp)
+                    .width(30.dp)
+                    .height(30.dp)
+                    .clip(CircleShape)
+                    .clickable(onClick = { toProfile.invoke() })
+            )
+        }
+    )
+}
+
+@Composable
+private fun LibraryBottomBar(
+    modifier: Modifier = Modifier,
+    setCurrentSection: (LibrarySection) -> Unit,
+    currentSection: LibrarySection
+) {
+    BottomNavigation(
+        modifier = modifier
+    ) {
+        LibrarySection
+            .values()
+            .toList()
+            .forEach { section ->
+                BottomNavigationItem(
+                    modifier = Modifier.navigationBarsPadding(bottom = true),
+                    icon = { Icon(section.icon) },
+                    label = { Text(stringResource(id = section.title)) },
+                    onClick = { setCurrentSection.invoke(section) },
+                    selected = section == currentSection
+                )
+            }
+    }
+}
+
+@Composable
+private fun LibraryBody(
+    modifier: Modifier = Modifier,
+    sdk: Sdk,
+    displayWidth: Float,
+    currentSection: LibrarySection,
     isUpdating: (Boolean) -> Unit
+) {
+    when (currentSection) {
+        LibrarySection.Scrobbles -> {
+            LibraryPage(
+                modifier = modifier,
+                isUpdating = isUpdating,
+                refresh = sdk.scrobblesInteractor::refreshScrobbles,
+                itemsFlow = sdk.scrobblesInteractor::observeScrobbles
+            )
+        }
+        LibrarySection.Artists -> {
+            LibraryPage(
+                modifier = modifier,
+                isUpdating = isUpdating,
+                displayWidth = displayWidth,
+                refresh = sdk.artistsInteractor::refreshArtists,
+                itemsFlow = sdk.artistsInteractor::observeArtists
+            )
+        }
+        LibrarySection.Albums -> {
+            LibraryPage(
+                modifier = modifier,
+                isUpdating = isUpdating,
+                displayWidth = displayWidth,
+                refresh = sdk.albumsInteractor::refreshAlbums,
+                itemsFlow = sdk.albumsInteractor::observeAlbums
+            )
+        }
+        LibrarySection.Tracks -> {
+            LibraryPage(
+                modifier = modifier,
+                isUpdating = isUpdating,
+                displayWidth = displayWidth,
+                refresh = sdk.tracksInteractor::refreshTopTracks,
+                itemsFlow = sdk.tracksInteractor::observeTopTracks
+            )
+        }
+        LibrarySection.Loved -> {
+            LibraryPage(
+                modifier = modifier,
+                isUpdating = isUpdating,
+                refresh = sdk.tracksInteractor::refreshLovedTracks,
+                itemsFlow = sdk.tracksInteractor::observeLovedTracks
+            )
+        }
+    }
+}
+
+@Composable
+private fun LibraryPage(
+    modifier: Modifier = Modifier,
+    isUpdating: (Boolean) -> Unit,
+    displayWidth: Float? = null,
+    refresh: suspend () -> Unit,
+    itemsFlow: () -> Flow<List<ListItem>>,
 ) {
 
     launchInComposition {
