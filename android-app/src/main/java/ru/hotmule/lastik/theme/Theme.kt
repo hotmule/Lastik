@@ -15,7 +15,7 @@ val habanero = Color(0xfff71414)
 val postbox = Color(0xffd92323)
 val jam = Color(0xffbd1e1e)
 
-val BarHeight = 56.dp
+val barHeight = 56.dp
 
 private val LightColors = lightColors(
     primary = sangria,

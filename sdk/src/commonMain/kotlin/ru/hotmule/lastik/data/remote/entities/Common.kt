@@ -44,6 +44,11 @@ data class Date(
 )
 
 @Serializable
+data class UnixDate(
+    @SerialName("unixtime") val time: String? = null
+)
+
+@Serializable
 data class MusicBrainzIdentifier(
     val mbid: String? = null,
     val name: String? = null,

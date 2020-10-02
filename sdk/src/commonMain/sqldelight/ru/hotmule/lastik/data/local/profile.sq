@@ -1,0 +1,17 @@
+CREATE TABLE profile (
+    nickname TEXT PRIMARY KEY NOT NULL,
+    realName TEXT,
+    lowResImage TEXT,
+    highResImage TEXT,
+    playCount INTEGER,
+    registerDate INTEGER
+);
+
+insert:
+INSERT OR REPLACE INTO profile VALUES ?;
+
+getInfo:
+SELECT * FROM profile WHERE nickname = ?;
+
+getLowResImage:
+SELECT lowResImage FROM profile WHERE nickname = ?;

@@ -7,7 +7,8 @@ class AuthInteractor(
     private val prefs: PrefsStore,
     private val api: AuthApi,
     private val apiKey: String,
-    private val secret: String
+    private val secret: String,
+    private val profileInteractor: ProfileInteractor
 ) {
 
     fun isSessionActive() = prefs.isSessionActive
@@ -26,12 +27,12 @@ class AuthInteractor(
 
     suspend fun getSessionKey() {
         prefs.token?.let { token ->
-            api.getSession(secret, token).also {
-                prefs.apply {
-                    name = it?.params?.name
-                    sessionKey = it?.params?.key
-                    isSessionActive.value = true
-                }
+            val session = api.getSession(secret, token)
+            profileInteractor.refreshInfo(session?.params?.name)
+            prefs.apply {
+                name = session?.params?.name
+                sessionKey = session?.params?.key
+                isSessionActive.value = true
             }
         }
     }

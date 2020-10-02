@@ -24,8 +24,8 @@ open class Sdk(
     private val authApi = AuthApi(httpClient, apiKey)
     private val userApi = UserApi(httpClient, apiKey)
 
-    val authInteractor = AuthInteractor(prefs, authApi, apiKey, secret)
-    val profileInteractor = ProfileInteractor(prefs)
+    val profileInteractor = ProfileInteractor(prefs, userApi, database.profileQueries)
+    val authInteractor = AuthInteractor(prefs, authApi, apiKey, secret, profileInteractor)
 
     val scrobblesInteractor = ScrobblesInteractor(prefs, userApi, database)
     val artistsInteractor = ArtistsInteractor(prefs, userApi, database)

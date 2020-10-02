@@ -19,6 +19,6 @@
     <string name="scrobbling_now">Scrobbling now</string>
 
     <!--Profile Screen-->
-    <string name="sign_out">Sign out</string>
+    <string name="scrobbling_since">Scrobbling since</string>
 
 </resources>

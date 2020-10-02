@@ -15,6 +15,13 @@ class UserApi(
         api("user", method, apiKey)
     }
 
+    suspend fun getInfo(
+        user: String?
+    ) = client.get<ProfileResponse?> {
+        userApi("getInfo")
+        parameter("user", user)
+    }
+
     suspend fun getRecentTracks(
         user: String?
     ) = client.get<ScrobblesResponse?> {
@@ -48,6 +55,5 @@ class UserApi(
     ) = client.get<LovedTracksResponse?> {
         userApi("getLovedTracks")
         parameter("user", user)
-
     }
 }

@@ -1,28 +1,27 @@
 package ru.hotmule.lastik.screen
 
 import android.compose.utils.*
+import android.util.Log
 import androidx.annotation.StringRes
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.savedinstancestate.savedInstanceState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.VectorAsset
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import dev.chrisbanes.accompanist.coil.CoilImage
 import kotlinx.coroutines.flow.Flow
 import ru.hotmule.lastik.R
 import ru.hotmule.lastik.Sdk
 import ru.hotmule.lastik.components.LibraryListItem
+import ru.hotmule.lastik.components.ProfileImage
 import ru.hotmule.lastik.domain.ListItem
-import ru.hotmule.lastik.theme.BarHeight
+import ru.hotmule.lastik.domain.ProfileInteractor
+import ru.hotmule.lastik.theme.barHeight
 
 enum class LibrarySection(
     @StringRes val title: Int,
@@ -48,7 +47,8 @@ fun LibraryScreen(
     Scaffold(
         topBar = {
             LibraryTopBar(
-                modifier = Modifier.statusBarsHeightPlus(BarHeight),
+                modifier = Modifier.statusBarsHeightPlus(barHeight),
+                interactor = sdk.profileInteractor,
                 isUpdating = isUpdating.value,
                 sectionName = currentSection.name,
                 toProfile = toProfile
@@ -65,7 +65,7 @@ fun LibraryScreen(
         },
         bottomBar = {
             LibraryBottomBar(
-                modifier = Modifier.navigationBarsHeightPlus(BarHeight),
+                modifier = Modifier.navigationBarsHeightPlus(barHeight),
                 setCurrentSection = { setCurrentSection(it) },
                 currentSection = currentSection
             )
@@ -76,6 +76,7 @@ fun LibraryScreen(
 @Composable
 private fun LibraryTopBar(
     modifier: Modifier = Modifier,
+    interactor: ProfileInteractor,
     isUpdating: Boolean,
     sectionName: String,
     toProfile: () -> Unit
@@ -89,16 +90,15 @@ private fun LibraryTopBar(
             )
         },
         actions = {
-            CoilImage(
-                data = "https://avatars2.githubusercontent.com/u/37577810?s=60&v=4",
-                contentScale = ContentScale.Crop,
+            val info by interactor.observeInfo().collectAsState(initial = null)
+            ProfileImage(
                 modifier = Modifier
                     .statusBarsPadding()
                     .padding(12.dp)
                     .width(30.dp)
-                    .height(30.dp)
-                    .clip(CircleShape)
-                    .clickable(onClick = { toProfile.invoke() })
+                    .height(30.dp),
+                url = info?.lowResImage,
+                onClick = toProfile
             )
         }
     )
