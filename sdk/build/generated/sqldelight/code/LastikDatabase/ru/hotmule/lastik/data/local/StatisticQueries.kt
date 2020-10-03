@@ -8,5 +8,5 @@ import kotlin.Long
 interface StatisticQueries : Transacter {
   fun lastId(): Query<Long>
 
-  fun insert(rank: Int?, playCount: Int?)
+  fun insert(rank: Int?, playCount: Long?)
 }

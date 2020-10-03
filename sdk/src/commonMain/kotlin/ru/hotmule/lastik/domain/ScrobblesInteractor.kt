@@ -17,7 +17,7 @@ class ScrobblesInteractor(
         db.scrobbleQueries.scrobbleData().asFlow().mapToList().map { scrobbles ->
             scrobbles.map {
                 ListItem(
-                    time = it.date,
+                    time = it.time,
                     title = it.track,
                     subtitle = it.artist,
                     imageUrl = it.lowArtwork,

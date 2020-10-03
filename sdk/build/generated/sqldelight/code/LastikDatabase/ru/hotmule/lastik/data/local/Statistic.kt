@@ -7,7 +7,7 @@ import kotlin.String
 data class Statistic(
   val id: Long,
   val rank: Int?,
-  val playCount: Int?
+  val playCount: Long?
 ) {
   override fun toString(): String = """
   |Statistic [

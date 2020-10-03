@@ -2,6 +2,7 @@ package ru.hotmule.lastik.screen
 
 import android.compose.utils.statusBarsHeightPlus
 import android.compose.utils.statusBarsPadding
+import androidx.annotation.StringRes
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -19,11 +20,12 @@ import ru.hotmule.lastik.theme.barHeight
 import ru.hotmule.lastik.R
 import ru.hotmule.lastik.domain.ProfileInteractor
 import androidx.compose.runtime.*
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
+import androidx.ui.tooling.preview.Preview
 import ru.hotmule.lastik.components.ProfileImage
-import java.text.SimpleDateFormat
-import java.util.*
+import ru.hotmule.lastik.utlis.toDateString
+import ru.hotmule.lastik.utlis.toCommasString
 
 @Composable
 fun ProfileScreen(
@@ -106,13 +108,13 @@ fun ProfileBody(
         modifier = Modifier.fillMaxWidth()
     ) {
 
-        val (image, realName, regDateTitle, regDate, playCountTitle, playCount) = createRefs()
+        val (image, regDate, playCount) = createRefs()
 
         ProfileImage(
             url = info?.highResImage,
             modifier = Modifier
-                .preferredHeight(82.dp)
-                .preferredWidth(82.dp)
+                .preferredHeight(90.dp)
+                .preferredWidth(90.dp)
                 .constrainAs(image) {
                     top.linkTo(parent.top, 20.dp)
                     start.linkTo(parent.start, 20.dp)
@@ -121,62 +123,61 @@ fun ProfileBody(
 
         info?.registerDate?.let {
 
-            ProvideEmphasis(emphasis = EmphasisAmbient.current.medium) {
-                Text(
-                    text = stringResource(id = R.string.scrobbling_since),
-                    style = MaterialTheme.typography.body2,
-                    modifier = Modifier
-                        .constrainAs(regDateTitle) {
-                            start.linkTo(image.end, 16.dp)
-                            end.linkTo(playCount.start)
-                            top.linkTo(image.top)
-                            bottom.linkTo(regDate.top)
-                        }
-                )
-            }
-
-            Text(
-                text = with (SimpleDateFormat("d MMMM yyyy", Locale.getDefault())) {
-                    format(Date(it * 1000))
-                },
-                style = MaterialTheme.typography.h6,
-                modifier = Modifier
-                    .constrainAs(regDate) {
-                        start.linkTo(regDateTitle.start)
-                        end.linkTo(playCount.start)
-                        top.linkTo(regDateTitle.bottom, 8.dp)
-                        bottom.linkTo(image.bottom)
-                    }
+            ProfileStat(
+                titleId = R.string.scrobbling_since,
+                subtitle = it.toDateString("d MMMM yyyy"),
+                modifier = Modifier.constrainAs(regDate) {
+                    start.linkTo(image.end)
+                    top.linkTo(image.top)
+                    end.linkTo(playCount.start)
+                    bottom.linkTo(image.bottom)
+                }
             )
         }
 
         info?.playCount?.let {
 
-            ProvideEmphasis(emphasis = EmphasisAmbient.current.medium) {
-                Text(
-                    text = stringResource(id = R.string.scrobbles),
-                    style = MaterialTheme.typography.body2,
-                    modifier = Modifier
-                        .constrainAs(playCountTitle) {
-                            top.linkTo(image.top)
-                            bottom.linkTo(playCount.top)
-                            end.linkTo(parent.end, 16.dp)
-                            start.linkTo(regDateTitle.end)
-                        }
-                )
-            }
-
-            Text(
-                text = it.toString(),
-                style = MaterialTheme.typography.h6,
-                modifier = Modifier
-                    .constrainAs(playCount) {
-                        end.linkTo(playCountTitle.end)
-                        start.linkTo(regDate.end)
-                        top.linkTo(playCountTitle.bottom, 8.dp)
-                        bottom.linkTo(image.bottom)
-                    }
+            ProfileStat(
+                titleId = R.string.scrobbles_upper,
+                subtitle = it.toCommasString(),
+                modifier = Modifier.constrainAs(playCount) {
+                    start.linkTo(regDate.end)
+                    top.linkTo(image.top)
+                    end.linkTo(parent.end)
+                    bottom.linkTo(image.bottom)
+                }
             )
         }
     }
 }
+
+@Composable
+fun ProfileStat(
+    modifier: Modifier = Modifier,
+    @StringRes titleId: Int,
+    subtitle: String
+) {
+    Column(modifier) {
+
+        ProvideEmphasis(emphasis = EmphasisAmbient.current.medium) {
+            Text(
+                text = stringResource(id = titleId),
+                style = MaterialTheme.typography.body2,
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            )
+        }
+
+        Text(
+            text = subtitle,
+            style = MaterialTheme.typography.h6,
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+        )
+    }
+}
+
+@Preview
+@Composable
+fun ProfileStatPreview() = ProfileStat(
+    titleId = R.string.scrobbles_upper,
+    subtitle = "111111"
+)

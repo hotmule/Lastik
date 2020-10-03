@@ -4,7 +4,7 @@ import ru.hotmule.lastik.data.local.LastikDatabase
 
 data class Stat(
     val rank: Int? = null,
-    val playCount: Int? = null
+    val playCount: Long? = null
 )
 
 data class ListItem(
@@ -12,8 +12,8 @@ data class ListItem(
     val title: String? = null,
     val position: Int? = null,
     val subtitle: String? = null,
-    val scrobbles: Int? = null,
-    val time: String? = null,
+    val scrobbles: Long? = null,
+    val time: Long? = null,
     val loved: Boolean? = null,
     val nowPlaying: Boolean? = null,
     val onLike: ((Boolean) -> Unit)? = null

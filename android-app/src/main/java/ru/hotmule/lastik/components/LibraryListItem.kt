@@ -12,7 +12,6 @@ import androidx.compose.material.icons.rounded.FavoriteBorder
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
@@ -23,6 +22,8 @@ import androidx.ui.tooling.preview.Preview
 import dev.chrisbanes.accompanist.coil.CoilImage
 import ru.hotmule.lastik.R
 import ru.hotmule.lastik.domain.ListItem
+import ru.hotmule.lastik.utlis.toCommasString
+import ru.hotmule.lastik.utlis.toDateString
 
 @Composable
 fun LibraryListItem(
@@ -126,7 +127,7 @@ fun LibraryListItem(
             ProvideEmphasis(emphasis = EmphasisAmbient.current.medium) {
                 Text(
                     text = if (item.time != null)
-                        item.time!!
+                        item.time!!.toDateString("d MMM, HH:mm")
                     else
                         stringResource(R.string.scrobbling_now),
                     style = MaterialTheme.typography.body2,
@@ -142,7 +143,7 @@ fun LibraryListItem(
         item.scrobbles?.let {
             ProvideEmphasis(emphasis = EmphasisAmbient.current.high) {
                 Text(
-                    text = "${item.scrobbles} ${stringResource(id = R.string.scrobbles)}",
+                    text = it.toCommasString() + " " + stringResource(id = R.string.scrobbles),
                     style = MaterialTheme.typography.body1,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier
@@ -183,7 +184,7 @@ fun ScrobblePreview() = LibraryListItem(
         imageUrl = "imageUrl",
         title = "Man",
         subtitle = "Skepta",
-        time = "21 hours ago"
+        time = 113243214
     )
 )
 

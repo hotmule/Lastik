@@ -12,7 +12,7 @@ INSERT OR REPLACE INTO scrobble(trackId, uts, date, nowPlaying) VALUES (?, ?, ?,
 
 scrobbleData:
 SELECT
-    s.date,
+    s.uts AS time,
     s.nowPlaying,
     t.loved,
     t.name AS track,

@@ -1,7 +1,6 @@
 package ru.hotmule.lastik.screen
 
 import android.compose.utils.*
-import android.util.Log
 import androidx.annotation.StringRes
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -27,7 +26,7 @@ enum class LibrarySection(
     @StringRes val title: Int,
     val icon: VectorAsset
 ) {
-    Scrobbles(R.string.scrobbles, Icons.Rounded.History),
+    Resents(R.string.resents, Icons.Rounded.History),
     Artists(R.string.artists, Icons.Rounded.Face),
     Albums(R.string.albums, Icons.Rounded.Album),
     Tracks(R.string.tracks, Icons.Rounded.Audiotrack),
@@ -41,7 +40,7 @@ fun LibraryScreen(
     toProfile: () -> Unit
 ) {
 
-    val (currentSection, setCurrentSection) = savedInstanceState { LibrarySection.Scrobbles }
+    val (currentSection, setCurrentSection) = savedInstanceState { LibrarySection.Resents }
     val isUpdating = mutableStateOf(false)
 
     Scaffold(
@@ -137,7 +136,7 @@ private fun LibraryBody(
     isUpdating: (Boolean) -> Unit
 ) {
     when (currentSection) {
-        LibrarySection.Scrobbles -> {
+        LibrarySection.Resents -> {
             LibraryPage(
                 modifier = modifier,
                 isUpdating = isUpdating,

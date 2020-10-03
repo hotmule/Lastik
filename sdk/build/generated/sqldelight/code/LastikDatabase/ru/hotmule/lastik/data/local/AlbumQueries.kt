@@ -15,7 +15,7 @@ interface AlbumQueries : Transacter {
     album: String?,
     lowArtwork: String?,
     rank: Int?,
-    playCount: Int?
+    playCount: Long?
   ) -> T): Query<T>
 
   fun albumTop(): Query<AlbumTop>

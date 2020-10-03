@@ -10,15 +10,17 @@
     <string name="close">Close</string>
 
     <!--Library Screen-->
+    <string name="resents">Resents</string>
     <string name="artists">Artists</string>
     <string name="albums">Albums</string>
     <string name="tracks">Tracks</string>
     <string name="loved">Loved</string>
-    <string name="scrobbles">Scrobbles</string>
+    <string name="scrobbles">scrobbles</string>
     <string name="updating">Updating…</string>
     <string name="scrobbling_now">Scrobbling now</string>
 
     <!--Profile Screen-->
     <string name="scrobbling_since">Scrobbling since</string>
+    <string name="scrobbles_upper">Scrobbles</string>
 
 </resources>

@@ -13,7 +13,7 @@ interface ArtistQueries : Transacter {
   fun <T : Any> artistTop(mapper: (
     name: String?,
     rank: Int?,
-    playCount: Int?
+    playCount: Long?
   ) -> T): Query<T>
 
   fun artistTop(): Query<ArtistTop>

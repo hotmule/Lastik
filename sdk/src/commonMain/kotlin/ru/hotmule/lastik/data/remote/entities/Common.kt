@@ -20,7 +20,7 @@ data class LastFmItem(
     val name: String? = null,
     val artist: MusicBrainzIdentifier? = null,
     val album: MusicBrainzIdentifier? = null,
-    @SerialName("playcount") val playCount: Int? = null,
+    @SerialName("playcount") val playCount: Long? = null,
     @SerialName("@attr") val attributes: LastFmItemAttributes? = null,
     @SerialName("image") val images: List<Image>? = null,
 )

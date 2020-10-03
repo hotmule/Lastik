@@ -9,7 +9,7 @@ import kotlin.String
 
 interface ScrobbleQueries : Transacter {
   fun <T : Any> scrobbleData(mapper: (
-    date: String?,
+    time: Long?,
     nowPlaying: Boolean,
     loved: Boolean?,
     track: String?,

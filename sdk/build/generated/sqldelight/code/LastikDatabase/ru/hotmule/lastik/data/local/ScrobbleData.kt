@@ -1,10 +1,11 @@
 package ru.hotmule.lastik.data.local
 
 import kotlin.Boolean
+import kotlin.Long
 import kotlin.String
 
 data class ScrobbleData(
-  val date: String?,
+  val time: Long?,
   val nowPlaying: Boolean,
   val loved: Boolean?,
   val track: String?,
@@ -14,7 +15,7 @@ data class ScrobbleData(
 ) {
   override fun toString(): String = """
   |ScrobbleData [
-  |  date: $date
+  |  time: $time
   |  nowPlaying: $nowPlaying
   |  loved: $loved
   |  track: $track
