@@ -1,22 +1,14 @@
 package ru.hotmule.lastik.screen
 
-import android.compose.utils.statusBarsHeightPlus
-import android.compose.utils.statusBarsPadding
 import androidx.annotation.StringRes
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ArrowBack
-import androidx.compose.material.icons.rounded.ExitToApp
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.launchInComposition
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import ru.hotmule.lastik.Sdk
-import ru.hotmule.lastik.theme.barHeight
 import ru.hotmule.lastik.R
 import ru.hotmule.lastik.domain.ProfileInteractor
 import androidx.compose.runtime.*
@@ -26,66 +18,6 @@ import androidx.ui.tooling.preview.Preview
 import ru.hotmule.lastik.components.ProfileImage
 import ru.hotmule.lastik.utlis.toDateString
 import ru.hotmule.lastik.utlis.toCommasString
-
-@Composable
-fun ProfileScreen(
-    sdk: Sdk,
-    toBack: () -> Unit
-) {
-
-    val isUpdating = mutableStateOf(false)
-
-    Scaffold(
-        topBar = {
-            ProfileTopBar(
-                modifier = Modifier.statusBarsHeightPlus(barHeight),
-                nickname = sdk.profileInteractor.getNickname(),
-                isUpdating = isUpdating.value,
-                onSignOut = sdk.authInteractor::signOut,
-                onBack = toBack
-            )
-        },
-        bodyContent = {
-            ProfileBody(
-                isUpdating = { isUpdating.value = it },
-                interactor = sdk.profileInteractor
-            )
-        }
-    )
-}
-
-@Composable
-fun ProfileTopBar(
-    modifier: Modifier = Modifier,
-    nickname: String,
-    isUpdating: Boolean,
-    onSignOut: () -> Unit,
-    onBack: () -> Unit
-) {
-    TopAppBar(
-        modifier = modifier,
-        navigationIcon = {
-            IconButton(
-                modifier = Modifier.statusBarsPadding(),
-                onClick = { onBack.invoke() },
-                icon = { Icon(asset = Icons.Rounded.ArrowBack) }
-            )
-        },
-        title = {
-            Text(
-                modifier = Modifier.statusBarsPadding(),
-                text = if (isUpdating) stringResource(id = R.string.updating) else nickname
-            )
-        },
-        actions = {
-            IconButton(
-                modifier = Modifier.statusBarsPadding(),
-                onClick = { onSignOut.invoke() },
-                icon = { Icon(asset = Icons.Rounded.ExitToApp) }
-            )
-        }
-    )
-}
 
 @Composable
 fun ProfileBody(
@@ -118,6 +50,7 @@ fun ProfileBody(
                 .constrainAs(image) {
                     top.linkTo(parent.top, 20.dp)
                     start.linkTo(parent.start, 20.dp)
+                    bottom.linkTo(parent.bottom, 20.dp)
                 }
         )
 

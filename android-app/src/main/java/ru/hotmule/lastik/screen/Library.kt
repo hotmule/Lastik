@@ -12,14 +12,11 @@ import androidx.compose.runtime.savedinstancestate.savedInstanceState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.VectorAsset
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.flow.Flow
 import ru.hotmule.lastik.R
 import ru.hotmule.lastik.Sdk
 import ru.hotmule.lastik.components.LibraryListItem
-import ru.hotmule.lastik.components.ProfileImage
 import ru.hotmule.lastik.domain.ListItem
-import ru.hotmule.lastik.domain.ProfileInteractor
 import ru.hotmule.lastik.theme.barHeight
 
 enum class LibrarySection(
@@ -30,14 +27,13 @@ enum class LibrarySection(
     Artists(R.string.artists, Icons.Rounded.Face),
     Albums(R.string.albums, Icons.Rounded.Album),
     Tracks(R.string.tracks, Icons.Rounded.Audiotrack),
-    Loved(R.string.loved, Icons.Rounded.Favorite)
+    Profile(R.string.profile, Icons.Rounded.AccountCircle)
 }
 
 @Composable
 fun LibraryScreen(
     sdk: Sdk,
-    displayWidth: Float,
-    toProfile: () -> Unit
+    displayWidth: Float
 ) {
 
     val (currentSection, setCurrentSection) = savedInstanceState { LibrarySection.Resents }
@@ -47,10 +43,10 @@ fun LibraryScreen(
         topBar = {
             LibraryTopBar(
                 modifier = Modifier.statusBarsHeightPlus(barHeight),
-                interactor = sdk.profileInteractor,
                 isUpdating = isUpdating.value,
-                sectionName = currentSection.name,
-                toProfile = toProfile
+                currentSection = currentSection,
+                onSignOut = sdk.authInteractor::signOut,
+                nickname = sdk.profileInteractor.getNickname()
             )
         },
         bodyContent = {
@@ -75,30 +71,37 @@ fun LibraryScreen(
 @Composable
 private fun LibraryTopBar(
     modifier: Modifier = Modifier,
-    interactor: ProfileInteractor,
+    currentSection: LibrarySection,
+    onSignOut: () -> Unit,
     isUpdating: Boolean,
-    sectionName: String,
-    toProfile: () -> Unit
+    nickname: String,
 ) {
     TopAppBar(
         modifier = modifier,
         title = {
             Text(
                 modifier = Modifier.statusBarsPadding(),
-                text = if (isUpdating) stringResource(id = R.string.updating) else sectionName
+                text = when {
+                    isUpdating -> stringResource(id = R.string.updating)
+                    currentSection != LibrarySection.Profile -> currentSection.name
+                    else -> nickname
+                }
             )
         },
         actions = {
-            val info by interactor.observeInfo().collectAsState(initial = null)
-            ProfileImage(
-                modifier = Modifier
-                    .statusBarsPadding()
-                    .padding(12.dp)
-                    .width(30.dp)
-                    .height(30.dp),
-                url = info?.lowResImage,
-                onClick = toProfile
-            )
+            when (currentSection) {
+                LibrarySection.Albums -> IconButton(
+                    icon = { Icon(Icons.Rounded.ViewModule) },
+                    modifier = Modifier.statusBarsPadding(),
+                    onClick = { },
+                )
+                LibrarySection.Profile -> IconButton(
+                    icon = { Icon(Icons.Rounded.ExitToApp) },
+                    modifier = Modifier.statusBarsPadding(),
+                    onClick = { onSignOut.invoke() },
+                )
+                else -> { }
+            }
         }
     )
 }
@@ -171,13 +174,19 @@ private fun LibraryBody(
                 itemsFlow = sdk.tracksInteractor::observeTopTracks
             )
         }
-        LibrarySection.Loved -> {
-            LibraryPage(
-                modifier = modifier,
-                isUpdating = isUpdating,
-                refresh = sdk.tracksInteractor::refreshLovedTracks,
-                itemsFlow = sdk.tracksInteractor::observeLovedTracks
-            )
+        LibrarySection.Profile -> {
+            Column {
+                ProfileBody(
+                    isUpdating = isUpdating,
+                    interactor = sdk.profileInteractor
+                )
+                LibraryPage(
+                    modifier = modifier,
+                    isUpdating = isUpdating,
+                    refresh = sdk.tracksInteractor::refreshLovedTracks,
+                    itemsFlow = sdk.tracksInteractor::observeLovedTracks
+                )
+            }
         }
     }
 }

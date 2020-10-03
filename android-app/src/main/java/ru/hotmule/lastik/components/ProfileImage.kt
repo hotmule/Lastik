@@ -13,8 +13,7 @@ import dev.chrisbanes.accompanist.coil.CoilImage
 @Composable
 fun ProfileImage(
     modifier: Modifier = Modifier,
-    url: String?,
-    onClick: (() -> Unit)? = null
+    url: String?
 ) {
     CoilImage(
         data = url ?: "",
@@ -22,6 +21,5 @@ fun ProfileImage(
         modifier = modifier
             .clip(CircleShape)
             .background(Color.LightGray)
-            .clickable(onClick = { onClick?.invoke() })
     )
 }
