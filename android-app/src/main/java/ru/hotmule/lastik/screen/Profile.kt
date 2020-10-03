@@ -42,6 +42,7 @@ fun ProfileScreen(
 
     val info by sdk.profileInteractor.observeInfo().collectAsState(initial = null)
     val friends by sdk.profileInteractor.observeFriends().collectAsState(initial = null)
+    val lovedTracks by sdk.tracksInteractor.observeLovedTracks().collectAsState(initial = null)
 
     ScrollableColumn {
 
@@ -54,8 +55,8 @@ fun ProfileScreen(
             ProfileImage(
                 url = info?.highResImage,
                 modifier = Modifier
-                    .preferredHeight(90.dp)
-                    .preferredWidth(90.dp)
+                    .preferredHeight(96.dp)
+                    .preferredWidth(96.dp)
                     .constrainAs(image) {
                         top.linkTo(parent.top, 24.dp)
                         start.linkTo(parent.start, 24.dp)
@@ -92,13 +93,41 @@ fun ProfileScreen(
         }
 
         friends?.let {
+
+            TitleText(
+                titleId = R.string.friends,
+                modifier = Modifier.padding(
+                    start = 16.dp,
+                    top = 24.dp
+                )
+            )
+
             ScrollableRow(
-                modifier = Modifier.padding(8.dp)
+                modifier = Modifier.padding(
+                    top = 8.dp
+                )
             ) {
-                it.forEach {
-                    Friend(friend = it)
+                it.forEachIndexed { index, friend ->
+                    Friend(
+                        friend = friend,
+                        modifier = Modifier.padding(
+                            top = 8.dp,
+                            start = if (index == 0) 16.dp else 8.dp,
+                            end = if (index == it.lastIndex) 16.dp else 8.dp
+                        )
+                    )
                 }
             }
+        }
+
+        lovedTracks?.let {
+            TitleText(
+                titleId = R.string.loved_tracks,
+                modifier = Modifier.padding(
+                    start = 16.dp,
+                    top = 24.dp
+                )
+            )
         }
 
         LibraryList(
@@ -119,19 +148,32 @@ fun ProfileStat(
 ) {
     Column(modifier) {
 
-        ProvideEmphasis(emphasis = EmphasisAmbient.current.medium) {
-            Text(
-                text = stringResource(id = titleId),
-                style = MaterialTheme.typography.body2,
-                modifier = Modifier.align(Alignment.CenterHorizontally)
-            )
-        }
+        TitleText(
+            titleId = titleId,
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+        )
 
         Text(
             text = subtitle,
             fontSize = TextUnit(6),
             style = MaterialTheme.typography.h6,
-            modifier = Modifier.align(Alignment.CenterHorizontally)
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(top = 8.dp)
+        )
+    }
+}
+
+@Composable
+private fun TitleText(
+    modifier: Modifier = Modifier,
+    @StringRes titleId: Int
+) {
+    ProvideEmphasis(emphasis = EmphasisAmbient.current.medium) {
+        Text(
+            modifier = modifier,
+            text = stringResource(id = titleId),
+            style = MaterialTheme.typography.body2,
         )
     }
 }
@@ -142,14 +184,13 @@ fun Friend(
     friend: Profile
 ) {
     Column(
-        modifier = modifier
-            .padding(8.dp)
-            .preferredWidth(72.dp)
+        modifier = modifier.preferredWidth(72.dp)
     ) {
 
         ProfileImage(
             url = friend.highResImage,
             modifier = Modifier
+                .preferredWidth(72.dp)
                 .preferredHeight(72.dp)
                 .fillMaxWidth()
         )
@@ -159,9 +200,9 @@ fun Friend(
                 text = friend.userName,
                 maxLines = 1,
                 fontSize = 12.sp,
-                modifier = modifier
-                    .padding(top = 4.dp)
+                modifier = Modifier
                     .align(Alignment.CenterHorizontally)
+                    .padding(top = 4.dp)
             )
         }
     }
