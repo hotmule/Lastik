@@ -22,6 +22,13 @@ class UserApi(
         parameter("user", user)
     }
 
+    suspend fun getFriends(
+        user: String?
+    ) = client.get<FriendsResponse?> {
+        userApi("getFriends")
+        parameter("user", user)
+    }
+
     suspend fun getRecentTracks(
         user: String?
     ) = client.get<ScrobblesResponse?> {

@@ -8,23 +8,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
+//red
 val sangria = Color(0xff9d0000)
-val scarlet = Color(0xffb90000)
 val crimson = Color(0xffd50000)
-val habanero = Color(0xfff71414)
-val postbox = Color(0xffd92323)
-val jam = Color(0xffbd1e1e)
+
+//yellow
+val sunflower = Color(0xffffc900)
 
 val barHeight = 56.dp
 
 private val LightColors = lightColors(
-    primary = sangria,
-    secondary = crimson
+    primary = sangria
 )
 
-private val DarkColors = darkColors(
-    secondary = crimson
-)
+private val DarkColors = darkColors()
 
 @Composable
 fun AppTheme(

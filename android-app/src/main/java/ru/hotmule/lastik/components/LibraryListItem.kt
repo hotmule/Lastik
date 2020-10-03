@@ -8,7 +8,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Favorite
-import androidx.compose.material.icons.rounded.FavoriteBorder
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -22,6 +21,8 @@ import androidx.ui.tooling.preview.Preview
 import dev.chrisbanes.accompanist.coil.CoilImage
 import ru.hotmule.lastik.R
 import ru.hotmule.lastik.domain.ListItem
+import ru.hotmule.lastik.theme.crimson
+import ru.hotmule.lastik.theme.sunflower
 import ru.hotmule.lastik.utlis.toCommasString
 import ru.hotmule.lastik.utlis.toDateString
 
@@ -45,7 +46,7 @@ fun LibraryListItem(
 
         surfaceWidth?.let {
             Surface(
-                color = MaterialTheme.colors.secondary.copy(alpha = 0.1f),
+                color = crimson.copy(alpha = 0.1f),
                 modifier = Modifier
                     .width(surfaceWidth.dp)
                     .fillMaxHeight()
@@ -53,6 +54,17 @@ fun LibraryListItem(
                         end.linkTo(parent.end)
                     }
             ) { }
+        }
+
+        item.nowPlaying?.let {
+            if (it) {
+                Surface(
+                    color = sunflower.copy(alpha = 0.1f),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight()
+                ) { }
+            }
         }
 
         item.position?.let {
@@ -91,6 +103,7 @@ fun LibraryListItem(
         item.title?.let {
             Text(
                 text = it,
+                maxLines = 1,
                 fontWeight = FontWeight.Bold,
                 style = MaterialTheme.typography.body1,
                 modifier = Modifier
@@ -123,13 +136,18 @@ fun LibraryListItem(
             }
         }
 
-        if (item.time != null || item.nowPlaying == true) {
+        if (item.time != null ||
+            item.nowPlaying == true ||
+            item.scrobbles != null) {
+
             ProvideEmphasis(emphasis = EmphasisAmbient.current.medium) {
                 Text(
-                    text = if (item.time != null)
-                        item.time!!.toDateString("d MMM, HH:mm")
-                    else
-                        stringResource(R.string.scrobbling_now),
+                    text = when {
+                        item.time != null -> item.time!!.toDateString("d MMM, HH:mm")
+                        item.nowPlaying != null -> stringResource(R.string.scrobbling_now)
+                        else -> item.scrobbles!!.toCommasString() + " " +
+                                stringResource(R.string.scrobbles)
+                    },
                     style = MaterialTheme.typography.body2,
                     modifier = Modifier
                         .constrainAs(date) {
@@ -139,6 +157,7 @@ fun LibraryListItem(
                 )
             }
         }
+
 
         item.scrobbles?.let {
             ProvideEmphasis(emphasis = EmphasisAmbient.current.high) {
@@ -156,15 +175,22 @@ fun LibraryListItem(
         }
 
         item.loved?.let {
-            Image(
-                asset = if (it) Icons.Rounded.Favorite else Icons.Rounded.FavoriteBorder,
-                colorFilter = ColorFilter.tint(MaterialTheme.colors.secondary),
+            IconButton(
+                onClick = {
+
+                },
+                icon = {
+                    Image(
+                        asset = Icons.Rounded.Favorite,
+                        colorFilter = ColorFilter.tint(crimson)
+                    )
+                },
                 modifier = Modifier
                     .clickable(onClick = { })
                     .constrainAs(like) {
-                        end.linkTo(parent.end, 16.dp)
-                        top.linkTo(parent.top, 16.dp)
-                        bottom.linkTo(parent.bottom, 16.dp)
+                        end.linkTo(parent.end, 8.dp)
+                        top.linkTo(parent.top)
+                        bottom.linkTo(parent.bottom)
                     }
             )
         }

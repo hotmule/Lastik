@@ -5,6 +5,7 @@ import kotlin.String
 
 data class Profile(
   val userName: String,
+  val parentUserName: String?,
   val realName: String?,
   val lowResImage: String?,
   val highResImage: String?,
@@ -14,6 +15,7 @@ data class Profile(
   override fun toString(): String = """
   |Profile [
   |  userName: $userName
+  |  parentUserName: $parentUserName
   |  realName: $realName
   |  lowResImage: $lowResImage
   |  highResImage: $highResImage

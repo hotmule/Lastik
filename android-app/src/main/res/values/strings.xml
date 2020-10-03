@@ -22,5 +22,7 @@
     <!--Profile Screen-->
     <string name="scrobbling_since">Scrobbling since</string>
     <string name="scrobbles_upper">Scrobbles</string>
+    <string name="friends">Friends</string>
+    <string name="loved_tracks">Loved tracks</string>
 
 </resources>

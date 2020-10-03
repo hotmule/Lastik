@@ -9,6 +9,7 @@ import kotlin.String
 interface ProfileQueries : Transacter {
   fun <T : Any> getProfile(mapper: (
     userName: String,
+    parentUserName: String?,
     realName: String?,
     lowResImage: String?,
     highResImage: String?,
@@ -18,8 +19,9 @@ interface ProfileQueries : Transacter {
 
   fun getProfile(): Query<Profile>
 
-  fun <T : Any> getProfileByNickname(userName: String, mapper: (
+  fun <T : Any> getFriends(parentUserName: String?, mapper: (
     userName: String,
+    parentUserName: String?,
     realName: String?,
     lowResImage: String?,
     highResImage: String?,
@@ -27,20 +29,20 @@ interface ProfileQueries : Transacter {
     registerDate: Long?
   ) -> T): Query<T>
 
-  fun getProfileByNickname(userName: String): Query<Profile>
+  fun getFriends(parentUserName: String?): Query<Profile>
 
-  fun <T : Any> getLowResImage(userName: String, mapper: (lowResImage: String?) -> T): Query<T>
-
-  fun getLowResImage(userName: String): Query<GetLowResImage>
+  fun deleteFriends(parentUserName: String?)
 
   fun deleteAll()
 
   fun upsert(
+    parentUsername: String?,
     realName: String?,
     lowResImage: String?,
     highResImage: String?,
     playCount: Long?,
     registerDate: Long?,
-    userName: String
+    userName: String,
+    parentUserName: String?
   )
 }

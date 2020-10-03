@@ -4,7 +4,13 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ProfileResponse(val user: User)
+data class FriendsResponse(val friends: Friends? = null)
+
+@Serializable
+data class Friends(val user: List<User>? = null)
+
+@Serializable
+data class ProfileResponse(val user: User? = null)
 
 @Serializable
 data class User(

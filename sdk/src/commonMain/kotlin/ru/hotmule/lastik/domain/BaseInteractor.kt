@@ -1,6 +1,7 @@
 package ru.hotmule.lastik.domain
 
 import ru.hotmule.lastik.data.local.LastikDatabase
+import ru.hotmule.lastik.data.remote.entities.User
 
 data class Stat(
     val rank: Int? = null,
@@ -69,6 +70,22 @@ open class BaseInteractor(
             getStatId(stat),
             name,
             loved
+        )
+    }
+
+    fun insertUser(
+        user: User,
+        parentUser: String? = null,
+    ) {
+        db.profileQueries.upsert(
+            parentUser,
+            user.realName,
+            user.image?.get(1)?.url,
+            user.image?.get(2)?.url,
+            user.playCount,
+            user.registered?.time?.toLongOrNull(),
+            user.nickname!!,
+            parentUser
         )
     }
 
