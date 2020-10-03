@@ -5,7 +5,6 @@ import kotlin.String
 
 data class Album(
   val id: Long,
-  val nickname: String,
   val artistId: Long,
   val statId: Long?,
   val name: String?,
@@ -15,7 +14,6 @@ data class Album(
   override fun toString(): String = """
   |Album [
   |  id: $id
-  |  nickname: $nickname
   |  artistId: $artistId
   |  statId: $statId
   |  name: $name

@@ -11,22 +11,23 @@ class ArtistsInteractor(
     private val db: LastikDatabase
 ) : BaseInteractor(db) {
 
-    fun observeArtists() = db.artistQueries.artistTop().asFlow().mapToList().map { artists ->
-        artists.map {
-            ListItem(
-                title = it.name,
-                position = it.rank,
-                scrobbles = it.playCount
-            )
+    fun observeArtists() = db.artistQueries.artistTop(getUserName())
+        .asFlow()
+        .mapToList()
+        .map { artists ->
+            artists.map {
+                ListItem(
+                    title = it.name,
+                    position = it.rank,
+                    scrobbles = it.playCount
+                )
+            }
         }
-    }
 
     suspend fun refreshArtists() {
-        api.getTopArtists(nickname).also {
+        api.getTopArtists(getUserName()).also {
             db.transaction {
-
-                db.artistQueries.deleteArtistTop()
-
+                db.artistQueries.deleteTopArtist(getUserName())
                 it?.top?.artists?.forEach { artist ->
                     insertArtist(
                         artist.name,

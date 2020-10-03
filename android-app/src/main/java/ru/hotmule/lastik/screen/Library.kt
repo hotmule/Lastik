@@ -46,7 +46,7 @@ fun LibraryScreen(
                 isUpdating = isUpdating.value,
                 currentSection = currentSection,
                 onSignOut = sdk.signOutInteractor::signOut,
-                nickname = sdk.profileInteractor.nickname
+                nickname = sdk.profileInteractor.getUserName()
             )
         },
         bodyContent = {

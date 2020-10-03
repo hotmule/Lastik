@@ -39,11 +39,3 @@ FROM track t
 LEFT JOIN album al ON t.albumId = al.id
 LEFT JOIN artist ar ON t.artistId = ar.id
 WHERE t.loved = 1;
-
-deleteTopTracks:
-DELETE FROM track WHERE EXISTS (
-    SELECT id FROM statistic stat WHERE track.statId = stat.id AND stat.rank NOT NULL
-);
-
-deleteLovedTracks:
-DELETE FROM track WHERE track.loved = 1;

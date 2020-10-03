@@ -1,19 +1,17 @@
 CREATE TABLE album (
     id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-    nickname TEXT NOT NULL,
     artistId INTEGER NOT NULL,
     statId INTEGER,
     name TEXT,
     lowArtwork TEXT,
     highArtwork TEXT,
-    FOREIGN KEY (nickname) REFERENCES profile(nickname) ON DELETE CASCADE,
     FOREIGN KEY (artistId) REFERENCES artist(id) ON DELETE CASCADE,
     FOREIGN KEY (statId) REFERENCES statistic(id) ON DELETE CASCADE
 );
 
 insert:
-INSERT OR REPLACE INTO album(nickname, artistId, statId, name, lowArtwork, highArtwork)
-VALUES (?, ?, ?, ?, ?, ?);
+INSERT OR REPLACE INTO album(artistId, statId, name, lowArtwork, highArtwork)
+VALUES (?, ?, ?, ?, ?);
 
 lastId:
 SELECT last_insert_rowid();
@@ -29,8 +27,3 @@ FROM album al
 LEFT JOIN statistic stat ON al.statId = stat.id
 LEFT JOIN artist ar ON al.artistId = ar.id
 WHERE stat.rank NOT NULL;
-
-deleteAlbumTop:
-DELETE FROM album WHERE EXISTS (
-    SELECT id FROM statistic stat WHERE album.statId = stat.id AND stat.rank NOT NULL
-);

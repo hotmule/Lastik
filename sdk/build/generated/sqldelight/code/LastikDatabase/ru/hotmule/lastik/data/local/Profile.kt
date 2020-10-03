@@ -4,7 +4,7 @@ import kotlin.Long
 import kotlin.String
 
 data class Profile(
-  val nickname: String,
+  val userName: String,
   val realName: String?,
   val lowResImage: String?,
   val highResImage: String?,
@@ -13,7 +13,7 @@ data class Profile(
 ) {
   override fun toString(): String = """
   |Profile [
-  |  nickname: $nickname
+  |  userName: $userName
   |  realName: $realName
   |  lowResImage: $lowResImage
   |  highResImage: $highResImage

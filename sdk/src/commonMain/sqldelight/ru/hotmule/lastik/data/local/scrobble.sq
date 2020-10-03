@@ -22,11 +22,5 @@ SELECT
 FROM scrobble s
 LEFT JOIN track t ON s.trackId = t.id
 LEFT JOIN album al ON t.albumId = al.id
-LEFT JOIN artist ar ON al.artistId = ar.id;
-
-deleteScrobbles:
-DELETE FROM scrobble WHERE EXISTS (
-    SELECT t.id FROM track t
-    LEFT JOIN statistic stat ON t.statId = stat.id
-    WHERE scrobble.trackId = t.id AND stat.rank IS NULL
-);
+LEFT JOIN artist ar ON al.artistId = ar.id
+WHERE ar.userName = ?;

@@ -1,12 +1,14 @@
 CREATE TABLE artist (
     id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    userName TEXT NOT NULL,
     statId INTEGER,
     name TEXT,
+    FOREIGN KEY (userName) REFERENCES profile(userName) ON DELETE CASCADE,
     FOREIGN KEY (statId) REFERENCES statistic(id) ON DELETE CASCADE
 );
 
 insert:
-INSERT OR REPLACE INTO artist(statId, name) VALUES (?, ?);
+INSERT OR REPLACE INTO artist(userName, statId, name) VALUES (?, ?, ?);
 
 lastId:
 SELECT last_insert_rowid();
@@ -14,13 +16,42 @@ SELECT last_insert_rowid();
 artistTop:
 SELECT
     a.name,
-    attr.rank,
-    attr.playCount
+    stat.rank,
+    stat.playCount
 FROM artist a
-LEFT JOIN statistic attr ON a.statId = attr.id
-WHERE attr.rank NOT NULL;
+LEFT JOIN statistic stat ON a.statId = stat.id
+WHERE stat.rank NOT NULL AND a.userName = ?;
 
-deleteArtistTop:
-DELETE FROM artist WHERE EXISTS (
-    SELECT id FROM statistic stat WHERE artist.statId = stat.id AND stat.rank NOT NULL
+deleteScrobbles:
+DELETE FROM artist WHERE userName = ? AND EXISTS (
+    SELECT s.id FROM scrobble s
+    LEFT JOIN track t ON t.id = s.trackId
+    LEFT JOIN statistic t_stat ON t_stat.id = t.statId
+    WHERE t.artistId = artist.id AND t_stat.rank IS NULL
+);
+
+deleteTopArtist:
+DELETE FROM artist WHERE userName = ? AND EXISTS (
+    SELECT ar_stat.id FROM statistic ar_stat
+    WHERE artist.statId = ar_stat.id AND ar_stat.rank NOT NULL
+);
+
+deleteTopAlbums:
+DELETE FROM artist WHERE userName = ? AND EXISTS (
+    SELECT al.id FROM album al
+    LEFT JOIN statistic al_stat ON al_stat.id = al.statId
+    WHERE artist.id = al.artistId AND al_stat.rank NOT NULL
+);
+
+deleteTopTracks:
+DELETE FROM artist WHERE userName = ? AND EXISTS (
+    SELECT t.id FROM track t
+    LEFT JOIN statistic t_stat ON t_stat.id = t.statId
+    WHERE artist.id = t.artistId AND t_stat.rank NOT NULL
+);
+
+deleteLovedTracks:
+DELETE FROM artist WHERE userName = ? AND EXISTS (
+    SELECT t.id FROM track t
+    WHERE artist.id = t.artistId AND t.loved = 1
 );

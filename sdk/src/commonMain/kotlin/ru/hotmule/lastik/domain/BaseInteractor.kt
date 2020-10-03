@@ -23,7 +23,7 @@ open class BaseInteractor(
     private val db: LastikDatabase
 ) {
 
-    val nickname = db.profileQueries.getProfile().executeAsOneOrNull()?.nickname
+    fun getUserName() = db.profileQueries.getProfile().executeAsOneOrNull()?.userName ?: ""
 
     fun lastArtistId() = db.artistQueries.lastId().executeAsOneOrNull()
     fun lastAlbumId() = db.albumQueries.lastId().executeAsOneOrNull()
@@ -34,6 +34,7 @@ open class BaseInteractor(
         stat: Stat? = null
     ) {
         db.artistQueries.insert(
+            getUserName(),
             getStatId(stat),
             name
         )
@@ -46,16 +47,13 @@ open class BaseInteractor(
         highArtwork: String?,
         stat: Stat? = null
     ) {
-        nickname?.let {
-            db.albumQueries.insert(
-                it,
-                artistId,
-                getStatId(stat),
-                name,
-                lowArtwork,
-                highArtwork
-            )
-        }
+        db.albumQueries.insert(
+            artistId,
+            getStatId(stat),
+            name,
+            lowArtwork,
+            highArtwork
+        )
     }
 
     fun insertTrack(

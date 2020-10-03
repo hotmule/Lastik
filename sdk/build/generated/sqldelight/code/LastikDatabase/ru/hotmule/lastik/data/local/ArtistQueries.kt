@@ -10,15 +10,27 @@ import kotlin.String
 interface ArtistQueries : Transacter {
   fun lastId(): Query<Long>
 
-  fun <T : Any> artistTop(mapper: (
+  fun <T : Any> artistTop(userName: String, mapper: (
     name: String?,
     rank: Int?,
     playCount: Long?
   ) -> T): Query<T>
 
-  fun artistTop(): Query<ArtistTop>
+  fun artistTop(userName: String): Query<ArtistTop>
 
-  fun insert(statId: Long?, name: String?)
+  fun insert(
+    userName: String,
+    statId: Long?,
+    name: String?
+  )
 
-  fun deleteArtistTop()
+  fun deleteScrobbles(userName: String)
+
+  fun deleteTopArtist(userName: String)
+
+  fun deleteTopAlbums(userName: String)
+
+  fun deleteTopTracks(userName: String)
+
+  fun deleteLovedTracks(userName: String)
 }

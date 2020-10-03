@@ -8,7 +8,7 @@ import kotlin.Long
 import kotlin.String
 
 interface ScrobbleQueries : Transacter {
-  fun <T : Any> scrobbleData(mapper: (
+  fun <T : Any> scrobbleData(userName: String, mapper: (
     time: Long?,
     nowPlaying: Boolean,
     loved: Boolean?,
@@ -18,7 +18,7 @@ interface ScrobbleQueries : Transacter {
     lowArtwork: String?
   ) -> T): Query<T>
 
-  fun scrobbleData(): Query<ScrobbleData>
+  fun scrobbleData(userName: String): Query<ScrobbleData>
 
   fun insert(
     trackId: Long,
@@ -26,6 +26,4 @@ interface ScrobbleQueries : Transacter {
     date: String?,
     nowPlaying: Boolean
   )
-
-  fun deleteScrobbles()
 }

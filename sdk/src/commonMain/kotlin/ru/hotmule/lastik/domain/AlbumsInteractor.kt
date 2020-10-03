@@ -24,10 +24,10 @@ class AlbumsInteractor(
     }
 
     suspend fun refreshAlbums() {
-        api.getTopAlbums(nickname).also {
+        api.getTopAlbums(getUserName()).also {
             db.transaction {
 
-                db.albumQueries.deleteAlbumTop()
+                db.artistQueries.deleteTopAlbums(getUserName())
 
                 it?.top?.albums?.forEach { album ->
 

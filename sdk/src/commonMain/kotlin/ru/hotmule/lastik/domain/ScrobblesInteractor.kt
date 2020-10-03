@@ -12,7 +12,7 @@ class ScrobblesInteractor(
 ) : BaseInteractor(db) {
 
     fun observeScrobbles() =
-        db.scrobbleQueries.scrobbleData().asFlow().mapToList().map { scrobbles ->
+        db.scrobbleQueries.scrobbleData(getUserName()).asFlow().mapToList().map { scrobbles ->
             scrobbles.map {
                 ListItem(
                     time = it.time,
@@ -25,10 +25,10 @@ class ScrobblesInteractor(
         }
 
     suspend fun refreshScrobbles() {
-        api.getRecentTracks(nickname).also { response ->
+        api.getRecentTracks(getUserName()).also { response ->
             db.transaction {
 
-                db.scrobbleQueries.deleteScrobbles()
+                db.artistQueries.deleteScrobbles(getUserName())
 
                 response?.recent?.tracks?.forEach { track ->
 

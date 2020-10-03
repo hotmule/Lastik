@@ -17,19 +17,17 @@ class ProfileInteractor(
         .mapToOneOrNull()
 
     suspend fun refreshInfo(
-        name: String? = super.nickname
+        name: String? = getUserName()
     ) {
         userApi.getInfo(name).also { response ->
             response?.user?.let {
-                db.profileQueries.insert(
-                    Profile(
-                        name!!,
-                        it.realName,
-                        it.image?.get(1)?.url,
-                        it.image?.get(2)?.url,
-                        it.playCount,
-                        it.registered?.time?.toLongOrNull()
-                    )
+                db.profileQueries.upsert(
+                    it.realName,
+                    it.image?.get(1)?.url,
+                    it.image?.get(2)?.url,
+                    it.playCount,
+                    it.registered?.time?.toLongOrNull(),
+                    name!!
                 )
             }
         }

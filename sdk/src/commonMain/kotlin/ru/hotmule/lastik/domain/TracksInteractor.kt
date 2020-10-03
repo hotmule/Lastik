@@ -35,10 +35,10 @@ class TracksInteractor(
     }
 
     suspend fun refreshTopTracks() {
-        api.getTopTracks(nickname).also {
+        api.getTopTracks(getUserName()).also {
             db.transaction {
 
-                db.trackQueries.deleteTopTracks()
+                db.artistQueries.deleteTopTracks(getUserName())
 
                 it?.top?.list?.forEach { track ->
                     insertArtist(track.artist?.name)
@@ -59,10 +59,10 @@ class TracksInteractor(
     }
 
     suspend fun refreshLovedTracks() {
-        api.getLovedTracks(nickname).also {
+        api.getLovedTracks(getUserName()).also {
             db.transaction {
 
-                db.trackQueries.deleteLovedTracks()
+                db.artistQueries.deleteLovedTracks(getUserName())
 
                 it?.loved?.list?.forEach { track ->
                     insertArtist(track.artist?.name)
