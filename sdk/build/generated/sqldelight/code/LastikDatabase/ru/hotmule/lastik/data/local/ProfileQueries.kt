@@ -7,7 +7,7 @@ import kotlin.Long
 import kotlin.String
 
 interface ProfileQueries : Transacter {
-  fun <T : Any> getInfo(nickname: String, mapper: (
+  fun <T : Any> getProfile(mapper: (
     nickname: String,
     realName: String?,
     lowResImage: String?,
@@ -16,11 +16,24 @@ interface ProfileQueries : Transacter {
     registerDate: Long?
   ) -> T): Query<T>
 
-  fun getInfo(nickname: String): Query<Profile>
+  fun getProfile(): Query<Profile>
+
+  fun <T : Any> getProfileByNickname(nickname: String, mapper: (
+    nickname: String,
+    realName: String?,
+    lowResImage: String?,
+    highResImage: String?,
+    playCount: Long?,
+    registerDate: Long?
+  ) -> T): Query<T>
+
+  fun getProfileByNickname(nickname: String): Query<Profile>
 
   fun <T : Any> getLowResImage(nickname: String, mapper: (lowResImage: String?) -> T): Query<T>
 
   fun getLowResImage(nickname: String): Query<GetLowResImage>
 
   fun insert(profile: Profile)
+
+  fun deleteAll()
 }

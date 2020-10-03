@@ -4,11 +4,9 @@ import com.squareup.sqldelight.runtime.coroutines.asFlow
 import com.squareup.sqldelight.runtime.coroutines.mapToList
 import kotlinx.coroutines.flow.map
 import ru.hotmule.lastik.data.local.LastikDatabase
-import ru.hotmule.lastik.data.prefs.PrefsStore
 import ru.hotmule.lastik.data.remote.api.UserApi
 
 class ArtistsInteractor(
-    private val prefs: PrefsStore,
     private val api: UserApi,
     private val db: LastikDatabase
 ) : BaseInteractor(db) {
@@ -24,7 +22,7 @@ class ArtistsInteractor(
     }
 
     suspend fun refreshArtists() {
-        api.getTopArtists(prefs.name).also {
+        api.getTopArtists(nickname).also {
             db.transaction {
 
                 db.artistQueries.deleteArtistTop()

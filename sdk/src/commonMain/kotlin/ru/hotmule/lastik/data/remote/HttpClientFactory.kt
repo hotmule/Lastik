@@ -12,7 +12,7 @@ import io.ktor.client.features.logging.Logging
 import io.ktor.http.*
 import kotlinx.coroutines.delay
 import kotlinx.serialization.json.Json
-import ru.hotmule.lastik.data.prefs.PrefsStore
+import ru.hotmule.lastik.domain.SignOutInteractor
 
 class HttpClientFactory(
     private val loggingEnabled: Boolean,
@@ -21,7 +21,7 @@ class HttpClientFactory(
 ) {
 
     fun create(
-        prefs: PrefsStore
+        interactor: SignOutInteractor
     ) = HttpClient(engine) {
 
         if (loggingEnabled) {
@@ -54,13 +54,8 @@ class HttpClientFactory(
 
                 if (!it.status.isSuccess()) {
                     when (it.status.value) {
-                        401 -> {
-                            prefs.clear()
-                            prefs.isSessionActive.value = false
-                        }
-                        else -> {
-                            error(it.status.value)
-                        }
+                        401 -> interactor.signOut()
+                        else -> error(it.status.value)
                     }
                 }
 

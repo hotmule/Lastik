@@ -21,6 +21,7 @@ interface AlbumQueries : Transacter {
   fun albumTop(): Query<AlbumTop>
 
   fun insert(
+    nickname: String,
     artistId: Long,
     statId: Long?,
     name: String?,

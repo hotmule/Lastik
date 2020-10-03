@@ -45,8 +45,8 @@ fun LibraryScreen(
                 modifier = Modifier.statusBarsHeightPlus(barHeight),
                 isUpdating = isUpdating.value,
                 currentSection = currentSection,
-                onSignOut = sdk.authInteractor::signOut,
-                nickname = sdk.profileInteractor.getNickname()
+                onSignOut = sdk.signOutInteractor::signOut,
+                nickname = sdk.profileInteractor.nickname
             )
         },
         bodyContent = {
@@ -74,7 +74,7 @@ private fun LibraryTopBar(
     currentSection: LibrarySection,
     onSignOut: () -> Unit,
     isUpdating: Boolean,
-    nickname: String,
+    nickname: String?,
 ) {
     TopAppBar(
         modifier = modifier,
@@ -84,7 +84,7 @@ private fun LibraryTopBar(
                 text = when {
                     isUpdating -> stringResource(id = R.string.updating)
                     currentSection != LibrarySection.Profile -> currentSection.name
-                    else -> nickname
+                    else -> nickname ?: currentSection.name
                 }
             )
         },
@@ -100,7 +100,8 @@ private fun LibraryTopBar(
                     modifier = Modifier.statusBarsPadding(),
                     onClick = { onSignOut.invoke() },
                 )
-                else -> { }
+                else -> {
+                }
             }
         }
     )
@@ -175,7 +176,7 @@ private fun LibraryBody(
             )
         }
         LibrarySection.Profile -> {
-            Column {
+            ScrollableColumn {
                 ProfileBody(
                     isUpdating = isUpdating,
                     interactor = sdk.profileInteractor
@@ -183,6 +184,7 @@ private fun LibraryBody(
                 LibraryPage(
                     modifier = modifier,
                     isUpdating = isUpdating,
+                    scrollingEnabled = false,
                     refresh = sdk.tracksInteractor::refreshLovedTracks,
                     itemsFlow = sdk.tracksInteractor::observeLovedTracks
                 )
@@ -197,6 +199,7 @@ private fun LibraryPage(
     isUpdating: (Boolean) -> Unit,
     displayWidth: Float? = null,
     refresh: suspend () -> Unit,
+    scrollingEnabled: Boolean = true,
     itemsFlow: () -> Flow<List<ListItem>>,
 ) {
 
@@ -222,7 +225,10 @@ private fun LibraryPage(
         }
     }
 
-    ScrollableColumn(modifier = modifier) {
+    ScrollableColumn(
+        modifier = modifier,
+        isScrollEnabled = scrollingEnabled
+    ) {
         items.forEach {
             LibraryListItem(scrobbleWidth = scrobbleWidth, item = it)
         }

@@ -4,11 +4,9 @@ import com.squareup.sqldelight.runtime.coroutines.asFlow
 import com.squareup.sqldelight.runtime.coroutines.mapToList
 import kotlinx.coroutines.flow.map
 import ru.hotmule.lastik.data.local.LastikDatabase
-import ru.hotmule.lastik.data.prefs.PrefsStore
 import ru.hotmule.lastik.data.remote.api.UserApi
 
 class TracksInteractor(
-    private val prefs: PrefsStore,
     private val api: UserApi,
     private val db: LastikDatabase
 ): BaseInteractor(db) {
@@ -37,7 +35,7 @@ class TracksInteractor(
     }
 
     suspend fun refreshTopTracks() {
-        api.getTopTracks(prefs.name).also {
+        api.getTopTracks(nickname).also {
             db.transaction {
 
                 db.trackQueries.deleteTopTracks()
@@ -61,7 +59,7 @@ class TracksInteractor(
     }
 
     suspend fun refreshLovedTracks() {
-        api.getLovedTracks(prefs.name).also {
+        api.getLovedTracks(nickname).also {
             db.transaction {
 
                 db.trackQueries.deleteLovedTracks()

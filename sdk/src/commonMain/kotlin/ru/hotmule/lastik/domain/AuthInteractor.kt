@@ -11,8 +11,6 @@ class AuthInteractor(
     private val profileInteractor: ProfileInteractor
 ) {
 
-    fun isSessionActive() = prefs.isSessionActive
-
     fun getAuthUrl() = "http://www.last.fm/api/auth/?api_key=$apiKey"
 
     fun urlContainsToken(url: String?): Boolean {
@@ -29,18 +27,7 @@ class AuthInteractor(
         prefs.token?.let { token ->
             val session = api.getSession(secret, token)
             profileInteractor.refreshInfo(session?.params?.name)
-            prefs.apply {
-                name = session?.params?.name
-                sessionKey = session?.params?.key
-                isSessionActive.value = true
-            }
-        }
-    }
-
-    fun signOut() {
-        prefs.apply {
-            clear()
-            isSessionActive.value = false
+            prefs.sessionKey = session?.params?.key
         }
     }
 }

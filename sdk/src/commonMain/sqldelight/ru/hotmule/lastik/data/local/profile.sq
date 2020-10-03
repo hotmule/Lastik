@@ -10,8 +10,14 @@ CREATE TABLE profile (
 insert:
 INSERT OR REPLACE INTO profile VALUES ?;
 
-getInfo:
+getProfile:
+SELECT * FROM profile LIMIT 1;
+
+getProfileByNickname:
 SELECT * FROM profile WHERE nickname = ?;
 
 getLowResImage:
 SELECT lowResImage FROM profile WHERE nickname = ?;
+
+deleteAll:
+DELETE FROM profile;

@@ -4,11 +4,9 @@ import com.squareup.sqldelight.runtime.coroutines.asFlow
 import com.squareup.sqldelight.runtime.coroutines.mapToList
 import kotlinx.coroutines.flow.map
 import ru.hotmule.lastik.data.local.*
-import ru.hotmule.lastik.data.prefs.PrefsStore
 import ru.hotmule.lastik.data.remote.api.UserApi
 
 class ScrobblesInteractor(
-    private val prefs: PrefsStore,
     private val api: UserApi,
     private val db: LastikDatabase
 ) : BaseInteractor(db) {
@@ -27,7 +25,7 @@ class ScrobblesInteractor(
         }
 
     suspend fun refreshScrobbles() {
-        api.getRecentTracks(prefs.name).also { response ->
+        api.getRecentTracks(nickname).also { response ->
             db.transaction {
 
                 db.scrobbleQueries.deleteScrobbles()

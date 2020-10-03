@@ -19,18 +19,19 @@ open class Sdk(
 
     private val prefs = PrefsStore(settings)
     private val database = LastikDatabase(sqlDriver)
-    private val httpClient = httpClientFactory.create(prefs)
+    val signOutInteractor = SignOutInteractor(prefs, database.profileQueries)
+    private val httpClient = httpClientFactory.create(signOutInteractor)
 
     private val authApi = AuthApi(httpClient, apiKey)
     private val userApi = UserApi(httpClient, apiKey)
 
-    val profileInteractor = ProfileInteractor(prefs, userApi, database.profileQueries)
+    val profileInteractor = ProfileInteractor(userApi, database)
     val authInteractor = AuthInteractor(prefs, authApi, apiKey, secret, profileInteractor)
 
-    val scrobblesInteractor = ScrobblesInteractor(prefs, userApi, database)
-    val artistsInteractor = ArtistsInteractor(prefs, userApi, database)
-    val albumsInteractor = AlbumsInteractor(prefs, userApi, database)
-    val tracksInteractor = TracksInteractor(prefs, userApi, database)
+    val scrobblesInteractor = ScrobblesInteractor(userApi, database)
+    val artistsInteractor = ArtistsInteractor(userApi, database)
+    val albumsInteractor = AlbumsInteractor(userApi, database)
+    val tracksInteractor = TracksInteractor(userApi, database)
 
     companion object
 }

@@ -19,11 +19,11 @@ fun LastikApp(
     displayWidth: Float,
     backDispatcher: OnBackPressedDispatcher
 ) {
-    val isSessionActive by sdk.authInteractor.isSessionActive().collectAsState()
+    val profile by sdk.profileInteractor.observeInfo().collectAsState(null)
 
     ProvideDisplayInsets {
         AppTheme {
-            if (!isSessionActive)
+            if (profile == null)
                 AuthScreen(sdk.authInteractor)
             else {
                 val navigator: Navigator<Destination> = rememberSavedInstanceState(
