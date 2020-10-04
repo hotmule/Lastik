@@ -1,6 +1,8 @@
 package ru.hotmule.lastik.components
 
 import androidx.compose.foundation.ScrollableColumn
+import androidx.compose.foundation.gestures.scrollable
+import androidx.compose.foundation.lazy.LazyColumnFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.launchInComposition
@@ -41,20 +43,11 @@ fun LibraryList(
         }
     }
 
-    ScrollableColumn(
+    LazyColumnFor(
+        items = items,
         modifier = modifier,
-        isScrollEnabled = scrollingEnabled
-    ) {
-        items.forEach {
+        itemContent = {
             LibraryListItem(scrobbleWidth = scrobbleWidth, item = it)
         }
-    }
-
-    // LazyColumn performance is worse than ScrollableColumn
-    //
-    // LazyColumnFor(
-    //     modifier = modifier,
-    //     items = items,
-    //     itemContent = { LibraryListItem(item = it) }
-    // )
+    )
 }

@@ -9,6 +9,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
@@ -32,174 +33,129 @@ fun LibraryListItem(
     modifier: Modifier = Modifier,
     scrobbleWidth: Float? = null,
 ) {
-    ConstraintLayout(
-        modifier = modifier
-            .clickable(onClick = { })
-            .preferredHeight(82.dp)
-            .fillMaxWidth()
-    ) {
+    with(item) {
 
-        val (scrobbles, rank, image, title, subtitle, date, like, divider) = createRefs()
-        val surfaceWidth = if (scrobbleWidth != null && item.scrobbles != null)
-            scrobbleWidth * item.scrobbles!!
-        else null
+        Stack(
+            modifier = modifier
+                .height(82.dp)
+                .fillMaxWidth()
+                .clickable(onClick = { })
+        ) {
 
-        surfaceWidth?.let {
-            Surface(
-                color = crimson.copy(alpha = 0.1f),
-                modifier = Modifier
-                    .width(surfaceWidth.dp)
-                    .fillMaxHeight()
-                    .constrainAs(scrobbles) {
-                        end.linkTo(parent.end)
-                    }
-            ) { }
-        }
-
-        item.nowPlaying?.let {
-            if (it) {
+            if (nowPlaying == true) {
                 Surface(
                     color = sunflower.copy(alpha = 0.1f),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight()
+                    modifier = Modifier.fillMaxSize()
                 ) { }
             }
-        }
 
-        item.position?.let {
-            Text(
-                text = it.toString(),
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.body2,
-                modifier = Modifier
-                    .preferredWidth(24.dp)
-                    .constrainAs(rank) {
-                        start.linkTo(parent.start, 16.dp)
-                        top.linkTo(parent.top)
-                        bottom.linkTo(parent.bottom)
-                    }
-            )
-        }
-
-        item.imageUrl?.let {
-            CoilImage(
-                data = it,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .height(50.dp)
-                    .width(50.dp)
-                    .clip(shape = RoundedCornerShape(8))
-                    .constrainAs(image) {
-                        top.linkTo(parent.top, 16.dp)
-                        bottom.linkTo(parent.bottom, 16.dp)
-                        start.linkTo(
-                            if (item.position != null) rank.end else parent.start, 16.dp
-                        )
-                    }
-            )
-        }
-
-        item.title?.let {
-            Text(
-                text = it,
-                maxLines = 1,
-                fontWeight = FontWeight.Bold,
-                style = MaterialTheme.typography.body1,
-                modifier = Modifier
-                    .constrainAs(title) {
-                        start.linkTo(
-                            when {
-                                item.imageUrl != null -> image.end
-                                item.position != null -> rank.end
-                                else -> parent.start
-                            },
-                            16.dp
-                        )
-                        top.linkTo(parent.top, 16.dp)
-                        if (item.subtitle == null) bottom.linkTo(parent.bottom, 16.dp)
-                    }
-            )
-        }
-
-        item.subtitle?.let {
-            ProvideEmphasis(emphasis = EmphasisAmbient.current.medium) {
-                Text(
-                    text = it,
-                    style = MaterialTheme.typography.body2,
+            if (scrobbleWidth != null && scrobbles != null) {
+                Surface(
+                    color = crimson.copy(alpha = 0.1f),
                     modifier = Modifier
-                        .constrainAs(subtitle) {
-                            start.linkTo(title.start)
-                            bottom.linkTo(parent.bottom, 16.dp)
-                        }
-                )
+                        .fillMaxHeight()
+                        .preferredWidth((scrobbleWidth * scrobbles!!).dp)
+                        .align(Alignment.CenterEnd)
+                ) { }
             }
-        }
 
-        if (item.time != null ||
-            item.nowPlaying == true ||
-            item.scrobbles != null) {
+            Row(
+                modifier = Modifier
+                    .padding(16.dp)
+                    .fillMaxSize()
+            ) {
 
-            ProvideEmphasis(emphasis = EmphasisAmbient.current.medium) {
-                Text(
-                    text = when {
-                        item.time != null -> item.time!!.toDateString("d MMM, HH:mm")
-                        item.nowPlaying != null -> stringResource(R.string.scrobbling_now)
-                        else -> item.scrobbles!!.toCommasString() + " " +
-                                stringResource(R.string.scrobbles)
-                    },
-                    style = MaterialTheme.typography.body2,
-                    modifier = Modifier
-                        .constrainAs(date) {
-                            end.linkTo(parent.end, 16.dp)
-                            bottom.linkTo(parent.bottom, 16.dp)
-                        }
-                )
-            }
-        }
-
-
-        item.scrobbles?.let {
-            ProvideEmphasis(emphasis = EmphasisAmbient.current.high) {
-                Text(
-                    text = it.toCommasString() + " " + stringResource(id = R.string.scrobbles),
-                    style = MaterialTheme.typography.body1,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier
-                        .constrainAs(date) {
-                            end.linkTo(parent.end, 16.dp)
-                            bottom.linkTo(parent.bottom, 16.dp)
-                        }
-                )
-            }
-        }
-
-        item.loved?.let {
-            IconButton(
-                onClick = {
-
-                },
-                icon = {
-                    Image(
-                        asset = Icons.Rounded.Favorite,
-                        colorFilter = ColorFilter.tint(crimson)
+                position?.let {
+                    Text(
+                        text = it.toString(),
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.body2,
+                        modifier = Modifier
+                            .preferredWidth(24.dp)
+                            .align(Alignment.CenterVertically)
                     )
-                },
-                modifier = Modifier
-                    .clickable(onClick = { })
-                    .constrainAs(like) {
-                        end.linkTo(parent.end, 8.dp)
-                        top.linkTo(parent.top)
-                        bottom.linkTo(parent.bottom)
+                }
+
+                imageUrl?.let {
+                    CoilImage(
+                        data = it,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .align(Alignment.CenterVertically)
+                            .padding(start = if (position != null) 16.dp else 0.dp)
+                            .preferredWidth(50.dp)
+                            .preferredHeight(50.dp)
+                            .clip(shape = RoundedCornerShape(8))
+                    )
+                }
+
+                Column(
+                    modifier = modifier
+                        .padding(start = if (position != null || imageUrl != null) 16.dp else 0.dp)
+                        .align(Alignment.CenterVertically)
+                ) {
+
+                    title?.let {
+                        Text(
+                            text = it,
+                            maxLines = 1,
+                            fontWeight = FontWeight.Bold,
+                            style = MaterialTheme.typography.body1
+                        )
                     }
+
+                    subtitle?.let {
+                        ProvideEmphasis(emphasis = EmphasisAmbient.current.medium) {
+                            Text(
+                                text = it,
+                                style = MaterialTheme.typography.body2,
+                                modifier = Modifier.padding(top = 8.dp)
+                            )
+                        }
+                    }
+                }
+            }
+
+            if (time != null || scrobbles != null || nowPlaying == true) {
+                ProvideEmphasis(
+                    emphasis = EmphasisAmbient.current.medium
+                ) {
+                    Text(
+                        style = MaterialTheme.typography.body2,
+                        modifier = Modifier
+                            .align(Alignment.BottomEnd)
+                            .padding(16.dp),
+                        text = when {
+                            time != null -> time!!.toDateString("d MMM, HH:mm")
+                            scrobbles != null -> scrobbles!!.toCommasString() + " " +
+                                    stringResource(R.string.scrobbles)
+                            else -> stringResource(R.string.scrobbling_now)
+                        }
+                    )
+                }
+            }
+
+            loved?.let {
+                IconButton(
+                    onClick = { },
+                    icon = {
+                        Image(
+                            asset = Icons.Rounded.Favorite,
+                            colorFilter = ColorFilter.tint(crimson)
+                        )
+                    },
+                    modifier = Modifier
+                        .align(Alignment.CenterEnd)
+                        .padding(8.dp)
+                )
+            }
+
+            Divider(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.BottomCenter)
             )
         }
-
-        Divider(
-            modifier = Modifier.constrainAs(divider) {
-                bottom.linkTo(parent.bottom)
-            }
-        )
     }
 }
 
