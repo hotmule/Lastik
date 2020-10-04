@@ -2,6 +2,7 @@ package ru.hotmule.lastik.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.Text
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -12,11 +13,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
 import dev.chrisbanes.accompanist.coil.CoilImage
@@ -86,11 +89,13 @@ fun LibraryListItem(
                             .preferredWidth(50.dp)
                             .preferredHeight(50.dp)
                             .clip(shape = RoundedCornerShape(8))
+                            .background(Color.LightGray)
                     )
                 }
 
                 Column(
                     modifier = modifier
+                        .weight(1f)
                         .padding(start = if (position != null || imageUrl != null) 16.dp else 0.dp)
                         .align(Alignment.CenterVertically)
                 ) {
@@ -100,7 +105,8 @@ fun LibraryListItem(
                             text = it,
                             maxLines = 1,
                             fontWeight = FontWeight.Bold,
-                            style = MaterialTheme.typography.body1
+                            style = MaterialTheme.typography.body1,
+                            overflow = TextOverflow.Ellipsis
                         )
                     }
 
@@ -113,6 +119,19 @@ fun LibraryListItem(
                             )
                         }
                     }
+                }
+
+                loved?.let {
+                    IconButton(
+                        onClick = { },
+                        icon = {
+                            Image(
+                                asset = Icons.Rounded.Favorite,
+                                colorFilter = ColorFilter.tint(crimson)
+                            )
+                        },
+                        modifier = Modifier.align(Alignment.CenterVertically)
+                    )
                 }
             }
 
@@ -133,21 +152,6 @@ fun LibraryListItem(
                         }
                     )
                 }
-            }
-
-            loved?.let {
-                IconButton(
-                    onClick = { },
-                    icon = {
-                        Image(
-                            asset = Icons.Rounded.Favorite,
-                            colorFilter = ColorFilter.tint(crimson)
-                        )
-                    },
-                    modifier = Modifier
-                        .align(Alignment.CenterEnd)
-                        .padding(8.dp)
-                )
             }
 
             Divider(

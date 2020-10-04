@@ -1,7 +1,5 @@
 package ru.hotmule.lastik.components
 
-import androidx.compose.foundation.ScrollableColumn
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.lazy.LazyColumnFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
