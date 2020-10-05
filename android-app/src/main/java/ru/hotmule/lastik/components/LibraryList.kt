@@ -8,7 +8,6 @@ import androidx.compose.ui.Modifier
 import kotlinx.coroutines.flow.Flow
 import ru.hotmule.lastik.domain.ListItem
 
-
 @Composable
 fun LibraryList(
     modifier: Modifier = Modifier,
