@@ -1,6 +1,7 @@
 package ru.hotmule.lastik.components
 
-import androidx.compose.foundation.lazy.LazyColumnFor
+import androidx.compose.foundation.lazy.ExperimentalLazyDsl
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.launchInComposition
@@ -8,14 +9,15 @@ import androidx.compose.ui.Modifier
 import kotlinx.coroutines.flow.Flow
 import ru.hotmule.lastik.domain.ListItem
 
+@ExperimentalLazyDsl
 @Composable
 fun LibraryList(
     modifier: Modifier = Modifier,
     isUpdating: (Boolean) -> Unit,
     displayWidth: Float? = null,
     refresh: suspend () -> Unit,
-    scrollingEnabled: Boolean = true,
     itemsFlow: () -> Flow<List<ListItem>>,
+    header: @Composable (() -> Unit)? = null
 ) {
 
     launchInComposition {
@@ -40,11 +42,16 @@ fun LibraryList(
         }
     }
 
-    LazyColumnFor(
-        items = items,
+    LazyColumn(
         modifier = modifier,
-        itemContent = {
-            LibraryListItem(scrobbleWidth = scrobbleWidth, item = it)
+        content = {
+            header?.let { item { it.invoke() } }
+            items(
+                items = items,
+                itemContent = { item ->
+                    LibraryListItem(scrobbleWidth = scrobbleWidth, item = item)
+                }
+            )
         }
     )
 }

@@ -4,6 +4,7 @@ import android.compose.utils.*
 import androidx.annotation.StringRes
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.ExperimentalLazyDsl
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.*
@@ -28,6 +29,7 @@ enum class LibrarySection(
     Profile(R.string.profile, Icons.Rounded.AccountCircle)
 }
 
+@ExperimentalLazyDsl
 @Composable
 fun LibraryScreen(
     sdk: Sdk,
@@ -129,6 +131,7 @@ private fun LibraryBottomBar(
     }
 }
 
+@ExperimentalLazyDsl
 @Composable
 private fun LibraryBody(
     modifier: Modifier = Modifier,
@@ -174,11 +177,17 @@ private fun LibraryBody(
             )
         }
         LibrarySection.Profile -> {
-            ProfileScreen(
-                modifier = modifier,
+            LibraryList(
                 isUpdating = isUpdating,
-                sdk = sdk
-            )
+                refresh = sdk.tracksInteractor::refreshLovedTracks,
+                itemsFlow = sdk.tracksInteractor::observeLovedTracks,
+                modifier = modifier
+            ) {
+                ProfileHeader(
+                    isUpdating = isUpdating,
+                    sdk = sdk
+                )
+            }
         }
     }
 }

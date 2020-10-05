@@ -17,14 +17,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.ui.tooling.preview.Preview
 import ru.hotmule.lastik.Sdk
-import ru.hotmule.lastik.components.LibraryList
 import ru.hotmule.lastik.components.ProfileImage
 import ru.hotmule.lastik.data.local.Profile
 import ru.hotmule.lastik.utlis.toDateString
 import ru.hotmule.lastik.utlis.toCommasString
 
 @Composable
-fun ProfileScreen(
+fun ProfileHeader(
     modifier: Modifier = Modifier,
     isUpdating: (Boolean) -> Unit,
     sdk: Sdk
@@ -44,10 +43,10 @@ fun ProfileScreen(
     val friends by sdk.profileInteractor.observeFriends().collectAsState(initial = null)
     val lovedTracks by sdk.tracksInteractor.observeLovedTracks().collectAsState(initial = null)
 
-    ScrollableColumn {
+    Column {
 
         ConstraintLayout(
-            modifier = Modifier.fillMaxWidth()
+            modifier = modifier.fillMaxWidth()
         ) {
 
             val (image, regDate, playCount) = createRefs()
@@ -129,14 +128,6 @@ fun ProfileScreen(
                 )
             )
         }
-
-        LibraryList(
-            isUpdating = isUpdating,
-            scrollingEnabled = false,
-            refresh = sdk.tracksInteractor::refreshLovedTracks,
-            itemsFlow = sdk.tracksInteractor::observeLovedTracks,
-            modifier = modifier
-        )
     }
 }
 
