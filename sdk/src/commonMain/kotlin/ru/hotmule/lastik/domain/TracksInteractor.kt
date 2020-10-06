@@ -23,17 +23,6 @@ class TracksInteractor(
         }
     }
 
-    fun observeLovedTracks() = db.trackQueries.lovedTracks().asFlow().mapToList().map { tracks ->
-        tracks.map {
-            ListItem(
-                imageUrl = it.lowArtwork,
-                title = it.track,
-                subtitle = it.artist,
-                loved = it.loved
-            )
-        }
-    }
-
     suspend fun refreshTopTracks() {
         api.getTopTracks(getUserName()).also {
             db.transaction {
@@ -51,27 +40,6 @@ class TracksInteractor(
                                 track.attributes?.rank,
                                 track.playCount
                             )
-                        )
-                    }
-                }
-            }
-        }
-    }
-
-    suspend fun refreshLovedTracks() {
-        api.getLovedTracks(getUserName()).also {
-            db.transaction {
-
-                db.artistQueries.deleteLovedTracks(getUserName())
-
-                it?.loved?.list?.forEach { track ->
-                    insertArtist(track.artist?.name)
-
-                    lastArtistId()?.let { artistId ->
-                        insertTrack(
-                            artistId = artistId,
-                            name = track.name,
-                            loved = true
                         )
                     }
                 }

@@ -3,13 +3,12 @@ package ru.hotmule.lastik.domain
 import com.squareup.sqldelight.runtime.coroutines.asFlow
 import com.squareup.sqldelight.runtime.coroutines.mapToList
 import com.squareup.sqldelight.runtime.coroutines.mapToOneOrNull
+import kotlinx.coroutines.flow.map
 import ru.hotmule.lastik.data.local.LastikDatabase
-import ru.hotmule.lastik.data.local.Profile
 import ru.hotmule.lastik.data.remote.api.UserApi
-import ru.hotmule.lastik.data.remote.entities.User
 
 class ProfileInteractor(
-    private val userApi: UserApi,
+    private val api: UserApi,
     private val db: LastikDatabase,
 ): BaseInteractor(db) {
 
@@ -23,19 +22,59 @@ class ProfileInteractor(
         .asFlow()
         .mapToList()
 
-    suspend fun refreshProfile(
+    fun observeLovedTracks() = db.trackQueries.lovedTracks().asFlow().mapToList().map { tracks ->
+        tracks.map {
+            ListItem(
+                imageUrl = it.lowArtwork,
+                title = it.track,
+                subtitle = it.artist,
+                loved = it.loved
+            )
+        }
+    }
+
+    suspend fun refreshProfile() {
+        refreshInfo()
+        refreshFriends()
+        refreshLovedTracks()
+    }
+
+    suspend fun refreshInfo(
         name: String? = getUserName()
     ) {
-        val infoResponse = userApi.getInfo(name)
-        val friendsResponse = userApi.getFriends(name)
-        db.transaction {
-            infoResponse?.user?.let { insertUser(it) }
-            db.profileQueries.deleteFriends(getUserName())
-            friendsResponse?.friends?.user?.forEach {
-                insertUser(
-                    it,
-                    getUserName()
-                )
+        api.getInfo(name).also {
+            it?.user?.let { user -> insertUser(user) }
+        }
+    }
+
+    private suspend fun refreshFriends() {
+        api.getFriends(getUserName()).also {
+            db.transaction {
+                db.profileQueries.deleteFriends(getUserName())
+                it?.friends?.user?.forEach {
+                    insertUser(
+                        it,
+                        getUserName()
+                    )
+                }
+            }
+        }
+    }
+
+    private suspend fun refreshLovedTracks() {
+        api.getLovedTracks(getUserName()).also {
+            db.transaction {
+                db.artistQueries.deleteLovedTracks(getUserName())
+                it?.loved?.list?.forEach { track ->
+                    insertArtist(track.artist?.name)
+                    lastArtistId()?.let { artistId ->
+                        insertTrack(
+                            artistId = artistId,
+                            name = track.name,
+                            loved = true
+                        )
+                    }
+                }
             }
         }
     }

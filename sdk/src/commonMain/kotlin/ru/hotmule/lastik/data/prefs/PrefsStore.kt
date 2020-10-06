@@ -6,7 +6,6 @@ class PrefsStore(private val settings: Settings) {
 
     companion object {
         const val TOKEN_ARG = "token"
-        const val NAME_ARG = "name"
         const val SESSION_KEY_ARG = "sessionKey"
     }
 

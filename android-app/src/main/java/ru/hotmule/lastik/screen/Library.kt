@@ -5,6 +5,7 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.ExperimentalLazyDsl
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.*
@@ -13,9 +14,12 @@ import androidx.compose.runtime.savedinstancestate.savedInstanceState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.VectorAsset
 import androidx.compose.ui.res.stringResource
+import kotlinx.coroutines.flow.Flow
 import ru.hotmule.lastik.R
 import ru.hotmule.lastik.Sdk
 import ru.hotmule.lastik.components.LibraryList
+import ru.hotmule.lastik.components.LibraryListItem
+import ru.hotmule.lastik.domain.ListItem
 import ru.hotmule.lastik.theme.barHeight
 
 enum class LibrarySection(
@@ -178,16 +182,62 @@ private fun LibraryBody(
         }
         LibrarySection.Profile -> {
             LibraryList(
+                modifier = modifier,
                 isUpdating = isUpdating,
-                refresh = sdk.tracksInteractor::refreshLovedTracks,
-                itemsFlow = sdk.tracksInteractor::observeLovedTracks,
-                modifier = modifier
+                refresh = sdk.profileInteractor::refreshProfile,
+                itemsFlow = sdk.profileInteractor::observeLovedTracks
             ) {
                 ProfileHeader(
-                    isUpdating = isUpdating,
-                    sdk = sdk
+                    interactor = sdk.profileInteractor
                 )
             }
         }
     }
+}
+
+@ExperimentalLazyDsl
+@Composable
+fun LibraryList(
+    modifier: Modifier = Modifier,
+    isUpdating: (Boolean) -> Unit,
+    displayWidth: Float? = null,
+    refresh: suspend () -> Unit,
+    itemsFlow: () -> Flow<List<ListItem>>,
+    header: @Composable (() -> Unit)? = null
+) {
+
+    launchInComposition {
+        isUpdating.invoke(true)
+        try {
+            refresh.invoke()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        isUpdating.invoke(false)
+    }
+
+    val items = itemsFlow
+        .invoke()
+        .collectAsState(initial = listOf())
+        .value
+
+    var scrobbleWidth: Float? = null
+    if (!items.isNullOrEmpty() && displayWidth != null) {
+        items[0].scrobbles?.let {
+            scrobbleWidth = displayWidth / it
+        }
+    }
+
+    LazyColumn(
+        modifier = modifier,
+        content = {
+            header?.let { item { it.invoke() } }
+            items(
+                items = items,
+                itemContent = { item ->
+                    LibraryListItem(scrobbleWidth = scrobbleWidth, item = item)
+                }
+            )
+        }
+    )
 }

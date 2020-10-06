@@ -26,7 +26,7 @@ class AuthInteractor(
     suspend fun getSessionKey() {
         prefs.token?.let { token ->
             val session = api.getSession(secret, token)
-            profileInteractor.refreshProfile(session?.params?.name)
+            profileInteractor.refreshInfo(session?.params?.name)
             prefs.sessionKey = session?.params?.key
         }
     }

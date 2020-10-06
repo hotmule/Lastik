@@ -3,10 +3,10 @@ package ru.hotmule.lastik.screen
 import androidx.annotation.StringRes
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyRowForIndexed
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.launchInComposition
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import ru.hotmule.lastik.R
@@ -16,32 +16,20 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.ui.tooling.preview.Preview
-import ru.hotmule.lastik.Sdk
 import ru.hotmule.lastik.components.ProfileImage
 import ru.hotmule.lastik.data.local.Profile
+import ru.hotmule.lastik.domain.ProfileInteractor
 import ru.hotmule.lastik.utlis.toDateString
 import ru.hotmule.lastik.utlis.toCommasString
 
 @Composable
 fun ProfileHeader(
     modifier: Modifier = Modifier,
-    isUpdating: (Boolean) -> Unit,
-    sdk: Sdk
+    interactor: ProfileInteractor
 ) {
-
-    launchInComposition {
-        isUpdating.invoke(true)
-        try {
-            sdk.profileInteractor.refreshProfile()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        isUpdating.invoke(false)
-    }
-
-    val info by sdk.profileInteractor.observeInfo().collectAsState(initial = null)
-    val friends by sdk.profileInteractor.observeFriends().collectAsState(initial = null)
-    val lovedTracks by sdk.tracksInteractor.observeLovedTracks().collectAsState(initial = null)
+    val info by interactor.observeInfo().collectAsState(initial = null)
+    val friends by interactor.observeFriends().collectAsState(initial = null)
+    val lovedTracks by interactor.observeLovedTracks().collectAsState(initial = null)
 
     Column {
 
@@ -101,21 +89,18 @@ fun ProfileHeader(
                 )
             )
 
-            ScrollableRow(
-                modifier = Modifier.padding(
-                    top = 8.dp
-                )
-            ) {
-                it.forEachIndexed { index, friend ->
-                    Friend(
-                        friend = friend,
-                        modifier = Modifier.padding(
-                            top = 8.dp,
-                            start = if (index == 0) 16.dp else 8.dp,
-                            end = if (index == it.lastIndex) 16.dp else 8.dp
-                        )
+            LazyRowForIndexed(
+                items = it,
+                modifier = Modifier.padding(top = 8.dp)
+            ) { index, friend ->
+                Friend(
+                    friend = friend,
+                    modifier = Modifier.padding(
+                        top = 8.dp,
+                        start = if (index == 0) 16.dp else 8.dp,
+                        end = if (index == it.lastIndex) 16.dp else 8.dp
                     )
-                }
+                )
             }
         }
 
