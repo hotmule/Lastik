@@ -7,6 +7,9 @@ CREATE TABLE scrobble (
     FOREIGN KEY (trackId) REFERENCES track(id) ON DELETE CASCADE
 );
 
+getCurrenPage:
+SELECT COUNT(id) % 50 + 1 FROM scrobble;
+
 insert:
 INSERT OR REPLACE INTO scrobble(trackId, uts, date, nowPlaying) VALUES (?, ?, ?, ?);
 

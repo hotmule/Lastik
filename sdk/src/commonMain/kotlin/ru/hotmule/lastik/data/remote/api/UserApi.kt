@@ -30,10 +30,13 @@ class UserApi(
     }
 
     suspend fun getRecentTracks(
-        user: String?
+        user: String?,
+        page: Int
     ) = client.get<ScrobblesResponse?> {
         userApi("getRecentTracks")
         parameter("user", user)
+        parameter("page", page)
+        parameter("extended", 1)
     }
 
     suspend fun getTopArtists(

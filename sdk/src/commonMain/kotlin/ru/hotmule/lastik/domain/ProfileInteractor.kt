@@ -28,7 +28,8 @@ class ProfileInteractor(
                 imageUrl = it.lowArtwork,
                 title = it.track,
                 subtitle = it.artist,
-                loved = it.loved
+                loved = it.loved,
+                time = it.lovedAt
             )
         }
     }
@@ -71,7 +72,8 @@ class ProfileInteractor(
                         insertTrack(
                             artistId = artistId,
                             name = track.name,
-                            loved = true
+                            loved = true,
+                            lovedAt = track.date?.uts
                         )
                     }
                 }

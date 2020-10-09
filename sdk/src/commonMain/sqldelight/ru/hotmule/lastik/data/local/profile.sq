@@ -10,18 +10,18 @@ CREATE TABLE profile (
 );
 
 upsert {
-  UPDATE profile
-  SET parentUserName = :parentUsername,
-      realName = :realName,
-      lowResImage = :lowResImage,
-      highResImage = :highResImage,
-      playCount = :playCount,
-      registerDate = :registerDate
-  WHERE userName = :userName;
+    UPDATE profile
+    SET parentUserName = :parentUsername,
+        realName = :realName,
+        lowResImage = :lowResImage,
+        highResImage = :highResImage,
+        playCount = :playCount,
+        registerDate = :registerDate
+    WHERE userName = :userName;
 
-  INSERT OR IGNORE
-  INTO profile (userName, parentUserName, realName, lowResImage, highResImage, playCount, registerDate)
-  VALUES (:userName, :parentUserName, :realName, :lowResImage, :highResImage, :playCount, :registerDate);
+    INSERT OR IGNORE
+    INTO profile (userName, parentUserName, realName, lowResImage, highResImage, playCount, registerDate)
+    VALUES (:userName, :parentUserName, :realName, :lowResImage, :highResImage, :playCount, :registerDate);
 }
 
 getProfile:

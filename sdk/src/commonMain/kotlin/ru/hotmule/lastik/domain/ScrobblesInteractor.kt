@@ -17,6 +17,7 @@ class ScrobblesInteractor(
                 ListItem(
                     time = it.time,
                     title = it.track,
+                    loved = it.loved,
                     subtitle = it.artist,
                     imageUrl = it.lowArtwork,
                     nowPlaying = it.nowPlaying
@@ -25,14 +26,18 @@ class ScrobblesInteractor(
         }
 
     suspend fun refreshScrobbles() {
-        api.getRecentTracks(getUserName()).also { response ->
+
+        val currentPage = db.scrobbleQueries.getCurrenPage().executeAsOne().toInt()
+
+        api.getRecentTracks(getUserName(), currentPage).also { response ->
             db.transaction {
 
-                db.artistQueries.deleteScrobbles(getUserName())
+                if (currentPage == 0)
+                    db.artistQueries.deleteScrobbles(getUserName())
 
                 response?.recent?.tracks?.forEach { track ->
 
-                    insertArtist(track.artist?.text)
+                    insertArtist(track.artist?.name)
 
                     lastArtistId()?.let { artistId ->
                         insertAlbum(
@@ -46,7 +51,8 @@ class ScrobblesInteractor(
                             insertTrack(
                                 artistId,
                                 albumId,
-                                track.name
+                                track.name,
+                                track.loved == 1
                             )
 
                             lastTrackId()?.let { trackId ->

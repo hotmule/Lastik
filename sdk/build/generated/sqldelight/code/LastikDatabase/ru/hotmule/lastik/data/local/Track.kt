@@ -10,7 +10,8 @@ data class Track(
   val albumId: Long?,
   val statId: Long?,
   val name: String?,
-  val loved: Boolean
+  val loved: Boolean,
+  val lovedAt: Long?
 ) {
   override fun toString(): String = """
   |Track [
@@ -20,6 +21,7 @@ data class Track(
   |  statId: $statId
   |  name: $name
   |  loved: $loved
+  |  lovedAt: $lovedAt
   |]
   """.trimMargin()
 }

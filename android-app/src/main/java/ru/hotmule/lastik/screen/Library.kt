@@ -4,20 +4,21 @@ import android.compose.utils.*
 import androidx.annotation.StringRes
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.ExperimentalLazyDsl
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyColumnForIndexed
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.savedinstancestate.savedInstanceState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.VectorAsset
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import ru.hotmule.lastik.R
 import ru.hotmule.lastik.Sdk
-import ru.hotmule.lastik.components.LibraryList
 import ru.hotmule.lastik.components.LibraryListItem
 import ru.hotmule.lastik.domain.ListItem
 import ru.hotmule.lastik.theme.barHeight
@@ -33,7 +34,6 @@ enum class LibrarySection(
     Profile(R.string.profile, Icons.Rounded.AccountCircle)
 }
 
-@ExperimentalLazyDsl
 @Composable
 fun LibraryScreen(
     sdk: Sdk,
@@ -135,7 +135,6 @@ private fun LibraryBottomBar(
     }
 }
 
-@ExperimentalLazyDsl
 @Composable
 private fun LibraryBody(
     modifier: Modifier = Modifier,
@@ -195,7 +194,6 @@ private fun LibraryBody(
     }
 }
 
-@ExperimentalLazyDsl
 @Composable
 fun LibraryList(
     modifier: Modifier = Modifier,
@@ -228,16 +226,33 @@ fun LibraryList(
         }
     }
 
-    LazyColumn(
+    LazyColumnForIndexed(
         modifier = modifier,
-        content = {
-            header?.let { item { it.invoke() } }
-            items(
-                items = items,
-                itemContent = { item ->
-                    LibraryListItem(scrobbleWidth = scrobbleWidth, item = item)
-                }
-            )
-        }
-    )
+        items = items
+    ) { index, item ->
+
+        if (index == 0) header?.invoke()
+
+        LibraryListItem(
+            item = item,
+            scrobbleWidth = scrobbleWidth
+        )
+    }
+}
+
+@Composable
+fun PagingProgress(
+    modifier: Modifier = Modifier
+) {
+    Stack(
+        modifier = modifier
+            .fillMaxWidth()
+            .wrapContentHeight()
+    ) {
+        CircularProgressIndicator(
+            modifier = Modifier
+                .padding(16.dp)
+                .align(Alignment.Center)
+        )
+    }
 }

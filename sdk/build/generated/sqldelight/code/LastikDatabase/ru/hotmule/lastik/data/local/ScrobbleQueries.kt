@@ -8,6 +8,8 @@ import kotlin.Long
 import kotlin.String
 
 interface ScrobbleQueries : Transacter {
+  fun getCurrenPage(): Query<Long>
+
   fun <T : Any> scrobbleData(userName: String, mapper: (
     time: Long?,
     nowPlaying: Boolean,

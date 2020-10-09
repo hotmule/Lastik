@@ -62,14 +62,16 @@ open class BaseInteractor(
         albumId: Long? = null,
         name: String?,
         loved: Boolean = false,
-        stat: Stat? = null,
+        lovedAt: Long? = null,
+        stat: Stat? = null
     ) {
         db.trackQueries.insert(
             artistId,
             albumId,
             getStatId(stat),
             name,
-            loved
+            loved,
+            lovedAt
         )
     }
 

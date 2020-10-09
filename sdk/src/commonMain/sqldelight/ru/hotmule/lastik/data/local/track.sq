@@ -4,14 +4,16 @@ CREATE TABLE track (
     albumId INTEGER,
     statId INTEGER,
     name TEXT,
-    loved INTEGER as Boolean DEFAULT 0 NOT NULL,
+    loved INTEGER AS Boolean DEFAULT 0 NOT NULL,
+    lovedAt INTEGER,
     FOREIGN KEY (artistId) REFERENCES artist(id) ON DELETE CASCADE,
     FOREIGN KEY (albumId) REFERENCES album(id) ON DELETE CASCADE,
     FOREIGN KEY (statId) REFERENCES statistic(id) ON DELETE CASCADE
 );
 
 insert:
-INSERT OR REPLACE INTO track(artistId, albumId, statId, name, loved) VALUES (?, ?, ?, ?, ?);
+INSERT OR REPLACE INTO track(artistId, albumId, statId, name, loved, lovedAt)
+VALUES (?, ?, ?, ?, ?, ?);
 
 lastId:
 SELECT last_insert_rowid();
@@ -34,8 +36,9 @@ SELECT
     ar.name AS artist,
     t.name AS track,
     t.loved,
+    t.lovedAt,
     al.lowArtwork
 FROM track t
 LEFT JOIN album al ON t.albumId = al.id
 LEFT JOIN artist ar ON t.artistId = ar.id
-WHERE t.loved = 1;
+WHERE t.lovedAt NOT NULL;
