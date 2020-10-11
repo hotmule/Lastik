@@ -9,6 +9,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Favorite
+import androidx.compose.material.icons.rounded.FavoriteBorder
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,14 +37,14 @@ fun LibraryListItem(
     modifier: Modifier = Modifier,
     scrobbleWidth: Float? = null,
 ) {
-    with(item) {
+    Box(
+        modifier = modifier
+            .height(82.dp)
+            .fillMaxWidth()
+            .clickable(onClick = { })
+    ) {
 
-        Stack(
-            modifier = modifier
-                .height(82.dp)
-                .fillMaxWidth()
-                .clickable(onClick = { })
-        ) {
+        with(item) {
 
             if (nowPlaying == true) {
                 Surface(
@@ -63,9 +64,7 @@ fun LibraryListItem(
             }
 
             Row(
-                modifier = Modifier
-                    .padding(16.dp)
-                    .fillMaxSize()
+                modifier = Modifier.fillMaxSize()
             ) {
 
                 position?.let {
@@ -74,7 +73,25 @@ fun LibraryListItem(
                         textAlign = TextAlign.Center,
                         style = MaterialTheme.typography.body2,
                         modifier = Modifier
-                            .preferredWidth(24.dp)
+                            .preferredWidth(52.dp)
+                            .align(Alignment.CenterVertically)
+                    )
+                }
+
+                loved?.let {
+                    IconButton(
+                        onClick = { },
+                        icon = {
+                            Image(
+                                asset = if (it)
+                                    Icons.Rounded.Favorite
+                                else
+                                    Icons.Rounded.FavoriteBorder,
+                                colorFilter = ColorFilter.tint(crimson)
+                            )
+                        },
+                        modifier = Modifier
+                            .padding(2.dp)
                             .align(Alignment.CenterVertically)
                     )
                 }
@@ -85,7 +102,6 @@ fun LibraryListItem(
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
                             .align(Alignment.CenterVertically)
-                            .padding(start = if (position != null) 16.dp else 0.dp)
                             .preferredWidth(50.dp)
                             .preferredHeight(50.dp)
                             .clip(shape = RoundedCornerShape(8))
@@ -96,7 +112,10 @@ fun LibraryListItem(
                 Column(
                     modifier = modifier
                         .weight(1f)
-                        .padding(start = if (position != null || imageUrl != null) 16.dp else 0.dp)
+                        .padding(
+                            start = if (imageUrl != null) 16.dp else 0.dp,
+                            end = 16.dp
+                        )
                         .align(Alignment.CenterVertically)
                 ) {
 
@@ -119,19 +138,6 @@ fun LibraryListItem(
                             )
                         }
                     }
-                }
-
-                loved?.let {
-                    IconButton(
-                        onClick = { },
-                        icon = {
-                            Image(
-                                asset = Icons.Rounded.Favorite,
-                                colorFilter = ColorFilter.tint(crimson)
-                            )
-                        },
-                        modifier = Modifier.align(Alignment.CenterVertically)
-                    )
                 }
             }
 
@@ -170,6 +176,7 @@ fun ScrobblePreview() = LibraryListItem(
         imageUrl = "imageUrl",
         title = "Man",
         subtitle = "Skepta",
+        loved = false,
         time = 113243214
     )
 )
@@ -215,6 +222,7 @@ fun LovedTrackPreview() = LibraryListItem(
         loved = true,
         imageUrl = "imageUrl",
         title = "Man",
-        subtitle = "Skepta"
+        subtitle = "Skepta",
+        time = 113243214
     )
 )

@@ -32,8 +32,7 @@ class ScrobblesInteractor(
         api.getRecentTracks(getUserName(), currentPage).also { response ->
             db.transaction {
 
-                if (currentPage == 0)
-                    db.artistQueries.deleteScrobbles(getUserName())
+                db.artistQueries.deleteScrobbles(getUserName())
 
                 response?.recent?.tracks?.forEach { track ->
 
