@@ -25,14 +25,16 @@ class ScrobblesInteractor(
             }
         }
 
-    suspend fun refreshScrobbles() {
+    suspend fun loadScrobbles(firstPage: Boolean) {
 
-        val currentPage = db.scrobbleQueries.getCurrenPage().executeAsOne().toInt()
+        if (firstPage)
+            db.artistQueries.deleteScrobbles(getUserName())
 
-        api.getRecentTracks(getUserName(), currentPage).also { response ->
+        api.getRecentTracks(
+            getUserName(),
+            db.scrobbleQueries.getCurrenPage().executeAsOne().toInt()
+        ).also { response ->
             db.transaction {
-
-                db.artistQueries.deleteScrobbles(getUserName())
 
                 response?.recent?.tracks?.forEach { track ->
 

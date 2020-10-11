@@ -8,7 +8,7 @@ CREATE TABLE scrobble (
 );
 
 getCurrenPage:
-SELECT COUNT(id) % 50 + 1 FROM scrobble;
+SELECT COUNT(id) / 50 + 1 FROM scrobble;
 
 insert:
 INSERT OR REPLACE INTO scrobble(trackId, uts, date, nowPlaying) VALUES (?, ?, ?, ?);

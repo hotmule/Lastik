@@ -24,7 +24,9 @@ class ArtistsInteractor(
             }
         }
 
-    suspend fun refreshArtists() {
+    suspend fun refreshArtists(
+        cleanOld: Boolean
+    ) {
         api.getTopArtists(getUserName()).also {
             db.transaction {
                 db.artistQueries.deleteTopArtist(getUserName())

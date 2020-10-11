@@ -15,7 +15,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.VectorAsset
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import ru.hotmule.lastik.R
 import ru.hotmule.lastik.Sdk
@@ -148,7 +147,7 @@ private fun LibraryBody(
             LibraryList(
                 modifier = modifier,
                 isUpdating = isUpdating,
-                refresh = sdk.scrobblesInteractor::refreshScrobbles,
+                loadItems = sdk.scrobblesInteractor::loadScrobbles,
                 itemsFlow = sdk.scrobblesInteractor::observeScrobbles
             )
         }
@@ -157,7 +156,7 @@ private fun LibraryBody(
                 modifier = modifier,
                 isUpdating = isUpdating,
                 displayWidth = displayWidth,
-                refresh = sdk.artistsInteractor::refreshArtists,
+                loadItems = sdk.artistsInteractor::refreshArtists,
                 itemsFlow = sdk.artistsInteractor::observeArtists
             )
         }
@@ -166,7 +165,7 @@ private fun LibraryBody(
                 modifier = modifier,
                 isUpdating = isUpdating,
                 displayWidth = displayWidth,
-                refresh = sdk.albumsInteractor::refreshAlbums,
+                loadItems = sdk.albumsInteractor::refreshAlbums,
                 itemsFlow = sdk.albumsInteractor::observeAlbums
             )
         }
@@ -175,7 +174,7 @@ private fun LibraryBody(
                 modifier = modifier,
                 isUpdating = isUpdating,
                 displayWidth = displayWidth,
-                refresh = sdk.tracksInteractor::refreshTopTracks,
+                loadItems = sdk.tracksInteractor::refreshTopTracks,
                 itemsFlow = sdk.tracksInteractor::observeTopTracks
             )
         }
@@ -183,7 +182,7 @@ private fun LibraryBody(
             LibraryList(
                 modifier = modifier,
                 isUpdating = isUpdating,
-                refresh = sdk.profileInteractor::refreshProfile,
+                loadItems = sdk.profileInteractor::refreshProfile,
                 itemsFlow = sdk.profileInteractor::observeLovedTracks
             ) {
                 ProfileHeader(
@@ -199,7 +198,7 @@ fun LibraryList(
     modifier: Modifier = Modifier,
     isUpdating: (Boolean) -> Unit,
     displayWidth: Float? = null,
-    refresh: suspend () -> Unit,
+    loadItems: suspend (Boolean) -> Unit,
     itemsFlow: () -> Flow<List<ListItem>>,
     header: @Composable (() -> Unit)? = null
 ) {
@@ -207,7 +206,7 @@ fun LibraryList(
     launchInComposition {
         isUpdating.invoke(true)
         try {
-            refresh.invoke()
+            loadItems.invoke(true)
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -226,17 +225,35 @@ fun LibraryList(
         }
     }
 
+    var moreItemsLoading by mutableStateOf(false)
+
     LazyColumnForIndexed(
         modifier = modifier,
         items = items
     ) { index, item ->
 
-        if (index == 0) header?.invoke()
+        when (index) {
+            0 -> header?.invoke()
+            items.lastIndex -> {
+                launchInComposition {
+                    try {
+                        moreItemsLoading = true
+                        loadItems.invoke(false)
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    } finally {
+                        moreItemsLoading = false
+                    }
+                }
+            }
+        }
 
         LibraryListItem(
             item = item,
             scrobbleWidth = scrobbleWidth
         )
+
+        //if (moreItemsLoading) PagingProgress()
     }
 }
 

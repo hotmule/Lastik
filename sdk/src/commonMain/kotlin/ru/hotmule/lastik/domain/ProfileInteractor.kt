@@ -34,7 +34,9 @@ class ProfileInteractor(
         }
     }
 
-    suspend fun refreshProfile() {
+    suspend fun refreshProfile(
+        cleanOld: Boolean
+    ) {
         refreshInfo()
         refreshFriends()
         refreshLovedTracks()

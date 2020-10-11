@@ -23,7 +23,9 @@ class TracksInteractor(
         }
     }
 
-    suspend fun refreshTopTracks() {
+    suspend fun refreshTopTracks(
+        cleanOld: Boolean
+    ) {
         api.getTopTracks(getUserName()).also {
             db.transaction {
 

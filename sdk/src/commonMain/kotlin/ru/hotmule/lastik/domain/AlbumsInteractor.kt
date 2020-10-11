@@ -23,7 +23,9 @@ class AlbumsInteractor(
         }
     }
 
-    suspend fun refreshAlbums() {
+    suspend fun refreshAlbums(
+        cleanOld: Boolean
+    ) {
         api.getTopAlbums(getUserName()).also {
             db.transaction {
 
