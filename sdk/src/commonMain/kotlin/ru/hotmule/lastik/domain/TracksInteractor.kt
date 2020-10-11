@@ -24,25 +24,31 @@ class TracksInteractor(
     }
 
     suspend fun refreshTopTracks(
-        cleanOld: Boolean
+        firstPage: Boolean
     ) {
-        api.getTopTracks(getUserName()).also {
-            db.transaction {
+        providePage(
+            currentItemsCount = db.trackQueries.getTopTracksCount().executeAsOne().toInt(),
+            firstPage = firstPage
+        ) { page ->
 
-                db.artistQueries.deleteTopTracks(getUserName())
+            api.getTopTracks(getUserName(), page).also {
+                db.transaction {
 
-                it?.top?.list?.forEach { track ->
-                    insertArtist(track.artist?.name)
+                    if (firstPage) db.artistQueries.deleteTopTracks(getUserName())
 
-                    lastArtistId()?.let { artistId ->
-                        insertTrack(
-                            artistId = artistId,
-                            name = track.name,
-                            stat = Stat(
-                                track.attributes?.rank,
-                                track.playCount
+                    it?.top?.list?.forEach { track ->
+                        insertArtist(track.artist?.name)
+
+                        lastArtistId()?.let { artistId ->
+                            insertTrack(
+                                artistId = artistId,
+                                name = track.name,
+                                stat = Stat(
+                                    track.attributes?.rank,
+                                    track.playCount
+                                )
                             )
-                        )
+                        }
                     }
                 }
             }

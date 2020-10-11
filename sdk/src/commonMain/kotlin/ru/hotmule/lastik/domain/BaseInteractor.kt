@@ -30,6 +30,18 @@ open class BaseInteractor(
     fun lastAlbumId() = db.albumQueries.lastId().executeAsOneOrNull()
     fun lastTrackId() = db.trackQueries.lastId().executeAsOneOrNull()
 
+    suspend fun providePage(
+        currentItemsCount: Int,
+        firstPage: Boolean,
+        loadPage: suspend (Int) -> Unit,
+    ) {
+        if (firstPage || currentItemsCount.rem(50) == 0) {
+            loadPage.invoke(
+                if (firstPage) 1 else currentItemsCount / 50 + 1
+            )
+        }
+    }
+
     fun insertArtist(
         name: String?,
         stat: Stat? = null

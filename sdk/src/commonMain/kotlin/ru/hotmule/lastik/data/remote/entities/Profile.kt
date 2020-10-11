@@ -4,6 +4,18 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
+data class SessionResponse(
+    @SerialName("session") val params: SessionParams? = null
+)
+
+@Serializable
+data class SessionParams(
+    val name: String? = null,
+    val key: String? = null,
+    val subscriber: Int? = null
+)
+
+@Serializable
 data class FriendsResponse(val friends: Friends? = null)
 
 @Serializable

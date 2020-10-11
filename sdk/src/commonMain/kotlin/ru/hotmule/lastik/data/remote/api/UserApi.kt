@@ -10,60 +10,78 @@ class UserApi(
 ) {
 
     private fun HttpRequestBuilder.userApi(
-        method: String
+        method: String,
+        user: String?
     ) {
         api("user", method, apiKey)
+        parameter("user", user)
+    }
+
+    private fun HttpRequestBuilder.userApiPage(
+        method: String,
+        user: String?,
+        page: Int
+    ) {
+        userApi(method, user)
+        parameter("page", page)
+    }
+
+    private fun HttpRequestBuilder.libraryPage(
+        method: String,
+        user: String?,
+        page: Int,
+        period: LibraryPeriod = LibraryPeriod.Overall
+    ) {
+        userApiPage(method, user, page)
+        parameter("period", period.value)
     }
 
     suspend fun getInfo(
         user: String?
     ) = client.get<ProfileResponse?> {
-        userApi("getInfo")
-        parameter("user", user)
+        userApi("getInfo", user)
     }
 
     suspend fun getFriends(
-        user: String?
+        user: String?,
+        page: Int,
     ) = client.get<FriendsResponse?> {
-        userApi("getFriends")
-        parameter("user", user)
+        userApiPage("getFriends", user, page)
     }
 
     suspend fun getRecentTracks(
         user: String?,
         page: Int
     ) = client.get<ScrobblesResponse?> {
-        userApi("getRecentTracks")
-        parameter("user", user)
-        parameter("page", page)
+        userApiPage("getRecentTracks", user, page)
         parameter("extended", 1)
     }
 
     suspend fun getTopArtists(
-        user: String?
+        user: String?,
+        page: Int
     ) = client.get<ArtistsResponse?> {
-        userApi("getTopArtists")
-        parameter("user", user)
+        libraryPage("getTopArtists", user, page)
     }
 
     suspend fun getTopAlbums(
-        user: String?
+        user: String?,
+        page: Int
     ) = client.get<AlbumsResponse?> {
-        userApi("getTopAlbums")
-        parameter("user", user)
+        libraryPage("getTopAlbums", user, page)
     }
 
     suspend fun getTopTracks(
-        user: String?
+        user: String?,
+        page: Int
     ) = client.get<TopTracksResponse?> {
-        userApi("getTopTracks")
-        parameter("user", user)
+        libraryPage("getTopTracks", user, page)
     }
 
     suspend fun getLovedTracks(
-        user: String?
+        user: String?,
+        page: Int
     ) = client.get<LovedTracksResponse?> {
-        userApi("getLovedTracks")
-        parameter("user", user)
+        userApiPage("getLovedTracks", user, page)
     }
 }

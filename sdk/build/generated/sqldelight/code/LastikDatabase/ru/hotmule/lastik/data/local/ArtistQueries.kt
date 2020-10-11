@@ -8,6 +8,8 @@ import kotlin.Long
 import kotlin.String
 
 interface ArtistQueries : Transacter {
+  fun getTopArtistsCount(): Query<Long>
+
   fun lastId(): Query<Long>
 
   fun <T : Any> artistTop(userName: String, mapper: (

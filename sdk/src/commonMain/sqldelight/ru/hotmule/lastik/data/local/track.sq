@@ -11,6 +11,14 @@ CREATE TABLE track (
     FOREIGN KEY (statId) REFERENCES statistic(id) ON DELETE CASCADE
 );
 
+getTopTracksCount:
+SELECT COUNT(track.id) / 50 + 1 FROM track
+LEFT JOIN statistic s ON s.id = track.statId
+    WHERE s.id = track.statId AND s.rank NOT NULL;
+
+getLovedTracksPageCount:
+SELECT COUNT(track.id) / 50 + 1 FROM track WHERE lovedAt NOT NULL;
+
 insert:
 INSERT OR REPLACE INTO track(artistId, albumId, statId, name, loved, lovedAt)
 VALUES (?, ?, ?, ?, ?, ?);

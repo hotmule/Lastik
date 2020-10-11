@@ -25,19 +25,27 @@ class ArtistsInteractor(
         }
 
     suspend fun refreshArtists(
-        cleanOld: Boolean
+        firstPage: Boolean
     ) {
-        api.getTopArtists(getUserName()).also {
-            db.transaction {
-                db.artistQueries.deleteTopArtist(getUserName())
-                it?.top?.artists?.forEach { artist ->
-                    insertArtist(
-                        artist.name,
-                        Stat(
-                            artist.attributes?.rank,
-                            artist.playCount
+        providePage(
+            currentItemsCount = db.artistQueries.getTopArtistsCount().executeAsOne().toInt(),
+            firstPage = firstPage
+        ) { page ->
+
+            api.getTopArtists(getUserName(), page).also {
+                db.transaction {
+
+                    if (firstPage) db.artistQueries.deleteTopArtist(getUserName())
+
+                    it?.top?.artists?.forEach { artist ->
+                        insertArtist(
+                            artist.name,
+                            Stat(
+                                artist.attributes?.rank,
+                                artist.playCount
+                            )
                         )
-                    )
+                    }
                 }
             }
         }

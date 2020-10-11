@@ -2,7 +2,7 @@ package ru.hotmule.lastik.data.remote.api
 
 import io.ktor.client.*
 import io.ktor.client.request.*
-import ru.hotmule.lastik.data.remote.entities.Session
+import ru.hotmule.lastik.data.remote.entities.SessionResponse
 
 class AuthApi(
     private val client: HttpClient,
@@ -20,7 +20,7 @@ class AuthApi(
     suspend fun getSession(
         secret: String,
         token: String
-    ) = client.get<Session?> {
+    ) = client.get<SessionResponse?> {
         authApi("getSession", token, secret)
     }
 }

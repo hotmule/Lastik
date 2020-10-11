@@ -10,7 +10,7 @@ import ru.hotmule.lastik.data.remote.api.UserApi
 class ProfileInteractor(
     private val api: UserApi,
     private val db: LastikDatabase,
-): BaseInteractor(db) {
+) : BaseInteractor(db) {
 
     fun observeInfo() = db.profileQueries
         .getProfile()
@@ -35,11 +35,11 @@ class ProfileInteractor(
     }
 
     suspend fun refreshProfile(
-        cleanOld: Boolean
+        firstPage: Boolean
     ) {
         refreshInfo()
         refreshFriends()
-        refreshLovedTracks()
+        refreshLovedTracks(firstPage)
     }
 
     suspend fun refreshInfo(
@@ -51,7 +51,7 @@ class ProfileInteractor(
     }
 
     private suspend fun refreshFriends() {
-        api.getFriends(getUserName()).also {
+        api.getFriends(getUserName(), 1).also {
             db.transaction {
                 db.profileQueries.deleteFriends(getUserName())
                 it?.friends?.user?.forEach {
@@ -64,19 +64,28 @@ class ProfileInteractor(
         }
     }
 
-    private suspend fun refreshLovedTracks() {
-        api.getLovedTracks(getUserName()).also {
-            db.transaction {
-                db.artistQueries.deleteLovedTracks(getUserName())
-                it?.loved?.list?.forEach { track ->
-                    insertArtist(track.artist?.name)
-                    lastArtistId()?.let { artistId ->
-                        insertTrack(
-                            artistId = artistId,
-                            name = track.name,
-                            loved = true,
-                            lovedAt = track.date?.uts
-                        )
+    private suspend fun refreshLovedTracks(
+        firstPage: Boolean
+    ) {
+        providePage(
+            currentItemsCount = db.trackQueries.getLovedTracksPageCount().executeAsOne().toInt(),
+            firstPage = firstPage
+        ) { page ->
+            api.getLovedTracks(getUserName(), page).also {
+                db.transaction {
+
+                    if (firstPage) db.artistQueries.deleteLovedTracks(getUserName())
+
+                    it?.loved?.list?.forEach { track ->
+                        insertArtist(track.artist?.name)
+                        lastArtistId()?.let { artistId ->
+                            insertTrack(
+                                artistId = artistId,
+                                name = track.name,
+                                loved = true,
+                                lovedAt = track.date?.uts
+                            )
+                        }
                     }
                 }
             }

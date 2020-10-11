@@ -7,6 +7,11 @@ CREATE TABLE artist (
     FOREIGN KEY (statId) REFERENCES statistic(id) ON DELETE CASCADE
 );
 
+getTopArtistsCount:
+SELECT COUNT(artist.id) FROM artist
+LEFT JOIN statistic s ON s.id = artist.statId
+    WHERE artist.statId = s.id AND s.rank NOT NULL;
+
 insert:
 INSERT OR REPLACE INTO artist(userName, statId, name) VALUES (?, ?, ?);
 

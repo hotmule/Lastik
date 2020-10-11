@@ -9,6 +9,11 @@ CREATE TABLE album (
     FOREIGN KEY (statId) REFERENCES statistic(id) ON DELETE CASCADE
 );
 
+getTopAlbumsCount:
+SELECT COUNT(album.id) FROM album
+LEFT JOIN statistic s ON s.id = album.statId
+    WHERE album.statId = s.id AND s.rank NOT NULL;
+
 insert:
 INSERT OR REPLACE INTO album(artistId, statId, name, lowArtwork, highArtwork)
 VALUES (?, ?, ?, ?, ?);

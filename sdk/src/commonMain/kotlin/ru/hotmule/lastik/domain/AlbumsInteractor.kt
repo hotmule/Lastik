@@ -24,27 +24,33 @@ class AlbumsInteractor(
     }
 
     suspend fun refreshAlbums(
-        cleanOld: Boolean
+        firstPage: Boolean
     ) {
-        api.getTopAlbums(getUserName()).also {
-            db.transaction {
+        providePage(
+            currentItemsCount = db.albumQueries.getTopAlbumsCount().executeAsOne().toInt(),
+            firstPage = firstPage
+        ) { page ->
 
-                db.artistQueries.deleteTopAlbums(getUserName())
+            api.getTopAlbums(getUserName(), page).also {
+                db.transaction {
 
-                it?.top?.albums?.forEach { album ->
+                    if (firstPage) db.artistQueries.deleteTopAlbums(getUserName())
 
-                    insertArtist(album.artist?.name)
-                    lastArtistId()?.let { artistId ->
-                        insertAlbum(
-                            artistId,
-                            album.name,
-                            album.images?.get(2)?.url,
-                            album.images?.get(3)?.url,
-                            Stat(
-                                album.attributes?.rank,
-                                album.playCount
+                    it?.top?.albums?.forEach { album ->
+
+                        insertArtist(album.artist?.name)
+                        lastArtistId()?.let { artistId ->
+                            insertAlbum(
+                                artistId,
+                                album.name,
+                                album.images?.get(2)?.url,
+                                album.images?.get(3)?.url,
+                                Stat(
+                                    album.attributes?.rank,
+                                    album.playCount
+                                )
                             )
-                        )
+                        }
                     }
                 }
             }

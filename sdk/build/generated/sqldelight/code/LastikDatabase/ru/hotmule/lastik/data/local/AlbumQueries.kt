@@ -8,6 +8,8 @@ import kotlin.Long
 import kotlin.String
 
 interface AlbumQueries : Transacter {
+  fun getTopAlbumsCount(): Query<Long>
+
   fun lastId(): Query<Long>
 
   fun <T : Any> albumTop(mapper: (

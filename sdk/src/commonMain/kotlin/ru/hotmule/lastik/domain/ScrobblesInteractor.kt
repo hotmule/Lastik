@@ -25,44 +25,48 @@ class ScrobblesInteractor(
             }
         }
 
-    suspend fun loadScrobbles(firstPage: Boolean) {
+    suspend fun loadScrobbles(
+        firstPage: Boolean
+    ) {
+        providePage(
+            currentItemsCount = db.scrobbleQueries.getScrobblesCount().executeAsOne().toInt(),
+            firstPage = firstPage
+        ) { page ->
 
-        if (firstPage)
-            db.artistQueries.deleteScrobbles(getUserName())
+            api.getRecentTracks(getUserName(), page).also { response ->
 
-        api.getRecentTracks(
-            getUserName(),
-            db.scrobbleQueries.getCurrenPage().executeAsOne().toInt()
-        ).also { response ->
-            db.transaction {
+                db.transaction {
 
-                response?.recent?.tracks?.forEach { track ->
+                    if (firstPage) db.artistQueries.deleteScrobbles(getUserName())
 
-                    insertArtist(track.artist?.name)
+                    response?.recent?.tracks?.forEach { track ->
 
-                    lastArtistId()?.let { artistId ->
-                        insertAlbum(
-                            artistId,
-                            track.album?.text,
-                            track.images?.get(2)?.url,
-                            track.images?.get(3)?.url
-                        )
+                        insertArtist(track.artist?.name)
 
-                        lastAlbumId()?.let { albumId ->
-                            insertTrack(
+                        lastArtistId()?.let { artistId ->
+                            insertAlbum(
                                 artistId,
-                                albumId,
-                                track.name,
-                                track.loved == 1
+                                track.album?.text,
+                                track.images?.get(2)?.url,
+                                track.images?.get(3)?.url
                             )
 
-                            lastTrackId()?.let { trackId ->
-                                db.scrobbleQueries.insert(
-                                    trackId,
-                                    track.date?.uts,
-                                    track.date?.toSting,
-                                    track.attributes?.nowPlaying == "true"
+                            lastAlbumId()?.let { albumId ->
+                                insertTrack(
+                                    artistId,
+                                    albumId,
+                                    track.name,
+                                    track.loved == 1
                                 )
+
+                                lastTrackId()?.let { trackId ->
+                                    db.scrobbleQueries.insert(
+                                        trackId,
+                                        track.date?.uts,
+                                        track.date?.toSting,
+                                        track.attributes?.nowPlaying == "true"
+                                    )
+                                }
                             }
                         }
                     }
