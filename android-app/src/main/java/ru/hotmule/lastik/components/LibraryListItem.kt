@@ -130,11 +130,12 @@ fun LibraryListItem(
                     }
 
                     subtitle?.let {
-                        ProvideEmphasis(emphasis = EmphasisAmbient.current.medium) {
+                        ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.medium) {
                             Text(
                                 text = it,
                                 style = MaterialTheme.typography.body2,
-                                modifier = Modifier.padding(top = 8.dp)
+                                modifier = Modifier
+                                    .padding(top = 8.dp)
                             )
                         }
                     }
@@ -143,7 +144,7 @@ fun LibraryListItem(
 
             if (time != null || scrobbles != null || nowPlaying == true) {
                 ProvideEmphasis(
-                    emphasis = EmphasisAmbient.current.medium
+                    emphasis = AmbientEmphasisLevels.current.medium
                 ) {
                     Text(
                         style = MaterialTheme.typography.body2,

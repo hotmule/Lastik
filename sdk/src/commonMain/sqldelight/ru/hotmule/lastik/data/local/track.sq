@@ -12,12 +12,12 @@ CREATE TABLE track (
 );
 
 getTopTracksCount:
-SELECT COUNT(track.id) / 50 + 1 FROM track
+SELECT COUNT(track.id) FROM track
 LEFT JOIN statistic s ON s.id = track.statId
     WHERE s.id = track.statId AND s.rank NOT NULL;
 
 getLovedTracksPageCount:
-SELECT COUNT(track.id) / 50 + 1 FROM track WHERE lovedAt NOT NULL;
+SELECT COUNT(track.id) FROM track WHERE lovedAt NOT NULL;
 
 insert:
 INSERT OR REPLACE INTO track(artistId, albumId, statId, name, loved, lovedAt)

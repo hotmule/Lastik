@@ -103,7 +103,7 @@ object Libs {
         const val jUnitRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         object Compose {
-            const val version = "1.0.0-alpha04"
+            const val version = "1.0.0-alpha05"
             const val ui = "androidx.compose.ui:ui:$version"
             const val tooling = "androidx.ui:ui-tooling:$version"
             const val material = "androidx.compose.material:material:$version"

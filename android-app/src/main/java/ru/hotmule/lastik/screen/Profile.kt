@@ -145,7 +145,7 @@ private fun TitleText(
     modifier: Modifier = Modifier,
     @StringRes titleId: Int
 ) {
-    ProvideEmphasis(emphasis = EmphasisAmbient.current.medium) {
+    ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.medium) {
         Text(
             modifier = modifier,
             text = stringResource(id = titleId),
@@ -171,7 +171,7 @@ fun Friend(
                 .fillMaxWidth()
         )
 
-        ProvideEmphasis(emphasis = EmphasisAmbient.current.medium) {
+        ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.medium) {
             Text(
                 text = friend.userName,
                 maxLines = 1,
