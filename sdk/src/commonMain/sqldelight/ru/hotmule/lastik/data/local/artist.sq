@@ -49,5 +49,5 @@ DELETE FROM artist WHERE userName = ? AND EXISTS (
 deleteLovedTracks:
 DELETE FROM artist WHERE userName = ? AND EXISTS (
     SELECT t.id FROM track t
-    WHERE artist.id = t.artistId AND t.loved = 1
+    WHERE artist.id = t.artistId AND t.lovedAt NOT NULL
 );
