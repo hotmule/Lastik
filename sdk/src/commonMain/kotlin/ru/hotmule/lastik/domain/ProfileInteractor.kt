@@ -77,8 +77,11 @@ class ProfileInteractor(
                     if (firstPage) db.artistQueries.deleteLovedTracks(getUserName())
 
                     it?.loved?.list?.forEach { track ->
-                        insertArtist(track.artist?.name)
-                        lastArtistId()?.let { artistId ->
+
+                        insertArtist(
+                            track.artist?.name
+                        )?.let { artistId ->
+
                             insertTrack(
                                 artistId = artistId,
                                 name = track.name,

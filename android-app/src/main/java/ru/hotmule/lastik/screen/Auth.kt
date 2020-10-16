@@ -37,7 +37,7 @@ fun AuthScreen(
 
     var state by remember { mutableStateOf(AuthScreenState()) }
 
-    Stack(
+    Box(
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight()
@@ -45,7 +45,7 @@ fun AuthScreen(
 
         Image(
             modifier = Modifier
-                .gravity(Alignment.Center)
+                .align(Alignment.Center)
                 .width(100.dp)
                 .height(100.dp),
             asset = Icons.Rounded.Album,
@@ -71,7 +71,7 @@ fun AuthScreen(
                 )
             }
 
-            Stack(
+            Box(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .navigationBarsPadding(bottom = true)
@@ -80,7 +80,7 @@ fun AuthScreen(
 
                 if (isLoading) {
                     CircularProgressIndicator()
-                    launchInComposition {
+                    LaunchedTask {
                         try {
                             interactor.getSessionKey()
                         } catch (e: Exception) {
@@ -106,7 +106,7 @@ fun AuthScreen(
                     text = { Text(it) },
                 )
 
-                launchInComposition {
+                LaunchedTask {
                     delay(3000)
                     state = state.copy(errorReceived = null)
                 }
@@ -150,7 +150,7 @@ fun SignInDialog(
 
                 TextButton(
                     modifier = Modifier
-                        .gravity(Alignment.End)
+                        .align(Alignment.End)
                         .padding(8.dp),
                     onClick = onDismissRequest
                 ) {
@@ -176,7 +176,7 @@ private fun SignInBrowser(
 
     var state by remember { mutableStateOf(SignInBrowserState()) }
 
-    Stack(
+    Box(
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight(0.58f)
@@ -186,14 +186,14 @@ private fun SignInBrowser(
 
             if (isLoading) {
                 CircularProgressIndicator(
-                    modifier = Modifier.gravity(Alignment.Center)
+                    modifier = Modifier.align(Alignment.Center)
                 )
             }
 
             if (isErrorReceived) {
                 Text(
                     modifier = Modifier
-                        .gravity(Alignment.Center)
+                        .align(Alignment.Center)
                         .padding(16.dp),
                     text = stringResource(id = R.string.page_loading_error),
                     textAlign = TextAlign.Center,

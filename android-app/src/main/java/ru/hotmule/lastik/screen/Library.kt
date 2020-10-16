@@ -203,7 +203,7 @@ fun LibraryList(
     header: @Composable (() -> Unit)? = null
 ) {
 
-    launchInComposition {
+    LaunchedTask {
         isUpdating.invoke(true)
         try {
             loadItems.invoke(true)
@@ -235,15 +235,14 @@ fun LibraryList(
         when (index) {
             0 -> header?.invoke()
             items.lastIndex -> {
-                launchInComposition {
+                LaunchedTask {
+                    moreItemsLoading = true
                     try {
-                        moreItemsLoading = true
                         loadItems.invoke(false)
                     } catch (e: Exception) {
                         e.printStackTrace()
-                    } finally {
-                        moreItemsLoading = false
                     }
+                    moreItemsLoading = false
                 }
             }
         }
@@ -253,7 +252,7 @@ fun LibraryList(
             scrobbleWidth = scrobbleWidth
         )
 
-        //if (moreItemsLoading) PagingProgress()
+        if (index == items.lastIndex && moreItemsLoading) PagingProgress()
     }
 }
 

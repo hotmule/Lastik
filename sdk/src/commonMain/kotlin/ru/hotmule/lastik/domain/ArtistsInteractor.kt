@@ -40,10 +40,8 @@ class ArtistsInteractor(
                     it?.top?.artists?.forEach { artist ->
                         insertArtist(
                             artist.name,
-                            Stat(
-                                artist.attributes?.rank,
-                                artist.playCount
-                            )
+                            artist.attributes?.rank,
+                            artist.playCount
                         )
                     }
                 }

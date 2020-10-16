@@ -38,17 +38,17 @@ class AlbumsInteractor(
 
                     it?.top?.albums?.forEach { album ->
 
-                        insertArtist(album.artist?.name)
-                        lastArtistId()?.let { artistId ->
+                        insertArtist(
+                            album.artist?.name
+                        )?.let { artistId ->
+
                             insertAlbum(
                                 artistId,
                                 album.name,
                                 album.images?.get(2)?.url,
                                 album.images?.get(3)?.url,
-                                Stat(
-                                    album.attributes?.rank,
-                                    album.playCount
-                                )
+                                album.attributes?.rank,
+                                album.playCount
                             )
                         }
                     }

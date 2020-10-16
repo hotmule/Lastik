@@ -2,26 +2,24 @@ CREATE TABLE track (
     id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     artistId INTEGER NOT NULL,
     albumId INTEGER,
-    statId INTEGER,
     name TEXT,
     loved INTEGER AS Boolean DEFAULT 0 NOT NULL,
     lovedAt INTEGER,
+    rank INTEGER AS Int,
+    playCount INTEGER,
     FOREIGN KEY (artistId) REFERENCES artist(id) ON DELETE CASCADE,
-    FOREIGN KEY (albumId) REFERENCES album(id) ON DELETE CASCADE,
-    FOREIGN KEY (statId) REFERENCES statistic(id) ON DELETE CASCADE
+    FOREIGN KEY (albumId) REFERENCES album(id) ON DELETE CASCADE
 );
 
 getTopTracksCount:
-SELECT COUNT(track.id) FROM track
-LEFT JOIN statistic s ON s.id = track.statId
-    WHERE s.id = track.statId AND s.rank NOT NULL;
+SELECT COUNT(track.id) FROM track WHERE rank NOT NULL;
 
 getLovedTracksPageCount:
 SELECT COUNT(track.id) FROM track WHERE lovedAt NOT NULL;
 
 insert:
-INSERT OR REPLACE INTO track(artistId, albumId, statId, name, loved, lovedAt)
-VALUES (?, ?, ?, ?, ?, ?);
+INSERT OR REPLACE INTO track(artistId, albumId, name, loved, lovedAt, rank, playCount)
+VALUES (?, ?, ?, ?, ?, ?, ?);
 
 lastId:
 SELECT last_insert_rowid();
@@ -30,14 +28,13 @@ topTracks:
 SELECT
     ar.name AS artist,
     t.name AS track,
-    al.lowArtwork,
-    stat.rank,
-    stat.playCount
+    t.rank,
+    t.playCount,
+    al.lowArtwork
 FROM track t
-LEFT JOIN statistic stat ON t.statId = stat.id
 LEFT JOIN album al ON t.albumId = al.id
 LEFT JOIN artist ar ON t.artistId = ar.id
-WHERE stat.rank NOT NULL;
+WHERE t.rank NOT NULL;
 
 lovedTracks:
 SELECT

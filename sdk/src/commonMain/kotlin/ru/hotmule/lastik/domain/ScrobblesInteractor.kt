@@ -11,13 +11,15 @@ class ScrobblesInteractor(
     private val db: LastikDatabase
 ) : BaseInteractor(db) {
 
-    fun observeScrobbles() =
-        db.scrobbleQueries.scrobbleData(getUserName()).asFlow().mapToList().map { scrobbles ->
+    fun observeScrobbles() = db.scrobbleQueries.scrobbleData(getUserName())
+        .asFlow()
+        .mapToList()
+        .map { scrobbles ->
             scrobbles.map {
                 ListItem(
-                    time = it.time,
                     title = it.track,
                     loved = it.loved,
+                    time = it.listenedAt,
                     subtitle = it.artist,
                     imageUrl = it.lowArtwork,
                     nowPlaying = it.nowPlaying
@@ -41,29 +43,27 @@ class ScrobblesInteractor(
 
                     response?.recent?.tracks?.forEach { track ->
 
-                        insertArtist(track.artist?.name)
+                        insertArtist(
+                            track.artist?.name
+                        )?.let { artistId ->
 
-                        lastArtistId()?.let { artistId ->
                             insertAlbum(
                                 artistId,
                                 track.album?.text,
                                 track.images?.get(2)?.url,
                                 track.images?.get(3)?.url
-                            )
+                            )?.let { albumId ->
 
-                            lastAlbumId()?.let { albumId ->
                                 insertTrack(
                                     artistId,
                                     albumId,
                                     track.name,
                                     track.loved == 1
-                                )
+                                )?.let { trackId ->
 
-                                lastTrackId()?.let { trackId ->
                                     db.scrobbleQueries.insert(
                                         trackId,
                                         track.date?.uts,
-                                        track.date?.toSting,
                                         track.attributes?.nowPlaying == "true"
                                     )
                                 }

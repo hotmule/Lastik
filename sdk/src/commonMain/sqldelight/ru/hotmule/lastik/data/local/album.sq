@@ -1,22 +1,20 @@
 CREATE TABLE album (
     id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     artistId INTEGER NOT NULL,
-    statId INTEGER,
     name TEXT,
     lowArtwork TEXT,
     highArtwork TEXT,
-    FOREIGN KEY (artistId) REFERENCES artist(id) ON DELETE CASCADE,
-    FOREIGN KEY (statId) REFERENCES statistic(id) ON DELETE CASCADE
+    rank INTEGER AS Int,
+    playCount INTEGER,
+    FOREIGN KEY (artistId) REFERENCES artist(id) ON DELETE CASCADE
 );
 
 getTopAlbumsCount:
-SELECT COUNT(album.id) FROM album
-LEFT JOIN statistic s ON s.id = album.statId
-    WHERE album.statId = s.id AND s.rank NOT NULL;
+SELECT COUNT(album.id) FROM album WHERE rank NOT NULL;
 
 insert:
-INSERT OR REPLACE INTO album(artistId, statId, name, lowArtwork, highArtwork)
-VALUES (?, ?, ?, ?, ?);
+INSERT OR REPLACE INTO album(artistId, name, lowArtwork, highArtwork, rank, playCount)
+VALUES (?, ?, ?, ?, ?, ?);
 
 lastId:
 SELECT last_insert_rowid();
@@ -26,9 +24,8 @@ SELECT
     ar.name AS artist,
     al.name AS album,
     al.lowArtwork,
-    stat.rank,
-    stat.playCount
+    al.rank,
+    al.playCount
 FROM album al
-LEFT JOIN statistic stat ON al.statId = stat.id
 LEFT JOIN artist ar ON al.artistId = ar.id
-WHERE stat.rank NOT NULL;
+WHERE al.rank NOT NULL;

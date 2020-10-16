@@ -5,7 +5,7 @@ import kotlin.Long
 import kotlin.String
 
 data class ScrobbleData(
-  val time: Long?,
+  val listenedAt: Long?,
   val nowPlaying: Boolean,
   val loved: Boolean?,
   val track: String?,
@@ -15,7 +15,7 @@ data class ScrobbleData(
 ) {
   override fun toString(): String = """
   |ScrobbleData [
-  |  time: $time
+  |  listenedAt: $listenedAt
   |  nowPlaying: $nowPlaying
   |  loved: $loved
   |  track: $track

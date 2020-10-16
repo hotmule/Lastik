@@ -1,58 +1,49 @@
 CREATE TABLE artist (
     id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     userName TEXT NOT NULL,
-    statId INTEGER,
     name TEXT,
-    FOREIGN KEY (userName) REFERENCES profile(userName) ON DELETE CASCADE,
-    FOREIGN KEY (statId) REFERENCES statistic(id) ON DELETE CASCADE
+    rank INTEGER AS Int,
+    playCount INTEGER,
+    FOREIGN KEY (userName) REFERENCES profile(userName) ON DELETE CASCADE
 );
 
 getTopArtistsCount:
-SELECT COUNT(artist.id) FROM artist
-LEFT JOIN statistic s ON s.id = artist.statId
-    WHERE artist.statId = s.id AND s.rank NOT NULL;
+SELECT COUNT(artist.id) FROM artist WHERE rank NOT NULL;
 
 insert:
-INSERT OR REPLACE INTO artist(userName, statId, name) VALUES (?, ?, ?);
+INSERT OR REPLACE INTO artist(userName, name, rank, playCount) VALUES (?, ?, ?, ?);
 
 lastId:
 SELECT last_insert_rowid();
 
 artistTop:
 SELECT
-    a.name,
-    stat.rank,
-    stat.playCount
-FROM artist a
-LEFT JOIN statistic stat ON a.statId = stat.id
-WHERE stat.rank NOT NULL AND a.userName = ?;
+    name,
+    rank,
+    playCount
+FROM artist
+WHERE rank NOT NULL AND userName = ?;
 
 deleteScrobbles:
 DELETE FROM artist WHERE userName = ? AND EXISTS (
     SELECT s.id FROM scrobble s
     LEFT JOIN track t ON t.id = s.trackId
-    LEFT JOIN statistic t_stat ON t_stat.id = t.statId
-    WHERE t.artistId = artist.id AND t_stat.rank IS NULL
+    WHERE t.artistId = artist.id AND t.rank IS NULL
 );
 
 deleteTopArtist:
-DELETE FROM artist WHERE userName = ? AND EXISTS (
-    SELECT ar_stat.id FROM statistic ar_stat
-    WHERE artist.statId = ar_stat.id AND ar_stat.rank NOT NULL
-);
+DELETE FROM artist WHERE userName = ? AND rank NOT NULL;
 
 deleteTopAlbums:
 DELETE FROM artist WHERE userName = ? AND EXISTS (
     SELECT al.id FROM album al
-    LEFT JOIN statistic al_stat ON al_stat.id = al.statId
-    WHERE artist.id = al.artistId AND al_stat.rank NOT NULL
+    WHERE artist.id = al.artistId AND al.rank NOT NULL
 );
 
 deleteTopTracks:
 DELETE FROM artist WHERE userName = ? AND EXISTS (
     SELECT t.id FROM track t
-    LEFT JOIN statistic t_stat ON t_stat.id = t.statId
-    WHERE artist.id = t.artistId AND t_stat.rank NOT NULL
+    WHERE artist.id = t.artistId AND t.rank NOT NULL
 );
 
 deleteLovedTracks:

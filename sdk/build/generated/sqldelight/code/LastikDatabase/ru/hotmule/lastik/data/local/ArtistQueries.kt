@@ -22,8 +22,9 @@ interface ArtistQueries : Transacter {
 
   fun insert(
     userName: String,
-    statId: Long?,
-    name: String?
+    name: String?,
+    rank: Int?,
+    playCount: Long?
   )
 
   fun deleteScrobbles(userName: String)

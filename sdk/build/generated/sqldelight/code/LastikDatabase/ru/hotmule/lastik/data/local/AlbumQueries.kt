@@ -24,9 +24,10 @@ interface AlbumQueries : Transacter {
 
   fun insert(
     artistId: Long,
-    statId: Long?,
     name: String?,
     lowArtwork: String?,
-    highArtwork: String?
+    highArtwork: String?,
+    rank: Int?,
+    playCount: Long?
   )
 }

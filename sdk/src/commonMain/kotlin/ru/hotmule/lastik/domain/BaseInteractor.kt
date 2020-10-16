@@ -3,11 +3,6 @@ package ru.hotmule.lastik.domain
 import ru.hotmule.lastik.data.local.LastikDatabase
 import ru.hotmule.lastik.data.remote.entities.User
 
-data class Stat(
-    val rank: Int? = null,
-    val playCount: Long? = null
-)
-
 data class ListItem(
     val imageUrl: String? = null,
     val title: String? = null,
@@ -26,10 +21,6 @@ open class BaseInteractor(
 
     fun getUserName() = db.profileQueries.getProfile().executeAsOneOrNull()?.userName ?: ""
 
-    fun lastArtistId() = db.artistQueries.lastId().executeAsOneOrNull()
-    fun lastAlbumId() = db.albumQueries.lastId().executeAsOneOrNull()
-    fun lastTrackId() = db.trackQueries.lastId().executeAsOneOrNull()
-
     suspend fun providePage(
         currentItemsCount: Int,
         firstPage: Boolean,
@@ -44,13 +35,18 @@ open class BaseInteractor(
 
     fun insertArtist(
         name: String?,
-        stat: Stat? = null
-    ) {
+        rank: Int? = null,
+        playCount: Long? = null
+    ): Long? {
+
         db.artistQueries.insert(
             getUserName(),
-            getStatId(stat),
-            name
+            name,
+            rank,
+            playCount
         )
+
+        return db.artistQueries.lastId().executeAsOneOrNull()
     }
 
     fun insertAlbum(
@@ -58,15 +54,20 @@ open class BaseInteractor(
         name: String?,
         lowArtwork: String?,
         highArtwork: String?,
-        stat: Stat? = null
-    ) {
+        rank: Int? = null,
+        playCount: Long? = null
+    ): Long? {
+
         db.albumQueries.insert(
             artistId,
-            getStatId(stat),
             name,
             lowArtwork,
-            highArtwork
+            highArtwork,
+            rank,
+            playCount
         )
+
+        return db.albumQueries.lastId().executeAsOneOrNull()
     }
 
     fun insertTrack(
@@ -75,16 +76,21 @@ open class BaseInteractor(
         name: String?,
         loved: Boolean = false,
         lovedAt: Long? = null,
-        stat: Stat? = null
-    ) {
+        rank: Int? = null,
+        playCount: Long? = null
+    ): Long? {
+
         db.trackQueries.insert(
             artistId,
             albumId,
-            getStatId(stat),
             name,
             loved,
-            lovedAt
+            lovedAt,
+            rank,
+            playCount
         )
+
+        return db.trackQueries.lastId().executeAsOneOrNull()
     }
 
     fun insertUser(
@@ -101,12 +107,5 @@ open class BaseInteractor(
             user.nickname!!,
             parentUser
         )
-    }
-
-    private fun getStatId(
-        stat: Stat?
-    ) = if (stat == null) null else {
-        db.statisticQueries.insert(stat.rank, stat.playCount)
-        db.statisticQueries.lastId().executeAsOneOrNull()
     }
 }

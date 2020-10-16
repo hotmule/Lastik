@@ -30,7 +30,7 @@ object Libs {
 
     const val gradle = "com.android.tools.build:gradle:4.2.0-alpha13"
     const val settings = "com.russhwolf:multiplatform-settings:0.6.2"
-    const val coil = "dev.chrisbanes.accompanist:accompanist-coil:0.3.0"
+    const val coil = "dev.chrisbanes.accompanist:accompanist-coil:0.3.1"
     const val espresso = "androidx.test.espresso:espresso-core:3.2.0"
     const val jUnit = "junit:junit:4.13"
 

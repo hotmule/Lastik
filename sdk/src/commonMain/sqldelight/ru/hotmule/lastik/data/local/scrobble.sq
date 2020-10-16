@@ -1,8 +1,7 @@
 CREATE TABLE scrobble (
     id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     trackId INTEGER NOT NULL,
-    uts INTEGER,
-    date TEXT,
+    listenedAt INTEGER,
     nowPlaying INTEGER as Boolean DEFAULT 0 NOT NULL,
     FOREIGN KEY (trackId) REFERENCES track(id) ON DELETE CASCADE
 );
@@ -11,11 +10,11 @@ getScrobblesCount:
 SELECT COUNT(id) FROM scrobble;
 
 insert:
-INSERT OR REPLACE INTO scrobble(trackId, uts, date, nowPlaying) VALUES (?, ?, ?, ?);
+INSERT OR REPLACE INTO scrobble(trackId, listenedAt, nowPlaying) VALUES (?, ?, ?);
 
 scrobbleData:
 SELECT
-    s.uts AS time,
+    s.listenedAt,
     s.nowPlaying,
     t.loved,
     t.name AS track,

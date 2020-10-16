@@ -37,16 +37,16 @@ class TracksInteractor(
                     if (firstPage) db.artistQueries.deleteTopTracks(getUserName())
 
                     it?.top?.list?.forEach { track ->
-                        insertArtist(track.artist?.name)
 
-                        lastArtistId()?.let { artistId ->
+                        insertArtist(
+                            track.artist?.name
+                        )?.let { artistId ->
+
                             insertTrack(
                                 artistId = artistId,
                                 name = track.name,
-                                stat = Stat(
-                                    track.attributes?.rank,
-                                    track.playCount
-                                )
+                                rank = track.attributes?.rank,
+                                playCount = track.playCount
                             )
                         }
                     }
