@@ -26,7 +26,6 @@ import androidx.ui.tooling.preview.Preview
 import dev.chrisbanes.accompanist.coil.CoilImage
 import ru.hotmule.lastik.R
 import ru.hotmule.lastik.domain.ListItem
-import ru.hotmule.lastik.theme.crimson
 import ru.hotmule.lastik.theme.sunflower
 import ru.hotmule.lastik.utlis.toCommasString
 import ru.hotmule.lastik.utlis.toDateString
@@ -55,7 +54,7 @@ fun LibraryListItem(
 
             if (scrobbleWidth != null && scrobbles != null) {
                 Surface(
-                    color = crimson.copy(alpha = 0.1f),
+                    color = MaterialTheme.colors.primary.copy(alpha = 0.1f),
                     modifier = Modifier
                         .fillMaxHeight()
                         .preferredWidth((scrobbleWidth * scrobbles!!).dp)
@@ -87,7 +86,7 @@ fun LibraryListItem(
                                     Icons.Rounded.Favorite
                                 else
                                     Icons.Rounded.FavoriteBorder,
-                                colorFilter = ColorFilter.tint(crimson)
+                                colorFilter = ColorFilter.tint(MaterialTheme.colors.primary)
                             )
                         },
                         modifier = Modifier

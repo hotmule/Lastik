@@ -21,7 +21,9 @@ private val LightColors = lightColors(
     primary = sangria
 )
 
-private val DarkColors = darkColors()
+private val DarkColors = darkColors(
+    primary = crimson
+)
 
 @Composable
 fun AppTheme(

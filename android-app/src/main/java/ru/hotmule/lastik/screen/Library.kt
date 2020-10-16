@@ -252,7 +252,8 @@ fun LibraryList(
             scrobbleWidth = scrobbleWidth
         )
 
-        if (index == items.lastIndex && moreItemsLoading) PagingProgress()
+        if (index == items.lastIndex && (index + 1).rem(50) == 0)
+            PagingProgress()
     }
 }
 
