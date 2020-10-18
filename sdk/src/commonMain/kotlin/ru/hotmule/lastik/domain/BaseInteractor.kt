@@ -1,6 +1,7 @@
 package ru.hotmule.lastik.domain
 
 import ru.hotmule.lastik.data.local.LastikDatabase
+import ru.hotmule.lastik.data.prefs.PrefsStore
 import ru.hotmule.lastik.data.remote.entities.User
 
 data class ListItem(
@@ -16,10 +17,9 @@ data class ListItem(
 )
 
 open class BaseInteractor(
-    private val db: LastikDatabase
+    private val db: LastikDatabase,
+    private val prefs: PrefsStore
 ) {
-
-    fun getUserName() = db.profileQueries.getProfile().executeAsOneOrNull()?.userName ?: ""
 
     suspend fun providePage(
         currentItemsCount: Int,
@@ -39,14 +39,19 @@ open class BaseInteractor(
         playCount: Long? = null
     ): Long? {
 
-        db.artistQueries.insert(
-            getUserName(),
-            name,
-            rank,
-            playCount
-        )
+        val nickname = prefs.name
 
-        return db.artistQueries.lastId().executeAsOneOrNull()
+        if (name != null && nickname != null) {
+            db.artistQueries.insert(
+                nickname,
+                name,
+                rank,
+                playCount
+            )
+            return db.artistQueries.lastId().executeAsOneOrNull()
+        }
+
+        return null
     }
 
     fun insertAlbum(
@@ -58,16 +63,19 @@ open class BaseInteractor(
         playCount: Long? = null
     ): Long? {
 
-        db.albumQueries.insert(
-            artistId,
-            name,
-            lowArtwork,
-            highArtwork,
-            rank,
-            playCount
-        )
+        if (name != null) {
+            db.albumQueries.insert(
+                artistId,
+                name,
+                lowArtwork,
+                highArtwork,
+                rank,
+                playCount
+            )
+            return db.albumQueries.lastId().executeAsOneOrNull()
+        }
 
-        return db.albumQueries.lastId().executeAsOneOrNull()
+        return null
     }
 
     fun insertTrack(
@@ -80,31 +88,39 @@ open class BaseInteractor(
         playCount: Long? = null
     ): Long? {
 
-        db.trackQueries.insert(
-            artistId,
-            albumId,
-            name,
-            loved,
-            lovedAt,
-            rank,
-            playCount
-        )
+        if (name != null) {
+            db.trackQueries.insert(
+                artistId,
+                albumId,
+                name,
+                loved,
+                lovedAt,
+                rank,
+                playCount
+            )
+            return db.trackQueries.lastId().executeAsOneOrNull()
+        }
 
-        return db.trackQueries.lastId().executeAsOneOrNull()
+        return null
     }
 
     fun insertUser(
-        user: User,
+        nickname: String,
         parentUser: String? = null,
+        realName: String? = null,
+        lowResImage: String? = null,
+        highResImage: String? = null,
+        playCount: Long? = null,
+        registeredAt: Long? = null
     ) {
         db.profileQueries.upsert(
             parentUser,
-            user.realName,
-            user.image?.get(1)?.url,
-            user.image?.get(2)?.url,
-            user.playCount,
-            user.registered?.time?.toLongOrNull(),
-            user.nickname!!,
+            realName,
+            lowResImage,
+            highResImage,
+            playCount,
+            registeredAt,
+            nickname,
             parentUser
         )
     }

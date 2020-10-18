@@ -6,7 +6,7 @@ import kotlin.String
 
 data class LovedTracks(
   val artist: String?,
-  val track: String?,
+  val track: String,
   val loved: Boolean,
   val lovedAt: Long?,
   val lowArtwork: String?

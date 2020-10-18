@@ -7,7 +7,7 @@ import kotlin.String
 data class Album(
   val id: Long,
   val artistId: Long,
-  val name: String?,
+  val name: String,
   val lowArtwork: String?,
   val highArtwork: String?,
   val rank: Int?,

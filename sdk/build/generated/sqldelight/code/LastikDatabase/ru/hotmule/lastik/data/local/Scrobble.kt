@@ -7,7 +7,7 @@ import kotlin.String
 data class Scrobble(
   val id: Long,
   val trackId: Long,
-  val listenedAt: Long?,
+  val listenedAt: Long,
   val nowPlaying: Boolean
 ) {
   override fun toString(): String = """

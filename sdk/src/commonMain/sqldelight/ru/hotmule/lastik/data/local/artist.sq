@@ -1,9 +1,10 @@
 CREATE TABLE artist (
     id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     userName TEXT NOT NULL,
-    name TEXT,
+    name TEXT NOT NULL,
     rank INTEGER AS Int,
     playCount INTEGER,
+    UNIQUE (name),
     FOREIGN KEY (userName) REFERENCES profile(userName) ON DELETE CASCADE
 );
 

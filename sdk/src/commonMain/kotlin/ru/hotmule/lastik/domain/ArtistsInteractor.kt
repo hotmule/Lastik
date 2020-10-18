@@ -4,14 +4,16 @@ import com.squareup.sqldelight.runtime.coroutines.asFlow
 import com.squareup.sqldelight.runtime.coroutines.mapToList
 import kotlinx.coroutines.flow.map
 import ru.hotmule.lastik.data.local.LastikDatabase
+import ru.hotmule.lastik.data.prefs.PrefsStore
 import ru.hotmule.lastik.data.remote.api.UserApi
 
 class ArtistsInteractor(
     private val api: UserApi,
-    private val db: LastikDatabase
-) : BaseInteractor(db) {
+    private val db: LastikDatabase,
+    private val prefs: PrefsStore
+) : BaseInteractor(db, prefs) {
 
-    fun observeArtists() = db.artistQueries.artistTop(getUserName())
+    fun observeArtists() = db.artistQueries.artistTop(prefs.name!!)
         .asFlow()
         .mapToList()
         .map { artists ->
@@ -32,10 +34,10 @@ class ArtistsInteractor(
             firstPage = firstPage
         ) { page ->
 
-            api.getTopArtists(getUserName(), page).also {
+            api.getTopArtists(prefs.name, page).also {
                 db.transaction {
 
-                    if (firstPage) db.artistQueries.deleteTopArtist(getUserName())
+                    //if (firstPage) db.artistQueries.deleteTopArtist(prefs.name!!)
 
                     it?.top?.artists?.forEach { artist ->
                         insertArtist(

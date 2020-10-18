@@ -50,8 +50,6 @@ class HttpClientFactory(
         HttpResponseValidator {
             validateResponse {
 
-                delay(500)
-
                 if (!it.status.isSuccess()) {
                     when (it.status.value) {
                         401 -> interactor.signOut()

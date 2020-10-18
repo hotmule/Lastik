@@ -14,7 +14,7 @@ interface AlbumQueries : Transacter {
 
   fun <T : Any> albumTop(mapper: (
     artist: String?,
-    album: String?,
+    album: String,
     lowArtwork: String?,
     rank: Int?,
     playCount: Long?
@@ -24,7 +24,7 @@ interface AlbumQueries : Transacter {
 
   fun insert(
     artistId: Long,
-    name: String?,
+    name: String,
     lowArtwork: String?,
     highArtwork: String?,
     rank: Int?,

@@ -9,7 +9,7 @@ data class Track(
   val id: Long,
   val artistId: Long,
   val albumId: Long?,
-  val name: String?,
+  val name: String,
   val loved: Boolean,
   val lovedAt: Long?,
   val rank: Int?,

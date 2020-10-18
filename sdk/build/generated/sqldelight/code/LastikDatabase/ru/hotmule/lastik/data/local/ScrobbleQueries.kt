@@ -11,7 +11,7 @@ interface ScrobbleQueries : Transacter {
   fun getScrobblesCount(): Query<Long>
 
   fun <T : Any> scrobbleData(userName: String, mapper: (
-    listenedAt: Long?,
+    listenedAt: Long,
     nowPlaying: Boolean,
     loved: Boolean?,
     track: String?,
@@ -24,7 +24,7 @@ interface ScrobbleQueries : Transacter {
 
   fun insert(
     trackId: Long,
-    listenedAt: Long?,
+    listenedAt: Long,
     nowPlaying: Boolean
   )
 }

@@ -7,6 +7,7 @@ import ru.hotmule.lastik.data.remote.HttpClientFactory
 import ru.hotmule.lastik.data.remote.api.AuthApi
 import ru.hotmule.lastik.data.remote.api.UserApi
 import ru.hotmule.lastik.data.local.LastikDatabase
+import ru.hotmule.lastik.data.remote.api.TrackApi
 import ru.hotmule.lastik.domain.*
 
 open class Sdk(
@@ -22,16 +23,17 @@ open class Sdk(
     val signOutInteractor = SignOutInteractor(prefs, database.profileQueries)
     private val httpClient = httpClientFactory.create(signOutInteractor)
 
-    private val authApi = AuthApi(httpClient, apiKey)
+    private val authApi = AuthApi(httpClient, prefs, apiKey, secret)
     private val userApi = UserApi(httpClient, apiKey)
+    private val trackApi = TrackApi(httpClient, prefs, apiKey, secret)
 
-    val profileInteractor = ProfileInteractor(userApi, database)
-    val authInteractor = AuthInteractor(prefs, authApi, apiKey, secret, profileInteractor)
+    val profileInteractor = ProfileInteractor(userApi, database, prefs)
+    val authInteractor = AuthInteractor(authApi, database, prefs, apiKey)
 
-    val scrobblesInteractor = ScrobblesInteractor(userApi, database)
-    val artistsInteractor = ArtistsInteractor(userApi, database)
-    val albumsInteractor = AlbumsInteractor(userApi, database)
-    val tracksInteractor = TracksInteractor(userApi, database)
+    val scrobblesInteractor = ScrobblesInteractor(userApi, database, prefs)
+    val artistsInteractor = ArtistsInteractor(userApi, database, prefs)
+    val albumsInteractor = AlbumsInteractor(userApi, database, prefs)
+    val tracksInteractor = TracksInteractor(userApi, database, prefs)
 
     companion object
 }

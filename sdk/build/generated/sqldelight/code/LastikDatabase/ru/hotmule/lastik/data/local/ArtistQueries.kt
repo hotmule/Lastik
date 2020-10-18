@@ -13,7 +13,7 @@ interface ArtistQueries : Transacter {
   fun lastId(): Query<Long>
 
   fun <T : Any> artistTop(userName: String, mapper: (
-    name: String?,
+    name: String,
     rank: Int?,
     playCount: Long?
   ) -> T): Query<T>
@@ -22,7 +22,7 @@ interface ArtistQueries : Transacter {
 
   fun insert(
     userName: String,
-    name: String?,
+    name: String,
     rank: Int?,
     playCount: Long?
   )

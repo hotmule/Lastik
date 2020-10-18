@@ -7,7 +7,7 @@ import kotlin.String
 data class Artist(
   val id: Long,
   val userName: String,
-  val name: String?,
+  val name: String,
   val rank: Int?,
   val playCount: Long?
 ) {

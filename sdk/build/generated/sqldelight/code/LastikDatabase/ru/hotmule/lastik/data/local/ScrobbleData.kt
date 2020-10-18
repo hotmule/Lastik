@@ -5,7 +5,7 @@ import kotlin.Long
 import kotlin.String
 
 data class ScrobbleData(
-  val listenedAt: Long?,
+  val listenedAt: Long,
   val nowPlaying: Boolean,
   val loved: Boolean?,
   val track: String?,

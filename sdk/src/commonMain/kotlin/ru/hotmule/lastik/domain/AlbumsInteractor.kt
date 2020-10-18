@@ -4,12 +4,14 @@ import com.squareup.sqldelight.runtime.coroutines.asFlow
 import com.squareup.sqldelight.runtime.coroutines.mapToList
 import kotlinx.coroutines.flow.map
 import ru.hotmule.lastik.data.local.LastikDatabase
+import ru.hotmule.lastik.data.prefs.PrefsStore
 import ru.hotmule.lastik.data.remote.api.UserApi
 
 class AlbumsInteractor(
     private val api: UserApi,
-    private val db: LastikDatabase
-) : BaseInteractor(db) {
+    private val db: LastikDatabase,
+    private val prefs: PrefsStore
+) : BaseInteractor(db, prefs) {
 
     fun observeAlbums() = db.albumQueries.albumTop().asFlow().mapToList().map { albums ->
         albums.map {
@@ -31,25 +33,25 @@ class AlbumsInteractor(
             firstPage = firstPage
         ) { page ->
 
-            api.getTopAlbums(getUserName(), page).also {
+            api.getTopAlbums(prefs.name, page).also {
                 db.transaction {
 
-                    if (firstPage) db.artistQueries.deleteTopAlbums(getUserName())
+                    //if (firstPage) db.artistQueries.deleteTopAlbums(prefs.name!!)
 
                     it?.top?.albums?.forEach { album ->
-
-                        insertArtist(
-                            album.artist?.name
-                        )?.let { artistId ->
-
-                            insertAlbum(
-                                artistId,
-                                album.name,
-                                album.images?.get(2)?.url,
-                                album.images?.get(3)?.url,
-                                album.attributes?.rank,
-                                album.playCount
-                            )
+                        with (album) {
+                            artist?.name?.let { artist ->
+                                insertArtist(artist)?.let { artistId ->
+                                    insertAlbum(
+                                        artistId,
+                                        name,
+                                        images?.get(2)?.url,
+                                        images?.get(3)?.url,
+                                        attributes?.rank,
+                                        playCount
+                                    )
+                                }
+                            }
                         }
                     }
                 }

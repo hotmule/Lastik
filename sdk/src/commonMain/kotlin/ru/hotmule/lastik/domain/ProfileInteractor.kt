@@ -5,12 +5,18 @@ import com.squareup.sqldelight.runtime.coroutines.mapToList
 import com.squareup.sqldelight.runtime.coroutines.mapToOneOrNull
 import kotlinx.coroutines.flow.map
 import ru.hotmule.lastik.data.local.LastikDatabase
+import ru.hotmule.lastik.data.prefs.PrefsStore
 import ru.hotmule.lastik.data.remote.api.UserApi
 
 class ProfileInteractor(
     private val api: UserApi,
     private val db: LastikDatabase,
-) : BaseInteractor(db) {
+    private val prefs: PrefsStore
+) : BaseInteractor(db, prefs) {
+
+    val isSessionActive = prefs.isSessionActive
+
+    fun getName() = prefs.name
 
     fun observeInfo() = db.profileQueries
         .getProfile()
@@ -18,7 +24,7 @@ class ProfileInteractor(
         .mapToOneOrNull()
 
     fun observeFriends() = db.profileQueries
-        .getFriends(getUserName())
+        .getFriends(prefs.name)
         .asFlow()
         .mapToList()
 
@@ -42,23 +48,36 @@ class ProfileInteractor(
         refreshLovedTracks(firstPage)
     }
 
-    suspend fun refreshInfo(
-        name: String? = getUserName()
-    ) {
-        api.getInfo(name).also {
-            it?.user?.let { user -> insertUser(user) }
+    private suspend fun refreshInfo() {
+        api.getInfo(prefs.name).also {
+            it?.user?.let { user ->
+                user.nickname?.let { name ->
+                    insertUser(
+                        nickname = name,
+                        realName = user.realName,
+                        lowResImage = user.image?.get(1)?.url,
+                        highResImage = user.image?.get(2)?.url,
+                        playCount = user.playCount,
+                        registeredAt = user.registered?.time?.toLongOrNull()
+                    )
+                }
+            }
         }
     }
 
     private suspend fun refreshFriends() {
-        api.getFriends(getUserName(), 1).also {
+        api.getFriends(prefs.name, 1).also {
             db.transaction {
-                db.profileQueries.deleteFriends(getUserName())
+                db.profileQueries.deleteFriends(prefs.name)
                 it?.friends?.user?.forEach {
-                    insertUser(
-                        it,
-                        getUserName()
-                    )
+                    it.nickname?.let { name ->
+                        insertUser(
+                            nickname = name,
+                            parentUser = prefs.name,
+                            lowResImage = it.image?.get(1)?.url,
+                            highResImage = it.image?.get(2)?.url
+                        )
+                    }
                 }
             }
         }
@@ -71,23 +90,23 @@ class ProfileInteractor(
             currentItemsCount = db.trackQueries.getLovedTracksPageCount().executeAsOne().toInt(),
             firstPage = firstPage
         ) { page ->
-            api.getLovedTracks(getUserName(), page).also {
+            api.getLovedTracks(prefs.name, page).also {
                 db.transaction {
 
-                    if (firstPage) db.artistQueries.deleteLovedTracks(getUserName())
+                    //if (firstPage) db.artistQueries.deleteLovedTracks(prefs.name!!)
 
                     it?.loved?.list?.forEach { track ->
-
-                        insertArtist(
-                            track.artist?.name
-                        )?.let { artistId ->
-
-                            insertTrack(
-                                artistId = artistId,
-                                name = track.name,
-                                loved = true,
-                                lovedAt = track.date?.uts
-                            )
+                        with (track) {
+                            insertArtist(
+                                artist?.name
+                            )?.let { artistId ->
+                                insertTrack(
+                                    artistId = artistId,
+                                    name = name,
+                                    loved = true,
+                                    lovedAt = date?.uts
+                                )
+                            }
                         }
                     }
                 }

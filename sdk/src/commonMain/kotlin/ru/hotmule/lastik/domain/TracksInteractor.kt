@@ -4,12 +4,14 @@ import com.squareup.sqldelight.runtime.coroutines.asFlow
 import com.squareup.sqldelight.runtime.coroutines.mapToList
 import kotlinx.coroutines.flow.map
 import ru.hotmule.lastik.data.local.LastikDatabase
+import ru.hotmule.lastik.data.prefs.PrefsStore
 import ru.hotmule.lastik.data.remote.api.UserApi
 
 class TracksInteractor(
     private val api: UserApi,
-    private val db: LastikDatabase
-): BaseInteractor(db) {
+    private val db: LastikDatabase,
+    private val prefs: PrefsStore
+): BaseInteractor(db, prefs) {
 
     fun observeTopTracks() = db.trackQueries.topTracks().asFlow().mapToList().map { tracks ->
         tracks.map {
@@ -31,23 +33,24 @@ class TracksInteractor(
             firstPage = firstPage
         ) { page ->
 
-            api.getTopTracks(getUserName(), page).also {
+            api.getTopTracks(prefs.name, page).also {
                 db.transaction {
 
-                    if (firstPage) db.artistQueries.deleteTopTracks(getUserName())
+                    //if (firstPage) db.artistQueries.deleteTopTracks(prefs.name!!)
 
                     it?.top?.list?.forEach { track ->
 
-                        insertArtist(
-                            track.artist?.name
-                        )?.let { artistId ->
-
-                            insertTrack(
-                                artistId = artistId,
-                                name = track.name,
-                                rank = track.attributes?.rank,
-                                playCount = track.playCount
-                            )
+                        with (track) {
+                            insertArtist(
+                                artist?.name
+                            )?.let { artistId ->
+                                insertTrack(
+                                    artistId = artistId,
+                                    name = name,
+                                    rank = attributes?.rank,
+                                    playCount = playCount
+                                )
+                            }
                         }
                     }
                 }

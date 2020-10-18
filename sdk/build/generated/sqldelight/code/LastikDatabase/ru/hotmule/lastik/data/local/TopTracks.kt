@@ -6,7 +6,7 @@ import kotlin.String
 
 data class TopTracks(
   val artist: String?,
-  val track: String?,
+  val track: String,
   val rank: Int?,
   val playCount: Long?,
   val lowArtwork: String?

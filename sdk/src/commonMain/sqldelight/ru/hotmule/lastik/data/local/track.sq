@@ -2,11 +2,12 @@ CREATE TABLE track (
     id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     artistId INTEGER NOT NULL,
     albumId INTEGER,
-    name TEXT,
+    name TEXT NOT NULL,
     loved INTEGER AS Boolean DEFAULT 0 NOT NULL,
     lovedAt INTEGER,
     rank INTEGER AS Int,
     playCount INTEGER,
+    UNIQUE (artistId, name),
     FOREIGN KEY (artistId) REFERENCES artist(id) ON DELETE CASCADE,
     FOREIGN KEY (albumId) REFERENCES album(id) ON DELETE CASCADE
 );

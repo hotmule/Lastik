@@ -4,14 +4,16 @@ import com.squareup.sqldelight.runtime.coroutines.asFlow
 import com.squareup.sqldelight.runtime.coroutines.mapToList
 import kotlinx.coroutines.flow.map
 import ru.hotmule.lastik.data.local.*
+import ru.hotmule.lastik.data.prefs.PrefsStore
 import ru.hotmule.lastik.data.remote.api.UserApi
 
 class ScrobblesInteractor(
     private val api: UserApi,
-    private val db: LastikDatabase
-) : BaseInteractor(db) {
+    private val db: LastikDatabase,
+    private val prefs: PrefsStore
+) : BaseInteractor(db, prefs) {
 
-    fun observeScrobbles() = db.scrobbleQueries.scrobbleData(getUserName())
+    fun observeScrobbles() = db.scrobbleQueries.scrobbleData(prefs.name!!)
         .asFlow()
         .mapToList()
         .map { scrobbles ->
@@ -35,37 +37,43 @@ class ScrobblesInteractor(
             firstPage = firstPage
         ) { page ->
 
-            api.getRecentTracks(getUserName(), page).also { response ->
+            api.getRecentTracks(prefs.name, page).also { response ->
 
                 db.transaction {
 
-                    if (firstPage) db.artistQueries.deleteScrobbles(getUserName())
+                    //if (firstPage) db.artistQueries.deleteScrobbles(prefs.name!!)
 
                     response?.recent?.tracks?.forEach { track ->
 
-                        insertArtist(
-                            track.artist?.name
-                        )?.let { artistId ->
+                        with(track) {
 
-                            insertAlbum(
-                                artistId,
-                                track.album?.text,
-                                track.images?.get(2)?.url,
-                                track.images?.get(3)?.url
-                            )?.let { albumId ->
+                            if (date?.uts != null) {
 
-                                insertTrack(
-                                    artistId,
-                                    albumId,
-                                    track.name,
-                                    track.loved == 1
-                                )?.let { trackId ->
+                                insertArtist(
+                                    artist?.name
+                                )?.let { artistId ->
 
-                                    db.scrobbleQueries.insert(
-                                        trackId,
-                                        track.date?.uts,
-                                        track.attributes?.nowPlaying == "true"
-                                    )
+                                    insertAlbum(
+                                        artistId,
+                                        album?.text,
+                                        images?.get(2)?.url,
+                                        images?.get(3)?.url
+                                    )?.let { albumId ->
+
+                                        insertTrack(
+                                            artistId,
+                                            albumId,
+                                            name,
+                                            loved == 1
+                                        )?.let { trackId ->
+
+                                            db.scrobbleQueries.insert(
+                                                trackId,
+                                                date.uts,
+                                                attributes?.nowPlaying == "true"
+                                            )
+                                        }
+                                    }
                                 }
                             }
                         }
