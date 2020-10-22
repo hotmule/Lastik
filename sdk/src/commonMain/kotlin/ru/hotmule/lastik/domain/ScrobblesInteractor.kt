@@ -6,14 +6,15 @@ import kotlinx.coroutines.flow.map
 import ru.hotmule.lastik.data.local.*
 import ru.hotmule.lastik.data.prefs.PrefsStore
 import ru.hotmule.lastik.data.remote.api.UserApi
+import ru.hotmule.lastik.data.remote.entities.LibraryItem
 
 class ScrobblesInteractor(
     private val api: UserApi,
     private val db: LastikDatabase,
     private val prefs: PrefsStore
-) : BaseInteractor(db, prefs) {
+) : BaseInteractor(db) {
 
-    fun observeScrobbles() = db.scrobbleQueries.scrobbleData(prefs.name!!)
+    fun observeScrobbles() = db.scrobbleQueries.scrobbleData()
         .asFlow()
         .mapToList()
         .map { scrobbles ->
@@ -43,40 +44,56 @@ class ScrobblesInteractor(
 
                     //if (firstPage) db.artistQueries.deleteScrobbles(prefs.name!!)
 
-                    response?.recent?.tracks?.forEach { track ->
+                    response?.recent?.tracks?.forEach {
+                        insertRecentTrack(it)
+                    }
+                }
+            }
+        }
+    }
 
-                        with(track) {
+    private fun insertRecentTrack(track: LibraryItem) {
 
-                            if (date?.uts != null) {
+        with(track) {
 
-                                insertArtist(
-                                    artist?.name
-                                )?.let { artistId ->
+            date?.uts?.let { date ->
+                insertArtist(artist?.name)?.let { artistId ->
 
-                                    insertAlbum(
-                                        artistId,
-                                        album?.text,
-                                        images?.get(2)?.url,
-                                        images?.get(3)?.url
-                                    )?.let { albumId ->
+                    album?.text?.let { albumName ->
+                        db.albumQueries.insert(
+                            artistId = artistId,
+                            name = albumName,
+                            lowArtwork = images?.get(2)?.url,
+                            highArtwork = images?.get(3)?.url
+                        )
+                        db.albumQueries
+                            .getId(artistId, albumName)
+                            .executeAsOneOrNull()
+                            ?.let { albumId ->
 
-                                        insertTrack(
-                                            artistId,
-                                            albumId,
-                                            name,
-                                            loved == 1
-                                        )?.let { trackId ->
+                                name?.let { trackName ->
+                                    db.trackQueries.upsertRecentTrack(
+                                        artistId = artistId,
+                                        albumId = albumId,
+                                        name = trackName,
+                                        loved = loved == 1,
+                                        lovedAt = null,
+                                        playCount = null,
+                                        rank = null
+                                    )
+                                    db.trackQueries
+                                        .getId(artistId, name)
+                                        .executeAsOneOrNull()
+                                        ?.let { trackId ->
 
-                                            db.scrobbleQueries.insert(
-                                                trackId,
-                                                date.uts,
-                                                attributes?.nowPlaying == "true"
+                                            db.scrobbleQueries.upsert(
+                                                trackId = trackId,
+                                                listenedAt = date,
+                                                nowPlaying = attributes?.nowPlaying == "true"
                                             )
                                         }
-                                    }
                                 }
                             }
-                        }
                     }
                 }
             }

@@ -11,7 +11,7 @@ class AlbumsInteractor(
     private val api: UserApi,
     private val db: LastikDatabase,
     private val prefs: PrefsStore
-) : BaseInteractor(db, prefs) {
+) : BaseInteractor(db) {
 
     fun observeAlbums() = db.albumQueries.albumTop().asFlow().mapToList().map { albums ->
         albums.map {
@@ -42,14 +42,18 @@ class AlbumsInteractor(
                         with (album) {
                             artist?.name?.let { artist ->
                                 insertArtist(artist)?.let { artistId ->
-                                    insertAlbum(
-                                        artistId,
-                                        name,
-                                        images?.get(2)?.url,
-                                        images?.get(3)?.url,
-                                        attributes?.rank,
-                                        playCount
-                                    )
+                                    name?.let {
+                                        with (db.albumQueries) {
+                                            upsert(
+                                                artistId = artistId,
+                                                name = name,
+                                                lowArtwork = images?.get(2)?.url,
+                                                highArtwork = images?.get(3)?.url,
+                                                rank = attributes?.rank,
+                                                playCount = playCount
+                                            )
+                                        }
+                                    }
                                 }
                             }
                         }

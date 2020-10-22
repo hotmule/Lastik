@@ -14,11 +14,21 @@ getTopAlbumsCount:
 SELECT COUNT(album.id) FROM album WHERE rank NOT NULL;
 
 insert:
-INSERT OR REPLACE INTO album(artistId, name, lowArtwork, highArtwork, rank, playCount)
-VALUES (?, ?, ?, ?, ?, ?);
+INSERT OR IGNORE INTO album(artistId, name, lowArtwork, highArtwork) VALUES (?, ?, ?, ?);
 
-lastId:
-SELECT last_insert_rowid();
+upsert {
+    UPDATE album
+    SET rank = :rank,
+        playCount = :playCount
+    WHERE artistId = :artistId AND name = :name;
+
+    INSERT OR IGNORE
+    INTO album(artistId, name, lowArtwork, highArtwork, rank, playCount)
+    VALUES (:artistId, :name, :lowArtwork, :highArtwork, :rank, :playCount);
+}
+
+getId:
+SELECT id FROM album WHERE artistId = ? AND name = ?;
 
 albumTop:
 SELECT
@@ -29,4 +39,4 @@ SELECT
     al.playCount
 FROM album al
 LEFT JOIN artist ar ON al.artistId = ar.id
-WHERE al.rank NOT NULL;
+WHERE al.rank NOT NULL ORDER BY al.rank;

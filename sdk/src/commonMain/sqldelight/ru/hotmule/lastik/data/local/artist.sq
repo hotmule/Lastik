@@ -1,21 +1,30 @@
 CREATE TABLE artist (
     id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-    userName TEXT NOT NULL,
     name TEXT NOT NULL,
     rank INTEGER AS Int,
     playCount INTEGER,
-    UNIQUE (name),
-    FOREIGN KEY (userName) REFERENCES profile(userName) ON DELETE CASCADE
+    UNIQUE (name)
 );
 
 getTopArtistsCount:
-SELECT COUNT(artist.id) FROM artist WHERE rank NOT NULL;
+SELECT COUNT(artist.name) FROM artist WHERE rank NOT NULL;
 
 insert:
-INSERT OR REPLACE INTO artist(userName, name, rank, playCount) VALUES (?, ?, ?, ?);
+INSERT OR IGNORE INTO artist(name) VALUES (?);
 
-lastId:
-SELECT last_insert_rowid();
+upsert {
+    UPDATE artist
+    SET rank = :rank,
+        playCount = :playCount
+    WHERE name = :name;
+
+    INSERT OR IGNORE
+    INTO artist(name, rank, playCount)
+    VALUES (:name, :rank, :playCount);
+}
+
+getId:
+SELECT id FROM artist WHERE name = ?;
 
 artistTop:
 SELECT
@@ -23,32 +32,32 @@ SELECT
     rank,
     playCount
 FROM artist
-WHERE rank NOT NULL AND userName = ?;
+WHERE rank NOT NULL ORDER BY rank;
 
 deleteScrobbles:
-DELETE FROM artist WHERE userName = ? AND EXISTS (
+DELETE FROM artist WHERE EXISTS (
     SELECT s.id FROM scrobble s
     LEFT JOIN track t ON t.id = s.trackId
     WHERE t.artistId = artist.id AND t.rank IS NULL
 );
 
 deleteTopArtist:
-DELETE FROM artist WHERE userName = ? AND rank NOT NULL;
+DELETE FROM artist WHERE rank NOT NULL;
 
 deleteTopAlbums:
-DELETE FROM artist WHERE userName = ? AND EXISTS (
+DELETE FROM artist WHERE EXISTS (
     SELECT al.id FROM album al
     WHERE artist.id = al.artistId AND al.rank NOT NULL
 );
 
 deleteTopTracks:
-DELETE FROM artist WHERE userName = ? AND EXISTS (
+DELETE FROM artist WHERE EXISTS (
     SELECT t.id FROM track t
     WHERE artist.id = t.artistId AND t.rank NOT NULL
 );
 
 deleteLovedTracks:
-DELETE FROM artist WHERE userName = ? AND EXISTS (
+DELETE FROM artist WHERE EXISTS (
     SELECT t.id FROM track t
     WHERE artist.id = t.artistId AND t.lovedAt NOT NULL
 );

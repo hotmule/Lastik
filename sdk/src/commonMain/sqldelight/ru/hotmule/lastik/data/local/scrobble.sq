@@ -11,7 +11,19 @@ getScrobblesCount:
 SELECT COUNT(id) FROM scrobble;
 
 insert:
-INSERT OR REPLACE INTO scrobble(trackId, listenedAt, nowPlaying) VALUES (?, ?, ?);
+INSERT OR IGNORE
+INTO scrobble(trackId, listenedAt, nowPlaying)
+VALUES (:trackId, :listenedAt, :nowPlaying);
+
+upsert {
+    UPDATE scrobble
+    SET nowPlaying = :nowPlaying
+    WHERE trackId = :trackId AND listenedAt = :listenedAt;
+
+    INSERT OR IGNORE
+    INTO scrobble(trackId, listenedAt, nowPlaying)
+    VALUES (:trackId, :listenedAt, :nowPlaying);
+}
 
 scrobbleData:
 SELECT
@@ -26,4 +38,4 @@ FROM scrobble s
 LEFT JOIN track t ON s.trackId = t.id
 LEFT JOIN album al ON t.albumId = al.id
 LEFT JOIN artist ar ON al.artistId = ar.id
-WHERE ar.userName = ?;
+ORDER BY s.listenedAt DESC;

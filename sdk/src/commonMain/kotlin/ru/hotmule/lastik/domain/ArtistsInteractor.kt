@@ -11,9 +11,9 @@ class ArtistsInteractor(
     private val api: UserApi,
     private val db: LastikDatabase,
     private val prefs: PrefsStore
-) : BaseInteractor(db, prefs) {
+) : BaseInteractor(db) {
 
-    fun observeArtists() = db.artistQueries.artistTop(prefs.name!!)
+    fun observeArtists() = db.artistQueries.artistTop()
         .asFlow()
         .mapToList()
         .map { artists ->
@@ -40,11 +40,15 @@ class ArtistsInteractor(
                     //if (firstPage) db.artistQueries.deleteTopArtist(prefs.name!!)
 
                     it?.top?.artists?.forEach { artist ->
-                        insertArtist(
-                            artist.name,
-                            artist.attributes?.rank,
-                            artist.playCount
-                        )
+                        artist.name?.let {  name ->
+                            with (db.artistQueries) {
+                                upsert(
+                                    artist.attributes?.rank,
+                                    artist.playCount,
+                                    name
+                                )
+                            }
+                        }
                     }
                 }
             }

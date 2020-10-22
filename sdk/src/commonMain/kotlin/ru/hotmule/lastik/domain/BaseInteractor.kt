@@ -17,8 +17,7 @@ data class ListItem(
 )
 
 open class BaseInteractor(
-    private val db: LastikDatabase,
-    private val prefs: PrefsStore
+    private val db: LastikDatabase
 ) {
 
     suspend fun providePage(
@@ -34,75 +33,13 @@ open class BaseInteractor(
     }
 
     fun insertArtist(
-        name: String?,
-        rank: Int? = null,
-        playCount: Long? = null
-    ): Long? {
-
-        val nickname = prefs.name
-
-        if (name != null && nickname != null) {
-            db.artistQueries.insert(
-                nickname,
-                name,
-                rank,
-                playCount
-            )
-            return db.artistQueries.lastId().executeAsOneOrNull()
+        name: String?
+    ) = if (name != null) {
+        with (db.artistQueries) {
+            insert(name = name)
+            getId(name).executeAsOneOrNull()
         }
-
-        return null
-    }
-
-    fun insertAlbum(
-        artistId: Long,
-        name: String?,
-        lowArtwork: String?,
-        highArtwork: String?,
-        rank: Int? = null,
-        playCount: Long? = null
-    ): Long? {
-
-        if (name != null) {
-            db.albumQueries.insert(
-                artistId,
-                name,
-                lowArtwork,
-                highArtwork,
-                rank,
-                playCount
-            )
-            return db.albumQueries.lastId().executeAsOneOrNull()
-        }
-
-        return null
-    }
-
-    fun insertTrack(
-        artistId: Long,
-        albumId: Long? = null,
-        name: String?,
-        loved: Boolean = false,
-        lovedAt: Long? = null,
-        rank: Int? = null,
-        playCount: Long? = null
-    ): Long? {
-
-        if (name != null) {
-            db.trackQueries.insert(
-                artistId,
-                albumId,
-                name,
-                loved,
-                lovedAt,
-                rank,
-                playCount
-            )
-            return db.trackQueries.lastId().executeAsOneOrNull()
-        }
-
-        return null
-    }
+    } else null
 
     fun insertUser(
         nickname: String,

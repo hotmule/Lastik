@@ -11,7 +11,7 @@ class TracksInteractor(
     private val api: UserApi,
     private val db: LastikDatabase,
     private val prefs: PrefsStore
-): BaseInteractor(db, prefs) {
+): BaseInteractor(db) {
 
     fun observeTopTracks() = db.trackQueries.topTracks().asFlow().mapToList().map { tracks ->
         tracks.map {
@@ -41,15 +41,21 @@ class TracksInteractor(
                     it?.top?.list?.forEach { track ->
 
                         with (track) {
-                            insertArtist(
-                                artist?.name
-                            )?.let { artistId ->
-                                insertTrack(
-                                    artistId = artistId,
-                                    name = name,
-                                    rank = attributes?.rank,
-                                    playCount = playCount
-                                )
+                            insertArtist(artist?.name)?.let { artistId ->
+
+                                name?.let {
+                                    with(db.trackQueries) {
+                                        upsertTopTrack(
+                                            artistId = artistId,
+                                            name = name,
+                                            rank = attributes?.rank,
+                                            playCount = playCount,
+                                            albumId = null,
+                                            loved = false,
+                                            lovedAt = null
+                                        )
+                                    }
+                                }
                             }
                         }
                     }

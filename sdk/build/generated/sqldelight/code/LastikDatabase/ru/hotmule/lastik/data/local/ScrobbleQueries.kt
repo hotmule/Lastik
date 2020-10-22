@@ -10,7 +10,7 @@ import kotlin.String
 interface ScrobbleQueries : Transacter {
   fun getScrobblesCount(): Query<Long>
 
-  fun <T : Any> scrobbleData(userName: String, mapper: (
+  fun <T : Any> scrobbleData(mapper: (
     listenedAt: Long,
     nowPlaying: Boolean,
     loved: Boolean?,
@@ -20,11 +20,17 @@ interface ScrobbleQueries : Transacter {
     lowArtwork: String?
   ) -> T): Query<T>
 
-  fun scrobbleData(userName: String): Query<ScrobbleData>
+  fun scrobbleData(): Query<ScrobbleData>
 
   fun insert(
     trackId: Long,
     listenedAt: Long,
     nowPlaying: Boolean
+  )
+
+  fun upsert(
+    nowPlaying: Boolean,
+    trackId: Long,
+    listenedAt: Long
   )
 }

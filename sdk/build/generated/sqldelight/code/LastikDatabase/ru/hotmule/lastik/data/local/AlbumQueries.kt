@@ -10,7 +10,7 @@ import kotlin.String
 interface AlbumQueries : Transacter {
   fun getTopAlbumsCount(): Query<Long>
 
-  fun lastId(): Query<Long>
+  fun getId(artistId: Long, name: String): Query<Long>
 
   fun <T : Any> albumTop(mapper: (
     artist: String?,
@@ -26,8 +26,15 @@ interface AlbumQueries : Transacter {
     artistId: Long,
     name: String,
     lowArtwork: String?,
-    highArtwork: String?,
+    highArtwork: String?
+  )
+
+  fun upsert(
     rank: Int?,
-    playCount: Long?
+    playCount: Long?,
+    artistId: Long,
+    name: String,
+    lowArtwork: String?,
+    highArtwork: String?
   )
 }

@@ -19,11 +19,43 @@ getLovedTracksPageCount:
 SELECT COUNT(track.id) FROM track WHERE lovedAt NOT NULL;
 
 insert:
-INSERT OR REPLACE INTO track(artistId, albumId, name, loved, lovedAt, rank, playCount)
-VALUES (?, ?, ?, ?, ?, ?, ?);
+INSERT OR IGNORE INTO track(artistId, albumId, name, loved) VALUES (?, ?, ?, ?);
 
-lastId:
-SELECT last_insert_rowid();
+upsertRecentTrack {
+    UPDATE track
+    SET albumId = :albumId,
+        loved = :loved
+    WHERE artistId = :artistId AND name = :name;
+
+    INSERT OR IGNORE
+    INTO track(artistId, albumId, name, loved, lovedAt, rank, playCount)
+    VALUES (:artistId, :albumId, :name, :loved, :lovedAt, :rank, :playCount);
+}
+
+upsertTopTrack {
+    UPDATE track
+    SET rank = :rank,
+        playCount = :playCount
+    WHERE artistId = :artistId AND name = :name;
+
+    INSERT OR IGNORE
+    INTO track(artistId, albumId, name, loved, lovedAt, rank, playCount)
+    VALUES (:artistId, :albumId, :name, :loved, :lovedAt, :rank, :playCount);
+}
+
+upsertLovedTrack {
+    UPDATE track
+    SET loved = :loved,
+        lovedAt = :lovedAt
+    WHERE artistId = :artistId AND name = :name;
+
+    INSERT OR IGNORE
+    INTO track(artistId, albumId, name, loved, lovedAt, rank, playCount)
+    VALUES (:artistId, :albumId, :name, :loved, :lovedAt, :rank, :playCount);
+}
+
+getId:
+SELECT id FROM track WHERE artistId = ? AND name = ?;
 
 topTracks:
 SELECT
@@ -35,7 +67,7 @@ SELECT
 FROM track t
 LEFT JOIN album al ON t.albumId = al.id
 LEFT JOIN artist ar ON t.artistId = ar.id
-WHERE t.rank NOT NULL;
+WHERE t.rank NOT NULL ORDER BY t.rank;
 
 lovedTracks:
 SELECT
@@ -47,4 +79,4 @@ SELECT
 FROM track t
 LEFT JOIN album al ON t.albumId = al.id
 LEFT JOIN artist ar ON t.artistId = ar.id
-WHERE t.lovedAt NOT NULL;
+WHERE t.lovedAt NOT NULL ORDER BY lovedAt DESC;

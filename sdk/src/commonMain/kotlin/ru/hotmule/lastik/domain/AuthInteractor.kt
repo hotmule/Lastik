@@ -11,7 +11,7 @@ class AuthInteractor(
     private val db: LastikDatabase,
     private val prefs: PrefsStore,
     private val apiKey: String
-) : BaseInteractor(db, prefs) {
+) : BaseInteractor(db) {
 
     fun getAuthUrl() = "http://www.last.fm/api/auth/?api_key=$apiKey"
 

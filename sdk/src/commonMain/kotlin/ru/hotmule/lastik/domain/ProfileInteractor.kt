@@ -12,7 +12,7 @@ class ProfileInteractor(
     private val api: UserApi,
     private val db: LastikDatabase,
     private val prefs: PrefsStore
-) : BaseInteractor(db, prefs) {
+) : BaseInteractor(db) {
 
     val isSessionActive = prefs.isSessionActive
 
@@ -97,15 +97,20 @@ class ProfileInteractor(
 
                     it?.loved?.list?.forEach { track ->
                         with (track) {
-                            insertArtist(
-                                artist?.name
-                            )?.let { artistId ->
-                                insertTrack(
-                                    artistId = artistId,
-                                    name = name,
-                                    loved = true,
-                                    lovedAt = date?.uts
-                                )
+                            insertArtist(artist?.name)?.let { artistId ->
+                                name?.let {
+                                    with(db.trackQueries) {
+                                        upsertLovedTrack(
+                                            artistId = artistId,
+                                            name = name,
+                                            loved = true,
+                                            lovedAt = date?.uts,
+                                            albumId = null,
+                                            playCount = null,
+                                            rank = null
+                                        )
+                                    }
+                                }
                             }
                         }
                     }
