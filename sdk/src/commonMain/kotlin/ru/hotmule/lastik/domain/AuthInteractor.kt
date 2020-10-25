@@ -1,17 +1,14 @@
 package ru.hotmule.lastik.domain
 
-import ru.hotmule.lastik.data.local.LastikDatabase
-import ru.hotmule.lastik.data.local.ProfileQueries
 import ru.hotmule.lastik.data.prefs.PrefsStore
 import ru.hotmule.lastik.data.remote.api.AuthApi
-import ru.hotmule.lastik.data.remote.entities.User
 
 class AuthInteractor(
+    private val apiKey: String,
     private val api: AuthApi,
-    private val db: LastikDatabase,
     private val prefs: PrefsStore,
-    private val apiKey: String
-) : BaseInteractor(db) {
+    private val profileInteractor: ProfileInteractor
+) {
 
     fun getAuthUrl() = "http://www.last.fm/api/auth/?api_key=$apiKey"
 
@@ -30,7 +27,7 @@ class AuthInteractor(
             prefs.apply {
                 sessionKey = it.params?.key
                 name = it.params?.name
-                name?.let { insertUser(it) }
+                name?.let { profileInteractor.insertUser(it) }
             }
         }
     }

@@ -95,24 +95,22 @@ fun LibraryListItem(
                     )
                 }
 
-                imageUrl?.let {
-                    CoilImage(
-                        data = it,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .align(Alignment.CenterVertically)
-                            .preferredWidth(50.dp)
-                            .preferredHeight(50.dp)
-                            .clip(shape = RoundedCornerShape(8))
-                            .background(Color.LightGray)
-                    )
-                }
+                CoilImage(
+                    data = imageUrl ?: "https://lastfm.freetls.fastly.net/i/u/64s/2a96cbd8b46e442fc41c2b86b821562f.png",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .align(Alignment.CenterVertically)
+                        .preferredWidth(50.dp)
+                        .preferredHeight(50.dp)
+                        .clip(shape = RoundedCornerShape(8))
+                        .background(Color.LightGray)
+                )
 
                 Column(
                     modifier = modifier
                         .weight(1f)
                         .padding(
-                            start = if (imageUrl != null) 16.dp else 0.dp,
+                            start = 16.dp,
                             end = 16.dp
                         )
                         .align(Alignment.CenterVertically)

@@ -4,31 +4,34 @@ import com.squareup.sqldelight.runtime.coroutines.asFlow
 import com.squareup.sqldelight.runtime.coroutines.mapToList
 import com.squareup.sqldelight.runtime.coroutines.mapToOneOrNull
 import kotlinx.coroutines.flow.map
-import ru.hotmule.lastik.data.local.LastikDatabase
+import ru.hotmule.lastik.data.local.ProfileQueries
+import ru.hotmule.lastik.data.local.TrackQueries
 import ru.hotmule.lastik.data.prefs.PrefsStore
 import ru.hotmule.lastik.data.remote.api.UserApi
 
 class ProfileInteractor(
     private val api: UserApi,
-    private val db: LastikDatabase,
-    private val prefs: PrefsStore
-) : BaseInteractor(db) {
+    private val prefs: PrefsStore,
+    private val trackQueries: TrackQueries,
+    private val profileQueries: ProfileQueries,
+    private val artistsInteractor: ArtistsInteractor
+) : BaseInteractor() {
 
     val isSessionActive = prefs.isSessionActive
 
     fun getName() = prefs.name
 
-    fun observeInfo() = db.profileQueries
+    fun observeInfo() = profileQueries
         .getProfile()
         .asFlow()
         .mapToOneOrNull()
 
-    fun observeFriends() = db.profileQueries
+    fun observeFriends() = profileQueries
         .getFriends(prefs.name)
         .asFlow()
         .mapToList()
 
-    fun observeLovedTracks() = db.trackQueries.lovedTracks().asFlow().mapToList().map { tracks ->
+    fun observeLovedTracks() = trackQueries.lovedTracks().asFlow().mapToList().map { tracks ->
         tracks.map {
             ListItem(
                 imageUrl = it.lowArtwork,
@@ -67,8 +70,8 @@ class ProfileInteractor(
 
     private suspend fun refreshFriends() {
         api.getFriends(prefs.name, 1).also {
-            db.transaction {
-                db.profileQueries.deleteFriends(prefs.name)
+            profileQueries.transaction {
+                profileQueries.deleteFriends(prefs.name)
                 it?.friends?.user?.forEach {
                     it.nickname?.let { name ->
                         insertUser(
@@ -87,27 +90,25 @@ class ProfileInteractor(
         firstPage: Boolean
     ) {
         providePage(
-            currentItemsCount = db.trackQueries.getLovedTracksPageCount().executeAsOne().toInt(),
+            currentItemsCount = trackQueries.getLovedTracksPageCount().executeAsOne().toInt(),
             firstPage = firstPage
         ) { page ->
             api.getLovedTracks(prefs.name, page).also {
-                db.transaction {
+                profileQueries.transaction {
 
-                    //if (firstPage) db.artistQueries.deleteLovedTracks(prefs.name!!)
+                    if (firstPage) trackQueries.dropLovedTrackDates()
 
                     it?.loved?.list?.forEach { track ->
                         with (track) {
-                            insertArtist(artist?.name)?.let { artistId ->
+                            artistsInteractor.insertArtist(artist?.name)?.let { artistId ->
                                 name?.let {
-                                    with(db.trackQueries) {
+                                    with(trackQueries) {
                                         upsertLovedTrack(
                                             artistId = artistId,
                                             name = name,
                                             loved = true,
                                             lovedAt = date?.uts,
-                                            albumId = null,
-                                            playCount = null,
-                                            rank = null
+                                            albumId = null
                                         )
                                     }
                                 }
@@ -117,5 +118,26 @@ class ProfileInteractor(
                 }
             }
         }
+    }
+
+    fun insertUser(
+        nickname: String,
+        parentUser: String? = null,
+        realName: String? = null,
+        lowResImage: String? = null,
+        highResImage: String? = null,
+        playCount: Long? = null,
+        registeredAt: Long? = null
+    ) {
+        profileQueries.upsert(
+            parentUser,
+            realName,
+            lowResImage,
+            highResImage,
+            playCount,
+            registeredAt,
+            nickname,
+            parentUser
+        )
     }
 }

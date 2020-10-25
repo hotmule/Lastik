@@ -5,21 +5,21 @@ CREATE TABLE track (
     name TEXT NOT NULL,
     loved INTEGER AS Boolean DEFAULT 0 NOT NULL,
     lovedAt INTEGER,
-    rank INTEGER AS Int,
-    playCount INTEGER,
     UNIQUE (artistId, name),
     FOREIGN KEY (artistId) REFERENCES artist(id) ON DELETE CASCADE,
     FOREIGN KEY (albumId) REFERENCES album(id) ON DELETE CASCADE
 );
 
 getTopTracksCount:
-SELECT COUNT(track.id) FROM track WHERE rank NOT NULL;
+SELECT COUNT(t.id) FROM track t
+LEFT JOIN statistic s ON s.sectionId = 3 AND itemId = t.id
+WHERE s.rank NOT NULL;
 
 getLovedTracksPageCount:
 SELECT COUNT(track.id) FROM track WHERE lovedAt NOT NULL;
 
 insert:
-INSERT OR IGNORE INTO track(artistId, albumId, name, loved) VALUES (?, ?, ?, ?);
+INSERT OR IGNORE INTO track(artistId, albumId, name, loved, lovedAt) VALUES (?, ?, ?, ?, ?);
 
 upsertRecentTrack {
     UPDATE track
@@ -28,19 +28,8 @@ upsertRecentTrack {
     WHERE artistId = :artistId AND name = :name;
 
     INSERT OR IGNORE
-    INTO track(artistId, albumId, name, loved, lovedAt, rank, playCount)
-    VALUES (:artistId, :albumId, :name, :loved, :lovedAt, :rank, :playCount);
-}
-
-upsertTopTrack {
-    UPDATE track
-    SET rank = :rank,
-        playCount = :playCount
-    WHERE artistId = :artistId AND name = :name;
-
-    INSERT OR IGNORE
-    INTO track(artistId, albumId, name, loved, lovedAt, rank, playCount)
-    VALUES (:artistId, :albumId, :name, :loved, :lovedAt, :rank, :playCount);
+    INTO track(artistId, albumId, name, loved, lovedAt)
+    VALUES (:artistId, :albumId, :name, :loved, :lovedAt);
 }
 
 upsertLovedTrack {
@@ -50,9 +39,14 @@ upsertLovedTrack {
     WHERE artistId = :artistId AND name = :name;
 
     INSERT OR IGNORE
-    INTO track(artistId, albumId, name, loved, lovedAt, rank, playCount)
-    VALUES (:artistId, :albumId, :name, :loved, :lovedAt, :rank, :playCount);
+    INTO track(artistId, albumId, name, loved, lovedAt)
+    VALUES (:artistId, :albumId, :name, :loved, :lovedAt);
 }
+
+dropLovedTrackDates:
+UPDATE track SET lovedAt = NULL WHERE id IN (
+    SELECT id FROM track WHERE lovedAt NOT NULL
+);
 
 getId:
 SELECT id FROM track WHERE artistId = ? AND name = ?;
@@ -61,13 +55,14 @@ topTracks:
 SELECT
     ar.name AS artist,
     t.name AS track,
-    t.rank,
-    t.playCount,
+    s.rank,
+    s.playCount,
     al.lowArtwork
 FROM track t
 LEFT JOIN album al ON t.albumId = al.id
 LEFT JOIN artist ar ON t.artistId = ar.id
-WHERE t.rank NOT NULL ORDER BY t.rank;
+LEFT JOIN statistic s ON s.sectionId = 3 AND itemId = t.id
+WHERE s.rank NOT NULL ORDER BY s.rank;
 
 lovedTracks:
 SELECT

@@ -28,13 +28,4 @@ interface AlbumQueries : Transacter {
     lowArtwork: String?,
     highArtwork: String?
   )
-
-  fun upsert(
-    rank: Int?,
-    playCount: Long?,
-    artistId: Long,
-    name: String,
-    lowArtwork: String?,
-    highArtwork: String?
-  )
 }

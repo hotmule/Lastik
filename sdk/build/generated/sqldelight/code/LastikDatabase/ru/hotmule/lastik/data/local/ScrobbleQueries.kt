@@ -28,9 +28,5 @@ interface ScrobbleQueries : Transacter {
     nowPlaying: Boolean
   )
 
-  fun upsert(
-    nowPlaying: Boolean,
-    trackId: Long,
-    listenedAt: Long
-  )
+  fun deleteAll()
 }

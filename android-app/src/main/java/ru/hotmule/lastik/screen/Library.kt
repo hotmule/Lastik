@@ -156,8 +156,8 @@ private fun LibraryBody(
                 modifier = modifier,
                 isUpdating = isUpdating,
                 displayWidth = displayWidth,
-                loadItems = sdk.artistsInteractor::refreshArtists,
-                itemsFlow = sdk.artistsInteractor::observeArtists
+                loadItems = sdk.topArtistsInteractor::refreshArtists,
+                itemsFlow = sdk.topArtistsInteractor::observeArtists
             )
         }
         LibrarySection.Albums -> {
@@ -165,8 +165,8 @@ private fun LibraryBody(
                 modifier = modifier,
                 isUpdating = isUpdating,
                 displayWidth = displayWidth,
-                loadItems = sdk.albumsInteractor::refreshAlbums,
-                itemsFlow = sdk.albumsInteractor::observeAlbums
+                loadItems = sdk.topAlbumsInteractor::refreshAlbums,
+                itemsFlow = sdk.topAlbumsInteractor::observeAlbums
             )
         }
         LibrarySection.Tracks -> {
@@ -174,8 +174,8 @@ private fun LibraryBody(
                 modifier = modifier,
                 isUpdating = isUpdating,
                 displayWidth = displayWidth,
-                loadItems = sdk.tracksInteractor::refreshTopTracks,
-                itemsFlow = sdk.tracksInteractor::observeTopTracks
+                loadItems = sdk.topTracksInteractor::refreshTopTracks,
+                itemsFlow = sdk.topTracksInteractor::observeTopTracks
             )
         }
         LibrarySection.Profile -> {

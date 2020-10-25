@@ -1,7 +1,6 @@
 package ru.hotmule.lastik.data.local
 
 import kotlin.Boolean
-import kotlin.Int
 import kotlin.Long
 import kotlin.String
 
@@ -11,9 +10,7 @@ data class Track(
   val albumId: Long?,
   val name: String,
   val loved: Boolean,
-  val lovedAt: Long?,
-  val rank: Int?,
-  val playCount: Long?
+  val lovedAt: Long?
 ) {
   override fun toString(): String = """
   |Track [
@@ -23,8 +20,6 @@ data class Track(
   |  name: $name
   |  loved: $loved
   |  lovedAt: $lovedAt
-  |  rank: $rank
-  |  playCount: $playCount
   |]
   """.trimMargin()
 }

@@ -19,21 +19,41 @@ open class Sdk(
 ) {
 
     private val prefs = PrefsStore(settings)
-    private val database = LastikDatabase(sqlDriver)
-    val signOutInteractor = SignOutInteractor(prefs, database.profileQueries)
+    private val db = LastikDatabase(sqlDriver)
+    val signOutInteractor = SignOutInteractor(prefs, db.profileQueries)
     private val httpClient = httpClientFactory.create(signOutInteractor)
 
     private val authApi = AuthApi(httpClient, prefs, apiKey, secret)
     private val userApi = UserApi(httpClient, apiKey)
     private val trackApi = TrackApi(httpClient, prefs, apiKey, secret)
 
-    val profileInteractor = ProfileInteractor(userApi, database, prefs)
-    val authInteractor = AuthInteractor(authApi, database, prefs, apiKey)
+    private val artistsInteractor = ArtistsInteractor(
+        db.artistQueries
+    )
 
-    val scrobblesInteractor = ScrobblesInteractor(userApi, database, prefs)
-    val artistsInteractor = ArtistsInteractor(userApi, database, prefs)
-    val albumsInteractor = AlbumsInteractor(userApi, database, prefs)
-    val tracksInteractor = TracksInteractor(userApi, database, prefs)
+    val profileInteractor = ProfileInteractor(
+        userApi, prefs, db.trackQueries, db.profileQueries, artistsInteractor
+    )
+
+    val authInteractor = AuthInteractor(
+        apiKey, authApi, prefs, profileInteractor
+    )
+
+    val scrobblesInteractor = ScrobblesInteractor(
+        userApi, prefs, db.albumQueries, db.trackQueries, db.scrobbleQueries, artistsInteractor
+    )
+
+    val topArtistsInteractor = TopArtistsInteractor(
+        userApi, prefs, db.artistQueries, db.statisticQueries, artistsInteractor
+    )
+
+    val topAlbumsInteractor = TopAlbumsInteractor(
+        userApi, prefs, db.albumQueries, db.statisticQueries, artistsInteractor
+    )
+
+    val topTracksInteractor = TopTracksInteractor(
+        userApi, prefs, db.trackQueries, db.statisticQueries, artistsInteractor
+    )
 
     companion object
 }

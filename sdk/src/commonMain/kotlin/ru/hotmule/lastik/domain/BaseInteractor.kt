@@ -1,9 +1,5 @@
 package ru.hotmule.lastik.domain
 
-import ru.hotmule.lastik.data.local.LastikDatabase
-import ru.hotmule.lastik.data.prefs.PrefsStore
-import ru.hotmule.lastik.data.remote.entities.User
-
 data class ListItem(
     val imageUrl: String? = null,
     val title: String? = null,
@@ -16,9 +12,7 @@ data class ListItem(
     val onLike: ((Boolean) -> Unit)? = null
 )
 
-open class BaseInteractor(
-    private val db: LastikDatabase
-) {
+open class BaseInteractor {
 
     suspend fun providePage(
         currentItemsCount: Int,
@@ -30,35 +24,5 @@ open class BaseInteractor(
                 if (firstPage) 1 else currentItemsCount / 50 + 1
             )
         }
-    }
-
-    fun insertArtist(
-        name: String?
-    ) = if (name != null) {
-        with (db.artistQueries) {
-            insert(name = name)
-            getId(name).executeAsOneOrNull()
-        }
-    } else null
-
-    fun insertUser(
-        nickname: String,
-        parentUser: String? = null,
-        realName: String? = null,
-        lowResImage: String? = null,
-        highResImage: String? = null,
-        playCount: Long? = null,
-        registeredAt: Long? = null
-    ) {
-        db.profileQueries.upsert(
-            parentUser,
-            realName,
-            lowResImage,
-            highResImage,
-            playCount,
-            registeredAt,
-            nickname,
-            parentUser
-        )
     }
 }

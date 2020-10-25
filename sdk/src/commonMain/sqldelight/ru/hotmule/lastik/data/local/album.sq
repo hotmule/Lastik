@@ -4,28 +4,17 @@ CREATE TABLE album (
     name TEXT NOT NULL,
     lowArtwork TEXT,
     highArtwork TEXT,
-    rank INTEGER AS Int,
-    playCount INTEGER,
     UNIQUE (artistId, name),
     FOREIGN KEY (artistId) REFERENCES artist(id) ON DELETE CASCADE
 );
 
 getTopAlbumsCount:
-SELECT COUNT(album.id) FROM album WHERE rank NOT NULL;
+SELECT COUNT(a.id) FROM album a
+LEFT JOIN statistic s ON s.sectionId = 2 AND itemId = a.id
+WHERE rank NOT NULL;
 
 insert:
 INSERT OR IGNORE INTO album(artistId, name, lowArtwork, highArtwork) VALUES (?, ?, ?, ?);
-
-upsert {
-    UPDATE album
-    SET rank = :rank,
-        playCount = :playCount
-    WHERE artistId = :artistId AND name = :name;
-
-    INSERT OR IGNORE
-    INTO album(artistId, name, lowArtwork, highArtwork, rank, playCount)
-    VALUES (:artistId, :name, :lowArtwork, :highArtwork, :rank, :playCount);
-}
 
 getId:
 SELECT id FROM album WHERE artistId = ? AND name = ?;
@@ -35,8 +24,9 @@ SELECT
     ar.name AS artist,
     al.name AS album,
     al.lowArtwork,
-    al.rank,
-    al.playCount
+    s.rank,
+    s.playCount
 FROM album al
 LEFT JOIN artist ar ON al.artistId = ar.id
-WHERE al.rank NOT NULL ORDER BY al.rank;
+LEFT JOIN statistic s ON s.sectionId = 2 AND s.itemId = al.id
+WHERE s.rank NOT NULL ORDER BY s.rank;

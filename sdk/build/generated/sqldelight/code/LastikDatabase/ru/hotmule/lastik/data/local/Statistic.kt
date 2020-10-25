@@ -4,18 +4,20 @@ import kotlin.Int
 import kotlin.Long
 import kotlin.String
 
-data class ArtistTop(
-  val name: String,
+data class Statistic(
+  val id: Long,
+  val sectionId: Long?,
+  val itemId: Long?,
   val rank: Int?,
-  val playCount: Long?,
-  val lowArtwork: String?
+  val playCount: Long?
 ) {
   override fun toString(): String = """
-  |ArtistTop [
-  |  name: $name
+  |Statistic [
+  |  id: $id
+  |  sectionId: $sectionId
+  |  itemId: $itemId
   |  rank: $rank
   |  playCount: $playCount
-  |  lowArtwork: $lowArtwork
   |]
   """.trimMargin()
 }

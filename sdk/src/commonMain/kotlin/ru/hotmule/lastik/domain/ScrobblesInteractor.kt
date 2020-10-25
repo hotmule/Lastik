@@ -6,15 +6,19 @@ import kotlinx.coroutines.flow.map
 import ru.hotmule.lastik.data.local.*
 import ru.hotmule.lastik.data.prefs.PrefsStore
 import ru.hotmule.lastik.data.remote.api.UserApi
+import ru.hotmule.lastik.data.remote.entities.Date
 import ru.hotmule.lastik.data.remote.entities.LibraryItem
 
 class ScrobblesInteractor(
     private val api: UserApi,
-    private val db: LastikDatabase,
-    private val prefs: PrefsStore
-) : BaseInteractor(db) {
+    private val prefs: PrefsStore,
+    private val albumQueries: AlbumQueries,
+    private val trackQueries: TrackQueries,
+    private val scrobbleQueries: ScrobbleQueries,
+    private val artistsInteractor: ArtistsInteractor
+) : BaseInteractor() {
 
-    fun observeScrobbles() = db.scrobbleQueries.scrobbleData()
+    fun observeScrobbles() = scrobbleQueries.scrobbleData()
         .asFlow()
         .mapToList()
         .map { scrobbles ->
@@ -22,7 +26,7 @@ class ScrobblesInteractor(
                 ListItem(
                     title = it.track,
                     loved = it.loved,
-                    time = it.listenedAt,
+                    time = if (it.listenedAt != 0L) it.listenedAt else null,
                     subtitle = it.artist,
                     imageUrl = it.lowArtwork,
                     nowPlaying = it.nowPlaying
@@ -34,18 +38,16 @@ class ScrobblesInteractor(
         firstPage: Boolean
     ) {
         providePage(
-            currentItemsCount = db.scrobbleQueries.getScrobblesCount().executeAsOne().toInt(),
+            currentItemsCount = scrobbleQueries.getScrobblesCount().executeAsOne().toInt(),
             firstPage = firstPage
         ) { page ->
 
             api.getRecentTracks(prefs.name, page).also { response ->
+                response?.recent?.tracks?.let { recentTracks ->
 
-                db.transaction {
-
-                    //if (firstPage) db.artistQueries.deleteScrobbles(prefs.name!!)
-
-                    response?.recent?.tracks?.forEach {
-                        insertRecentTrack(it)
+                    scrobbleQueries.transaction {
+                        if (firstPage) scrobbleQueries.deleteAll()
+                        recentTracks.forEach { insertRecentTrack(it) }
                     }
                 }
             }
@@ -56,45 +58,46 @@ class ScrobblesInteractor(
 
         with(track) {
 
-            date?.uts?.let { date ->
-                insertArtist(artist?.name)?.let { artistId ->
+            artistsInteractor.insertArtist(artist?.name)?.let { artistId ->
 
-                    album?.text?.let { albumName ->
-                        db.albumQueries.insert(
-                            artistId = artistId,
-                            name = albumName,
-                            lowArtwork = images?.get(2)?.url,
-                            highArtwork = images?.get(3)?.url
-                        )
-                        db.albumQueries
-                            .getId(artistId, albumName)
-                            .executeAsOneOrNull()
-                            ?.let { albumId ->
+                album?.text?.let { albumName ->
+                    albumQueries.insert(
+                        artistId = artistId,
+                        name = albumName,
+                        lowArtwork = images?.get(2)?.url,
+                        highArtwork = images?.get(3)?.url
+                    )
+                    albumQueries
+                        .getId(artistId, albumName)
+                        .executeAsOneOrNull()
+                        ?.let { albumId ->
 
-                                name?.let { trackName ->
-                                    db.trackQueries.upsertRecentTrack(
-                                        artistId = artistId,
-                                        albumId = albumId,
-                                        name = trackName,
-                                        loved = loved == 1,
-                                        lovedAt = null,
-                                        playCount = null,
-                                        rank = null
-                                    )
-                                    db.trackQueries
-                                        .getId(artistId, name)
-                                        .executeAsOneOrNull()
-                                        ?.let { trackId ->
+                            name?.let { trackName ->
+                                trackQueries.upsertRecentTrack(
+                                    artistId = artistId,
+                                    albumId = albumId,
+                                    name = trackName,
+                                    loved = loved == 1,
+                                    lovedAt = null
+                                )
+                                trackQueries
+                                    .getId(artistId, name)
+                                    .executeAsOneOrNull()
+                                    ?.let { trackId ->
 
-                                            db.scrobbleQueries.upsert(
+                                        if (date?.uts == null && attributes?.nowPlaying == "true")
+                                            date = Date(0)
+
+                                        date?.uts?.let { date ->
+                                            scrobbleQueries.insert(
                                                 trackId = trackId,
                                                 listenedAt = date,
                                                 nowPlaying = attributes?.nowPlaying == "true"
                                             )
                                         }
-                                }
+                                    }
                             }
-                    }
+                        }
                 }
             }
         }

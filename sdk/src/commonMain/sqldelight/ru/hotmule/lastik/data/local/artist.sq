@@ -1,60 +1,34 @@
 CREATE TABLE artist (
     id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     name TEXT NOT NULL,
-    rank INTEGER AS Int,
-    playCount INTEGER,
     UNIQUE (name)
 );
 
 getTopArtistsCount:
-SELECT COUNT(artist.name) FROM artist WHERE rank NOT NULL;
+SELECT COUNT(a.name) FROM artist a
+LEFT JOIN statistic s ON s.sectionId = 1 AND itemId = a.id
+WHERE s.rank NOT NULL;
 
 insert:
 INSERT OR IGNORE INTO artist(name) VALUES (?);
-
-upsert {
-    UPDATE artist
-    SET rank = :rank,
-        playCount = :playCount
-    WHERE name = :name;
-
-    INSERT OR IGNORE
-    INTO artist(name, rank, playCount)
-    VALUES (:name, :rank, :playCount);
-}
 
 getId:
 SELECT id FROM artist WHERE name = ?;
 
 artistTop:
 SELECT
-    name,
-    rank,
-    playCount
-FROM artist
-WHERE rank NOT NULL ORDER BY rank;
-
-deleteScrobbles:
-DELETE FROM artist WHERE EXISTS (
-    SELECT s.id FROM scrobble s
-    LEFT JOIN track t ON t.id = s.trackId
-    WHERE t.artistId = artist.id AND t.rank IS NULL
-);
-
-deleteTopArtist:
-DELETE FROM artist WHERE rank NOT NULL;
-
-deleteTopAlbums:
-DELETE FROM artist WHERE EXISTS (
-    SELECT al.id FROM album al
-    WHERE artist.id = al.artistId AND al.rank NOT NULL
-);
-
-deleteTopTracks:
-DELETE FROM artist WHERE EXISTS (
-    SELECT t.id FROM track t
-    WHERE artist.id = t.artistId AND t.rank NOT NULL
-);
+    ar.name,
+    s_ar.rank,
+    s_ar.playCount,
+    al.lowArtwork
+FROM artist ar
+LEFT JOIN statistic s_ar ON s_ar.sectionId = 1 AND s_ar.itemId = ar.id
+LEFT JOIN album al ON al.id = (
+    SELECT a.id FROM album a
+    LEFT JOIN statistic s_al ON s_al.sectionId = 2 AND a.id = s_al.itemId
+    WHERE a.artistId = ar.id ORDER BY s_al.playCount DESC LIMIT 1
+)
+WHERE s_ar.rank NOT NULL ORDER BY s_ar.rank;
 
 deleteLovedTracks:
 DELETE FROM artist WHERE EXISTS (
