@@ -2,8 +2,11 @@ package ru.hotmule.lastik.screen
 
 import android.compose.utils.*
 import androidx.annotation.StringRes
-import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.Text
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumnForIndexed
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -261,7 +264,7 @@ fun LibraryList(
 fun PagingProgress(
     modifier: Modifier = Modifier
 ) {
-    Stack(
+    Box(
         modifier = modifier
             .fillMaxWidth()
             .wrapContentHeight()
