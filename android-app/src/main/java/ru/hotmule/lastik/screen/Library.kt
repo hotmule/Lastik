@@ -151,7 +151,8 @@ private fun LibraryBody(
                 modifier = modifier,
                 isUpdating = isUpdating,
                 loadItems = sdk.scrobblesInteractor::loadScrobbles,
-                itemsFlow = sdk.scrobblesInteractor::observeScrobbles
+                itemsFlow = sdk.scrobblesInteractor::observeScrobbles,
+                loveTrack = sdk.trackInteractor::setLoved
             )
         }
         LibrarySection.Artists -> {
@@ -186,7 +187,8 @@ private fun LibraryBody(
                 modifier = modifier,
                 isUpdating = isUpdating,
                 loadItems = sdk.profileInteractor::refreshProfile,
-                itemsFlow = sdk.profileInteractor::observeLovedTracks
+                itemsFlow = sdk.profileInteractor::observeLovedTracks,
+                loveTrack = sdk.trackInteractor::setLoved
             ) {
                 ProfileHeader(
                     interactor = sdk.profileInteractor
@@ -203,6 +205,7 @@ fun LibraryList(
     displayWidth: Float? = null,
     loadItems: suspend (Boolean) -> Unit,
     itemsFlow: () -> Flow<List<ListItem>>,
+    loveTrack: (suspend (String, String, Boolean) -> Unit)? = null,
     header: @Composable (() -> Unit)? = null
 ) {
 
@@ -228,7 +231,7 @@ fun LibraryList(
         }
     }
 
-    var moreItemsLoading by mutableStateOf(false)
+    var moreItemsLoading by remember { mutableStateOf(false) }
 
     LazyColumnForIndexed(
         modifier = modifier,
@@ -252,10 +255,11 @@ fun LibraryList(
 
         LibraryListItem(
             item = item,
-            scrobbleWidth = scrobbleWidth
+            scrobbleWidth = scrobbleWidth,
+            loveTrack = loveTrack
         )
 
-        if (index == items.lastIndex && (index + 1).rem(50) == 0)
+        if (index == items.lastIndex && moreItemsLoading)
             PagingProgress()
     }
 }

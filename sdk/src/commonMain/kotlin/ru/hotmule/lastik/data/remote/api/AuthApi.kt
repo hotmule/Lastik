@@ -15,7 +15,14 @@ class AuthApi(
     private fun HttpRequestBuilder.authApi(
         method: String
     ) {
-        api("auth", method, apiKey, prefs.token, secret)
+        api(
+            parameters = mapOf(
+                "method" to "auth.$method",
+                "api_key" to apiKey,
+                "token" to prefs.token,
+            ),
+            secret = secret
+        )
     }
 
     suspend fun getSession() = client.get<SessionResponse?> {

@@ -75,3 +75,8 @@ FROM track t
 LEFT JOIN album al ON t.albumId = al.id
 LEFT JOIN artist ar ON t.artistId = ar.id
 WHERE t.lovedAt NOT NULL ORDER BY lovedAt DESC;
+
+updateTrackLove:
+UPDATE track SET loved = :loved WHERE name = :track AND artistId = (
+    SELECT artistId FROM artist WHERE name = :artist
+);

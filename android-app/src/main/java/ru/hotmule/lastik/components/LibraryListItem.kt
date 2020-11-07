@@ -10,7 +10,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.FavoriteBorder
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -26,6 +26,7 @@ import androidx.ui.tooling.preview.Preview
 import dev.chrisbanes.accompanist.coil.CoilImage
 import ru.hotmule.lastik.R
 import ru.hotmule.lastik.domain.ListItem
+import ru.hotmule.lastik.domain.TrackInteractor
 import ru.hotmule.lastik.theme.sunflower
 import ru.hotmule.lastik.utlis.toCommasString
 import ru.hotmule.lastik.utlis.toDateString
@@ -35,7 +36,30 @@ fun LibraryListItem(
     item: ListItem,
     modifier: Modifier = Modifier,
     scrobbleWidth: Float? = null,
+    loveTrack: (suspend (String, String, Boolean) -> Unit)? = null,
 ) {
+
+    var trackLoved by remember { mutableStateOf(false) }
+
+    if (trackLoved) {
+
+        val track = item.title
+        val artist = item.subtitle
+        val loved = item.loved
+
+        if (track != null && artist != null && loved != null) {
+            LaunchedTask {
+                try {
+                    loveTrack?.invoke(track, artist, !loved)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                } finally {
+                    trackLoved = false
+                }
+            }
+        }
+    }
+
     Box(
         modifier = modifier
             .height(82.dp)
@@ -79,7 +103,9 @@ fun LibraryListItem(
 
                 loved?.let {
                     IconButton(
-                        onClick = { },
+                        onClick = {
+                            trackLoved = true
+                        },
                         icon = {
                             Image(
                                 asset = if (it)

@@ -12,26 +12,43 @@ class TrackApi(
 ) {
 
     private fun HttpRequestBuilder.trackApi(
-        method: String
+        method: String,
+        parameters: Map<String, String>
     ) {
-        api("track", method, apiKey, prefs.token, secret, prefs.sessionKey)
+        api(
+            parameters = mapOf(
+                "method" to "track.$method",
+                "api_key" to apiKey,
+                "token" to prefs.token,
+                "sk" to prefs.sessionKey
+            ) + parameters,
+            secret = secret
+        )
     }
 
     suspend fun love(
         track: String,
         artist: String
     ) = client.post<Any?> {
-        trackApi("love")
-        parameter("track", track)
-        parameter("artist", artist)
+        trackApi(
+            "love",
+            mapOf(
+                "track" to track,
+                "artist" to artist
+            )
+        )
     }
 
     suspend fun unLove(
         track: String,
         artist: String
     ) = client.post<Any?> {
-        trackApi("unlove")
-        parameter("track", track)
-        parameter("artist", artist)
+        trackApi(
+            "unlove",
+            mapOf(
+                "track" to track,
+                "artist" to artist
+            )
+        )
     }
 }

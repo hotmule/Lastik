@@ -55,5 +55,9 @@ open class Sdk(
         userApi, prefs, db.trackQueries, db.statisticQueries, artistsInteractor
     )
 
+    val trackInteractor = TrackInteractor(
+        trackApi, db.trackQueries
+    )
+
     companion object
 }
