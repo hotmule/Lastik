@@ -3,10 +3,7 @@ package ru.hotmule.lastik.screen
 import android.compose.utils.*
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Text
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumnForIndexed
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -95,12 +92,40 @@ private fun LibraryTopBar(
             )
         },
         actions = {
+
             when (currentSection) {
-                LibrarySection.Albums -> IconButton(
-                    icon = { Icon(Icons.Rounded.ViewModule) },
-                    modifier = Modifier.statusBarsPadding(),
-                    onClick = { },
-                )
+                LibrarySection.Artists, LibrarySection.Albums, LibrarySection.Tracks -> {
+
+                    var expanded by remember { mutableStateOf(false) }
+
+                    DropdownMenu(
+                        expanded = expanded,
+                        onDismissRequest = { expanded = !expanded },
+                        toggle = {
+                            TextButton(
+                                modifier = Modifier
+                                    .statusBarsPadding()
+                                    .padding(end = 8.dp),
+                                onClick = { expanded = !expanded }
+                            ) {
+                                Row {
+                                    Text(
+                                        text = "All time",
+                                        modifier = Modifier
+                                            .padding(top = 2.dp, end = 4.dp)
+                                    )
+                                    Icon(Icons.Rounded.ExpandMore)
+                                }
+                            }
+                        }
+                    ) {
+                        Column {
+                            DropdownMenuItem(onClick = {}) {
+                                Text(text = "All time")
+                            }
+                        }
+                    }
+                }
                 LibrarySection.Profile -> IconButton(
                     icon = { Icon(Icons.Rounded.ExitToApp) },
                     modifier = Modifier.statusBarsPadding(),
