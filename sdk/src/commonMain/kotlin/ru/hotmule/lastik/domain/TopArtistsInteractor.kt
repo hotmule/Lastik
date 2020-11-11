@@ -10,7 +10,6 @@ import ru.hotmule.lastik.data.remote.api.UserApi
 
 class TopArtistsInteractor(
     private val api: UserApi,
-    private val prefs: PrefsStore,
     private val artistQueries: ArtistQueries,
     private val statisticQueries: StatisticQueries,
     private val artistsInteractor: ArtistsInteractor
@@ -38,7 +37,7 @@ class TopArtistsInteractor(
             firstPage = firstPage
         ) { page ->
 
-            api.getTopArtists(prefs.name, page).also {
+            api.getTopArtists(page).also {
                 artistQueries.transaction {
 
                     if (firstPage) statisticQueries.deleteSectionTop(Section.ARTISTS.id)

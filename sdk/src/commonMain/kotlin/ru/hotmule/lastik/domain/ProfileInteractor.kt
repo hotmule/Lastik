@@ -52,7 +52,7 @@ class ProfileInteractor(
     }
 
     private suspend fun refreshInfo() {
-        api.getInfo(prefs.name).also {
+        api.getInfo().also {
             it?.user?.let { user ->
                 user.nickname?.let { name ->
                     insertUser(
@@ -69,7 +69,7 @@ class ProfileInteractor(
     }
 
     private suspend fun refreshFriends() {
-        api.getFriends(prefs.name, 1).also {
+        api.getFriends(1).also {
             profileQueries.transaction {
                 profileQueries.deleteFriends(prefs.name)
                 it?.friends?.user?.forEach {
@@ -93,7 +93,7 @@ class ProfileInteractor(
             currentItemsCount = trackQueries.getLovedTracksPageCount().executeAsOne().toInt(),
             firstPage = firstPage
         ) { page ->
-            api.getLovedTracks(prefs.name, page).also {
+            api.getLovedTracks(page).also {
                 profileQueries.transaction {
 
                     if (firstPage) trackQueries.dropLovedTrackDates()

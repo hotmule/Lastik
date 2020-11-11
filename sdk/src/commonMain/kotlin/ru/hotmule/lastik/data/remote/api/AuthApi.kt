@@ -16,7 +16,7 @@ class AuthApi(
         method: String
     ) {
         api(
-            parameters = mapOf(
+            params = mapOf(
                 "method" to "auth.$method",
                 "api_key" to apiKey,
                 "token" to prefs.token,

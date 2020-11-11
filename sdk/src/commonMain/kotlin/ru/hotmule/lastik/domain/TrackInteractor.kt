@@ -13,11 +13,7 @@ class TrackInteractor(
         artist: String,
         loved: Boolean
     ) {
-        if (loved)
-            api.love(track, artist)
-        else
-            api.unLove(track, artist)
-
+        api.setLoved(track, artist, loved)
         queries.updateTrackLove(loved, track, artist)
     }
 }

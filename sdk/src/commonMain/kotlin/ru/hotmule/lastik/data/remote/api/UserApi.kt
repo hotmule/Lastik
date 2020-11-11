@@ -2,86 +2,85 @@ package ru.hotmule.lastik.data.remote.api
 
 import io.ktor.client.*
 import io.ktor.client.request.*
+import ru.hotmule.lastik.data.prefs.PrefsStore
 import ru.hotmule.lastik.data.remote.entities.*
 
 class UserApi(
     private val client: HttpClient,
+    private val prefs: PrefsStore,
     private val apiKey: String
 ) {
 
     private fun HttpRequestBuilder.userApi(
         method: String,
-        user: String?
+        params: Map<String, Any?> = mapOf()
     ) {
-        api("user", method, apiKey)
-        parameter("user", user)
+        api(
+            params + mapOf(
+                "method" to "user.$method",
+                "user" to prefs.name,
+                "api_key" to apiKey
+            )
+        )
     }
 
     private fun HttpRequestBuilder.userApiPage(
         method: String,
-        user: String?,
-        page: Int
+        page: Int,
+        param: Pair<String, Any?>? = null
     ) {
-        userApi(method, user)
-        parameter("page", page)
+        userApi(
+            method,
+            mutableMapOf<String, Any?>("page" to page)
+                .also { params -> param?.let { params[it.first] = it.second } }
+        )
     }
 
-    private fun HttpRequestBuilder.libraryPage(
+    private fun HttpRequestBuilder.userApiLibraryPage(
         method: String,
-        user: String?,
-        page: Int,
-        period: LibraryPeriod = LibraryPeriod.Overall
+        page: Int
     ) {
-        userApiPage(method, user, page)
-        parameter("period", period.value)
+        userApiPage(method, page, "period" to prefs.libraryPeriod)
     }
 
     suspend fun getInfo(
-        user: String?
     ) = client.get<ProfileResponse?> {
-        userApi("getInfo", user)
+        userApi("getInfo")
     }
 
     suspend fun getFriends(
-        user: String?,
         page: Int,
     ) = client.get<FriendsResponse?> {
-        userApiPage("getFriends", user, page)
+        userApiPage("getFriends", page)
     }
 
     suspend fun getRecentTracks(
-        user: String?,
         page: Int
     ) = client.get<ScrobblesResponse?> {
-        userApiPage("getRecentTracks", user, page)
-        parameter("extended", 1)
+        userApiPage("getRecentTracks", page, "extended" to 1)
     }
 
     suspend fun getTopArtists(
-        user: String?,
         page: Int
     ) = client.get<ArtistsResponse?> {
-        libraryPage("getTopArtists", user, page)
+        userApiLibraryPage("getTopArtists", page)
     }
 
     suspend fun getTopAlbums(
-        user: String?,
         page: Int
     ) = client.get<AlbumsResponse?> {
-        libraryPage("getTopAlbums", user, page)
+        userApiLibraryPage("getTopAlbums", page)
     }
 
     suspend fun getTopTracks(
-        user: String?,
         page: Int
     ) = client.get<TopTracksResponse?> {
-        libraryPage("getTopTracks", user, page)
+        userApiLibraryPage("getTopTracks", page)
     }
 
     suspend fun getLovedTracks(
-        user: String?,
         page: Int
     ) = client.get<LovedTracksResponse?> {
-        userApiPage("getLovedTracks", user, page)
+        userApiPage("getLovedTracks", page)
     }
 }

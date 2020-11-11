@@ -36,7 +36,7 @@ class TopTracksInteractor(
             firstPage = firstPage
         ) { page ->
 
-            api.getTopTracks(prefs.name, page).also {
+            api.getTopTracks(page).also {
                 trackQueries.transaction {
 
                     if (firstPage) statisticQueries.deleteSectionTop(Section.TRACKS.id)

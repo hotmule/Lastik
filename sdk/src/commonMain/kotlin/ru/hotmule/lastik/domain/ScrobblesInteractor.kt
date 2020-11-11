@@ -11,7 +11,6 @@ import ru.hotmule.lastik.data.remote.entities.LibraryItem
 
 class ScrobblesInteractor(
     private val api: UserApi,
-    private val prefs: PrefsStore,
     private val albumQueries: AlbumQueries,
     private val trackQueries: TrackQueries,
     private val scrobbleQueries: ScrobbleQueries,
@@ -42,7 +41,7 @@ class ScrobblesInteractor(
             firstPage = firstPage
         ) { page ->
 
-            api.getRecentTracks(prefs.name, page).also { response ->
+            api.getRecentTracks(page).also { response ->
                 response?.recent?.tracks?.let { recentTracks ->
 
                     scrobbleQueries.transaction {

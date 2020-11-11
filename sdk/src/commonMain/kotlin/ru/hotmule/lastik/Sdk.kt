@@ -24,7 +24,7 @@ open class Sdk(
     private val httpClient = httpClientFactory.create(signOutInteractor)
 
     private val authApi = AuthApi(httpClient, prefs, apiKey, secret)
-    private val userApi = UserApi(httpClient, apiKey)
+    private val userApi = UserApi(httpClient, prefs, apiKey)
     private val trackApi = TrackApi(httpClient, prefs, apiKey, secret)
 
     private val artistsInteractor = ArtistsInteractor(
@@ -40,15 +40,15 @@ open class Sdk(
     )
 
     val scrobblesInteractor = ScrobblesInteractor(
-        userApi, prefs, db.albumQueries, db.trackQueries, db.scrobbleQueries, artistsInteractor
+        userApi, db.albumQueries, db.trackQueries, db.scrobbleQueries, artistsInteractor
     )
 
     val topArtistsInteractor = TopArtistsInteractor(
-        userApi, prefs, db.artistQueries, db.statisticQueries, artistsInteractor
+        userApi, db.artistQueries, db.statisticQueries, artistsInteractor
     )
 
     val topAlbumsInteractor = TopAlbumsInteractor(
-        userApi, prefs, db.albumQueries, db.statisticQueries, artistsInteractor
+        userApi, db.albumQueries, db.statisticQueries, artistsInteractor
     )
 
     val topTracksInteractor = TopTracksInteractor(

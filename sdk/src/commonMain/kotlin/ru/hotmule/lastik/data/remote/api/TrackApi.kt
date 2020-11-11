@@ -16,35 +16,23 @@ class TrackApi(
         parameters: Map<String, String>
     ) {
         api(
-            parameters = mapOf(
+            params = parameters + mapOf(
                 "method" to "track.$method",
                 "api_key" to apiKey,
                 "token" to prefs.token,
-                "sk" to prefs.sessionKey
-            ) + parameters,
+                "sk" to prefs.sessionKey,
+            ),
             secret = secret
         )
     }
 
-    suspend fun love(
+    suspend fun setLoved(
         track: String,
-        artist: String
+        artist: String,
+        loved: Boolean
     ) = client.post<Any?> {
         trackApi(
-            "love",
-            mapOf(
-                "track" to track,
-                "artist" to artist
-            )
-        )
-    }
-
-    suspend fun unLove(
-        track: String,
-        artist: String
-    ) = client.post<Any?> {
-        trackApi(
-            "unlove",
+            if (loved) "love" else "unlove",
             mapOf(
                 "track" to track,
                 "artist" to artist
