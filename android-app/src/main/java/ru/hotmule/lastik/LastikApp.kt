@@ -1,7 +1,6 @@
 package ru.hotmule.lastik
 
 import android.compose.utils.Navigator
-import android.compose.utils.ProvideDisplayInsets
 import androidx.activity.OnBackPressedDispatcher
 import androidx.compose.animation.Crossfade
 import androidx.compose.runtime.Composable
@@ -9,6 +8,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.savedinstancestate.rememberSavedInstanceState
+import dev.chrisbanes.accompanist.insets.ProvideWindowInsets
 import ru.hotmule.lastik.screen.AuthScreen
 import ru.hotmule.lastik.screen.LibraryScreen
 import ru.hotmule.lastik.theme.AppTheme
@@ -22,7 +22,7 @@ fun LastikApp(
 
     val isSessionActive by sdk.profileInteractor.isSessionActive.collectAsState()
 
-    ProvideDisplayInsets {
+    ProvideWindowInsets {
         AppTheme {
             if (!isSessionActive)
                 AuthScreen(sdk.authInteractor)

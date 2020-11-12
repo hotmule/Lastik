@@ -1,7 +1,6 @@
 package ru.hotmule.lastik.screen
 
 import androidx.annotation.StringRes
-import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRowForIndexed
 import androidx.compose.material.*
@@ -145,7 +144,7 @@ private fun TitleText(
     modifier: Modifier = Modifier,
     @StringRes titleId: Int
 ) {
-    ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.medium) {
+    Providers(AmbientContentAlpha provides ContentAlpha.medium) {
         Text(
             modifier = modifier,
             text = stringResource(id = titleId),
@@ -171,7 +170,7 @@ fun Friend(
                 .fillMaxWidth()
         )
 
-        ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.medium) {
+        Providers(AmbientContentAlpha provides ContentAlpha.medium) {
             Text(
                 text = friend.userName,
                 maxLines = 1,

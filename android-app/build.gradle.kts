@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
     id("com.android.application")
     id("kotlin-android")
@@ -65,7 +63,8 @@ dependencies {
     implementation(project(Module.sdk))
     implementation(project(Module.Android.Compose.utils))
 
-    implementation(Libs.coil)
+    implementation(Libs.Accompanist.coil)
+    implementation(Libs.Accompanist.insets)
 
     implementation(Libs.AndroidX.appCompat)
     implementation(Libs.AndroidX.Compose.ui)

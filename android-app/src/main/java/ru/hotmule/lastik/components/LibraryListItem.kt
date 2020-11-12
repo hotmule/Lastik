@@ -1,7 +1,6 @@
 package ru.hotmule.lastik.components
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.Text
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -26,7 +25,6 @@ import androidx.ui.tooling.preview.Preview
 import dev.chrisbanes.accompanist.coil.CoilImage
 import ru.hotmule.lastik.R
 import ru.hotmule.lastik.domain.ListItem
-import ru.hotmule.lastik.domain.TrackInteractor
 import ru.hotmule.lastik.theme.sunflower
 import ru.hotmule.lastik.utlis.toCommasString
 import ru.hotmule.lastik.utlis.toDateString
@@ -48,7 +46,7 @@ fun LibraryListItem(
         val loved = item.loved
 
         if (track != null && artist != null && loved != null) {
-            LaunchedTask {
+            LaunchedEffect(track) {
                 try {
                     loveTrack?.invoke(track, artist, !loved)
                 } catch (e: Exception) {
@@ -153,7 +151,8 @@ fun LibraryListItem(
                     }
 
                     subtitle?.let {
-                        ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.medium) {
+
+                        Providers(AmbientContentAlpha provides ContentAlpha.medium) {
                             Text(
                                 text = it,
                                 style = MaterialTheme.typography.body2,
@@ -166,9 +165,7 @@ fun LibraryListItem(
             }
 
             if (time != null || scrobbles != null || nowPlaying == true) {
-                ProvideEmphasis(
-                    emphasis = AmbientEmphasisLevels.current.medium
-                ) {
+                Providers(AmbientContentAlpha provides ContentAlpha.medium) {
                     Text(
                         style = MaterialTheme.typography.body2,
                         modifier = Modifier

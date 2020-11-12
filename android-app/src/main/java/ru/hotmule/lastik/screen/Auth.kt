@@ -1,10 +1,8 @@
 package ru.hotmule.lastik.screen
 
-import android.compose.utils.navigationBarsPadding
 import android.os.Build
 import android.webkit.*
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.Text
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -20,6 +18,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Dialog
+import dev.chrisbanes.accompanist.insets.navigationBarsPadding
 import kotlinx.coroutines.delay
 import ru.hotmule.lastik.R
 import ru.hotmule.lastik.domain.AuthInteractor
@@ -80,7 +79,7 @@ fun AuthScreen(
 
                 if (isLoading) {
                     CircularProgressIndicator()
-                    LaunchedTask {
+                    LaunchedEffect(true) {
                         try {
                             interactor.getSessionKey()
                         } catch (e: Exception) {
@@ -106,7 +105,7 @@ fun AuthScreen(
                     text = { Text(it) },
                 )
 
-                LaunchedTask {
+                LaunchedEffect(true) {
                     delay(3000)
                     state = state.copy(errorReceived = null)
                 }

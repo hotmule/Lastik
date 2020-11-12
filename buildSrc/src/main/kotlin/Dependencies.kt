@@ -30,7 +30,7 @@ object Libs {
 
     const val gradle = "com.android.tools.build:gradle:4.2.0-alpha16"
     const val settings = "com.russhwolf:multiplatform-settings:0.6.2"
-    const val coil = "dev.chrisbanes.accompanist:accompanist-coil:0.3.2"
+    const val coil = "dev.chrisbanes.accompanist:accompanist-coil:0.3.3.1"
     const val espresso = "androidx.test.espresso:espresso-core:3.2.0"
     const val jUnit = "junit:junit:4.13"
 
@@ -85,7 +85,7 @@ object Libs {
     }
 
     object GradleVersions {
-        const val version = "0.34.0"
+        const val version = "0.36.0"
         const val plugin = "com.github.ben-manes.versions"
     }
 
@@ -103,7 +103,7 @@ object Libs {
         const val jUnitRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         object Compose {
-            const val version = "1.0.0-alpha06"
+            const val version = "1.0.0-alpha07"
             const val ui = "androidx.compose.ui:ui:$version"
             const val tooling = "androidx.ui:ui-tooling:$version"
             const val material = "androidx.compose.material:material:$version"
@@ -111,6 +111,12 @@ object Libs {
             const val icons = "androidx.compose.material:material-icons-extended:$version"
             const val layout = "androidx.compose.foundation:foundation-layout:$version"
         }
+    }
+
+    object Accompanist {
+        private const val version = "0.3.3.1"
+        const val coil = "dev.chrisbanes.accompanist:accompanist-coil:$version"
+        const val insets = "dev.chrisbanes.accompanist:accompanist-insets:$version"
     }
 }
 

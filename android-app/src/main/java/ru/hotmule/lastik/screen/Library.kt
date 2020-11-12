@@ -1,8 +1,6 @@
 package ru.hotmule.lastik.screen
 
-import android.compose.utils.*
 import androidx.annotation.StringRes
-import androidx.compose.foundation.Text
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumnForIndexed
 import androidx.compose.material.*
@@ -15,6 +13,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.VectorAsset
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import dev.chrisbanes.accompanist.insets.navigationBarsHeight
+import dev.chrisbanes.accompanist.insets.navigationBarsPadding
+import dev.chrisbanes.accompanist.insets.statusBarsHeight
+import dev.chrisbanes.accompanist.insets.statusBarsPadding
 import kotlinx.coroutines.flow.Flow
 import ru.hotmule.lastik.R
 import ru.hotmule.lastik.Sdk
@@ -45,7 +47,7 @@ fun LibraryScreen(
     Scaffold(
         topBar = {
             LibraryTopBar(
-                modifier = Modifier.statusBarsHeightPlus(barHeight),
+                modifier = Modifier.statusBarsHeight(additional = barHeight),
                 isUpdating = isUpdating.value,
                 currentSection = currentSection,
                 onSignOut = sdk.signOutInteractor::signOut,
@@ -63,7 +65,7 @@ fun LibraryScreen(
         },
         bottomBar = {
             LibraryBottomBar(
-                modifier = Modifier.navigationBarsHeightPlus(barHeight),
+                modifier = Modifier.navigationBarsHeight(additional = barHeight),
                 setCurrentSection = { setCurrentSection(it) },
                 currentSection = currentSection
             )
@@ -234,7 +236,7 @@ fun LibraryList(
     header: @Composable (() -> Unit)? = null
 ) {
 
-    LaunchedTask {
+    LaunchedEffect(true) {
         isUpdating.invoke(true)
         try {
             loadItems.invoke(true)
@@ -266,7 +268,7 @@ fun LibraryList(
         when (index) {
             0 -> header?.invoke()
             items.lastIndex -> {
-                LaunchedTask {
+                LaunchedEffect(true) {
                     moreItemsLoading = true
                     try {
                         loadItems.invoke(false)
