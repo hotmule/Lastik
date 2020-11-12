@@ -18,6 +18,14 @@
     <string name="scrobbles">scrobbles</string>
     <string name="updating">Updating…</string>
     <string name="scrobbling_now">Scrobbling now</string>
+    <string-array name="period">
+        <item>All time</item>
+        <item>Last 7 days</item>
+        <item>Last 30 days</item>
+        <item>Last 90 days</item>
+        <item>Last 180 days</item>
+        <item>Last 365 days</item>
+    </string-array>
 
     <!--Profile Screen-->
     <string name="scrobbling_since">Scrobbling since</string>

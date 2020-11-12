@@ -1,6 +1,7 @@
 package ru.hotmule.lastik.screen
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumnForIndexed
 import androidx.compose.material.*
@@ -11,7 +12,9 @@ import androidx.compose.runtime.savedinstancestate.savedInstanceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.VectorAsset
+import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Position
 import androidx.compose.ui.unit.dp
 import dev.chrisbanes.accompanist.insets.navigationBarsHeight
 import dev.chrisbanes.accompanist.insets.navigationBarsPadding
@@ -98,32 +101,46 @@ private fun LibraryTopBar(
             when (currentSection) {
                 LibrarySection.Artists, LibrarySection.Albums, LibrarySection.Tracks -> {
 
+                    val periods = stringArrayResource(id = R.array.period)
+
+                    var selectedPeriodIndex by remember { mutableStateOf(0) }
                     var expanded by remember { mutableStateOf(false) }
 
+                    Providers(AmbientContentAlpha provides ContentAlpha.medium) {
+                        Row(
+                            modifier = Modifier
+                                .clickable(
+                                    onClick = { expanded = !expanded },
+                                    indication = null
+                                )
+                                .statusBarsPadding()
+                                .padding(end = 12.dp, top = 4.dp),
+                        ) {
+                            Text(
+                                text = periods[selectedPeriodIndex],
+                                modifier = Modifier
+                                    .padding(end = 2.dp)
+                            )
+                            Icon(Icons.Rounded.ExpandMore)
+                        }
+                    }
+
                     DropdownMenu(
+                        toggle = { },
                         expanded = expanded,
                         onDismissRequest = { expanded = !expanded },
-                        toggle = {
-                            TextButton(
-                                modifier = Modifier
-                                    .statusBarsPadding()
-                                    .padding(end = 8.dp),
-                                onClick = { expanded = !expanded }
-                            ) {
-                                Row {
-                                    Text(
-                                        text = "All time",
-                                        modifier = Modifier
-                                            .padding(top = 2.dp, end = 4.dp)
-                                    )
-                                    Icon(Icons.Rounded.ExpandMore)
-                                }
-                            }
-                        }
+                        dropdownOffset = Position(16.dp, 4.dp),
                     ) {
                         Column {
-                            DropdownMenuItem(onClick = {}) {
-                                Text(text = "All time")
+                            periods.forEachIndexed { id, period ->
+                                DropdownMenuItem(
+                                    onClick = {
+                                        selectedPeriodIndex = id
+                                        expanded = false
+                                    }
+                                ) {
+                                    Text(text = period)
+                                }
                             }
                         }
                     }
