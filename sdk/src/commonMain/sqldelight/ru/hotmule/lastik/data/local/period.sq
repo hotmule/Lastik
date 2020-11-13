@@ -1,0 +1,19 @@
+CREATE TABLE period (
+    id INTEGER NOT NULL PRIMARY KEY,
+    username TEXT NOT NULL,
+    topId INTEGER AS Int NOT NULL,
+    lengthId INTEGER AS Int NOT NULL,
+    UNIQUE (username, topId),
+    FOREIGN KEY (username) REFERENCES profile(userName) ON DELETE CASCADE
+);
+
+upsert {
+  UPDATE period
+  SET lengthId = :lengthId
+  WHERE username = :username AND topId = :topId;
+
+  INSERT OR IGNORE INTO period (username, topId, lengthId) VALUES (:username, :topId, :lengthId);
+}
+
+getPeriodLength:
+SELECT lengthId FROM period WHERE username = ? AND topId = ?;

@@ -4,15 +4,19 @@ import com.squareup.sqldelight.runtime.coroutines.asFlow
 import com.squareup.sqldelight.runtime.coroutines.mapToList
 import com.squareup.sqldelight.runtime.coroutines.mapToOneOrNull
 import kotlinx.coroutines.flow.map
+import ru.hotmule.lastik.data.local.PeriodQueries
 import ru.hotmule.lastik.data.local.ProfileQueries
 import ru.hotmule.lastik.data.local.TrackQueries
 import ru.hotmule.lastik.data.prefs.PrefsStore
 import ru.hotmule.lastik.data.remote.api.UserApi
+import ru.hotmule.lastik.data.remote.entities.Period
+import ru.hotmule.lastik.data.remote.entities.Top
 
 class ProfileInteractor(
     private val api: UserApi,
     private val prefs: PrefsStore,
     private val trackQueries: TrackQueries,
+    private val periodQueries: PeriodQueries,
     private val profileQueries: ProfileQueries,
     private val artistsInteractor: ArtistsInteractor
 ) : BaseInteractor() {
@@ -31,6 +35,11 @@ class ProfileInteractor(
         .asFlow()
         .mapToList()
 
+    fun observeTopPeriod(topId: Int) = periodQueries
+        .getPeriodLength(prefs.name!!, topId)
+        .asFlow()
+        .mapToOneOrNull()
+
     fun observeLovedTracks() = trackQueries.lovedTracks().asFlow().mapToList().map { tracks ->
         tracks.map {
             ListItem(
@@ -41,6 +50,13 @@ class ProfileInteractor(
                 time = it.lovedAt
             )
         }
+    }
+
+    fun updateTopPeriod(
+        topId: Int,
+        periodId: Int
+    ) {
+        periodQueries.upsert(periodId, prefs.name!!, topId)
     }
 
     suspend fun refreshProfile(

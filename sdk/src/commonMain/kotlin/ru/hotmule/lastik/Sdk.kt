@@ -32,7 +32,7 @@ open class Sdk(
     )
 
     val profileInteractor = ProfileInteractor(
-        userApi, prefs, db.trackQueries, db.profileQueries, artistsInteractor
+        userApi, prefs, db.trackQueries, db.periodQueries, db.profileQueries, artistsInteractor
     )
 
     val authInteractor = AuthInteractor(

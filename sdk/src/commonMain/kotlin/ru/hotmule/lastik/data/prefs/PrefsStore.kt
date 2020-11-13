@@ -4,7 +4,7 @@ import com.russhwolf.settings.Settings
 import com.russhwolf.settings.nullableString
 import com.russhwolf.settings.string
 import kotlinx.coroutines.flow.MutableStateFlow
-import ru.hotmule.lastik.data.remote.entities.LibraryPeriod
+import ru.hotmule.lastik.data.remote.entities.Period
 
 class PrefsStore(private val settings: Settings) {
 
@@ -12,12 +12,10 @@ class PrefsStore(private val settings: Settings) {
         const val TOKEN_ARG = "token"
         const val SESSION_KEY_ARG = "sessionKey"
         const val NAME_ARG = "name"
-        const val LIBRARY_PERIOD_ARG = "libraryPeriod"
     }
 
     var token by settings.nullableString(TOKEN_ARG)
     var name by settings.nullableString(NAME_ARG)
-    var libraryPeriod by settings.string(LIBRARY_PERIOD_ARG, LibraryPeriod.Overall.value)
 
     val isSessionActive = MutableStateFlow(sessionKey != null)
     var sessionKey: String?

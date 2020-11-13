@@ -40,7 +40,9 @@ class UserApi(
         method: String,
         page: Int
     ) {
-        userApiPage(method, page, "period" to prefs.libraryPeriod)
+        userApiPage(method, page,
+            //"period" to prefs.libraryPeriod
+        )
     }
 
     suspend fun getInfo(
