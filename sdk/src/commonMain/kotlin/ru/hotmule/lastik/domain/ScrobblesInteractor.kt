@@ -33,7 +33,7 @@ class ScrobblesInteractor(
             }
         }
 
-    suspend fun loadScrobbles(
+    suspend fun refreshScrobbles(
         firstPage: Boolean
     ) {
         providePage(

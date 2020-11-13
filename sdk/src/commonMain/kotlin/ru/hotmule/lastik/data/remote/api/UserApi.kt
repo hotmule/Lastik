@@ -38,11 +38,10 @@ class UserApi(
 
     private fun HttpRequestBuilder.userApiLibraryPage(
         method: String,
-        page: Int
+        page: Int,
+        period: String? = Period.Overall.value
     ) {
-        userApiPage(method, page,
-            //"period" to prefs.libraryPeriod
-        )
+        userApiPage(method, page, "period" to period)
     }
 
     suspend fun getInfo(
@@ -63,21 +62,24 @@ class UserApi(
     }
 
     suspend fun getTopArtists(
-        page: Int
+        page: Int,
+        period: String?
     ) = client.get<ArtistsResponse?> {
-        userApiLibraryPage("getTopArtists", page)
+        userApiLibraryPage("getTopArtists", page, period)
     }
 
     suspend fun getTopAlbums(
-        page: Int
+        page: Int,
+        period: String?
     ) = client.get<AlbumsResponse?> {
-        userApiLibraryPage("getTopAlbums", page)
+        userApiLibraryPage("getTopAlbums", page, period)
     }
 
     suspend fun getTopTracks(
-        page: Int
+        page: Int,
+        period: String?
     ) = client.get<TopTracksResponse?> {
-        userApiLibraryPage("getTopTracks", page)
+        userApiLibraryPage("getTopTracks", page, period)
     }
 
     suspend fun getLovedTracks(

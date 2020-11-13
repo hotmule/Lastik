@@ -9,8 +9,6 @@ import ru.hotmule.lastik.data.local.ProfileQueries
 import ru.hotmule.lastik.data.local.TrackQueries
 import ru.hotmule.lastik.data.prefs.PrefsStore
 import ru.hotmule.lastik.data.remote.api.UserApi
-import ru.hotmule.lastik.data.remote.entities.Period
-import ru.hotmule.lastik.data.remote.entities.Top
 
 class ProfileInteractor(
     private val api: UserApi,

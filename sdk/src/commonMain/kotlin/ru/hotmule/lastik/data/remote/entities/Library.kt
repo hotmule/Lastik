@@ -3,14 +3,6 @@ package ru.hotmule.lastik.data.remote.entities
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-enum class Top(
-    val value: String
-) {
-    Artists("artists"),
-    Albums("albums"),
-    Tracks("tracks")
-}
-
 enum class Period(
     val value: String
 ) {

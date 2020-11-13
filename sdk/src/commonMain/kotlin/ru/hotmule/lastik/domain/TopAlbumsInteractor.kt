@@ -4,13 +4,17 @@ import com.squareup.sqldelight.runtime.coroutines.asFlow
 import com.squareup.sqldelight.runtime.coroutines.mapToList
 import kotlinx.coroutines.flow.map
 import ru.hotmule.lastik.data.local.AlbumQueries
+import ru.hotmule.lastik.data.local.PeriodQueries
 import ru.hotmule.lastik.data.local.StatisticQueries
 import ru.hotmule.lastik.data.prefs.PrefsStore
 import ru.hotmule.lastik.data.remote.api.UserApi
+import ru.hotmule.lastik.data.remote.entities.Period
 
 class TopAlbumsInteractor(
     private val api: UserApi,
+    private val prefs: PrefsStore,
     private val albumQueries: AlbumQueries,
+    private val periodQueries: PeriodQueries,
     private val statisticQueries: StatisticQueries,
     private val artistsInteractor: ArtistsInteractor
 ) : BaseInteractor() {
@@ -35,7 +39,13 @@ class TopAlbumsInteractor(
             firstPage = firstPage
         ) { page ->
 
-            api.getTopAlbums(page).also {
+            val periodId = periodQueries.getPeriodLength(prefs.name!!, 2).executeAsOneOrNull()
+            val period = if (periodId != null)
+                Period.values()[periodId]
+            else
+                Period.Overall
+
+            api.getTopAlbums(page, period.value).also {
                 albumQueries.transaction {
 
                     if (firstPage) statisticQueries.deleteSectionTop(Section.ALBUMS.id)

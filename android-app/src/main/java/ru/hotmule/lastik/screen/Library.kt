@@ -16,7 +16,6 @@ import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Position
 import androidx.compose.ui.unit.dp
-import com.squareup.sqldelight.Query
 import dev.chrisbanes.accompanist.insets.navigationBarsHeight
 import dev.chrisbanes.accompanist.insets.navigationBarsPadding
 import dev.chrisbanes.accompanist.insets.statusBarsHeight
@@ -28,7 +27,6 @@ import ru.hotmule.lastik.components.LibraryListItem
 import ru.hotmule.lastik.data.remote.entities.Period
 import ru.hotmule.lastik.domain.ListItem
 import ru.hotmule.lastik.theme.barHeight
-import kotlin.reflect.KFunction1
 
 enum class LibrarySection(
     @StringRes val title: Int,
@@ -111,6 +109,7 @@ private fun LibraryTopBar(
                     val periods = stringArrayResource(id = R.array.period)
 
                     var expanded by remember { mutableStateOf(false) }
+
                     val selectedPeriodIndex = observeTopPeriod
                         .invoke(currentSection.ordinal)
                         .collectAsState(Period.Overall.ordinal)
@@ -204,7 +203,7 @@ private fun LibraryBody(
             LibraryList(
                 modifier = modifier,
                 isUpdating = isUpdating,
-                loadItems = sdk.scrobblesInteractor::loadScrobbles,
+                loadItems = sdk.scrobblesInteractor::refreshScrobbles,
                 itemsFlow = sdk.scrobblesInteractor::observeScrobbles,
                 loveTrack = sdk.trackInteractor::setLoved
             )

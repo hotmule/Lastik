@@ -3,15 +3,18 @@ package ru.hotmule.lastik.domain
 import com.squareup.sqldelight.runtime.coroutines.asFlow
 import com.squareup.sqldelight.runtime.coroutines.mapToList
 import kotlinx.coroutines.flow.map
+import ru.hotmule.lastik.data.local.PeriodQueries
 import ru.hotmule.lastik.data.local.StatisticQueries
 import ru.hotmule.lastik.data.local.TrackQueries
 import ru.hotmule.lastik.data.prefs.PrefsStore
 import ru.hotmule.lastik.data.remote.api.UserApi
+import ru.hotmule.lastik.data.remote.entities.Period
 
 class TopTracksInteractor(
     private val api: UserApi,
     private val prefs: PrefsStore,
     private val trackQueries: TrackQueries,
+    private val periodQueries: PeriodQueries,
     private val statisticQueries: StatisticQueries,
     private val artistsInteractor: ArtistsInteractor
 ) : BaseInteractor() {
@@ -36,7 +39,13 @@ class TopTracksInteractor(
             firstPage = firstPage
         ) { page ->
 
-            api.getTopTracks(page).also {
+            val periodId = periodQueries.getPeriodLength(prefs.name!!, 3).executeAsOneOrNull()
+            val period = if (periodId != null)
+                Period.values()[periodId]
+            else
+                Period.Overall
+
+            api.getTopTracks(page, period.value).also {
                 trackQueries.transaction {
 
                     if (firstPage) statisticQueries.deleteSectionTop(Section.TRACKS.id)
