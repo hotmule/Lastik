@@ -27,19 +27,20 @@ class UserApi(
     private fun HttpRequestBuilder.userApiPage(
         method: String,
         page: Int,
-        param: Pair<String, Any?>? = null
+        param: Pair<String, Any>? = null
     ) {
         userApi(
             method,
-            mutableMapOf<String, Any?>("page" to page)
-                .also { params -> param?.let { params[it.first] = it.second } }
+            mutableMapOf<String, Any?>("page" to page).also { params ->
+                param?.let { params[it.first] = it.second }
+            }
         )
     }
 
     private fun HttpRequestBuilder.userApiLibraryPage(
         method: String,
         page: Int,
-        period: String? = Period.Overall.value
+        period: String
     ) {
         userApiPage(method, page, "period" to period)
     }
@@ -63,21 +64,21 @@ class UserApi(
 
     suspend fun getTopArtists(
         page: Int,
-        period: String?
+        period: String
     ) = client.get<ArtistsResponse?> {
         userApiLibraryPage("getTopArtists", page, period)
     }
 
     suspend fun getTopAlbums(
         page: Int,
-        period: String?
+        period: String
     ) = client.get<AlbumsResponse?> {
         userApiLibraryPage("getTopAlbums", page, period)
     }
 
     suspend fun getTopTracks(
         page: Int,
-        period: String?
+        period: String
     ) = client.get<TopTracksResponse?> {
         userApiLibraryPage("getTopTracks", page, period)
     }

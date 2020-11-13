@@ -3,9 +3,9 @@ package ru.hotmule.lastik.domain
 data class ListItem(
     val imageUrl: String? = null,
     val title: String? = null,
-    val position: Int? = null,
+    val rank: Int? = null,
     val subtitle: String? = null,
-    val scrobbles: Long? = null,
+    val playCount: Long? = null,
     val time: Long? = null,
     val loved: Boolean? = null,
     val nowPlaying: Boolean? = null,
@@ -17,7 +17,7 @@ open class BaseInteractor {
     suspend fun providePage(
         currentItemsCount: Int,
         firstPage: Boolean,
-        loadPage: suspend (Int) -> Unit,
+        loadPage: suspend (Int) -> Unit
     ) {
         if (firstPage || currentItemsCount.rem(50) == 0) {
             loadPage.invoke(

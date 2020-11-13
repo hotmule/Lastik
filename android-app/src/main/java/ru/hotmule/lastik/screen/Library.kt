@@ -54,7 +54,7 @@ fun LibraryScreen(
                 modifier = Modifier.statusBarsHeight(additional = barHeight),
                 isUpdating = isUpdating.value,
                 currentSection = currentSection,
-                observeTopPeriod = sdk.profileInteractor::observeTopPeriod,
+                observeTopPeriod = sdk.profileInteractor::observeTopPeriodId,
                 onTopPeriodSelect = sdk.profileInteractor::updateTopPeriod,
                 onSignOut = sdk.signOutInteractor::signOut,
                 nickname = sdk.profileInteractor.getName()
@@ -213,8 +213,8 @@ private fun LibraryBody(
                 modifier = modifier,
                 isUpdating = isUpdating,
                 displayWidth = displayWidth,
-                loadItems = sdk.topArtistsInteractor::refreshArtists,
-                itemsFlow = sdk.topArtistsInteractor::observeArtists
+                loadItems = sdk.topInteractor::refreshArtists,
+                itemsFlow = sdk.topInteractor::observeArtists
             )
         }
         LibrarySection.Albums -> {
@@ -222,8 +222,8 @@ private fun LibraryBody(
                 modifier = modifier,
                 isUpdating = isUpdating,
                 displayWidth = displayWidth,
-                loadItems = sdk.topAlbumsInteractor::refreshAlbums,
-                itemsFlow = sdk.topAlbumsInteractor::observeAlbums
+                loadItems = sdk.topInteractor::refreshAlbums,
+                itemsFlow = sdk.topInteractor::observeAlbums
             )
         }
         LibrarySection.Tracks -> {
@@ -231,8 +231,8 @@ private fun LibraryBody(
                 modifier = modifier,
                 isUpdating = isUpdating,
                 displayWidth = displayWidth,
-                loadItems = sdk.topTracksInteractor::refreshTopTracks,
-                itemsFlow = sdk.topTracksInteractor::observeTopTracks
+                loadItems = sdk.topInteractor::refreshTopTracks,
+                itemsFlow = sdk.topInteractor::observeTopTracks
             )
         }
         LibrarySection.Profile -> {
@@ -279,7 +279,7 @@ fun LibraryList(
 
     var scrobbleWidth: Float? = null
     if (!items.isNullOrEmpty() && displayWidth != null) {
-        items[0].scrobbles?.let {
+        items[0].playCount?.let {
             scrobbleWidth = displayWidth / it
         }
     }

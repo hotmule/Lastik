@@ -74,12 +74,12 @@ fun LibraryListItem(
                 ) { }
             }
 
-            if (scrobbleWidth != null && scrobbles != null) {
+            if (scrobbleWidth != null && playCount != null) {
                 Surface(
                     color = MaterialTheme.colors.primary.copy(alpha = 0.1f),
                     modifier = Modifier
                         .fillMaxHeight()
-                        .preferredWidth((scrobbleWidth * scrobbles!!).dp)
+                        .preferredWidth((scrobbleWidth * playCount!!).dp)
                         .align(Alignment.CenterEnd)
                 ) { }
             }
@@ -88,7 +88,7 @@ fun LibraryListItem(
                 modifier = Modifier.fillMaxSize()
             ) {
 
-                position?.let {
+                rank?.let {
                     Text(
                         text = it.toString(),
                         textAlign = TextAlign.Center,
@@ -164,7 +164,7 @@ fun LibraryListItem(
                 }
             }
 
-            if (time != null || scrobbles != null || nowPlaying == true) {
+            if (time != null || playCount != null || nowPlaying == true) {
                 Providers(AmbientContentAlpha provides ContentAlpha.medium) {
                     Text(
                         style = MaterialTheme.typography.body2,
@@ -173,7 +173,7 @@ fun LibraryListItem(
                             .padding(16.dp),
                         text = when {
                             time != null -> time!!.toDateString("d MMM, HH:mm")
-                            scrobbles != null -> scrobbles!!.toCommasString() + " " +
+                            playCount != null -> playCount!!.toCommasString() + " " +
                                     stringResource(R.string.scrobbles)
                             else -> stringResource(R.string.scrobbling_now)
                         }
@@ -206,9 +206,9 @@ fun ScrobblePreview() = LibraryListItem(
 @Composable
 fun ArtistPreview() = LibraryListItem(
     ListItem(
-        position = 2,
+        rank = 2,
         title = "Skepta",
-        scrobbles = 500
+        playCount = 500
     )
 )
 
@@ -216,11 +216,11 @@ fun ArtistPreview() = LibraryListItem(
 @Composable
 fun AlbumPreview() = LibraryListItem(
     ListItem(
-        position = 20,
+        rank = 20,
         imageUrl = "imageUrl",
         title = "Konnichiva",
         subtitle = "Skepta",
-        scrobbles = 500
+        playCount = 500
     )
 )
 
@@ -228,11 +228,11 @@ fun AlbumPreview() = LibraryListItem(
 @Composable
 fun TrackPreview() = LibraryListItem(
     ListItem(
-        position = 200,
+        rank = 200,
         imageUrl = "imageUrl",
         title = "Shutdown",
         subtitle = "Skepta",
-        scrobbles = 500
+        playCount = 500
     )
 )
 

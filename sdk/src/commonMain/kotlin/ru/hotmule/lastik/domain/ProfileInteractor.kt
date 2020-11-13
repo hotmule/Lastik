@@ -33,10 +33,11 @@ class ProfileInteractor(
         .asFlow()
         .mapToList()
 
-    fun observeTopPeriod(topId: Int) = periodQueries
-        .getPeriodLength(prefs.name!!, topId)
+    fun observeTopPeriodId(topId: Int) = periodQueries
+        .getPeriodId(prefs.name!!, topId.toLong())
         .asFlow()
         .mapToOneOrNull()
+        .map { it?.toInt() }
 
     fun observeLovedTracks() = trackQueries.lovedTracks().asFlow().mapToList().map { tracks ->
         tracks.map {
@@ -54,7 +55,7 @@ class ProfileInteractor(
         topId: Int,
         periodId: Int
     ) {
-        periodQueries.upsert(periodId, prefs.name!!, topId)
+        periodQueries.upsert(periodId.toLong(), prefs.name!!, topId.toLong())
     }
 
     suspend fun refreshProfile(

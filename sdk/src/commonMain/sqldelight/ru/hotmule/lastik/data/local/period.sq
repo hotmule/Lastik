@@ -1,8 +1,8 @@
 CREATE TABLE period (
     id INTEGER NOT NULL PRIMARY KEY,
     username TEXT NOT NULL,
-    topId INTEGER AS Int NOT NULL,
-    lengthId INTEGER AS Int NOT NULL,
+    topId INTEGER NOT NULL,
+    lengthId INTEGER NOT NULL,
     UNIQUE (username, topId),
     FOREIGN KEY (username) REFERENCES profile(userName) ON DELETE CASCADE
 );
@@ -15,5 +15,5 @@ upsert {
   INSERT OR IGNORE INTO period (username, topId, lengthId) VALUES (:username, :topId, :lengthId);
 }
 
-getPeriodLength:
+getPeriodId:
 SELECT lengthId FROM period WHERE username = ? AND topId = ?;

@@ -2,15 +2,15 @@ package ru.hotmule.lastik.data.local
 
 import com.squareup.sqldelight.Query
 import com.squareup.sqldelight.Transacter
-import kotlin.Int
+import kotlin.Long
 import kotlin.String
 
 interface PeriodQueries : Transacter {
-  fun getPeriodLength(username: String, topId: Int): Query<Int>
+  fun getPeriodId(username: String, topId: Long): Query<Long>
 
   fun upsert(
-    lengthId: Int,
+    lengthId: Long,
     username: String,
-    topId: Int
+    topId: Long
   )
 }
