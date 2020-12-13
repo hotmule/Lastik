@@ -2,9 +2,7 @@ package ru.hotmule.lastik.data.prefs
 
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.nullableString
-import com.russhwolf.settings.string
 import kotlinx.coroutines.flow.MutableStateFlow
-import ru.hotmule.lastik.data.remote.entities.Period
 
 class PrefsStore(private val settings: Settings) {
 

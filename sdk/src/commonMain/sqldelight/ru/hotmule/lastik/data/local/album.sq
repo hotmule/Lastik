@@ -10,7 +10,8 @@ CREATE TABLE album (
 
 getTopAlbumsCount:
 SELECT COUNT(a.id) FROM album a
-LEFT JOIN statistic s ON s.sectionId = 2 AND itemId = a.id
+LEFT JOIN statistic s ON itemId = a.id
+LEFT JOIN period p ON p.id = s.periodId AND p.topTypeId = 2
 WHERE rank NOT NULL;
 
 insert:
@@ -28,5 +29,6 @@ SELECT
     s.playCount
 FROM album al
 LEFT JOIN artist ar ON al.artistId = ar.id
-LEFT JOIN statistic s ON s.sectionId = 2 AND s.itemId = al.id
+LEFT JOIN statistic s ON s.itemId = al.id
+LEFT JOIN period p ON p.id = s.periodId AND p.topTypeId = 2
 WHERE s.rank NOT NULL ORDER BY s.rank;

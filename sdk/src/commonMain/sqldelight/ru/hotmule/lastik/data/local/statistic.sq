@@ -1,13 +1,21 @@
 CREATE TABLE statistic (
     id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-    sectionId INTEGER,
+    periodId INTEGER NOT NULL,
+    rank INTEGER AS Int NOT NULL,
     itemId INTEGER,
-    rank INTEGER AS Int,
-    playCount INTEGER
+    playCount INTEGER,
+    UNIQUE (periodId, rank),
+    FOREIGN KEY (periodId) REFERENCES period(id)
 );
 
-insert:
-INSERT INTO statistic(sectionId, itemId, rank, playCount) VALUES (?, ?, ?, ?);
+upsert {
+    UPDATE statistic
+    SET itemId = :itemId, playCount = :playCount
+    WHERE periodId = :periodId AND rank = :rank;
 
-deleteSectionTop:
-DELETE FROM statistic WHERE sectionId = ?;
+    INSERT OR IGNORE INTO statistic(periodId, rank, itemId, playCount)
+    VALUES (:periodId, :rank, :itemId, :playCount);
+}
+
+insert:
+INSERT INTO statistic(periodId, rank, itemId, playCount) VALUES (?, ?, ?, ?);

@@ -14,7 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.Preview
 import ru.hotmule.lastik.components.ProfileImage
 import ru.hotmule.lastik.data.local.Profile
 import ru.hotmule.lastik.domain.ProfileInteractor

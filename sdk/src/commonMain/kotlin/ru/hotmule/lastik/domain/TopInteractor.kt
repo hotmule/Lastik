@@ -1,4 +1,4 @@
-package ru.hotmule.lastik.domain
+ package ru.hotmule.lastik.domain
 
 import com.squareup.sqldelight.runtime.coroutines.asFlow
 import com.squareup.sqldelight.runtime.coroutines.mapToList
@@ -6,10 +6,9 @@ import kotlinx.coroutines.flow.map
 import ru.hotmule.lastik.data.local.*
 import ru.hotmule.lastik.data.prefs.PrefsStore
 import ru.hotmule.lastik.data.remote.api.UserApi
-import ru.hotmule.lastik.data.remote.entities.Period
-import ru.hotmule.lastik.data.remote.entities.TopTracksResponse
+import ru.hotmule.lastik.data.remote.entities.PeriodLength
 
-enum class Top(
+ enum class TopType(
     val id: Long
 ) {
     Artists(1),
@@ -75,28 +74,30 @@ class TopInteractor(
     suspend fun refreshArtists(
         firstPage: Boolean
     ) {
-        providePage(
-            currentItemsCount = artistQueries.getTopArtistsCount().executeAsOne().toInt(),
-            firstPage = firstPage
-        ) { page ->
+        provideTopPage(
+            firstPage = firstPage,
+            type = TopType.Artists
+        ) { page, period ->
+            
+            api.getTopArtists(page, PeriodLength.getValue(period?.lengthId)).also {
 
-            val response = api.getTopArtists(page, getPeriodValue(Top.Artists))
+                artistQueries.transaction {
 
-            artistQueries.transaction {
+                    //if (firstPage) statisticQueries.deleteSectionTop(TopType.Artists.id)
 
-                if (firstPage)
-                    statisticQueries.deleteSectionTop(Top.Artists.id)
+                    it?.top?.artists?.forEach {
 
-                response?.top?.artists?.forEach {
+                        artistsInteractor.insertArtist(it.name)?.let { artistId ->
 
-                    artistsInteractor.insertArtist(it.name)?.let { artistId ->
-
-                        statisticQueries.insert(
-                            sectionId = Top.Artists.id,
-                            itemId = artistId,
-                            rank = it.attributes?.rank,
-                            playCount = it.playCount,
-                        )
+                            if (period?.id != null && it.attributes?.rank != null) {
+                                statisticQueries.insert(
+                                    periodId = period.id,
+                                    itemId = artistId,
+                                    rank = it.attributes.rank,
+                                    playCount = it.playCount,
+                                )
+                            }
+                        }
                     }
                 }
             }
@@ -106,41 +107,43 @@ class TopInteractor(
     suspend fun refreshAlbums(
         firstPage: Boolean
     ) {
-        providePage(
-            currentItemsCount = albumQueries.getTopAlbumsCount().executeAsOne().toInt(),
-            firstPage = firstPage
-        ) { page ->
+        provideTopPage(
+            firstPage = firstPage,
+            type = TopType.Albums
+        ) { page, period ->
 
-            val response = api.getTopAlbums(page, getPeriodValue(Top.Albums))
+            api.getTopAlbums(page, PeriodLength.getValue(period?.lengthId)).also {
 
-            albumQueries.transaction {
+                albumQueries.transaction {
 
-                if (firstPage)
-                    statisticQueries.deleteSectionTop(Top.Albums.id)
+                    //if (firstPage) statisticQueries.deleteSectionTop(TopType.Albums.id)
 
-                response?.top?.albums?.forEach {
+                    it?.top?.albums?.forEach {
 
-                    artistsInteractor.insertArtist(it.artist?.name)?.let { artistId ->
+                        artistsInteractor.insertArtist(it.artist?.name)?.let { artistId ->
 
-                        it.name?.let { album ->
+                            it.name?.let { album ->
 
-                            with(albumQueries) {
+                                with(albumQueries) {
 
-                                insert(
-                                    artistId = artistId,
-                                    name = album,
-                                    lowArtwork = it.images?.get(2)?.url,
-                                    highArtwork = it.images?.get(3)?.url
-                                )
-
-                                getId(artistId, album).executeAsOneOrNull()?.let { albumId ->
-
-                                    statisticQueries.insert(
-                                        sectionId = Top.Albums.id,
-                                        itemId = albumId,
-                                        rank = it.attributes?.rank,
-                                        playCount = it.playCount,
+                                    insert(
+                                        artistId = artistId,
+                                        name = album,
+                                        lowArtwork = it.images?.get(2)?.url,
+                                        highArtwork = it.images?.get(3)?.url
                                     )
+
+                                    getId(artistId, album).executeAsOneOrNull()?.let { albumId ->
+
+                                        if (period?.id != null && it.attributes?.rank != null) {
+                                            statisticQueries.insert(
+                                                periodId = period.id,
+                                                itemId = albumId,
+                                                rank = it.attributes.rank,
+                                                playCount = it.playCount,
+                                            )
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -153,41 +156,44 @@ class TopInteractor(
     suspend fun refreshTopTracks(
         firstPage: Boolean
     ) {
-        providePage(
-            currentItemsCount = trackQueries.getTopTracksCount().executeAsOne().toInt(),
-            firstPage = firstPage
-        ) { page ->
+        provideTopPage(
+            firstPage = firstPage,
+            type = TopType.Tracks
+        ) { page, period ->
 
-            val response = api.getTopTracks(page, getPeriodValue(Top.Tracks))
+            api.getTopTracks(page, PeriodLength.getValue(period?.lengthId)).also {
 
-            trackQueries.transaction {
+                trackQueries.transaction {
 
-                if (firstPage)
-                    statisticQueries.deleteSectionTop(Top.Tracks.id)
+                    //if (firstPage) statisticQueries.deleteSectionTop(TopType.Tracks.id)
 
-                response?.top?.list?.forEach {
+                    it?.top?.list?.forEach {
 
-                    artistsInteractor.insertArtist(it.artist?.name)?.let { artistId ->
+                        artistsInteractor.insertArtist(it.artist?.name)?.let { artistId ->
 
-                        it.name?.let { track ->
+                            it.name?.let { track ->
 
-                            with(trackQueries) {
+                                with(trackQueries) {
 
-                                insert(
-                                    artistId = artistId,
-                                    name = track,
-                                    albumId = null,
-                                    loved = false,
-                                    lovedAt = null
-                                )
-
-                                getId(artistId, track).executeAsOneOrNull()?.let { trackId ->
-                                    statisticQueries.insert(
-                                        sectionId = Top.Tracks.id,
-                                        itemId = trackId,
-                                        rank = it.attributes?.rank,
-                                        playCount = it.playCount,
+                                    insert(
+                                        artistId = artistId,
+                                        name = track,
+                                        albumId = null,
+                                        loved = false,
+                                        lovedAt = null
                                     )
+
+                                    getId(artistId, track).executeAsOneOrNull()?.let { trackId ->
+
+                                        if (period?.id != null && it.attributes?.rank != null) {
+                                            statisticQueries.insert(
+                                                periodId = period.id,
+                                                itemId = trackId,
+                                                rank = it.attributes.rank,
+                                                playCount = it.playCount,
+                                            )
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -197,13 +203,44 @@ class TopInteractor(
         }
     }
 
-    private fun getPeriodValue(top: Top): String {
+    private suspend fun provideTopPage(
+        firstPage: Boolean,
+        type: TopType,
+        loadPage: suspend (Int, Period?) -> Unit
+    ) {
 
-        val periodId = periodQueries
-            .getPeriodId(prefs.name!!, top.id)
-            .executeAsOneOrNull()
-            ?: Period.Overall.ordinal
+        val currentItemsCountQuery = when (type) {
+            TopType.Artists -> artistQueries.getTopArtistsCount()
+            TopType.Albums -> albumQueries.getTopAlbumsCount()
+            TopType.Tracks -> trackQueries.getTopTracksCount()
+        }
 
-        return Period.values()[periodId.toInt()].value
+        var period: Period? = null
+
+        with (periodQueries) {
+
+            transaction {
+
+                period = getPeriod(prefs.name!!, type.id).executeAsOneOrNull()
+
+                if (period == null) {
+
+                    periodQueries.upsert(
+                        username = prefs.name!!,
+                        lengthId = PeriodLength.Overall.ordinal.toLong(),
+                        topTypeId = type.id
+                    )
+
+                    period = getPeriod(prefs.name!!, type.id).executeAsOneOrNull()
+                }
+            }
+        }
+
+        providePage(
+            currentItemsCount = currentItemsCountQuery.executeAsOne().toInt(),
+            firstPage = firstPage
+        ) {
+            loadPage.invoke(it, period)
+        }
     }
 }

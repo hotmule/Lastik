@@ -1,19 +1,20 @@
 CREATE TABLE period (
     id INTEGER NOT NULL PRIMARY KEY,
     username TEXT NOT NULL,
-    topId INTEGER NOT NULL,
+    topTypeId INTEGER NOT NULL,
     lengthId INTEGER NOT NULL,
-    UNIQUE (username, topId),
+    UNIQUE (username, topTypeId),
     FOREIGN KEY (username) REFERENCES profile(userName) ON DELETE CASCADE
 );
 
 upsert {
   UPDATE period
   SET lengthId = :lengthId
-  WHERE username = :username AND topId = :topId;
+  WHERE username = :username AND topTypeId = :topTypeId;
 
-  INSERT OR IGNORE INTO period (username, topId, lengthId) VALUES (:username, :topId, :lengthId);
+  INSERT OR IGNORE INTO period (username, topTypeId, lengthId)
+  VALUES (:username, :topTypeId, :lengthId);
 }
 
-getPeriodId:
-SELECT lengthId FROM period WHERE username = ? AND topId = ?;
+getPeriod:
+SELECT * FROM period WHERE username = ? AND topTypeId = ?;

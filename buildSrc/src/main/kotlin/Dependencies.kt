@@ -34,7 +34,7 @@ object Libs {
     const val jUnit = "junit:junit:4.13"
 
     object Kotlin {
-        const val version = "1.4.10"
+        const val version = "1.4.21"
         const val gradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version"
         const val serialization = "org.jetbrains.kotlin:kotlin-serialization:$version"
     }
@@ -102,9 +102,9 @@ object Libs {
         const val jUnitRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         object Compose {
-            const val version = "1.0.0-alpha07"
+            const val version = "1.0.0-alpha08"
             const val ui = "androidx.compose.ui:ui:$version"
-            const val tooling = "androidx.ui:ui-tooling:$version"
+            const val tooling = "androidx.compose.ui:ui-tooling:$version"
             const val material = "androidx.compose.material:material:$version"
             const val foundation = "androidx.compose.foundation:foundation:$version"
             const val icons = "androidx.compose.material:material-icons-extended:$version"
@@ -113,7 +113,7 @@ object Libs {
     }
 
     object Accompanist {
-        private const val version = "0.3.3.1"
+        private const val version = "0.4.0"
         const val coil = "dev.chrisbanes.accompanist:accompanist-coil:$version"
         const val insets = "dev.chrisbanes.accompanist:accompanist-insets:$version"
     }

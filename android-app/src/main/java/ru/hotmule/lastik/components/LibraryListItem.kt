@@ -21,7 +21,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.Preview
 import dev.chrisbanes.accompanist.coil.CoilImage
 import ru.hotmule.lastik.R
 import ru.hotmule.lastik.domain.ListItem
@@ -104,19 +104,18 @@ fun LibraryListItem(
                         onClick = {
                             trackLoved = true
                         },
-                        icon = {
-                            Image(
-                                asset = if (it)
-                                    Icons.Rounded.Favorite
-                                else
-                                    Icons.Rounded.FavoriteBorder,
-                                colorFilter = ColorFilter.tint(MaterialTheme.colors.primary)
-                            )
-                        },
                         modifier = Modifier
                             .padding(2.dp)
                             .align(Alignment.CenterVertically)
-                    )
+                    ) {
+                        Image(
+                            colorFilter = ColorFilter.tint(MaterialTheme.colors.primary),
+                            imageVector = if (it)
+                                Icons.Rounded.Favorite
+                            else
+                                Icons.Rounded.FavoriteBorder
+                        )
+                    }
                 }
 
                 CoilImage(

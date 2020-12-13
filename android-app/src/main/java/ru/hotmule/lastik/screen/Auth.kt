@@ -47,7 +47,7 @@ fun AuthScreen(
                 .align(Alignment.Center)
                 .width(100.dp)
                 .height(100.dp),
-            asset = Icons.Rounded.Album,
+            imageVector = Icons.Rounded.Album,
             colorFilter = ColorFilter.tint(Color.Red)
         )
 

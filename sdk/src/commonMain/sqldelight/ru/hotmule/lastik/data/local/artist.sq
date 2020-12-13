@@ -6,7 +6,8 @@ CREATE TABLE artist (
 
 getTopArtistsCount:
 SELECT COUNT(a.name) FROM artist a
-LEFT JOIN statistic s ON s.sectionId = 1 AND itemId = a.id
+LEFT JOIN statistic s ON itemId = a.id
+LEFT JOIN period p ON p.id = s.periodId AND p.topTypeId = 1
 WHERE s.rank NOT NULL;
 
 insert:
@@ -22,10 +23,12 @@ SELECT
     s_ar.playCount,
     al.lowArtwork
 FROM artist ar
-LEFT JOIN statistic s_ar ON s_ar.sectionId = 1 AND s_ar.itemId = ar.id
+LEFT JOIN statistic s_ar ON s_ar.itemId = ar.id
+LEFT JOIN period p_ar ON p_ar.id = s_ar.periodId AND p_ar.topTypeId = 1
 LEFT JOIN album al ON al.id = (
     SELECT a.id FROM album a
-    LEFT JOIN statistic s_al ON s_al.sectionId = 2 AND a.id = s_al.itemId
+    LEFT JOIN statistic s_al ON a.id = s_al.itemId
+    LEFT JOIN period p_al ON p_al.id = s_al.periodId AND p_al.topTypeId = 1
     WHERE a.artistId = ar.id ORDER BY s_al.playCount DESC LIMIT 1
 )
 WHERE s_ar.rank NOT NULL ORDER BY s_ar.rank;

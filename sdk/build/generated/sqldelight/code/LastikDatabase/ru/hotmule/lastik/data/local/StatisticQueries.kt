@@ -6,11 +6,16 @@ import kotlin.Long
 
 interface StatisticQueries : Transacter {
   fun insert(
-    sectionId: Long?,
+    periodId: Long,
+    rank: Int,
     itemId: Long?,
-    rank: Int?,
     playCount: Long?
   )
 
-  fun deleteSectionTop(sectionId: Long?)
+  fun upsert(
+    itemId: Long?,
+    playCount: Long?,
+    periodId: Long,
+    rank: Int
+  )
 }

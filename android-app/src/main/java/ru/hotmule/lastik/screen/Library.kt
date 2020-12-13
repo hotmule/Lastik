@@ -11,7 +11,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.savedinstancestate.savedInstanceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.VectorAsset
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Position
@@ -24,13 +24,13 @@ import kotlinx.coroutines.flow.Flow
 import ru.hotmule.lastik.R
 import ru.hotmule.lastik.Sdk
 import ru.hotmule.lastik.components.LibraryListItem
-import ru.hotmule.lastik.data.remote.entities.Period
+import ru.hotmule.lastik.data.remote.entities.PeriodLength
 import ru.hotmule.lastik.domain.ListItem
 import ru.hotmule.lastik.theme.barHeight
 
 enum class LibrarySection(
     @StringRes val title: Int,
-    val icon: VectorAsset
+    val icon: ImageVector
 ) {
     Resents(R.string.resents, Icons.Rounded.History),
     Artists(R.string.artists, Icons.Rounded.Face),
@@ -54,7 +54,7 @@ fun LibraryScreen(
                 modifier = Modifier.statusBarsHeight(additional = barHeight),
                 isUpdating = isUpdating.value,
                 currentSection = currentSection,
-                observeTopPeriod = sdk.profileInteractor::observeTopPeriodId,
+                observeTopPeriod = sdk.profileInteractor::observeTopPeriodLengthId,
                 onTopPeriodSelect = sdk.profileInteractor::updateTopPeriod,
                 onSignOut = sdk.signOutInteractor::signOut,
                 nickname = sdk.profileInteractor.getName()
@@ -112,8 +112,8 @@ private fun LibraryTopBar(
 
                     val selectedPeriodIndex = observeTopPeriod
                         .invoke(currentSection.ordinal)
-                        .collectAsState(Period.Overall.ordinal)
-                        .value ?: Period.Overall.ordinal
+                        .collectAsState(PeriodLength.Overall.ordinal)
+                        .value ?: PeriodLength.Overall.ordinal
 
                     Providers(AmbientContentAlpha provides ContentAlpha.medium) {
                         Row(
@@ -155,12 +155,12 @@ private fun LibraryTopBar(
                     }
                 }
                 LibrarySection.Profile -> IconButton(
-                    icon = { Icon(Icons.Rounded.ExitToApp) },
                     modifier = Modifier.statusBarsPadding(),
                     onClick = { onSignOut.invoke() },
-                )
-                else -> {
+                ) {
+                    Icon(Icons.Rounded.ExitToApp)
                 }
+                else -> { }
             }
         }
     )
