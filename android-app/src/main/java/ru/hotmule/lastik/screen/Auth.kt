@@ -52,7 +52,7 @@ fun AuthScreen(
             colorFilter = ColorFilter.tint(Color.Red)
         )
 
-        with (state) {
+        with(state) {
 
             if (signInDialogOpened) {
                 SignInDialog(
@@ -178,6 +178,7 @@ private fun SignInBrowser(
 
     val context = AmbientContext.current
     val webView = remember {
+
         WebView(context).apply {
 
             dropSavedData()
@@ -229,7 +230,7 @@ private fun SignInBrowser(
             .fillMaxHeight(0.58f)
     ) {
 
-        with (state) {
+        with(state) {
 
             if (hasWebView) {
                 AndroidView({ webView })
