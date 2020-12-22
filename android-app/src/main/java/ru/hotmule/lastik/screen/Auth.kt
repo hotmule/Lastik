@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.platform.AmbientContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -175,6 +176,53 @@ private fun SignInBrowser(
 
     var state by remember { mutableStateOf(SignInBrowserState()) }
 
+    val context = AmbientContext.current
+    val webView = remember {
+        WebView(context).apply {
+
+            dropSavedData()
+            webViewClient = object : WebViewClient() {
+
+                override fun onPageFinished(view: WebView?, url: String?) {
+                    state = state.copy(isLoading = false)
+                }
+
+                override fun onReceivedError(
+                    view: WebView?,
+                    request: WebResourceRequest?,
+                    error: WebResourceError?
+                ) {
+                    state = state.copy(
+                        isLoading = false,
+                        hasWebView = false,
+                        isErrorReceived = true
+                    )
+                }
+
+                override fun shouldOverrideUrlLoading(
+                    view: WebView?,
+                    request: WebResourceRequest?
+                ): Boolean {
+                    request?.url?.toString().let { url ->
+                        if (interactor.urlContainsToken(url)) {
+                            state = state.copy(
+                                isLoading = true,
+                                hasWebView = false
+                            )
+                            onTokenReceived.invoke()
+                            onDismissRequest.invoke()
+                            return false
+                        } else
+                            view?.loadUrl(url)
+                    }
+                    return true
+                }
+            }
+
+            loadUrl(interactor.getAuthUrl())
+        }
+    }
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -182,6 +230,10 @@ private fun SignInBrowser(
     ) {
 
         with (state) {
+
+            if (hasWebView) {
+                AndroidView({ webView })
+            }
 
             if (isLoading) {
                 CircularProgressIndicator(
@@ -198,53 +250,6 @@ private fun SignInBrowser(
                     textAlign = TextAlign.Center,
                     style = MaterialTheme.typography.body1
                 )
-            }
-
-            if (hasWebView) {
-                AndroidView(
-                    viewBlock = ::WebView,
-                ) {
-                    it.dropSavedData()
-                    it.webViewClient = object : WebViewClient() {
-
-                        override fun onPageFinished(view: WebView?, url: String?) {
-                            state = state.copy(isLoading = false)
-                        }
-
-                        override fun onReceivedError(
-                            view: WebView?,
-                            request: WebResourceRequest?,
-                            error: WebResourceError?
-                        ) {
-                            state = state.copy(
-                                isLoading = false,
-                                hasWebView = false,
-                                isErrorReceived = true
-                            )
-                        }
-
-                        override fun shouldOverrideUrlLoading(
-                            view: WebView?,
-                            request: WebResourceRequest?
-                        ): Boolean {
-                            request?.url?.toString().let { url ->
-                                if (interactor.urlContainsToken(url)) {
-                                    state = state.copy(
-                                        isLoading = true,
-                                        hasWebView = false
-                                    )
-                                    onTokenReceived.invoke()
-                                    onDismissRequest.invoke()
-                                    return false
-                                } else
-                                    view?.loadUrl(url)
-                            }
-                            return true
-                        }
-                    }
-
-                    it.loadUrl(interactor.getAuthUrl())
-                }
             }
         }
     }
