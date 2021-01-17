@@ -1,5 +1,5 @@
 object App {
-    const val id = "ru.hotmule.lastfmclient"
+    const val id = "ru.hotmule.lastik"
     object Version {
         const val code = 1
         const val name = "1.0"
@@ -96,13 +96,10 @@ object Libs {
 
     object AndroidX {
 
-        const val fragment = "androidx.fragment:fragment-ktx:1.2.5"
-        const val appCompat = "androidx.appcompat:appcompat:1.3.0-alpha02"
-        const val jUnit = "androidx.test.ext:junit:1.1.1"
-        const val jUnitRunner = "androidx.test.runner.AndroidJUnitRunner"
+        const val appCompat = "androidx.appcompat:appcompat:1.3.0-beta01"
 
         object Compose {
-            const val version = "1.0.0-alpha08"
+            const val version = "1.0.0-alpha10"
             const val ui = "androidx.compose.ui:ui:$version"
             const val tooling = "androidx.compose.ui:ui-tooling:$version"
             const val material = "androidx.compose.material:material:$version"
@@ -113,7 +110,7 @@ object Libs {
     }
 
     object Accompanist {
-        private const val version = "0.4.0"
+        private const val version = "0.4.2"
         const val coil = "dev.chrisbanes.accompanist:accompanist-coil:$version"
         const val insets = "dev.chrisbanes.accompanist:accompanist-insets:$version"
     }

@@ -3,10 +3,13 @@ package ru.hotmule.lastik.data.local
 import com.squareup.sqldelight.Transacter
 import kotlin.Int
 import kotlin.Long
+import ru.hotmule.lastik.domain.TopPeriod
+import ru.hotmule.lastik.domain.TopType
 
-interface StatisticQueries : Transacter {
+interface TopQueries : Transacter {
   fun insert(
-    periodId: Long,
+    type: TopType,
+    period: TopPeriod,
     rank: Int,
     itemId: Long?,
     playCount: Long?
@@ -15,7 +18,8 @@ interface StatisticQueries : Transacter {
   fun upsert(
     itemId: Long?,
     playCount: Long?,
-    periodId: Long,
+    type: TopType,
+    period: TopPeriod,
     rank: Int
   )
 }

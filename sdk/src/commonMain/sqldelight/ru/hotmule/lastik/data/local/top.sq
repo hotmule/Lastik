@@ -1,0 +1,21 @@
+CREATE TABLE top (
+    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    type INTEGER AS ru.hotmule.lastik.domain.TopType NOT NULL,
+    period INTEGER AS ru.hotmule.lastik.domain.TopPeriod NOT NULL,
+    rank INTEGER AS Int NOT NULL,
+    itemId INTEGER,
+    playCount INTEGER,
+    UNIQUE (type, period, rank)
+);
+
+upsert {
+    UPDATE top
+    SET itemId = :itemId, playCount = :playCount
+    WHERE type = :type AND period = :period AND rank = :rank;
+
+    INSERT OR IGNORE INTO top(type, period, rank, itemId, playCount)
+    VALUES (:type, :period, :rank, :itemId, :playCount);
+}
+
+insert:
+INSERT INTO top(type, period, rank, itemId, playCount) VALUES (?, ?, ?, ?, ?);

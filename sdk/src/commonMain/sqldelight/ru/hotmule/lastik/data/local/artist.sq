@@ -6,9 +6,8 @@ CREATE TABLE artist (
 
 getTopArtistsCount:
 SELECT COUNT(a.name) FROM artist a
-LEFT JOIN statistic s ON itemId = a.id
-LEFT JOIN period p ON p.id = s.periodId AND p.topTypeId = 1
-WHERE s.rank NOT NULL;
+LEFT JOIN top t ON itemId = a.id
+WHERE t.rank NOT NULL;
 
 insert:
 INSERT OR IGNORE INTO artist(name) VALUES (?);
@@ -19,19 +18,17 @@ SELECT id FROM artist WHERE name = ?;
 artistTop:
 SELECT
     ar.name,
-    s_ar.rank,
-    s_ar.playCount,
+    t_ar.rank,
+    t_ar.playCount,
     al.lowArtwork
 FROM artist ar
-LEFT JOIN statistic s_ar ON s_ar.itemId = ar.id
-LEFT JOIN period p_ar ON p_ar.id = s_ar.periodId AND p_ar.topTypeId = 1
+LEFT JOIN top t_ar ON t_ar.itemId = ar.id
 LEFT JOIN album al ON al.id = (
     SELECT a.id FROM album a
-    LEFT JOIN statistic s_al ON a.id = s_al.itemId
-    LEFT JOIN period p_al ON p_al.id = s_al.periodId AND p_al.topTypeId = 1
-    WHERE a.artistId = ar.id ORDER BY s_al.playCount DESC LIMIT 1
+    LEFT JOIN top t_al ON a.id = t_al.itemId
+    WHERE a.artistId = ar.id ORDER BY t_al.playCount DESC LIMIT 1
 )
-WHERE s_ar.rank NOT NULL ORDER BY s_ar.rank;
+WHERE t_ar.rank NOT NULL ORDER BY t_ar.rank;
 
 deleteLovedTracks:
 DELETE FROM artist WHERE EXISTS (

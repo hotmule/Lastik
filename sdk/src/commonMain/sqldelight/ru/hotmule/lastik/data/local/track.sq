@@ -12,9 +12,8 @@ CREATE TABLE track (
 
 getTopTracksCount:
 SELECT COUNT(t.id) FROM track t
-LEFT JOIN statistic s ON itemId = t.id
-LEFT JOIN period p ON p.id = s.periodId AND p.topTypeId = 3
-WHERE s.rank NOT NULL;
+LEFT JOIN top tt ON itemId = t.id
+WHERE tt.rank NOT NULL;
 
 getLovedTracksPageCount:
 SELECT COUNT(track.id) FROM track WHERE lovedAt NOT NULL;
@@ -56,15 +55,14 @@ topTracks:
 SELECT
     ar.name AS artist,
     t.name AS track,
-    s.rank,
-    s.playCount,
+    tt.rank,
+    tt.playCount,
     al.lowArtwork
 FROM track t
 LEFT JOIN album al ON t.albumId = al.id
 LEFT JOIN artist ar ON t.artistId = ar.id
-LEFT JOIN statistic s ON s.itemId = t.id
-LEFT JOIN period p ON p.id = s.periodId AND p.topTypeId = 3
-WHERE s.rank NOT NULL ORDER BY s.rank;
+LEFT JOIN top tt ON tt.itemId = t.id
+WHERE tt.rank NOT NULL ORDER BY tt.rank;
 
 lovedTracks:
 SELECT

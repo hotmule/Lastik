@@ -24,8 +24,9 @@ import kotlinx.coroutines.flow.Flow
 import ru.hotmule.lastik.R
 import ru.hotmule.lastik.Sdk
 import ru.hotmule.lastik.components.LibraryListItem
-import ru.hotmule.lastik.data.remote.entities.PeriodLength
 import ru.hotmule.lastik.domain.ListItem
+import ru.hotmule.lastik.domain.TopPeriod
+import ru.hotmule.lastik.domain.TopType
 import ru.hotmule.lastik.theme.barHeight
 
 enum class LibrarySection(
@@ -54,8 +55,8 @@ fun LibraryScreen(
                 modifier = Modifier.statusBarsHeight(additional = barHeight),
                 isUpdating = isUpdating.value,
                 currentSection = currentSection,
-                observeTopPeriod = sdk.profileInteractor::observeTopPeriodLengthId,
-                onTopPeriodSelect = sdk.profileInteractor::updateTopPeriod,
+                observeTopPeriod = sdk.topInteractor::observeTopPeriodId,
+                onTopPeriodSelect = sdk.topInteractor::updateTopPeriod,
                 onSignOut = sdk.signOutInteractor::signOut,
                 nickname = sdk.profileInteractor.getName()
             )
@@ -84,8 +85,8 @@ private fun LibraryTopBar(
     modifier: Modifier = Modifier,
     currentSection: LibrarySection,
     onSignOut: () -> Unit,
-    observeTopPeriod: (Int) -> Flow<Int?>,
-    onTopPeriodSelect: (Int, Int) -> Unit,
+    observeTopPeriod: (TopType) -> Flow<Int?>,
+    onTopPeriodSelect: (TopType, TopPeriod) -> Unit,
     isUpdating: Boolean,
     nickname: String?,
 ) {
@@ -107,13 +108,14 @@ private fun LibraryTopBar(
                 LibrarySection.Artists, LibrarySection.Albums, LibrarySection.Tracks -> {
 
                     val periods = stringArrayResource(id = R.array.period)
+                    val topType = TopType.values()[currentSection.ordinal - 1]
 
                     var expanded by remember { mutableStateOf(false) }
 
                     val selectedPeriodIndex = observeTopPeriod
-                        .invoke(currentSection.ordinal)
-                        .collectAsState(PeriodLength.Overall.ordinal)
-                        .value ?: PeriodLength.Overall.ordinal
+                        .invoke(topType)
+                        .collectAsState(TopPeriod.Overall.ordinal)
+                        .value ?: TopPeriod.Overall.ordinal
 
                     Providers(AmbientContentAlpha provides ContentAlpha.medium) {
                         Row(
@@ -144,7 +146,10 @@ private fun LibraryTopBar(
                             periods.forEachIndexed { i, title ->
                                 DropdownMenuItem(
                                     onClick = {
-                                        onTopPeriodSelect.invoke(currentSection.ordinal, i)
+                                        onTopPeriodSelect.invoke(
+                                            topType,
+                                            TopPeriod.values()[i]
+                                        )
                                         expanded = false
                                     }
                                 ) {

@@ -4,7 +4,6 @@ import com.squareup.sqldelight.runtime.coroutines.asFlow
 import com.squareup.sqldelight.runtime.coroutines.mapToList
 import com.squareup.sqldelight.runtime.coroutines.mapToOneOrNull
 import kotlinx.coroutines.flow.map
-import ru.hotmule.lastik.data.local.PeriodQueries
 import ru.hotmule.lastik.data.local.ProfileQueries
 import ru.hotmule.lastik.data.local.TrackQueries
 import ru.hotmule.lastik.data.prefs.PrefsStore
@@ -14,7 +13,6 @@ class ProfileInteractor(
     private val api: UserApi,
     private val prefs: PrefsStore,
     private val trackQueries: TrackQueries,
-    private val periodQueries: PeriodQueries,
     private val profileQueries: ProfileQueries,
     private val artistsInteractor: ArtistsInteractor
 ) : BaseInteractor() {
@@ -33,12 +31,6 @@ class ProfileInteractor(
         .asFlow()
         .mapToList()
 
-    fun observeTopPeriodLengthId(topId: Int) = periodQueries
-        .getPeriod(prefs.name!!, topId.toLong())
-        .asFlow()
-        .mapToOneOrNull()
-        .map { it?.lengthId?.toInt() }
-
     fun observeLovedTracks() = trackQueries.lovedTracks().asFlow().mapToList().map { tracks ->
         tracks.map {
             ListItem(
@@ -49,13 +41,6 @@ class ProfileInteractor(
                 time = it.lovedAt
             )
         }
-    }
-
-    fun updateTopPeriod(
-        topId: Int,
-        periodId: Int
-    ) {
-        periodQueries.upsert(periodId.toLong(), prefs.name!!, topId.toLong())
     }
 
     suspend fun refreshProfile(

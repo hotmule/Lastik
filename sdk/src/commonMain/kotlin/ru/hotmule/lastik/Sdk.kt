@@ -1,12 +1,14 @@
 package ru.hotmule.lastik
 
 import com.russhwolf.settings.Settings
+import com.squareup.sqldelight.ColumnAdapter
 import com.squareup.sqldelight.db.SqlDriver
 import ru.hotmule.lastik.data.prefs.PrefsStore
 import ru.hotmule.lastik.data.remote.HttpClientFactory
 import ru.hotmule.lastik.data.remote.api.AuthApi
 import ru.hotmule.lastik.data.remote.api.UserApi
 import ru.hotmule.lastik.data.local.LastikDatabase
+import ru.hotmule.lastik.data.local.Top
 import ru.hotmule.lastik.data.remote.api.TrackApi
 import ru.hotmule.lastik.domain.*
 
@@ -19,7 +21,19 @@ open class Sdk(
 ) {
 
     private val prefs = PrefsStore(settings)
-    private val db = LastikDatabase(sqlDriver)
+    private val db = LastikDatabase(sqlDriver, Top.Adapter(
+
+        object : ColumnAdapter<TopType, Long> {
+            override fun decode(databaseValue: Long) = TopType.values()[databaseValue.toInt()]
+            override fun encode(value: TopType) = value.ordinal.toLong()
+        },
+
+        object : ColumnAdapter<TopPeriod, Long> {
+            override fun decode(databaseValue: Long) = TopPeriod.values()[databaseValue.toInt()]
+            override fun encode(value: TopPeriod) = value.ordinal.toLong()
+        }
+    ))
+
     val signOutInteractor = SignOutInteractor(prefs, db.profileQueries)
     private val httpClient = httpClientFactory.create(signOutInteractor)
 
@@ -32,7 +46,7 @@ open class Sdk(
     )
 
     val profileInteractor = ProfileInteractor(
-        userApi, prefs, db.trackQueries, db.periodQueries, db.profileQueries, artistsInteractor
+        userApi, prefs, db.trackQueries, db.profileQueries, artistsInteractor
     )
 
     val authInteractor = AuthInteractor(
@@ -49,8 +63,7 @@ open class Sdk(
         db.artistQueries,
         db.albumQueries,
         db.trackQueries,
-        db.periodQueries,
-        db.statisticQueries,
+        db.topQueries,
         artistsInteractor
     )
 

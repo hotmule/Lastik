@@ -3,26 +3,6 @@ package ru.hotmule.lastik.data.remote.entities
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-enum class PeriodLength(
-    private val value: String
-) {
-
-    Overall("overall"),
-    Week("7day"),
-    Month("1month"),
-    YearQuarter("3month"),
-    YearHalf("6month"),
-    Year("12month");
-
-    companion object {
-
-        fun getValue(lengthId: Long?) = if (lengthId != null)
-            values()[lengthId.toInt()].value
-        else
-            Overall.value
-    }
-}
-
 @Serializable
 data class ScrobblesResponse(
     @SerialName("recenttracks") val recent: ResentTracks? = null
