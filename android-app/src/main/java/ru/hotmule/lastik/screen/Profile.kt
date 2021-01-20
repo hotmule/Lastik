@@ -3,6 +3,7 @@ package ru.hotmule.lastik.screen
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.LazyRowForIndexed
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
@@ -89,7 +90,7 @@ fun ProfileHeader(
                 )
             )
 
-            LazyColumn(
+            LazyRow(
                 modifier = Modifier.padding(top = 8.dp)
             ) {
                 itemsIndexed(it) { index, friend ->

@@ -296,22 +296,11 @@ fun LibraryList(
         modifier = modifier
     ) {
 
-        itemsIndexed(items) { index, item ->
+        header?.let {
+            item { it.invoke() }
+        }
 
-            when (index) {
-                0 -> header?.invoke()
-                items.lastIndex -> {
-                    LaunchedEffect(true) {
-                        moreItemsLoading = true
-                        try {
-                            loadItems.invoke(false)
-                        } catch (e: Exception) {
-                            e.printStackTrace()
-                        }
-                        moreItemsLoading = false
-                    }
-                }
-            }
+        itemsIndexed(items) { index, item ->
 
             LibraryListItem(
                 item = item,
@@ -319,8 +308,20 @@ fun LibraryList(
                 loveTrack = loveTrack
             )
 
-            if (index == items.lastIndex && moreItemsLoading)
-                PagingProgress()
+            if (index == items.lastIndex) {
+
+                LaunchedEffect(true) {
+                    moreItemsLoading = true
+                    try {
+                        loadItems.invoke(false)
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                    moreItemsLoading = false
+                }
+
+                if (moreItemsLoading) PagingProgress()
+            }
         }
     }
 }
