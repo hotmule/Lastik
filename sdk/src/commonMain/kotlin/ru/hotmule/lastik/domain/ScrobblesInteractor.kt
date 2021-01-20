@@ -4,10 +4,10 @@ import com.squareup.sqldelight.runtime.coroutines.asFlow
 import com.squareup.sqldelight.runtime.coroutines.mapToList
 import kotlinx.coroutines.flow.map
 import ru.hotmule.lastik.data.local.*
-import ru.hotmule.lastik.data.prefs.PrefsStore
 import ru.hotmule.lastik.data.remote.api.UserApi
 import ru.hotmule.lastik.data.remote.entities.Date
 import ru.hotmule.lastik.data.remote.entities.LibraryItem
+import ru.hotmule.lastik.domain.utils.providePage
 
 class ScrobblesInteractor(
     private val api: UserApi,
@@ -15,7 +15,7 @@ class ScrobblesInteractor(
     private val trackQueries: TrackQueries,
     private val scrobbleQueries: ScrobbleQueries,
     private val artistsInteractor: ArtistsInteractor
-) : BaseInteractor() {
+) {
 
     fun observeScrobbles() = scrobbleQueries.scrobbleData()
         .asFlow()
@@ -34,23 +34,21 @@ class ScrobblesInteractor(
         }
 
     suspend fun refreshScrobbles(
-        firstPage: Boolean
+        isFirstPage: Boolean
     ) {
         providePage(
-            currentItemsCount = scrobbleQueries.getScrobblesCount().executeAsOne().toInt(),
-            firstPage = firstPage
-        ) { page ->
-
-            api.getRecentTracks(page).also { response ->
-                response?.recent?.tracks?.let { recentTracks ->
-
-                    scrobbleQueries.transaction {
-                        if (firstPage) scrobbleQueries.deleteAll()
-                        recentTracks.forEach { insertRecentTrack(it) }
+            isFirstPage,
+            scrobbleQueries.getScrobblesCount(),
+            { api.getRecentTracks(it) },
+            {  },
+            {
+                scrobbleQueries.transaction {
+                    it.recent?.tracks?.forEach { track ->
+                        insertRecentTrack(track)
                     }
                 }
             }
-        }
+        )
     }
 
     private fun insertRecentTrack(track: LibraryItem) {

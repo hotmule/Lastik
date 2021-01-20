@@ -6,9 +6,9 @@ import kotlin.String
 
 data class AlbumTop(
   val artist: String?,
-  val album: String,
+  val album: String?,
   val lowArtwork: String?,
-  val rank: Int?,
+  val rank: Int,
   val playCount: Long?
 ) {
   override fun toString(): String = """

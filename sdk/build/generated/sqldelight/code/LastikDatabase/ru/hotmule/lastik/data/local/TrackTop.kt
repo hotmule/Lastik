@@ -4,15 +4,15 @@ import kotlin.Int
 import kotlin.Long
 import kotlin.String
 
-data class TopTracks(
+data class TrackTop(
   val artist: String?,
-  val track: String,
-  val rank: Int?,
+  val track: String?,
+  val rank: Int,
   val playCount: Long?,
   val lowArtwork: String?
 ) {
   override fun toString(): String = """
-  |TopTracks [
+  |TrackTop [
   |  artist: $artist
   |  track: $track
   |  rank: $rank

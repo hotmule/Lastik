@@ -4,6 +4,7 @@ import com.russhwolf.settings.Settings
 import com.russhwolf.settings.nullableString
 import kotlinx.coroutines.flow.MutableStateFlow
 import ru.hotmule.lastik.domain.TopPeriod
+import ru.hotmule.lastik.domain.TopType
 
 class PrefsStore(private val settings: Settings) {
 
@@ -20,9 +21,9 @@ class PrefsStore(private val settings: Settings) {
     var name by settings.nullableString(NAME_ARG)
 
     val isSessionActive = MutableStateFlow(sessionKey != null)
-    val topArtistsPeriod = MutableStateFlow(topArtistsPeriodId)
-    val topAlbumsPeriod = MutableStateFlow(topAlbumsPeriodId)
-    val topTracksPeriod = MutableStateFlow(topTracksPeriodId)
+    private val topArtistsPeriod = MutableStateFlow(topArtistsPeriodId)
+    private val topAlbumsPeriod = MutableStateFlow(topAlbumsPeriodId)
+    private val topTracksPeriod = MutableStateFlow(topTracksPeriodId)
 
     var sessionKey: String?
         get() = settings.getStringOrNull(SESSION_KEY_ARG)
@@ -56,6 +57,14 @@ class PrefsStore(private val settings: Settings) {
             topTracksPeriod.value = value
             settings.putInt(TOP_TRACKS_PERIOD_ARG, value)
         }
+
+    fun getTopPeriodId(type: TopType) = when (type) {
+        TopType.Artists -> topArtistsPeriod
+        TopType.Albums -> topAlbumsPeriod
+        TopType.Tracks -> topTracksPeriod
+    }
+
+    fun getTopPeriod(type: TopType) = TopPeriod.values()[getTopPeriodId(type).value]
 
     fun clear() {
         sessionKey = null

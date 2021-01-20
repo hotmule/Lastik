@@ -4,31 +4,11 @@ CREATE TABLE artist (
     UNIQUE (name)
 );
 
-getTopArtistsCount:
-SELECT COUNT(a.name) FROM artist a
-LEFT JOIN top t ON itemId = a.id
-WHERE t.rank NOT NULL;
-
 insert:
 INSERT OR IGNORE INTO artist(name) VALUES (?);
 
 getId:
 SELECT id FROM artist WHERE name = ?;
-
-artistTop:
-SELECT
-    ar.name,
-    t_ar.rank,
-    t_ar.playCount,
-    al.lowArtwork
-FROM artist ar
-LEFT JOIN top t_ar ON t_ar.itemId = ar.id
-LEFT JOIN album al ON al.id = (
-    SELECT a.id FROM album a
-    LEFT JOIN top t_al ON a.id = t_al.itemId
-    WHERE a.artistId = ar.id ORDER BY t_al.playCount DESC LIMIT 1
-)
-WHERE t_ar.rank NOT NULL ORDER BY t_ar.rank;
 
 deleteLovedTracks:
 DELETE FROM artist WHERE EXISTS (

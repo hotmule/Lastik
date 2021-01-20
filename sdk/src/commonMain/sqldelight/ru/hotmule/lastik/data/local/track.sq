@@ -10,11 +10,6 @@ CREATE TABLE track (
     FOREIGN KEY (albumId) REFERENCES album(id) ON DELETE CASCADE
 );
 
-getTopTracksCount:
-SELECT COUNT(t.id) FROM track t
-LEFT JOIN top tt ON itemId = t.id
-WHERE tt.rank NOT NULL;
-
 getLovedTracksPageCount:
 SELECT COUNT(track.id) FROM track WHERE lovedAt NOT NULL;
 
@@ -50,19 +45,6 @@ UPDATE track SET lovedAt = NULL WHERE id IN (
 
 getId:
 SELECT id FROM track WHERE artistId = ? AND name = ?;
-
-topTracks:
-SELECT
-    ar.name AS artist,
-    t.name AS track,
-    tt.rank,
-    tt.playCount,
-    al.lowArtwork
-FROM track t
-LEFT JOIN album al ON t.albumId = al.id
-LEFT JOIN artist ar ON t.artistId = ar.id
-LEFT JOIN top tt ON tt.itemId = t.id
-WHERE tt.rank NOT NULL ORDER BY tt.rank;
 
 lovedTracks:
 SELECT

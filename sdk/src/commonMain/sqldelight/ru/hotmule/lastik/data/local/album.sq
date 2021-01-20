@@ -8,25 +8,8 @@ CREATE TABLE album (
     FOREIGN KEY (artistId) REFERENCES artist(id) ON DELETE CASCADE
 );
 
-getTopAlbumsCount:
-SELECT COUNT(a.id) FROM album a
-LEFT JOIN top t ON itemId = a.id
-WHERE rank NOT NULL;
-
 insert:
 INSERT OR IGNORE INTO album(artistId, name, lowArtwork, highArtwork) VALUES (?, ?, ?, ?);
 
 getId:
 SELECT id FROM album WHERE artistId = ? AND name = ?;
-
-albumTop:
-SELECT
-    ar.name AS artist,
-    al.name AS album,
-    al.lowArtwork,
-    t.rank,
-    t.playCount
-FROM album al
-LEFT JOIN artist ar ON al.artistId = ar.id
-LEFT JOIN top t ON t.itemId = al.id
-WHERE t.rank NOT NULL ORDER BY t.rank;

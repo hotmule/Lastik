@@ -58,13 +58,7 @@ open class Sdk(
     )
 
     val topInteractor = TopInteractor(
-        userApi,
-        prefs,
-        db.artistQueries,
-        db.albumQueries,
-        db.trackQueries,
-        db.topQueries,
-        artistsInteractor
+        userApi, prefs, db.albumQueries, db.trackQueries, db.topQueries, artistsInteractor
     )
 
     val trackInteractor = TrackInteractor(

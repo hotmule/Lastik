@@ -24,7 +24,7 @@ import kotlinx.coroutines.flow.Flow
 import ru.hotmule.lastik.R
 import ru.hotmule.lastik.Sdk
 import ru.hotmule.lastik.components.LibraryListItem
-import ru.hotmule.lastik.domain.ListItem
+import ru.hotmule.lastik.data.local.ListItem
 import ru.hotmule.lastik.domain.TopPeriod
 import ru.hotmule.lastik.domain.TopType
 import ru.hotmule.lastik.theme.barHeight

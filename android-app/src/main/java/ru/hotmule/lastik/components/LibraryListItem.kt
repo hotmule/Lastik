@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
 import dev.chrisbanes.accompanist.coil.CoilImage
 import ru.hotmule.lastik.R
-import ru.hotmule.lastik.domain.ListItem
+import ru.hotmule.lastik.data.local.ListItem
 import ru.hotmule.lastik.theme.sunflower
 import ru.hotmule.lastik.utlis.toCommasString
 import ru.hotmule.lastik.utlis.toDateString

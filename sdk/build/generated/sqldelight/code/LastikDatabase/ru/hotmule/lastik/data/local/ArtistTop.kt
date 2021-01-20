@@ -5,8 +5,8 @@ import kotlin.Long
 import kotlin.String
 
 data class ArtistTop(
-  val name: String,
-  val rank: Int?,
+  val name: String?,
+  val rank: Int,
   val playCount: Long?,
   val lowArtwork: String?
 ) {

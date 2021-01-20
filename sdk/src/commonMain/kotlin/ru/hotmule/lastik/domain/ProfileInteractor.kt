@@ -4,10 +4,12 @@ import com.squareup.sqldelight.runtime.coroutines.asFlow
 import com.squareup.sqldelight.runtime.coroutines.mapToList
 import com.squareup.sqldelight.runtime.coroutines.mapToOneOrNull
 import kotlinx.coroutines.flow.map
+import ru.hotmule.lastik.data.local.ListItem
 import ru.hotmule.lastik.data.local.ProfileQueries
 import ru.hotmule.lastik.data.local.TrackQueries
 import ru.hotmule.lastik.data.prefs.PrefsStore
 import ru.hotmule.lastik.data.remote.api.UserApi
+import ru.hotmule.lastik.domain.utils.providePage
 
 class ProfileInteractor(
     private val api: UserApi,
@@ -15,7 +17,7 @@ class ProfileInteractor(
     private val trackQueries: TrackQueries,
     private val profileQueries: ProfileQueries,
     private val artistsInteractor: ArtistsInteractor
-) : BaseInteractor() {
+) {
 
     val isSessionActive = prefs.isSessionActive
 
@@ -44,11 +46,11 @@ class ProfileInteractor(
     }
 
     suspend fun refreshProfile(
-        firstPage: Boolean
+        isFirstPage: Boolean
     ) {
         refreshInfo()
         refreshFriends()
-        refreshLovedTracks(firstPage)
+        refreshLovedTracks(isFirstPage)
     }
 
     private suspend fun refreshInfo() {
@@ -87,37 +89,33 @@ class ProfileInteractor(
     }
 
     private suspend fun refreshLovedTracks(
-        firstPage: Boolean
+        isFirstPage: Boolean
     ) {
         providePage(
-            currentItemsCount = trackQueries.getLovedTracksPageCount().executeAsOne().toInt(),
-            firstPage = firstPage
-        ) { page ->
-            api.getLovedTracks(page).also {
-                profileQueries.transaction {
-
-                    if (firstPage) trackQueries.dropLovedTrackDates()
-
-                    it?.loved?.list?.forEach { track ->
+            isFirstPage,
+            trackQueries.getLovedTracksPageCount(),
+            { api.getLovedTracks(it) },
+            { trackQueries.dropLovedTrackDates() },
+            {
+                trackQueries.transaction {
+                    it.loved?.list?.forEach { track ->
                         with (track) {
                             artistsInteractor.insertArtist(artist?.name)?.let { artistId ->
                                 name?.let {
-                                    with(trackQueries) {
-                                        upsertLovedTrack(
-                                            artistId = artistId,
-                                            name = name,
-                                            loved = true,
-                                            lovedAt = date?.uts,
-                                            albumId = null
-                                        )
-                                    }
+                                    trackQueries.upsertLovedTrack(
+                                        artistId = artistId,
+                                        name = name,
+                                        loved = true,
+                                        lovedAt = date?.uts,
+                                        albumId = null
+                                    )
                                 }
                             }
                         }
                     }
                 }
             }
-        }
+        )
     }
 
     fun insertUser(

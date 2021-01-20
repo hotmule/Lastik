@@ -4,26 +4,13 @@ import com.squareup.sqldelight.Query
 import com.squareup.sqldelight.Transacter
 import kotlin.Any
 import kotlin.Boolean
-import kotlin.Int
 import kotlin.Long
 import kotlin.String
 
 interface TrackQueries : Transacter {
-  fun getTopTracksCount(): Query<Long>
-
   fun getLovedTracksPageCount(): Query<Long>
 
   fun getId(artistId: Long, name: String): Query<Long>
-
-  fun <T : Any> topTracks(mapper: (
-    artist: String?,
-    track: String,
-    rank: Int?,
-    playCount: Long?,
-    lowArtwork: String?
-  ) -> T): Query<T>
-
-  fun topTracks(): Query<TopTracks>
 
   fun <T : Any> lovedTracks(mapper: (
     artist: String?,
