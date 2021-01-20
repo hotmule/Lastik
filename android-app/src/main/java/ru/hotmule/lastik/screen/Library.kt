@@ -3,6 +3,7 @@ package ru.hotmule.lastik.screen
 import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyColumnForIndexed
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -14,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.Position
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import dev.chrisbanes.accompanist.insets.navigationBarsHeight
 import dev.chrisbanes.accompanist.insets.navigationBarsPadding
@@ -140,7 +141,7 @@ private fun LibraryTopBar(
                         toggle = { },
                         expanded = expanded,
                         onDismissRequest = { expanded = !expanded },
-                        dropdownOffset = Position(16.dp, 4.dp),
+                        dropdownOffset = DpOffset(16.dp, 4.dp),
                     ) {
                         Column {
                             periods.forEachIndexed { i, title ->
@@ -291,34 +292,36 @@ fun LibraryList(
 
     var moreItemsLoading by remember { mutableStateOf(false) }
 
-    LazyColumnForIndexed(
-        modifier = modifier,
-        items = items
-    ) { index, item ->
+    LazyColumn(
+        modifier = modifier
+    ) {
 
-        when (index) {
-            0 -> header?.invoke()
-            items.lastIndex -> {
-                LaunchedEffect(true) {
-                    moreItemsLoading = true
-                    try {
-                        loadItems.invoke(false)
-                    } catch (e: Exception) {
-                        e.printStackTrace()
+        itemsIndexed(items) { index, item ->
+
+            when (index) {
+                0 -> header?.invoke()
+                items.lastIndex -> {
+                    LaunchedEffect(true) {
+                        moreItemsLoading = true
+                        try {
+                            loadItems.invoke(false)
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+                        moreItemsLoading = false
                     }
-                    moreItemsLoading = false
                 }
             }
+
+            LibraryListItem(
+                item = item,
+                scrobbleWidth = scrobbleWidth,
+                loveTrack = loveTrack
+            )
+
+            if (index == items.lastIndex && moreItemsLoading)
+                PagingProgress()
         }
-
-        LibraryListItem(
-            item = item,
-            scrobbleWidth = scrobbleWidth,
-            loveTrack = loveTrack
-        )
-
-        if (index == items.lastIndex && moreItemsLoading)
-            PagingProgress()
     }
 }
 

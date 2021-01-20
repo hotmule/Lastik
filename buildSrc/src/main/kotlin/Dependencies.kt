@@ -11,7 +11,7 @@ object Sdk {
         const val min = 21
         const val target = 29
         const val compile = 29
-        const val buildTools = "30.0.0"
+        const val buildTools = "30.0.2"
     }
 }
 
