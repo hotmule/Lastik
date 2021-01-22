@@ -19,6 +19,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Dialog
+import androidx.navigation.NavController
 import dev.chrisbanes.accompanist.insets.navigationBarsPadding
 import kotlinx.coroutines.delay
 import ru.hotmule.lastik.R
@@ -32,7 +33,8 @@ data class AuthScreenState(
 
 @Composable
 fun AuthScreen(
-    interactor: AuthInteractor
+    interactor: AuthInteractor,
+    navController: NavController
 ) {
 
     var state by remember { mutableStateOf(AuthScreenState()) }

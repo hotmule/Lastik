@@ -28,12 +28,12 @@ class MainActivity : AppCompatActivity() {
             size.x / resources.displayMetrics.density
         }
 
-        WindowCompat.setDecorFitsSystemWindows (window, false)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
 
         setContent {
             val systemUiController = remember { SystemUiController(window) }
             Providers(SysUiController provides systemUiController) {
-                LastikApp(sdk, displayWidth, onBackPressedDispatcher)
+                LastikApp(sdk, displayWidth)
             }
         }
     }

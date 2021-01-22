@@ -97,6 +97,7 @@ object Libs {
     object AndroidX {
 
         const val appCompat = "androidx.appcompat:appcompat:1.3.0-beta01"
+        const val navigation = "androidx.navigation:navigation-compose:1.0.0-alpha05"
 
         object Compose {
             const val version = "1.0.0-alpha10"

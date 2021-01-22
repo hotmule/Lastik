@@ -4,7 +4,6 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyColumnForIndexed
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.*
@@ -17,6 +16,9 @@ import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import androidx.navigation.compose.popUpTo
+import androidx.navigation.compose.navigate
+import androidx.navigation.NavController
 import dev.chrisbanes.accompanist.insets.navigationBarsHeight
 import dev.chrisbanes.accompanist.insets.navigationBarsPadding
 import dev.chrisbanes.accompanist.insets.statusBarsHeight
@@ -44,8 +46,17 @@ enum class LibrarySection(
 @Composable
 fun LibraryScreen(
     sdk: Sdk,
-    displayWidth: Float
+    displayWidth: Float,
+    navController: NavController
 ) {
+
+    val isSessionActive by sdk.profileInteractor.isSessionActive.collectAsState()
+
+    if (!isSessionActive) {
+        navController.navigate("auth") {
+            popUpTo("main") { inclusive = true }
+        }
+    }
 
     val (currentSection, setCurrentSection) = savedInstanceState { LibrarySection.Resents }
     val isUpdating = mutableStateOf(false)
