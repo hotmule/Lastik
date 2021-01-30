@@ -34,7 +34,7 @@ object Libs {
     const val jUnit = "junit:junit:4.13"
 
     object Kotlin {
-        const val version = "1.4.21"
+        const val version = "1.4.21-2"
         const val gradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version"
         const val serialization = "org.jetbrains.kotlin:kotlin-serialization:$version"
     }
@@ -97,10 +97,10 @@ object Libs {
     object AndroidX {
 
         const val appCompat = "androidx.appcompat:appcompat:1.3.0-beta01"
-        const val navigation = "androidx.navigation:navigation-compose:1.0.0-alpha05"
+        const val navigation = "androidx.navigation:navigation-compose:1.0.0-alpha06"
 
         object Compose {
-            const val version = "1.0.0-alpha10"
+            const val version = "1.0.0-alpha11"
             const val ui = "androidx.compose.ui:ui:$version"
             const val tooling = "androidx.compose.ui:ui-tooling:$version"
             const val material = "androidx.compose.material:material:$version"
@@ -111,7 +111,7 @@ object Libs {
     }
 
     object Accompanist {
-        private const val version = "0.4.2"
+        private const val version = "0.5.0"
         const val coil = "dev.chrisbanes.accompanist:accompanist-coil:$version"
         const val insets = "dev.chrisbanes.accompanist:accompanist-insets:$version"
     }

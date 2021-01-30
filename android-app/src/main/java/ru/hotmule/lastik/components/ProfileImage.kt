@@ -17,6 +17,7 @@ fun ProfileImage(
 ) {
     CoilImage(
         data = url ?: "",
+        contentDescription = "avatar",
         contentScale = ContentScale.Crop,
         modifier = modifier
             .clip(CircleShape)

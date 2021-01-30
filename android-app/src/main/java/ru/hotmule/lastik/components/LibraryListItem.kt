@@ -110,6 +110,7 @@ fun LibraryListItem(
                     ) {
                         Image(
                             colorFilter = ColorFilter.tint(MaterialTheme.colors.primary),
+                            contentDescription = "love",
                             imageVector = if (it)
                                 Icons.Rounded.Favorite
                             else
@@ -121,6 +122,7 @@ fun LibraryListItem(
                 CoilImage(
                     data = imageUrl ?: "https://lastfm.freetls.fastly.net/i/u/64s/2a96cbd8b46e442fc41c2b86b821562f.png",
                     contentScale = ContentScale.Crop,
+                    contentDescription = "artwork",
                     modifier = Modifier
                         .align(Alignment.CenterVertically)
                         .preferredWidth(50.dp)
