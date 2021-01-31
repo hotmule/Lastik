@@ -1,23 +1,30 @@
 package ru.hotmule.lastik
 
 import androidx.annotation.StringRes
-import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.DpOffset
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.*
+import dev.chrisbanes.accompanist.insets.navigationBarsHeight
 import dev.chrisbanes.accompanist.insets.navigationBarsPadding
 import dev.chrisbanes.accompanist.insets.statusBarsHeight
 import dev.chrisbanes.accompanist.insets.statusBarsPadding
+import ru.hotmule.lastik.domain.TopPeriod
+import ru.hotmule.lastik.domain.TopType
 import ru.hotmule.lastik.screen.AuthScreen
 import ru.hotmule.lastik.screen.LibraryList
 import ru.hotmule.lastik.theme.barHeight
@@ -40,37 +47,139 @@ fun Main(
 ) {
 
     val navController = rememberNavController()
-    val isUpdating = mutableStateOf(false)
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    var isUpdating by remember { mutableStateOf(false) }
+
+    val isLibrary = navBackStackEntry
+        ?.arguments
+        ?.getString(KEY_ROUTE) == NavGraph.library
+
+    val currentLibrarySectionId = navBackStackEntry
+        ?.arguments
+        ?.getInt(NavGraph.Args.sectionId)
+        ?: LibrarySection.Resents.ordinal
+
+    val currentLibrarySection = LibrarySection.values()[currentLibrarySectionId]
 
     Scaffold(
-        topBar = { MainTopBar() },
-        bodyContent = { MainBody(navController, sdk, it, displayWidth) },
-        bottomBar = { LibraryBottomBar(navController) }
-    )
-}
-
-@Composable
-private fun MainTopBar() {
-    TopAppBar(
-        modifier = Modifier.statusBarsHeight(additional = barHeight),
-        title = {
-            Text(
-                modifier = Modifier.statusBarsPadding(),
-                text = "Test"
-            )
+        topBar = {
+            if (isLibrary) {
+                LibraryTopBar(sdk, currentLibrarySection, isUpdating)
+            }
+        },
+        bodyContent = {
+            MainNavHost(navController, sdk, displayWidth) {
+                isUpdating = it
+            }
+        },
+        bottomBar = {
+            if (isLibrary) {
+                LibraryBottomBar(navController, currentLibrarySection)
+            }
         }
     )
 }
 
 @Composable
-private fun MainBody(
+private fun LibraryTopBar(
+    sdk: Sdk,
+    currentSection: LibrarySection,
+    isUpdating: Boolean
+) {
+    TopAppBar(
+        modifier = Modifier.statusBarsHeight(additional = barHeight),
+        title = {
+            Text(
+                modifier = Modifier.statusBarsPadding(),
+                text = when {
+                    isUpdating -> stringResource(id = R.string.updating)
+                    currentSection != LibrarySection.Profile -> currentSection.name
+                    else -> sdk.profileInteractor.getName() ?: currentSection.name
+                }
+            )
+        },
+        actions = {
+
+            when (currentSection) {
+
+                LibrarySection.Profile -> {
+                    IconButton(
+                        modifier = Modifier.statusBarsPadding(),
+                        onClick = { sdk.signOutInteractor.signOut() }
+                    ) {
+                        Icon(Icons.Rounded.ExitToApp, null)
+                    }
+                }
+
+                LibrarySection.Artists, LibrarySection.Albums, LibrarySection.Tracks -> {
+
+                    val periods = stringArrayResource(id = R.array.period)
+                    val topType = TopType.values()[currentSection.ordinal - 1]
+
+                    var expanded by remember { mutableStateOf(false) }
+
+                    val selectedPeriodIndex = sdk.topInteractor
+                        .observeTopPeriodId(topType)
+                        .collectAsState(TopPeriod.Overall.ordinal)
+                        .value ?: TopPeriod.Overall.ordinal
+
+                    Providers(AmbientContentAlpha provides ContentAlpha.medium) {
+                        Row(
+                            modifier = Modifier
+                                .clickable(
+                                    onClick = { expanded = !expanded },
+                                )
+                                .statusBarsPadding()
+                                .padding(end = 12.dp, top = 4.dp),
+                        ) {
+                            Text(
+                                text = periods[selectedPeriodIndex],
+                                modifier = Modifier
+                                    .padding(end = 2.dp)
+                            )
+                            Icon(Icons.Rounded.ExpandMore, null)
+                        }
+                    }
+
+                    DropdownMenu(
+                        toggle = { },
+                        expanded = expanded,
+                        onDismissRequest = { expanded = !expanded },
+                        dropdownOffset = DpOffset(16.dp, 4.dp),
+                    ) {
+                        Column {
+                            periods.forEachIndexed { i, title ->
+                                DropdownMenuItem(
+                                    onClick = {
+                                        sdk.topInteractor.updateTopPeriod(
+                                            topType,
+                                            TopPeriod.values()[i]
+                                        )
+                                        expanded = false
+                                    }
+                                ) {
+                                    Text(text = title)
+                                }
+                            }
+                        }
+                    }
+                }
+
+                LibrarySection.Resents -> { }
+            }
+        }
+    )
+}
+
+@Composable
+private fun MainNavHost(
     navController: NavHostController,
     sdk: Sdk,
-    padding: PaddingValues,
-    displayWidth: Float
+    displayWidth: Float,
+    isUpdating: (Boolean) -> Unit
 ) {
     NavHost(navController, NavGraph.library) {
-        composable(NavGraph.auth) { AuthScreen(sdk.authInteractor, navController) }
+        composable(NavGraph.auth) { AuthScreen(sdk, navController) }
         composable(
             NavGraph.library, listOf(
                 navArgument(NavGraph.Args.sectionId) { type = NavType.IntType })
@@ -82,10 +191,11 @@ private fun MainBody(
                 ?: LibrarySection.Resents.ordinal
 
             LibraryList(
-                Modifier.padding(bottom = padding.bottom),
                 sdk,
+                navController,
                 LibrarySection.values()[currentSectionId],
-                displayWidth
+                displayWidth,
+                isUpdating
             )
         }
     }
@@ -93,26 +203,24 @@ private fun MainBody(
 
 @Composable
 private fun LibraryBottomBar(
-    navController: NavController
+    navController: NavController,
+    currentSection: LibrarySection
 ) {
-    BottomNavigation {
+    BottomNavigation(
+        modifier = Modifier.navigationBarsHeight(additional = barHeight)
+    ) {
         LibrarySection
             .values()
             .toList()
             .forEach { section ->
 
                 val title = stringResource(section.title)
-                val currentSectionId = navController
-                    .currentBackStackEntry
-                    ?.arguments
-                    ?.getInt(NavGraph.Args.sectionId)
-                    ?: LibrarySection.Resents.ordinal
 
                 BottomNavigationItem(
                     modifier = Modifier.navigationBarsPadding(bottom = true),
                     icon = { Icon(section.icon, title) },
                     label = { Text(title) },
-                    selected = false,
+                    selected = currentSection == section,
                     onClick = {
                         navController.navigate(
                             NavGraph.Action.toLibrary(section)

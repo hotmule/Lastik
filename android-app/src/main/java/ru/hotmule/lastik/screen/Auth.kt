@@ -20,9 +20,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavController
+import androidx.navigation.compose.navigate
+import androidx.navigation.compose.popUpTo
 import dev.chrisbanes.accompanist.insets.navigationBarsPadding
 import kotlinx.coroutines.delay
+import ru.hotmule.lastik.LibrarySection
+import ru.hotmule.lastik.NavGraph
 import ru.hotmule.lastik.R
+import ru.hotmule.lastik.Sdk
 import ru.hotmule.lastik.domain.AuthInteractor
 
 data class AuthScreenState(
@@ -33,11 +38,18 @@ data class AuthScreenState(
 
 @Composable
 fun AuthScreen(
-    interactor: AuthInteractor,
+    sdk: Sdk,
     navController: NavController
 ) {
 
     var state by remember { mutableStateOf(AuthScreenState()) }
+    val isSessionActive by sdk.profileInteractor.isSessionActive.collectAsState()
+
+    if (isSessionActive) {
+        navController.navigate(NavGraph.Action.toLibrary(LibrarySection.Resents)) {
+            popUpTo(NavGraph.auth) { inclusive = true }
+        }
+    }
 
     Box(
         modifier = Modifier
@@ -59,7 +71,7 @@ fun AuthScreen(
 
             if (signInDialogOpened) {
                 SignInDialog(
-                    interactor,
+                    sdk.authInteractor,
                     onDismissRequest = {
                         state = state.copy(
                             signInDialogOpened = false
@@ -85,7 +97,7 @@ fun AuthScreen(
                     CircularProgressIndicator()
                     LaunchedEffect(true) {
                         try {
-                            interactor.getSessionKey()
+                            sdk.authInteractor.getSessionKey()
                         } catch (e: Exception) {
                             state = state.copy(errorReceived = e.message)
                         }
