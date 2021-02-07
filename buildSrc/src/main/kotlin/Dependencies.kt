@@ -1,5 +1,7 @@
 object App {
+
     const val id = "ru.hotmule.lastik"
+
     object Version {
         const val code = 1
         const val name = "1.0"
@@ -34,7 +36,7 @@ object Libs {
     const val jUnit = "junit:junit:4.13"
 
     object Kotlin {
-        const val version = "1.4.21-2"
+        const val version = "1.4.30"
         const val gradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version"
         const val serialization = "org.jetbrains.kotlin:kotlin-serialization:$version"
     }
