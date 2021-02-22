@@ -153,7 +153,7 @@ fun LibraryListItem(
 
                     subtitle?.let {
 
-                        Providers(AmbientContentAlpha provides ContentAlpha.medium) {
+                        Providers(LocalContentAlpha provides ContentAlpha.medium) {
                             Text(
                                 text = it,
                                 style = MaterialTheme.typography.body2,
@@ -166,7 +166,7 @@ fun LibraryListItem(
             }
 
             if (time != null || playCount != null || nowPlaying == true) {
-                Providers(AmbientContentAlpha provides ContentAlpha.medium) {
+                Providers(LocalContentAlpha provides ContentAlpha.medium) {
                     Text(
                         style = MaterialTheme.typography.body2,
                         modifier = Modifier

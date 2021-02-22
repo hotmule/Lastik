@@ -2,10 +2,10 @@ package ru.hotmule.lastik
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.ui.platform.setContent
 import android.compose.utils.SysUiController
 import android.compose.utils.SystemUiController
 import android.graphics.Point
+import androidx.activity.compose.setContent
 import androidx.compose.runtime.Providers
 import androidx.compose.runtime.remember
 import androidx.core.view.WindowCompat

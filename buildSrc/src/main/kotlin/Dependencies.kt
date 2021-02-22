@@ -30,7 +30,7 @@ object Module {
 
 object Libs {
 
-    const val gradle = "com.android.tools.build:gradle:4.2.0-alpha16"
+    const val gradle = "com.android.tools.build:gradle:7.0.0-alpha07"
     const val settings = "com.russhwolf:multiplatform-settings:0.6.2"
     const val espresso = "androidx.test.espresso:espresso-core:3.2.0"
     const val jUnit = "junit:junit:4.13"
@@ -99,21 +99,25 @@ object Libs {
     object AndroidX {
 
         const val appCompat = "androidx.appcompat:appcompat:1.3.0-beta01"
-        const val navigation = "androidx.navigation:navigation-compose:1.0.0-alpha06"
 
         object Compose {
-            const val version = "1.0.0-alpha11"
+
+            const val version = "1.0.0-alpha12"
             const val ui = "androidx.compose.ui:ui:$version"
             const val tooling = "androidx.compose.ui:ui-tooling:$version"
             const val material = "androidx.compose.material:material:$version"
             const val foundation = "androidx.compose.foundation:foundation:$version"
             const val icons = "androidx.compose.material:material-icons-extended:$version"
             const val layout = "androidx.compose.foundation:foundation-layout:$version"
+
+            const val navigation = "androidx.navigation:navigation-compose:1.0.0-alpha07"
+            const val activity = "androidx.activity:activity-compose:1.3.0-alpha02"
+            const val constraintLayout = "androidx.constraintlayout:constraintlayout-compose:1.0.0-alpha02"
         }
     }
 
     object Accompanist {
-        private const val version = "0.5.0"
+        private const val version = "0.5.1"
         const val coil = "dev.chrisbanes.accompanist:accompanist-coil:$version"
         const val insets = "dev.chrisbanes.accompanist:accompanist-insets:$version"
     }

@@ -66,11 +66,13 @@ dependencies {
     implementation(Libs.Accompanist.insets)
 
     implementation(Libs.AndroidX.appCompat)
-    implementation(Libs.AndroidX.navigation)
     implementation(Libs.AndroidX.Compose.ui)
     implementation(Libs.AndroidX.Compose.icons)
     implementation(Libs.AndroidX.Compose.layout)
     implementation(Libs.AndroidX.Compose.tooling)
+    implementation(Libs.AndroidX.Compose.activity)
     implementation(Libs.AndroidX.Compose.material)
     implementation(Libs.AndroidX.Compose.foundation)
+    implementation(Libs.AndroidX.Compose.navigation)
+    implementation(Libs.AndroidX.Compose.constraintLayout)
 }

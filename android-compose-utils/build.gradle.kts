@@ -23,8 +23,8 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerVersion = Libs.Kotlin.version
         kotlinCompilerExtensionVersion = Libs.AndroidX.Compose.version
+        kotlinCompilerVersion = Libs.Kotlin.version
     }
 }
 

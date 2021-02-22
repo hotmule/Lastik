@@ -5,6 +5,27 @@ plugins {
     id("com.squareup.sqldelight")
 }
 
+android {
+    compileSdkVersion(Sdk.Version.compile)
+    defaultConfig {
+        minSdkVersion(Sdk.Version.min)
+        targetSdkVersion(Sdk.Version.target)
+    }
+    sourceSets["main"].apply {
+        manifest.srcFile("src/androidMain/AndroidManifest.xml")
+        java.srcDirs("src/androidMain/kotlin")
+        res.srcDirs("src/androidMain/res")
+    }
+    configurations {
+        create("androidTestApi")
+        create("androidTestDebugApi")
+        create("androidTestReleaseApi")
+        create("testApi")
+        create("testDebugApi")
+        create("testReleaseApi")
+    }
+}
+
 kotlin {
     android()
     sourceSets {
@@ -38,18 +59,5 @@ kotlin {
 sqldelight {
     database("LastikDatabase") {
         packageName = "ru.hotmule.lastik.data.local"
-    }
-}
-
-android {
-    compileSdkVersion(Sdk.Version.compile)
-    defaultConfig {
-        minSdkVersion(Sdk.Version.min)
-        targetSdkVersion(Sdk.Version.target)
-    }
-    sourceSets["main"].apply {
-        manifest.srcFile("src/androidMain/AndroidManifest.xml")
-        java.srcDirs("src/androidMain/kotlin")
-        res.srcDirs("src/androidMain/res")
     }
 }

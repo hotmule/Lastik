@@ -121,9 +121,9 @@ private fun LibraryTopBar(
                     val selectedPeriodIndex = sdk.topInteractor
                         .observeTopPeriodId(topType)
                         .collectAsState(TopPeriod.Overall.ordinal)
-                        .value ?: TopPeriod.Overall.ordinal
+                        .value
 
-                    Providers(AmbientContentAlpha provides ContentAlpha.medium) {
+                    Providers(LocalContentAlpha provides ContentAlpha.medium) {
                         Row(
                             modifier = Modifier
                                 .clickable(
@@ -142,10 +142,8 @@ private fun LibraryTopBar(
                     }
 
                     DropdownMenu(
-                        toggle = { },
                         expanded = expanded,
-                        onDismissRequest = { expanded = !expanded },
-                        dropdownOffset = DpOffset(16.dp, 4.dp),
+                        onDismissRequest = { expanded = !expanded }
                     ) {
                         Column {
                             periods.forEachIndexed { i, title ->

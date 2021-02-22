@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.AmbientContext
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -191,7 +192,7 @@ private fun SignInBrowser(
 
     var state by remember { mutableStateOf(SignInBrowserState()) }
 
-    val context = AmbientContext.current
+    val context = LocalContext.current
     val webView = remember {
 
         WebView(context).apply {

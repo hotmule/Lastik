@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.constraintlayout.compose.ConstraintLayout
 import ru.hotmule.lastik.components.ProfileImage
 import ru.hotmule.lastik.data.local.Profile
 import ru.hotmule.lastik.domain.ProfileInteractor
@@ -33,51 +34,50 @@ fun ProfileHeader(
 
     Column {
 
-        ConstraintLayout(
-            modifier = modifier.fillMaxWidth()
-        ) {
+        ConstraintLayout(modifier = modifier.fillMaxWidth(),
+            content = {
 
-            val (image, regDate, playCount) = createRefs()
+                val (image, regDate, playCount) = createRefs()
 
-            ProfileImage(
-                url = info?.highResImage,
-                modifier = Modifier
-                    .preferredHeight(96.dp)
-                    .preferredWidth(96.dp)
-                    .constrainAs(image) {
-                        top.linkTo(parent.top, 24.dp)
-                        start.linkTo(parent.start, 24.dp)
-                    }
-            )
-
-            info?.registerDate?.let {
-
-                ProfileStat(
-                    titleId = R.string.scrobbling_since,
-                    subtitle = it.toDateString("d MMMM yyyy"),
-                    modifier = Modifier.constrainAs(regDate) {
-                        start.linkTo(image.end)
-                        top.linkTo(image.top)
-                        end.linkTo(playCount.start)
-                        bottom.linkTo(image.bottom)
-                    }
+                ProfileImage(
+                    url = info?.highResImage,
+                    modifier = Modifier
+                        .preferredHeight(96.dp)
+                        .preferredWidth(96.dp)
+                        .constrainAs(image) {
+                            top.linkTo(parent.top, 24.dp)
+                            start.linkTo(parent.start, 24.dp)
+                        }
                 )
-            }
 
-            info?.playCount?.let {
+                info?.registerDate?.let {
 
-                ProfileStat(
-                    titleId = R.string.scrobbles_upper,
-                    subtitle = it.toCommasString(),
-                    modifier = Modifier.constrainAs(playCount) {
-                        start.linkTo(regDate.end)
-                        top.linkTo(image.top)
-                        end.linkTo(parent.end)
-                        bottom.linkTo(image.bottom)
-                    }
-                )
-            }
-        }
+                    ProfileStat(
+                        titleId = R.string.scrobbling_since,
+                        subtitle = it.toDateString("d MMMM yyyy"),
+                        modifier = Modifier.constrainAs(regDate) {
+                            start.linkTo(image.end)
+                            top.linkTo(image.top)
+                            end.linkTo(playCount.start)
+                            bottom.linkTo(image.bottom)
+                        }
+                    )
+                }
+
+                info?.playCount?.let {
+
+                    ProfileStat(
+                        titleId = R.string.scrobbles_upper,
+                        subtitle = it.toCommasString(),
+                        modifier = Modifier.constrainAs(playCount) {
+                            start.linkTo(regDate.end)
+                            top.linkTo(image.top)
+                            end.linkTo(parent.end)
+                            bottom.linkTo(image.bottom)
+                        }
+                    )
+                }
+            })
 
         friends?.let {
 
@@ -146,7 +146,7 @@ private fun TitleText(
     modifier: Modifier = Modifier,
     @StringRes titleId: Int
 ) {
-    Providers(AmbientContentAlpha provides ContentAlpha.medium) {
+    Providers(LocalContentAlpha provides ContentAlpha.medium) {
         Text(
             modifier = modifier,
             text = stringResource(id = titleId),
@@ -172,7 +172,7 @@ fun Friend(
                 .fillMaxWidth()
         )
 
-        Providers(AmbientContentAlpha provides ContentAlpha.medium) {
+        Providers(LocalContentAlpha provides ContentAlpha.medium) {
             Text(
                 text = friend.userName,
                 maxLines = 1,
