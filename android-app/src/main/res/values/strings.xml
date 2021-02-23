@@ -17,6 +17,7 @@
     <string name="profile">Profile</string>
     <string name="scrobbles">scrobbles</string>
     <string name="updating">Updating…</string>
+    <string name="no_information">No information</string>
     <string name="scrobbling_now">Scrobbling now</string>
     <string-array name="period">
         <item>All time</item>

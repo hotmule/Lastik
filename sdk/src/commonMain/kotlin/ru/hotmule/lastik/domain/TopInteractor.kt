@@ -1,7 +1,5 @@
 package ru.hotmule.lastik.domain
 
-import com.squareup.sqldelight.runtime.coroutines.asFlow
-import com.squareup.sqldelight.runtime.coroutines.mapToList
 import kotlinx.coroutines.flow.map
 import ru.hotmule.lastik.data.local.*
 import ru.hotmule.lastik.data.prefs.PrefsStore
@@ -23,6 +21,10 @@ enum class TopPeriod(
     YearQuarter("3month"),
     YearHalf("6month"),
     Year("12month");
+
+    companion object {
+        fun getById(id: Int) = values()[id]
+    }
 }
 
 class TopInteractor(
@@ -34,53 +36,9 @@ class TopInteractor(
     private val artistsInteractor: ArtistsInteractor
 ) {
 
-    fun observeArtists() = topQueries.artistTop(prefs.getTopPeriod(TopType.Artists))
-        .asFlow()
-        .mapToList()
-        .map { artists ->
-            artists.map {
-                ListItem(
-                    title = it.name,
-                    rank = it.rank,
-                    imageUrl = it.lowArtwork,
-                    playCount = it.playCount,
-                )
-            }
-        }
+    fun observePeriodId(type: TopType) = prefs.getTopPeriod(type).map { it.ordinal }
 
-    fun observeAlbums() = topQueries.albumTop(prefs.getTopPeriod(TopType.Albums))
-        .asFlow()
-        .mapToList()
-        .map { albums ->
-            albums.map {
-                ListItem(
-                    rank = it.rank,
-                    imageUrl = it.lowArtwork,
-                    title = it.album,
-                    subtitle = it.artist,
-                    playCount = it.playCount
-                )
-            }
-        }
-
-    fun observeTopTracks() = topQueries.trackTop(prefs.getTopPeriod(TopType.Tracks))
-        .asFlow()
-        .mapToList()
-        .map { tracks ->
-            tracks.map {
-                ListItem(
-                    rank = it.rank,
-                    imageUrl = it.lowArtwork,
-                    title = it.track,
-                    subtitle = it.artist,
-                    playCount = it.playCount
-                )
-            }
-        }
-
-    fun observeTopPeriodId(type: TopType) = prefs.getTopPeriodId(type)
-
-    fun updateTopPeriod(
+    fun updatePeriod(
         type: TopType,
         period: TopPeriod
     ) {
@@ -89,6 +47,47 @@ class TopInteractor(
             TopType.Albums -> prefs.topAlbumsPeriodId = period.ordinal
             TopType.Tracks -> prefs.topTracksPeriodId = period.ordinal
         }
+    }
+
+    val artists = prefs.topArtistsPeriod.map { period ->
+        topQueries.artistTop(period)
+            .executeAsList()
+            .map {
+                ListItem(
+                    title = it.name,
+                    rank = it.rank,
+                    imageUrl = it.lowArtwork,
+                    playCount = it.playCount,
+                )
+            }
+    }
+
+    val albums = prefs.topAlbumsPeriod.map { period ->
+        topQueries.albumTop(period)
+            .executeAsList()
+            .map {
+                ListItem(
+                    rank = it.rank,
+                    imageUrl = it.lowArtwork,
+                    title = it.album,
+                    subtitle = it.artist,
+                    playCount = it.playCount
+                )
+            }
+    }
+
+    val tracks = prefs.topTracksPeriod.map { period ->
+        topQueries.trackTop(period)
+            .executeAsList()
+            .map {
+                ListItem(
+                    rank = it.rank,
+                    imageUrl = it.lowArtwork,
+                    title = it.track,
+                    subtitle = it.artist,
+                    playCount = it.playCount
+                )
+            }
     }
 
     suspend fun refreshArtists(
@@ -194,18 +193,17 @@ class TopInteractor(
         loadPage: suspend (Int, String) -> T?,
         onResponse: (T, TopType, TopPeriod) -> Unit
     ) {
-        prefs.getTopPeriod(type).also { period ->
-            providePage(
-                isFirstPage,
-                topQueries.getTopCount(type, period),
-                { loadPage.invoke(it, period.value) },
-                { topQueries.deleteTop(type, period) },
-                {
-                    topQueries.transaction {
-                        onResponse.invoke(it, type, period)
-                    }
+        val period = prefs.getTopPeriod(type).value
+        providePage(
+            isFirstPage,
+            topQueries.getTopCount(type, period),
+            { loadPage.invoke(it, period.value) },
+            { topQueries.deleteTop(type, period) },
+            {
+                topQueries.transaction {
+                    onResponse.invoke(it, type, period)
                 }
-            )
-        }
+            }
+        )
     }
 }

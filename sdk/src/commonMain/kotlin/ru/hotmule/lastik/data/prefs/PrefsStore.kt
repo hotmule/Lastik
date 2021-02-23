@@ -21,9 +21,9 @@ class PrefsStore(private val settings: Settings) {
     var name by settings.nullableString(NAME_ARG)
 
     val isSessionActive = MutableStateFlow(sessionKey != null)
-    private val topArtistsPeriod = MutableStateFlow(topArtistsPeriodId)
-    private val topAlbumsPeriod = MutableStateFlow(topAlbumsPeriodId)
-    private val topTracksPeriod = MutableStateFlow(topTracksPeriodId)
+    val topArtistsPeriod = MutableStateFlow(TopPeriod.getById(topArtistsPeriodId))
+    val topAlbumsPeriod = MutableStateFlow(TopPeriod.getById(topAlbumsPeriodId))
+    val topTracksPeriod = MutableStateFlow(TopPeriod.getById(topTracksPeriodId))
 
     var sessionKey: String?
         get() = settings.getStringOrNull(SESSION_KEY_ARG)
@@ -38,33 +38,38 @@ class PrefsStore(private val settings: Settings) {
         }
 
     var topArtistsPeriodId: Int
-        get() = settings.getInt(TOP_ARTISTS_PERIOD_ARG, TopPeriod.Overall.ordinal)
-        set(value) {
-            topArtistsPeriod.value = value
-            settings.putInt(TOP_ARTISTS_PERIOD_ARG, value)
-        }
+        get() = getTopPeriodId(TOP_ARTISTS_PERIOD_ARG)
+        set(value) { setTopPeriodId(TOP_ARTISTS_PERIOD_ARG, value) }
 
     var topAlbumsPeriodId: Int
-        get() = settings.getInt(TOP_ALBUMS_PERIOD_ARG, TopPeriod.Overall.ordinal)
-        set(value) {
-            topAlbumsPeriod.value = value
-            settings.putInt(TOP_ALBUMS_PERIOD_ARG, value)
-        }
+        get() = getTopPeriodId(TOP_ALBUMS_PERIOD_ARG)
+        set(value) { setTopPeriodId(TOP_ALBUMS_PERIOD_ARG, value) }
 
     var topTracksPeriodId: Int
-        get() = settings.getInt(TOP_TRACKS_PERIOD_ARG, TopPeriod.Overall.ordinal)
-        set(value) {
-            topTracksPeriod.value = value
-            settings.putInt(TOP_TRACKS_PERIOD_ARG, value)
-        }
+        get() = getTopPeriodId(TOP_TRACKS_PERIOD_ARG)
+        set(value) { setTopPeriodId(TOP_TRACKS_PERIOD_ARG, value) }
 
-    fun getTopPeriodId(type: TopType) = when (type) {
+    private fun getTopPeriodId(periodArg: String) = settings.getInt(
+        periodArg,
+        TopPeriod.Overall.ordinal
+    )
+
+    private fun setTopPeriodId(periodArg: String, id: Int) {
+
+        when (periodArg) {
+            TOP_ARTISTS_PERIOD_ARG -> topArtistsPeriod
+            TOP_ALBUMS_PERIOD_ARG -> topAlbumsPeriod
+            else ->  topTracksPeriod
+        }.value = TopPeriod.getById(id)
+
+        settings.putInt(periodArg, id)
+    }
+
+    fun getTopPeriod(type: TopType) = when (type) {
         TopType.Artists -> topArtistsPeriod
         TopType.Albums -> topAlbumsPeriod
         TopType.Tracks -> topTracksPeriod
     }
-
-    fun getTopPeriod(type: TopType) = TopPeriod.values()[getTopPeriodId(type).value]
 
     fun clear() {
         sessionKey = null

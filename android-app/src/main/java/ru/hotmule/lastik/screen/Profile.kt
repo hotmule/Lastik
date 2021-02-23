@@ -30,7 +30,6 @@ fun ProfileHeader(
 ) {
     val info by interactor.observeInfo().collectAsState(initial = null)
     val friends by interactor.observeFriends().collectAsState(initial = null)
-    val lovedTracks by interactor.observeLovedTracks().collectAsState(initial = null)
 
     Column {
 
@@ -105,15 +104,13 @@ fun ProfileHeader(
             }
         }
 
-        lovedTracks?.let {
-            TitleText(
-                titleId = R.string.loved_tracks,
-                modifier = Modifier.padding(
-                    start = 16.dp,
-                    top = 24.dp
-                )
+        TitleText(
+            titleId = R.string.loved_tracks,
+            modifier = Modifier.padding(
+                start = 16.dp,
+                top = 24.dp
             )
-        }
+        )
     }
 }
 

@@ -33,7 +33,7 @@ class ProfileInteractor(
         .asFlow()
         .mapToList()
 
-    fun observeLovedTracks() = trackQueries.lovedTracks().asFlow().mapToList().map { tracks ->
+    val lovedTracks = trackQueries.lovedTracks().asFlow().mapToList().map { tracks ->
         tracks.map {
             ListItem(
                 imageUrl = it.lowArtwork,

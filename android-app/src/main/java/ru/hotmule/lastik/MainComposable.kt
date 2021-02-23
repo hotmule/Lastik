@@ -13,7 +13,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
@@ -119,7 +118,7 @@ private fun LibraryTopBar(
                     var expanded by remember { mutableStateOf(false) }
 
                     val selectedPeriodIndex = sdk.topInteractor
-                        .observeTopPeriodId(topType)
+                        .observePeriodId(topType)
                         .collectAsState(TopPeriod.Overall.ordinal)
                         .value
 
@@ -149,7 +148,7 @@ private fun LibraryTopBar(
                             periods.forEachIndexed { i, title ->
                                 DropdownMenuItem(
                                     onClick = {
-                                        sdk.topInteractor.updateTopPeriod(
+                                        sdk.topInteractor.updatePeriod(
                                             topType,
                                             TopPeriod.values()[i]
                                         )

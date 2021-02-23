@@ -7,6 +7,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.navigate
 import androidx.navigation.NavController
@@ -14,6 +15,7 @@ import androidx.navigation.compose.popUpTo
 import kotlinx.coroutines.flow.Flow
 import ru.hotmule.lastik.LibrarySection
 import ru.hotmule.lastik.NavGraph
+import ru.hotmule.lastik.R
 import ru.hotmule.lastik.Sdk
 import ru.hotmule.lastik.components.LibraryListItem
 import ru.hotmule.lastik.data.local.ListItem
@@ -38,28 +40,28 @@ fun LibraryList(
     }
 
     val refreshItems: suspend (Boolean) -> Unit
-    val itemsFlow: () -> Flow<List<ListItem>>
+    val itemsFlow: Flow<List<ListItem>>
 
     when (currentSection) {
         LibrarySection.Resents -> {
             refreshItems = sdk.scrobblesInteractor::refreshScrobbles
-            itemsFlow = sdk.scrobblesInteractor::observeScrobbles
+            itemsFlow = sdk.scrobblesInteractor.scrobbles
         }
         LibrarySection.Artists -> {
             refreshItems = sdk.topInteractor::refreshArtists
-            itemsFlow = sdk.topInteractor::observeArtists
+            itemsFlow = sdk.topInteractor.artists
         }
         LibrarySection.Albums -> {
             refreshItems = sdk.topInteractor::refreshAlbums
-            itemsFlow = sdk.topInteractor::observeAlbums
+            itemsFlow = sdk.topInteractor.albums
         }
         LibrarySection.Tracks -> {
             refreshItems = sdk.topInteractor::refreshTopTracks
-            itemsFlow = sdk.topInteractor::observeTopTracks
+            itemsFlow = sdk.topInteractor.tracks
         }
         LibrarySection.Profile -> {
             refreshItems = sdk.profileInteractor::refreshProfile
-            itemsFlow = sdk.profileInteractor::observeLovedTracks
+            itemsFlow = sdk.profileInteractor.lovedTracks
         }
     }
 
@@ -74,7 +76,6 @@ fun LibraryList(
     }
 
     val items = itemsFlow
-        .invoke()
         .collectAsState(initial = listOf())
         .value
 
@@ -99,27 +100,40 @@ fun LibraryList(
             }
         }
 
-        itemsIndexed(items) { index, item ->
+        if (items.isNullOrEmpty()) {
 
-            LibraryListItem(
-                item = item,
-                scrobbleWidth = scrobbleWidth,
-                loveTrack = sdk.trackInteractor::setLoved
-            )
+            item {
+                Text(
+                    modifier = Modifier,
+                    text = stringResource(id = R.string.no_information),
+                    style = MaterialTheme.typography.body2,
+                )
+            }
 
-            if (index == items.lastIndex) {
+        } else {
 
-                LaunchedEffect(true) {
-                    moreItemsLoading = true
-                    try {
-                        refreshItems.invoke(false)
-                    } catch (e: Exception) {
-                        e.printStackTrace()
+            itemsIndexed(items) { index, item ->
+
+                LibraryListItem(
+                    item = item,
+                    scrobbleWidth = scrobbleWidth,
+                    loveTrack = sdk.trackInteractor::setLoved
+                )
+
+                if (index == items.lastIndex) {
+
+                    LaunchedEffect(true) {
+                        moreItemsLoading = true
+                        try {
+                            refreshItems.invoke(false)
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+                        moreItemsLoading = false
                     }
-                    moreItemsLoading = false
-                }
 
-                if (moreItemsLoading) PagingProgress()
+                    if (moreItemsLoading) PagingProgress()
+                }
             }
         }
     }

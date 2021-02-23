@@ -17,7 +17,7 @@ class ScrobblesInteractor(
     private val artistsInteractor: ArtistsInteractor
 ) {
 
-    fun observeScrobbles() = scrobbleQueries.scrobbleData()
+    val scrobbles = scrobbleQueries.scrobbleData()
         .asFlow()
         .mapToList()
         .map { scrobbles ->
