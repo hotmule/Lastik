@@ -41,8 +41,8 @@ fun ProfileHeader(
                 ProfileImage(
                     url = info?.highResImage,
                     modifier = Modifier
-                        .preferredHeight(96.dp)
-                        .preferredWidth(96.dp)
+                        .height(96.dp)
+                        .width(96.dp)
                         .constrainAs(image) {
                             top.linkTo(parent.top, 24.dp)
                             start.linkTo(parent.start, 24.dp)
@@ -129,7 +129,7 @@ fun ProfileStat(
 
         Text(
             text = subtitle,
-            fontSize = TextUnit(6),
+            fontSize = 20.sp,
             style = MaterialTheme.typography.h6,
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
@@ -143,7 +143,7 @@ private fun TitleText(
     modifier: Modifier = Modifier,
     @StringRes titleId: Int
 ) {
-    Providers(LocalContentAlpha provides ContentAlpha.medium) {
+    CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
         Text(
             modifier = modifier,
             text = stringResource(id = titleId),
@@ -158,18 +158,18 @@ fun Friend(
     friend: Profile
 ) {
     Column(
-        modifier = modifier.preferredWidth(72.dp)
+        modifier = modifier.width(72.dp)
     ) {
 
         ProfileImage(
             url = friend.highResImage,
             modifier = Modifier
-                .preferredWidth(72.dp)
-                .preferredHeight(72.dp)
+                .width(72.dp)
+                .height(72.dp)
                 .fillMaxWidth()
         )
 
-        Providers(LocalContentAlpha provides ContentAlpha.medium) {
+        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
             Text(
                 text = friend.userName,
                 maxLines = 1,

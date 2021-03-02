@@ -18,20 +18,12 @@ object Sdk {
 }
 
 object Module {
-
     const val sdk = ":sdk"
-
-    object Android {
-        object Compose {
-            const val utils = ":android-compose-utils"
-        }
-    }
 }
 
 object Libs {
 
-    const val gradle = "com.android.tools.build:gradle:7.0.0-alpha07"
-    const val settings = "com.russhwolf:multiplatform-settings:0.6.2"
+    const val gradle = "com.android.tools.build:gradle:7.0.0-alpha08"
     const val espresso = "androidx.test.espresso:espresso-core:3.2.0"
     const val jUnit = "junit:junit:4.13"
 
@@ -91,9 +83,15 @@ object Libs {
     }
 
     object Krypto {
-        private const val version = "1.12.0"
+        private const val version = "2.0.6"
         const val common = "com.soywiz.korlibs.krypto:krypto:$version"
         const val android = "com.soywiz.korlibs.krypto:krypto-android:$version"
+    }
+
+    object Settings {
+        private const val version = "0.7.3"
+        const val common = "com.russhwolf:multiplatform-settings:$version"
+        const val coroutines = "com.russhwolf:multiplatform-settings-coroutines:$version"
     }
 
     object AndroidX {
@@ -102,7 +100,7 @@ object Libs {
 
         object Compose {
 
-            const val version = "1.0.0-alpha12"
+            const val version = "1.0.0-beta01"
             const val ui = "androidx.compose.ui:ui:$version"
             const val tooling = "androidx.compose.ui:ui-tooling:$version"
             const val material = "androidx.compose.material:material:$version"
@@ -110,14 +108,14 @@ object Libs {
             const val icons = "androidx.compose.material:material-icons-extended:$version"
             const val layout = "androidx.compose.foundation:foundation-layout:$version"
 
-            const val navigation = "androidx.navigation:navigation-compose:1.0.0-alpha07"
-            const val activity = "androidx.activity:activity-compose:1.3.0-alpha02"
-            const val constraintLayout = "androidx.constraintlayout:constraintlayout-compose:1.0.0-alpha02"
+            const val navigation = "androidx.navigation:navigation-compose:1.0.0-alpha08"
+            const val activity = "androidx.activity:activity-compose:1.3.0-alpha03"
+            const val constraintLayout = "androidx.constraintlayout:constraintlayout-compose:1.0.0-alpha03"
         }
     }
 
     object Accompanist {
-        private const val version = "0.5.1"
+        private const val version = "0.6.1"
         const val coil = "dev.chrisbanes.accompanist:accompanist-coil:$version"
         const val insets = "dev.chrisbanes.accompanist:accompanist-insets:$version"
     }

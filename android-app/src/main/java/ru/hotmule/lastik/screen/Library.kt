@@ -8,6 +8,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.navigate
 import androidx.navigation.NavController
@@ -31,7 +32,7 @@ fun LibraryList(
     isUpdating: (Boolean) -> Unit
 ) {
 
-    val isSessionActive by sdk.profileInteractor.isSessionActive.collectAsState()
+    val isSessionActive by sdk.profileInteractor.isSessionActive.collectAsState(true)
 
     if (!isSessionActive) {
         navController.navigate(NavGraph.auth) {
@@ -56,7 +57,7 @@ fun LibraryList(
             itemsFlow = sdk.topInteractor.albums
         }
         LibrarySection.Tracks -> {
-            refreshItems = sdk.topInteractor::refreshTopTracks
+            refreshItems = sdk.topInteractor::refreshTracks
             itemsFlow = sdk.topInteractor.tracks
         }
         LibrarySection.Profile -> {
@@ -68,16 +69,14 @@ fun LibraryList(
     LaunchedEffect(true) {
         isUpdating.invoke(true)
         try {
-            refreshItems.invoke(true)
+            refreshItems(true)
         } catch (e: Exception) {
             e.printStackTrace()
         }
         isUpdating.invoke(false)
     }
 
-    val items = itemsFlow
-        .collectAsState(initial = listOf())
-        .value
+    val items by itemsFlow.collectAsState(listOf())
 
     var scrobbleWidth: Float? = null
     if (!items.isNullOrEmpty()) {
@@ -100,40 +99,27 @@ fun LibraryList(
             }
         }
 
-        if (items.isNullOrEmpty()) {
+        itemsIndexed(items) { index, item ->
 
-            item {
-                Text(
-                    modifier = Modifier,
-                    text = stringResource(id = R.string.no_information),
-                    style = MaterialTheme.typography.body2,
-                )
-            }
+            LibraryListItem(
+                item = item,
+                scrobbleWidth = scrobbleWidth,
+                loveTrack = sdk.trackInteractor::setLoved
+            )
 
-        } else {
+            if (index == items.lastIndex) {
 
-            itemsIndexed(items) { index, item ->
-
-                LibraryListItem(
-                    item = item,
-                    scrobbleWidth = scrobbleWidth,
-                    loveTrack = sdk.trackInteractor::setLoved
-                )
-
-                if (index == items.lastIndex) {
-
-                    LaunchedEffect(true) {
-                        moreItemsLoading = true
-                        try {
-                            refreshItems.invoke(false)
-                        } catch (e: Exception) {
-                            e.printStackTrace()
-                        }
-                        moreItemsLoading = false
+                LaunchedEffect(true) {
+                    moreItemsLoading = true
+                    try {
+                        refreshItems.invoke(false)
+                    } catch (e: Exception) {
+                        e.printStackTrace()
                     }
-
-                    if (moreItemsLoading) PagingProgress()
+                    moreItemsLoading = false
                 }
+
+                if (moreItemsLoading) PagingProgress()
             }
         }
     }

@@ -13,7 +13,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.platform.AmbientContext
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -44,7 +43,7 @@ fun AuthScreen(
 ) {
 
     var state by remember { mutableStateOf(AuthScreenState()) }
-    val isSessionActive by sdk.profileInteractor.isSessionActive.collectAsState()
+    val isSessionActive by sdk.profileInteractor.isSessionActive.collectAsState(false)
 
     if (isSessionActive) {
         navController.navigate(NavGraph.Action.toLibrary(LibrarySection.Resents)) {
@@ -118,9 +117,10 @@ fun AuthScreen(
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
                         .padding(8.dp)
-                        .navigationBarsPadding(bottom = true),
-                    text = { Text(it) },
-                )
+                        .navigationBarsPadding(bottom = true)
+                ) {
+                    Text(it)
+                }
 
                 LaunchedEffect(true) {
                     delay(3000)

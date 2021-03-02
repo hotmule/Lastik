@@ -1,5 +1,6 @@
 package ru.hotmule.lastik
 
+import com.russhwolf.settings.ObservableSettings
 import com.russhwolf.settings.Settings
 import com.squareup.sqldelight.ColumnAdapter
 import com.squareup.sqldelight.db.SqlDriver
@@ -15,7 +16,7 @@ import ru.hotmule.lastik.domain.*
 open class Sdk(
     httpClientFactory: HttpClientFactory,
     sqlDriver: SqlDriver,
-    settings: Settings,
+    settings: ObservableSettings,
     apiKey: String,
     secret: String
 ) {

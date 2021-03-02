@@ -31,7 +31,6 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation(Libs.settings)
                 implementation(Libs.Krypto.common)
                 implementation(Libs.Napier.common)
                 implementation(Libs.Ktor.Core.common)
@@ -39,6 +38,8 @@ kotlin {
                 implementation(Libs.Ktor.Logging.common)
                 implementation(Libs.Ktor.Serialization.common)
                 implementation(Libs.SqlDelight.coroutines)
+                implementation(Libs.Settings.common)
+                implementation(Libs.Settings.coroutines)
             }
         }
         val androidMain by getting {

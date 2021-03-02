@@ -60,7 +60,6 @@ android {
 dependencies {
 
     implementation(project(Module.sdk))
-    implementation(project(Module.Android.Compose.utils))
 
     implementation(Libs.Accompanist.coil)
     implementation(Libs.Accompanist.insets)

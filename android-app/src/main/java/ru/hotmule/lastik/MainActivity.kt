@@ -2,13 +2,13 @@ package ru.hotmule.lastik
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import android.compose.utils.SysUiController
-import android.compose.utils.SystemUiController
 import android.graphics.Point
 import androidx.activity.compose.setContent
-import androidx.compose.runtime.Providers
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.core.view.WindowCompat
+import ru.hotmule.lastik.utlis.LocalSysUiController
+import ru.hotmule.lastik.utlis.SystemUiController
 
 class MainActivity : AppCompatActivity() {
 
@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity() {
 
         setContent {
             val systemUiController = remember { SystemUiController(window) }
-            Providers(SysUiController provides systemUiController) {
+            CompositionLocalProvider(LocalSysUiController provides systemUiController) {
                 LastikApp(sdk, displayWidth)
             }
         }

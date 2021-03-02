@@ -36,16 +36,29 @@ class TopInteractor(
     private val artistsInteractor: ArtistsInteractor
 ) {
 
-    fun observePeriodId(type: TopType) = prefs.getTopPeriod(type).map { it.ordinal }
+    fun observePeriod(type: TopType) = when (type) {
+        TopType.Artists -> prefs.topArtistsPeriod
+        TopType.Albums -> prefs.topAlbumsPeriod
+        TopType.Tracks -> prefs.topTracksPeriod
+    }
 
-    fun updatePeriod(
+    suspend fun updatePeriod(
         type: TopType,
         period: TopPeriod
     ) {
         when (type) {
-            TopType.Artists -> prefs.topArtistsPeriodId = period.ordinal
-            TopType.Albums -> prefs.topAlbumsPeriodId = period.ordinal
-            TopType.Tracks -> prefs.topTracksPeriodId = period.ordinal
+            TopType.Artists -> {
+                prefs.topArtistsPeriodId = period.ordinal
+                refreshArtists()
+            }
+            TopType.Albums -> {
+                prefs.topAlbumsPeriodId = period.ordinal
+                refreshAlbums()
+            }
+            TopType.Tracks -> {
+                prefs.topTracksPeriodId = period.ordinal
+                refreshTracks()
+            }
         }
     }
 
@@ -91,7 +104,7 @@ class TopInteractor(
     }
 
     suspend fun refreshArtists(
-        isFirstPage: Boolean
+        isFirstPage: Boolean = true
     ) {
         provideTopPage(
             isFirstPage,
@@ -117,7 +130,7 @@ class TopInteractor(
     }
 
     suspend fun refreshAlbums(
-        isFirstPage: Boolean
+        isFirstPage: Boolean = true
     ) {
         provideTopPage(
             isFirstPage,
@@ -151,8 +164,8 @@ class TopInteractor(
         }
     }
 
-    suspend fun refreshTopTracks(
-        isFirstPage: Boolean,
+    suspend fun refreshTracks(
+        isFirstPage: Boolean = true,
     ) {
         provideTopPage(
             isFirstPage,
@@ -193,7 +206,15 @@ class TopInteractor(
         loadPage: suspend (Int, String) -> T?,
         onResponse: (T, TopType, TopPeriod) -> Unit
     ) {
-        val period = prefs.getTopPeriod(type).value
+
+        val period = TopPeriod.getById(
+            when (type) {
+                TopType.Artists -> prefs.topArtistsPeriodId
+                TopType.Albums -> prefs.topArtistsPeriodId
+                TopType.Tracks -> prefs.topArtistsPeriodId
+            }
+        )
+
         providePage(
             isFirstPage,
             topQueries.getTopCount(type, period),

@@ -22,6 +22,7 @@ import dev.chrisbanes.accompanist.insets.navigationBarsHeight
 import dev.chrisbanes.accompanist.insets.navigationBarsPadding
 import dev.chrisbanes.accompanist.insets.statusBarsHeight
 import dev.chrisbanes.accompanist.insets.statusBarsPadding
+import kotlinx.coroutines.flow.map
 import ru.hotmule.lastik.domain.TopPeriod
 import ru.hotmule.lastik.domain.TopType
 import ru.hotmule.lastik.screen.AuthScreen
@@ -47,7 +48,7 @@ fun Main(
 
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
-    var isUpdating by remember { mutableStateOf(false) }
+    val isUpdating = remember { mutableStateOf(false) }
 
     val isLibrary = navBackStackEntry
         ?.arguments
@@ -66,24 +67,23 @@ fun Main(
                 LibraryTopBar(sdk, currentLibrarySection, isUpdating)
             }
         },
-        bodyContent = {
-            MainNavHost(navController, sdk, displayWidth) {
-                isUpdating = it
-            }
-        },
         bottomBar = {
             if (isLibrary) {
                 LibraryBottomBar(navController, currentLibrarySection)
             }
         }
-    )
+    ) {
+        MainNavHost(navController, sdk, displayWidth) {
+            isUpdating.value = it
+        }
+    }
 }
 
 @Composable
 private fun LibraryTopBar(
     sdk: Sdk,
     currentSection: LibrarySection,
-    isUpdating: Boolean
+    isUpdating: MutableState<Boolean>
 ) {
     TopAppBar(
         modifier = Modifier.statusBarsHeight(additional = barHeight),
@@ -91,7 +91,7 @@ private fun LibraryTopBar(
             Text(
                 modifier = Modifier.statusBarsPadding(),
                 text = when {
-                    isUpdating -> stringResource(id = R.string.updating)
+                    isUpdating.value -> stringResource(id = R.string.updating)
                     currentSection != LibrarySection.Profile -> currentSection.name
                     else -> sdk.profileInteractor.getName() ?: currentSection.name
                 }
@@ -116,13 +116,14 @@ private fun LibraryTopBar(
                     val topType = TopType.values()[currentSection.ordinal - 1]
 
                     var expanded by remember { mutableStateOf(false) }
+                    var selectedPeriod by remember { mutableStateOf<TopPeriod?>(null) }
 
-                    val selectedPeriodIndex = sdk.topInteractor
-                        .observePeriodId(topType)
+                    val selectedPeriodIndex by sdk.topInteractor
+                        .observePeriod(topType)
+                        .map { it.ordinal }
                         .collectAsState(TopPeriod.Overall.ordinal)
-                        .value
 
-                    Providers(LocalContentAlpha provides ContentAlpha.medium) {
+                    CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                         Row(
                             modifier = Modifier
                                 .clickable(
@@ -148,15 +149,27 @@ private fun LibraryTopBar(
                             periods.forEachIndexed { i, title ->
                                 DropdownMenuItem(
                                     onClick = {
-                                        sdk.topInteractor.updatePeriod(
-                                            topType,
-                                            TopPeriod.values()[i]
-                                        )
                                         expanded = false
+                                        selectedPeriod = TopPeriod.values()[i]
                                     }
                                 ) {
                                     Text(text = title)
                                 }
+                            }
+                        }
+                    }
+
+                    selectedPeriod?.let {
+
+                        LaunchedEffect(true) {
+                            try {
+                                isUpdating.value = true
+                                sdk.topInteractor.updatePeriod(topType, it)
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                            } finally {
+                                isUpdating.value = false
+                                selectedPeriod = null
                             }
                         }
                     }

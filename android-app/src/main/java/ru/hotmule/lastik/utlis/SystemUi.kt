@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package android.compose.utils
+package ru.hotmule.lastik.utlis
 
 import android.os.Build
 import android.view.View
 import android.view.Window
-import androidx.compose.runtime.staticAmbientOf
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.graphics.luminance
@@ -80,10 +80,10 @@ private class SystemUiControllerImpl(private val window: Window) : SystemUiContr
             @Suppress("DEPRECATION")
             if (darkIcons) {
                 window.decorView.systemUiVisibility = window.decorView.systemUiVisibility or
-                    View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+                        View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
             } else {
                 window.decorView.systemUiVisibility = window.decorView.systemUiVisibility and
-                    View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR.inv()
+                        View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR.inv()
             }
         }
     }
@@ -116,10 +116,10 @@ private class SystemUiControllerImpl(private val window: Window) : SystemUiContr
             @Suppress("DEPRECATION")
             if (darkIcons) {
                 window.decorView.systemUiVisibility = window.decorView.systemUiVisibility or
-                    View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
+                        View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
             } else {
                 window.decorView.systemUiVisibility = window.decorView.systemUiVisibility and
-                    View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR.inv()
+                        View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR.inv()
             }
         }
     }
@@ -141,10 +141,10 @@ private class SystemUiControllerImpl(private val window: Window) : SystemUiContr
 }
 
 /**
- * An [androidx.compose.runtime.Ambient] holding the current [SysUiController]. Defaults to a
- * no-op controller; consumers should [provide][androidx.compose.runtime.Providers] a real one.
+ * An [androidx.compose.runtime.Ambient] holding the current [LocalSysUiController]. Defaults to a
+ * no-op controller; consumers should [provide][androidx.compose.runtime.CompositionLocalProvider] a real one.
  */
-val SysUiController = staticAmbientOf<SystemUiController> {
+val LocalSysUiController = staticCompositionLocalOf<SystemUiController> {
     FakeSystemUiController
 }
 

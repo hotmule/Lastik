@@ -79,7 +79,7 @@ fun LibraryListItem(
                     color = MaterialTheme.colors.primary.copy(alpha = 0.1f),
                     modifier = Modifier
                         .fillMaxHeight()
-                        .preferredWidth((scrobbleWidth * playCount!!).dp)
+                        .width((scrobbleWidth * playCount!!).dp)
                         .align(Alignment.CenterEnd)
                 ) { }
             }
@@ -94,7 +94,7 @@ fun LibraryListItem(
                         textAlign = TextAlign.Center,
                         style = MaterialTheme.typography.body2,
                         modifier = Modifier
-                            .preferredWidth(52.dp)
+                            .width(52.dp)
                             .align(Alignment.CenterVertically)
                     )
                 }
@@ -125,8 +125,8 @@ fun LibraryListItem(
                     contentDescription = "artwork",
                     modifier = Modifier
                         .align(Alignment.CenterVertically)
-                        .preferredWidth(50.dp)
-                        .preferredHeight(50.dp)
+                        .width(50.dp)
+                        .height(50.dp)
                         .clip(shape = RoundedCornerShape(8))
                         .background(Color.LightGray)
                 )
@@ -153,7 +153,7 @@ fun LibraryListItem(
 
                     subtitle?.let {
 
-                        Providers(LocalContentAlpha provides ContentAlpha.medium) {
+                        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                             Text(
                                 text = it,
                                 style = MaterialTheme.typography.body2,
@@ -166,7 +166,7 @@ fun LibraryListItem(
             }
 
             if (time != null || playCount != null || nowPlaying == true) {
-                Providers(LocalContentAlpha provides ContentAlpha.medium) {
+                CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                     Text(
                         style = MaterialTheme.typography.body2,
                         modifier = Modifier
