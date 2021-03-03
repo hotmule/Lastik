@@ -43,13 +43,6 @@ fun AuthScreen(
 ) {
 
     var state by remember { mutableStateOf(AuthScreenState()) }
-    val isSessionActive by sdk.profileInteractor.isSessionActive.collectAsState(false)
-
-    if (isSessionActive) {
-        navController.navigate(NavGraph.Action.toLibrary(LibrarySection.Resents)) {
-            popUpTo(NavGraph.auth) { inclusive = true }
-        }
-    }
 
     Box(
         modifier = Modifier

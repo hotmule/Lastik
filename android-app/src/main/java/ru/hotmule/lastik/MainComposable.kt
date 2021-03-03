@@ -22,7 +22,9 @@ import dev.chrisbanes.accompanist.insets.navigationBarsHeight
 import dev.chrisbanes.accompanist.insets.navigationBarsPadding
 import dev.chrisbanes.accompanist.insets.statusBarsHeight
 import dev.chrisbanes.accompanist.insets.statusBarsPadding
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.isActive
 import ru.hotmule.lastik.domain.TopPeriod
 import ru.hotmule.lastik.domain.TopType
 import ru.hotmule.lastik.screen.AuthScreen
@@ -75,6 +77,20 @@ fun Main(
     ) {
         MainNavHost(navController, sdk, displayWidth) {
             isUpdating.value = it
+        }
+    }
+
+    LaunchedEffect(true) {
+
+        sdk.profileInteractor.isSessionActive.collect { isActive ->
+
+            navController.navigate(
+                if (isActive) NavGraph.Action.toLibrary(LibrarySection.Resents) else NavGraph.auth
+            ) {
+                popUpTo(if (isActive) NavGraph.auth else NavGraph.library) {
+                    inclusive = true
+                }
+            }
         }
     }
 }

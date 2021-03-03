@@ -22,7 +22,6 @@ import ru.hotmule.lastik.components.LibraryListItem
 import ru.hotmule.lastik.data.local.ListItem
 import ru.hotmule.lastik.theme.barHeight
 
-
 @Composable
 fun LibraryList(
     sdk: Sdk,
@@ -31,14 +30,6 @@ fun LibraryList(
     displayWidth: Float,
     isUpdating: (Boolean) -> Unit
 ) {
-
-    val isSessionActive by sdk.profileInteractor.isSessionActive.collectAsState(true)
-
-    if (!isSessionActive) {
-        navController.navigate(NavGraph.auth) {
-            popUpTo(NavGraph.library) { inclusive = true }
-        }
-    }
 
     val refreshItems: suspend (Boolean) -> Unit
     val itemsFlow: Flow<List<ListItem>>
