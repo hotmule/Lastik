@@ -5,6 +5,15 @@ plugins {
     id("com.squareup.sqldelight")
 }
 
+configurations {
+    create("androidTestApi")
+    create("androidTestDebugApi")
+    create("androidTestReleaseApi")
+    create("testApi")
+    create("testDebugApi")
+    create("testReleaseApi")
+}
+
 kotlin {
     android()
     sourceSets {
@@ -19,7 +28,6 @@ kotlin {
                 implementation(Libs.SqlDelight.coroutines)
                 implementation(Libs.Settings.common)
                 implementation(Libs.Settings.coroutines)
-                implementation(Libs.Kotlin.redux)
                 implementation(Libs.Kotlin.Coroutines.core)
                 implementation(Libs.Decompose.common)
             }
@@ -39,6 +47,12 @@ kotlin {
     }
 }
 
+sqldelight {
+    database("LastikDatabase") {
+        packageName = "ru.hotmule.lastik.data.local"
+    }
+}
+
 android {
     compileSdkVersion(Sdk.Version.compile)
     defaultConfig {
@@ -49,19 +63,5 @@ android {
         manifest.srcFile("src/androidMain/AndroidManifest.xml")
         java.srcDirs("src/androidMain/kotlin")
         res.srcDirs("src/androidMain/res")
-    }
-    configurations {
-        create("androidTestApi")
-        create("androidTestDebugApi")
-        create("androidTestReleaseApi")
-        create("testApi")
-        create("testDebugApi")
-        create("testReleaseApi")
-    }
-}
-
-sqldelight {
-    database("LastikDatabase") {
-        packageName = "ru.hotmule.lastik.data.local"
     }
 }
