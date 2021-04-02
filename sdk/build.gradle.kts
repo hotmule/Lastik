@@ -5,6 +5,40 @@ plugins {
     id("com.squareup.sqldelight")
 }
 
+kotlin {
+    android()
+    sourceSets {
+        val commonMain by getting {
+            dependencies {
+                implementation(Libs.Krypto.common)
+                implementation(Libs.Napier.common)
+                implementation(Libs.Ktor.Core.common)
+                implementation(Libs.Ktor.Auth.common)
+                implementation(Libs.Ktor.Logging.common)
+                implementation(Libs.Ktor.Serialization.common)
+                implementation(Libs.SqlDelight.coroutines)
+                implementation(Libs.Settings.common)
+                implementation(Libs.Settings.coroutines)
+                implementation(Libs.Kotlin.redux)
+                implementation(Libs.Kotlin.Coroutines.core)
+                implementation(Libs.Decompose.common)
+            }
+        }
+        val androidMain by getting {
+            dependencies {
+                implementation(Libs.Krypto.android)
+                implementation(Libs.Napier.android)
+                implementation(Libs.Ktor.Core.android)
+                implementation(Libs.Ktor.Auth.android)
+                implementation(Libs.Ktor.Engine.android)
+                implementation(Libs.Ktor.Logging.android)
+                implementation(Libs.Ktor.Serialization.android)
+                implementation(Libs.SqlDelight.Driver.android)
+            }
+        }
+    }
+}
+
 android {
     compileSdkVersion(Sdk.Version.compile)
     defaultConfig {
@@ -23,37 +57,6 @@ android {
         create("testApi")
         create("testDebugApi")
         create("testReleaseApi")
-    }
-}
-
-kotlin {
-    android()
-    sourceSets {
-        val commonMain by getting {
-            dependencies {
-                implementation(Libs.Krypto.common)
-                implementation(Libs.Napier.common)
-                implementation(Libs.Ktor.Core.common)
-                implementation(Libs.Ktor.Auth.common)
-                implementation(Libs.Ktor.Logging.common)
-                implementation(Libs.Ktor.Serialization.common)
-                implementation(Libs.SqlDelight.coroutines)
-                implementation(Libs.Settings.common)
-                implementation(Libs.Settings.coroutines)
-            }
-        }
-        val androidMain by getting {
-            dependencies {
-                implementation(Libs.Krypto.android)
-                implementation(Libs.Napier.android)
-                implementation(Libs.Ktor.Core.android)
-                implementation(Libs.Ktor.Auth.android)
-                implementation(Libs.Ktor.Engine.android)
-                implementation(Libs.Ktor.Logging.android)
-                implementation(Libs.Ktor.Serialization.android)
-                implementation(Libs.SqlDelight.Driver.android)
-            }
-        }
     }
 }
 

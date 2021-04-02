@@ -24,7 +24,6 @@ import dev.chrisbanes.accompanist.insets.statusBarsHeight
 import dev.chrisbanes.accompanist.insets.statusBarsPadding
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.isActive
 import ru.hotmule.lastik.domain.TopPeriod
 import ru.hotmule.lastik.domain.TopType
 import ru.hotmule.lastik.screen.AuthScreen

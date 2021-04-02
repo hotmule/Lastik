@@ -23,14 +23,21 @@ object Module {
 
 object Libs {
 
-    const val gradle = "com.android.tools.build:gradle:7.0.0-alpha08"
+    const val gradle = "com.android.tools.build:gradle:4.0.1"
     const val espresso = "androidx.test.espresso:espresso-core:3.2.0"
     const val jUnit = "junit:junit:4.13"
 
     object Kotlin {
+
         const val version = "1.4.30"
         const val gradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version"
         const val serialization = "org.jetbrains.kotlin:kotlin-serialization:$version"
+        const val redux = "org.reduxkotlin:redux-kotlin-threadsafe:0.5.5"
+
+        object Coroutines {
+            private const val version = "1.4.3"
+            const val core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version"
+        }
     }
 
     object Ktor {
@@ -59,6 +66,11 @@ object Libs {
             const val common = "io.ktor:ktor-client-serialization:$version"
             const val android = "io.ktor:ktor-client-serialization-jvm:$version"
         }
+    }
+
+    object Decompose {
+        private const val version = "0.1.9"
+        const val common = "com.arkivanov.decompose:decompose:$version"
     }
 
     object SqlDelight {
