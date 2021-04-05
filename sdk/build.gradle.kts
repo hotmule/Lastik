@@ -29,7 +29,6 @@ kotlin {
                 implementation(Libs.Settings.common)
                 implementation(Libs.Settings.coroutines)
                 implementation(Libs.Kotlin.Coroutines.core)
-                implementation(Libs.Decompose.common)
             }
         }
         val androidMain by getting {

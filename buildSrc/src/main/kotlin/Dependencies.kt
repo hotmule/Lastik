@@ -19,6 +19,11 @@ object Sdk {
 
 object Module {
     const val sdk = ":sdk"
+
+    object Feature {
+        const val auth = ":feature-auth"
+        const val main = ":feature-main"
+    }
 }
 
 object Libs {
@@ -67,9 +72,18 @@ object Libs {
         }
     }
 
-    object Decompose {
-        private const val version = "0.1.9"
-        const val common = "com.arkivanov.decompose:decompose:$version"
+    object ArkIvanov {
+
+        object MVIKotlin {
+            private const val VERSION = "2.0.1"
+            const val common = "com.arkivanov.mvikotlin:mvikotlin:$VERSION"
+        }
+
+        object Decompose {
+            private const val VERSION = "0.1.9"
+            const val common = "com.arkivanov.decompose:decompose:$VERSION"
+            const val extensionsCompose = "com.arkivanov.decompose:extensions-compose-jetbrains:$VERSION"
+        }
     }
 
     object SqlDelight {

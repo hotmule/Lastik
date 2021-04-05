@@ -1,5 +1,9 @@
 rootProject.name = "Lastik"
 include(
     ":android-app",
-    ":sdk"
+    ":sdk",
+
+    ":feature-root",
+    ":feature-auth",
+    ":feature-main"
 )
