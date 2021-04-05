@@ -3,7 +3,8 @@ package ru.hotmule.lastik.feature.main
 import com.arkivanov.decompose.ComponentContext
 
 class MainImpl(
-    componentContext: ComponentContext
+    componentContext: ComponentContext,
+    dependencies: Main.Dependencies
 ): Main, ComponentContext by componentContext {
 
 }

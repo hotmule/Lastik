@@ -5,5 +5,14 @@ include(
 
     ":feature-root",
     ":feature-auth",
-    ":feature-main"
+    ":feature-main",
+
+    ":ui-compose"
 )
+
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
+    }
+}

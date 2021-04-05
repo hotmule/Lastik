@@ -2,19 +2,30 @@ package ru.hotmule.lastik
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import android.graphics.Point
 import androidx.activity.compose.setContent
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.remember
-import androidx.core.view.WindowCompat
-import ru.hotmule.lastik.utlis.LocalSysUiController
-import ru.hotmule.lastik.utlis.SystemUiController
+import com.arkivanov.decompose.extensions.compose.jetbrains.rememberRootComponent
+import ru.hotmule.lastik.feature.root.LastikRoot
+import ru.hotmule.lastik.theme.AppTheme
 
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        setContent {
+            AppTheme {
+                ru.hotmule.lastik.ui.compose.LastikRoot(
+                    rememberRootComponent {
+                        LastikRoot(
+                            componentContext = it,
+                            dependencies = object : LastikRoot.Dependencies { }
+                        )
+                    }
+                )
+            }
+        }
+
+        /*
         val sdk = Sdk.create(
             this,
             BuildConfig.DEBUG,
@@ -36,5 +47,6 @@ class MainActivity : AppCompatActivity() {
                 LastikApp(sdk, displayWidth)
             }
         }
+         */
     }
 }

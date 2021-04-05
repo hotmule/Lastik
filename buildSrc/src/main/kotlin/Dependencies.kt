@@ -18,11 +18,17 @@ object Sdk {
 }
 
 object Module {
+
     const val sdk = ":sdk"
 
     object Feature {
+        const val root = ":feature-root"
         const val auth = ":feature-auth"
         const val main = ":feature-main"
+    }
+
+    object UI {
+        const val compose = ":ui-compose"
     }
 }
 
@@ -82,7 +88,7 @@ object Libs {
         object Decompose {
             private const val VERSION = "0.1.9"
             const val common = "com.arkivanov.decompose:decompose:$VERSION"
-            const val extensionsCompose = "com.arkivanov.decompose:extensions-compose-jetbrains:$VERSION"
+            const val composeExtensions = "com.arkivanov.decompose:extensions-compose-jetbrains:$VERSION"
         }
     }
 

@@ -52,12 +52,15 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerVersion = Libs.Kotlin.version
         kotlinCompilerExtensionVersion = Libs.AndroidX.Compose.version
     }
 }
 
 dependencies {
+
+    implementation(project(Module.UI.compose))
+    implementation(project(Module.Feature.root))
+    implementation(Libs.ArkIvanov.Decompose.composeExtensions)
 
     implementation(project(Module.sdk))
 
