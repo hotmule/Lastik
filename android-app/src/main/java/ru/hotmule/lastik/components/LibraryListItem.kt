@@ -21,7 +21,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.tooling.preview.Preview
 import dev.chrisbanes.accompanist.coil.CoilImage
 import ru.hotmule.lastik.R
 import ru.hotmule.lastik.data.local.ListItem
@@ -191,7 +190,7 @@ fun LibraryListItem(
     }
 }
 
-@Preview
+//@Preview
 @Composable
 fun ScrobblePreview() = LibraryListItem(
     ListItem(
@@ -203,7 +202,7 @@ fun ScrobblePreview() = LibraryListItem(
     )
 )
 
-@Preview
+//@Preview
 @Composable
 fun ArtistPreview() = LibraryListItem(
     ListItem(
@@ -213,7 +212,7 @@ fun ArtistPreview() = LibraryListItem(
     )
 )
 
-@Preview
+//@Preview
 @Composable
 fun AlbumPreview() = LibraryListItem(
     ListItem(
@@ -225,7 +224,7 @@ fun AlbumPreview() = LibraryListItem(
     )
 )
 
-@Preview
+//@Preview
 @Composable
 fun TrackPreview() = LibraryListItem(
     ListItem(
@@ -237,7 +236,7 @@ fun TrackPreview() = LibraryListItem(
     )
 )
 
-@Preview
+//@Preview
 @Composable
 fun LovedTrackPreview() = LibraryListItem(
     ListItem(

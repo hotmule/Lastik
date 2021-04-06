@@ -1,12 +1,9 @@
 plugins {
-    id("kotlin-multiplatform")
+    id("lastik-multiplatform")
     id("kotlin-parcelize")
 }
 
 kotlin {
-
-    jvm("desktop")
-    //android()
 
     sourceSets {
 

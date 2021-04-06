@@ -2,14 +2,14 @@ package ru.hotmule.lastik.ui.compose
 
 import androidx.compose.runtime.Composable
 import com.arkivanov.decompose.extensions.compose.jetbrains.Children
-import ru.hotmule.lastik.feature.root.LastikRoot
+import ru.hotmule.lastik.feature.root.RootComponent
 
 @Composable
-fun LastikRoot(component: LastikRoot) {
+fun RootContent(component: RootComponent) {
     Children(component.routerState) { child, _ ->
         when (child) {
-            is LastikRoot.Child.MainChild -> Main(child.component)
-            is LastikRoot.Child.AuthChild -> Auth(child.component)
+            is RootComponent.Child.Main -> MainContent(child.component)
+            is RootComponent.Child.Auth -> AuthContent(child.component)
         }
     }
 }

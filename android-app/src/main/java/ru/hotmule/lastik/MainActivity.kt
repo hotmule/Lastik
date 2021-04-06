@@ -4,8 +4,9 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.activity.compose.setContent
 import com.arkivanov.decompose.extensions.compose.jetbrains.rememberRootComponent
-import ru.hotmule.lastik.feature.root.LastikRoot
+import ru.hotmule.lastik.feature.root.RootComponent
 import ru.hotmule.lastik.theme.AppTheme
+import ru.hotmule.lastik.ui.compose.RootContent
 
 class MainActivity : AppCompatActivity() {
 
@@ -14,11 +15,11 @@ class MainActivity : AppCompatActivity() {
 
         setContent {
             AppTheme {
-                ru.hotmule.lastik.ui.compose.LastikRoot(
+                RootContent(
                     rememberRootComponent {
-                        LastikRoot(
-                            componentContext = it,
-                            dependencies = object : LastikRoot.Dependencies { }
+                        RootComponent(
+                            context = it,
+                            dependencies = object : RootComponent.Dependencies { }
                         )
                     }
                 )

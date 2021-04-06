@@ -4,11 +4,6 @@ plugins {
     id("com.android.library")
 }
 
-repositories {
-    jcenter()
-    maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
-}
-
 configurations {
     create("androidTestApi")
     create("androidTestDebugApi")
@@ -30,25 +25,10 @@ kotlin {
                 implementation(project(Module.Feature.root))
                 implementation(project(Module.Feature.auth))
                 implementation(project(Module.Feature.main))
-                implementation(compose.ui)
-                implementation(compose.runtime)
                 implementation(compose.material)
-                implementation(compose.foundation)
+                implementation(compose.materialIconsExtended)
                 implementation(Libs.ArkIvanov.Decompose.common)
                 implementation(Libs.ArkIvanov.Decompose.composeExtensions)
-            }
-        }
-
-        named("androidMain") {
-            dependencies {
-                implementation(Libs.AndroidX.appCompat)
-                implementation(Libs.AndroidX.Compose.activity)
-            }
-        }
-
-        named("desktopMain") {
-            dependencies {
-                implementation(compose.desktop.common)
             }
         }
     }
@@ -57,4 +37,10 @@ kotlin {
 android {
 
     compileSdkVersion(Sdk.Version.compile)
+
+    sourceSets {
+        named("main") {
+            manifest.srcFile("src/androidMain/AndroidManifest.xml")
+        }
+    }
 }

@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     id("kotlin-android")
+    id("org.jetbrains.compose") version "0.4.0-build177"
 }
 
 android {
@@ -30,29 +31,9 @@ android {
         )
     }
 
-    buildTypes {
-        getByName("release") {
-            isMinifyEnabled = false
-            proguardFiles(Proguard.rules)
-        }
-    }
-
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
-    }
-
-    kotlinOptions {
-        jvmTarget = "1.8"
-        useIR = true
-    }
-
-    buildFeatures {
-        compose = true
-    }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion = Libs.AndroidX.Compose.version
     }
 }
 
@@ -60,7 +41,12 @@ dependencies {
 
     implementation(project(Module.UI.compose))
     implementation(project(Module.Feature.root))
+
+    implementation(Libs.ArkIvanov.Decompose.common)
     implementation(Libs.ArkIvanov.Decompose.composeExtensions)
+
+    implementation(compose.material)
+    implementation(compose.materialIconsExtended)
 
     implementation(project(Module.sdk))
 
@@ -68,13 +54,7 @@ dependencies {
     implementation(Libs.Accompanist.insets)
 
     implementation(Libs.AndroidX.appCompat)
-    implementation(Libs.AndroidX.Compose.ui)
-    implementation(Libs.AndroidX.Compose.icons)
-    implementation(Libs.AndroidX.Compose.layout)
-    implementation(Libs.AndroidX.Compose.tooling)
     implementation(Libs.AndroidX.Compose.activity)
-    implementation(Libs.AndroidX.Compose.material)
-    implementation(Libs.AndroidX.Compose.foundation)
     implementation(Libs.AndroidX.Compose.navigation)
     implementation(Libs.AndroidX.Compose.constraintLayout)
 }

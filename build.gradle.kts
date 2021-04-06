@@ -6,6 +6,7 @@ buildscript {
     repositories {
         google()
         jcenter()
+        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
     }
     dependencies {
         classpath(Libs.gradle)
@@ -19,6 +20,7 @@ allprojects {
     repositories {
         google()
         jcenter()
+        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
     }
 }
 

@@ -12,10 +12,8 @@ import androidx.compose.ui.res.stringResource
 import ru.hotmule.lastik.R
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.constraintlayout.compose.ConstraintLayout
 import ru.hotmule.lastik.components.ProfileImage
 import ru.hotmule.lastik.data.local.Profile
@@ -182,7 +180,7 @@ fun Friend(
     }
 }
 
-@Preview
+//@Preview
 @Composable
 fun ProfileStatPreview() = ProfileStat(
     titleId = R.string.scrobbles_upper,
