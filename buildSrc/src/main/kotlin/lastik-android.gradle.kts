@@ -1,17 +1,7 @@
 import org.gradle.api.JavaVersion
-import org.gradle.kotlin.dsl.invoke
 
 plugins {
     id("com.android.library")
-}
-
-configurations {
-    create("androidTestApi")
-    create("androidTestDebugApi")
-    create("androidTestReleaseApi")
-    create("testApi")
-    create("testDebugApi")
-    create("testReleaseApi")
 }
 
 android {
@@ -31,6 +21,8 @@ android {
     sourceSets {
         named("main") {
             manifest.srcFile("src/androidMain/AndroidManifest.xml")
+            java.srcDirs("src/androidMain/kotlin")
+            res.srcDirs("src/androidMain/res")
         }
     }
 }

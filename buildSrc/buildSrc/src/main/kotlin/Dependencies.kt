@@ -34,13 +34,13 @@ object Module {
 
 object Libs {
 
-    const val gradle = "com.android.tools.build:gradle:7.0.0-alpha12"
+    const val gradle = "com.android.tools.build:gradle:7.0.0-alpha14"
     const val espresso = "androidx.test.espresso:espresso-core:3.2.0"
     const val jUnit = "junit:junit:4.13"
 
     object Kotlin {
 
-        const val version = "1.4.31"
+        const val version = "1.4.32"
         const val gradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version"
         const val serialization = "org.jetbrains.kotlin:kotlin-serialization:$version"
 
@@ -125,6 +125,10 @@ object Libs {
         const val coroutines = "com.russhwolf:multiplatform-settings-coroutines:$version"
     }
 
+    object Compose {
+        const val version = "0.4.0-preview-annotation-build56"
+    }
+
     object AndroidX {
 
         const val appCompat = "androidx.appcompat:appcompat:1.3.0-rc01"
@@ -139,8 +143,8 @@ object Libs {
             const val icons = "androidx.compose.material:material-icons-extended:$version"
             const val layout = "androidx.compose.foundation:foundation-layout:$version"
 
-            const val navigation = "androidx.navigation:navigation-compose:1.0.0-alpha09"
-            const val activity = "androidx.activity:activity-compose:1.3.0-alpha05"
+            const val navigation = "androidx.navigation:navigation-compose:1.0.0-alpha10"
+            const val activity = "androidx.activity:activity-compose:1.3.0-alpha06"
             const val constraintLayout = "androidx.constraintlayout:constraintlayout-compose:1.0.0-alpha05"
         }
     }

@@ -1,13 +1,16 @@
 rootProject.name = "Lastik"
 include(
-    ":android-app",
-    ":sdk",
+
+    ":app-android",
+    ":app-desktop",
 
     ":feature-root",
     ":feature-auth",
     ":feature-main",
 
-    ":ui-compose"
+    ":ui-compose",
+
+    ":sdk"
 )
 
 pluginManagement {

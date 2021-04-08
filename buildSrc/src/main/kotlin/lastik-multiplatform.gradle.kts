@@ -5,6 +5,15 @@ plugins {
     id("kotlin-multiplatform")
 }
 
+configurations {
+    create("androidTestApi")
+    create("androidTestDebugApi")
+    create("androidTestReleaseApi")
+    create("testApi")
+    create("testDebugApi")
+    create("testReleaseApi")
+}
+
 kotlin {
 
     jvm("desktop")

@@ -1,23 +1,12 @@
 plugins {
-    kotlin("multiplatform")
-    kotlin("plugin.serialization")
-    id("com.android.library")
+    id("lastik-multiplatform")
     id("com.squareup.sqldelight")
-}
-
-configurations {
-    create("androidTestApi")
-    create("androidTestDebugApi")
-    create("androidTestReleaseApi")
-    create("testApi")
-    create("testDebugApi")
-    create("testReleaseApi")
+    kotlin("plugin.serialization")
 }
 
 kotlin {
-    android()
     sourceSets {
-        val commonMain by getting {
+        named("commonMain") {
             dependencies {
                 implementation(Libs.Krypto.common)
                 implementation(Libs.Napier.common)
@@ -31,7 +20,7 @@ kotlin {
                 implementation(Libs.Kotlin.Coroutines.core)
             }
         }
-        val androidMain by getting {
+        named("androidMain") {
             dependencies {
                 implementation(Libs.Krypto.android)
                 implementation(Libs.Napier.android)
@@ -49,18 +38,5 @@ kotlin {
 sqldelight {
     database("LastikDatabase") {
         packageName = "ru.hotmule.lastik.data.local"
-    }
-}
-
-android {
-    compileSdkVersion(Sdk.Version.compile)
-    defaultConfig {
-        minSdkVersion(Sdk.Version.min)
-        targetSdkVersion(Sdk.Version.target)
-    }
-    sourceSets["main"].apply {
-        manifest.srcFile("src/androidMain/AndroidManifest.xml")
-        java.srcDirs("src/androidMain/kotlin")
-        res.srcDirs("src/androidMain/res")
     }
 }
