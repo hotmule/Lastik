@@ -3,10 +3,13 @@ package ru.hotmule.lastik
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material.MaterialTheme
 import com.arkivanov.decompose.extensions.compose.jetbrains.rememberRootComponent
 import ru.hotmule.lastik.feature.root.RootComponent
-import ru.hotmule.lastik.theme.AppTheme
-import ru.hotmule.lastik.ui.compose.RootContent
+import ru.hotmule.lastik.ui.compose.root.RootContent
+import ru.hotmule.lastik.ui.compose.theme.DarkColors
+import ru.hotmule.lastik.ui.compose.theme.LightColors
 
 class MainActivity : AppCompatActivity() {
 
@@ -14,7 +17,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            AppTheme {
+            MaterialTheme(
+                colors = if (isSystemInDarkTheme()) DarkColors else LightColors
+            ) {
                 RootContent(
                     rememberRootComponent {
                         RootComponent(

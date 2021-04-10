@@ -5,6 +5,7 @@ plugins {
     id("kotlin-multiplatform")
 }
 
+/*
 configurations {
     create("androidTestApi")
     create("androidTestDebugApi")
@@ -13,6 +14,7 @@ configurations {
     create("testDebugApi")
     create("testReleaseApi")
 }
+*/
 
 kotlin {
 

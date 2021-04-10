@@ -28,7 +28,7 @@ import ru.hotmule.lastik.domain.TopPeriod
 import ru.hotmule.lastik.domain.TopType
 import ru.hotmule.lastik.screen.AuthScreen
 import ru.hotmule.lastik.screen.LibraryList
-import ru.hotmule.lastik.theme.barHeight
+import ru.hotmule.lastik.ui.compose.theme.barHeight
 
 enum class LibrarySection(
     @StringRes val title: Int,

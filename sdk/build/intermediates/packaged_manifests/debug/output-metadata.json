@@ -1,5 +1,5 @@
 {
-  "version": 3,
+  "version": 2,
   "artifactType": {
     "type": "PACKAGED_MANIFESTS",
     "kind": "Directory"
@@ -10,9 +10,7 @@
     {
       "type": "SINGLE",
       "filters": [],
-      "attributes": [],
-      "outputFile": "../../merged_manifest/debug/AndroidManifest.xml"
+      "outputFile": "../../library_manifest/debug/AndroidManifest.xml"
     }
-  ],
-  "elementType": "File"
+  ]
 }

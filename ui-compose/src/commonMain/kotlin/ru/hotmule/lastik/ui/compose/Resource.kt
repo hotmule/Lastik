@@ -4,7 +4,11 @@ object Resource {
 
     object String {
 
+        const val auth = "Authorization"
+        const val login = "Login"
+        const val password = "Password"
         const val sign_in = "Sign in"
+        const val sign_in_with_last_fm = "Sign in with Last.fm"
 
         const val scrobbles = "Scrobbles"
         const val artists = "Artists"

@@ -34,7 +34,7 @@ object Module {
 
 object Libs {
 
-    const val gradle = "com.android.tools.build:gradle:7.0.0-alpha14"
+    const val gradle = "com.android.tools.build:gradle:4.1.1"
     const val espresso = "androidx.test.espresso:espresso-core:3.2.0"
     const val jUnit = "junit:junit:4.13"
 
@@ -135,7 +135,7 @@ object Libs {
 
         object Compose {
 
-            const val version = "1.0.0-beta03"
+            const val version = "1.0.0-beta04"
             const val ui = "androidx.compose.ui:ui:$version"
             const val tooling = "androidx.compose.ui:ui-tooling:$version"
             const val material = "androidx.compose.material:material:$version"

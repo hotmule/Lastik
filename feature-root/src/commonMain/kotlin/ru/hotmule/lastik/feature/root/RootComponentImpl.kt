@@ -17,7 +17,7 @@ class RootComponentImpl(
 ) : RootComponent, ComponentContext by context {
 
     private val router = router<Config, Child>(
-        initialConfiguration = Config.Main,
+        initialConfiguration = Config.Auth,
         handleBackButton = true,
         componentFactory = { config, context ->
             when (config) {

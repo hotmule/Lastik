@@ -7,20 +7,14 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.navigation.compose.navigate
 import androidx.navigation.NavController
-import androidx.navigation.compose.popUpTo
 import kotlinx.coroutines.flow.Flow
 import ru.hotmule.lastik.LibrarySection
-import ru.hotmule.lastik.NavGraph
-import ru.hotmule.lastik.R
 import ru.hotmule.lastik.Sdk
 import ru.hotmule.lastik.components.LibraryListItem
 import ru.hotmule.lastik.data.local.ListItem
-import ru.hotmule.lastik.theme.barHeight
+import ru.hotmule.lastik.ui.compose.theme.barHeight
 
 @Composable
 fun LibraryList(
