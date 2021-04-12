@@ -42,6 +42,8 @@ dependencies {
     implementation(project(Module.UI.compose))
     implementation(project(Module.Feature.root))
 
+    implementation(Libs.ArkIvanov.MVIKotlin.main)
+    implementation(Libs.ArkIvanov.MVIKotlin.common)
     implementation(Libs.ArkIvanov.Decompose.common)
     implementation(Libs.ArkIvanov.Decompose.composeExtensions)
 

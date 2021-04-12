@@ -81,14 +81,17 @@ object Libs {
     object ArkIvanov {
 
         object MVIKotlin {
-            private const val VERSION = "2.0.1"
-            const val common = "com.arkivanov.mvikotlin:mvikotlin:$VERSION"
+            private const val version = "2.0.1"
+            const val rx = "com.arkivanov.mvikotlin:rx:$version"
+            const val common = "com.arkivanov.mvikotlin:mvikotlin:$version"
+            const val main = "com.arkivanov.mvikotlin:mvikotlin-main:$version"
+            const val coroutines = "com.arkivanov.mvikotlin:mvikotlin-extensions-coroutines:$version"
         }
 
         object Decompose {
-            private const val VERSION = "0.1.9"
-            const val common = "com.arkivanov.decompose:decompose:$VERSION"
-            const val composeExtensions = "com.arkivanov.decompose:extensions-compose-jetbrains:$VERSION"
+            private const val version = "0.1.9"
+            const val common = "com.arkivanov.decompose:decompose:$version"
+            const val composeExtensions = "com.arkivanov.decompose:extensions-compose-jetbrains:$version"
         }
     }
 

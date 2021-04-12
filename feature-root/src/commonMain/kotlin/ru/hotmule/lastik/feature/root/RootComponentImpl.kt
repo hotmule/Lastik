@@ -6,15 +6,34 @@ import com.arkivanov.decompose.router
 import com.arkivanov.decompose.statekeeper.Parcelable
 import com.arkivanov.decompose.statekeeper.Parcelize
 import com.arkivanov.decompose.value.Value
+import com.arkivanov.mvikotlin.core.store.StoreFactory
 import ru.hotmule.lastik.feature.auth.AuthComponent
 import ru.hotmule.lastik.feature.main.MainComponent
 import ru.hotmule.lastik.feature.root.RootComponent.*
 
-class RootComponentImpl(
-    context: ComponentContext,
+class RootComponentImpl internal constructor(
+    componentContext: ComponentContext,
     private val auth: (ComponentContext) -> AuthComponent,
     private val main: (ComponentContext) -> MainComponent
-) : RootComponent, ComponentContext by context {
+) : RootComponent, ComponentContext by componentContext {
+
+    constructor(
+        componentContext: ComponentContext,
+        storeFactory: StoreFactory
+    ) : this(
+        componentContext = componentContext,
+        auth = { childContext ->
+            AuthComponent(
+                componentContext = childContext,
+                storeFactory = storeFactory
+            )
+        },
+        main = { childContext ->
+            MainComponent(
+                context = childContext
+            )
+        }
+    )
 
     private val router = router<Config, Child>(
         initialConfiguration = Config.Auth,

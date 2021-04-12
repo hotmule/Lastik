@@ -5,8 +5,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme
+import androidx.core.view.WindowCompat
+import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.extensions.compose.jetbrains.rememberRootComponent
+import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
 import ru.hotmule.lastik.feature.root.RootComponent
+import ru.hotmule.lastik.feature.root.RootComponentImpl
 import ru.hotmule.lastik.ui.compose.root.RootContent
 import ru.hotmule.lastik.ui.compose.theme.DarkColors
 import ru.hotmule.lastik.ui.compose.theme.LightColors
@@ -16,21 +20,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContent {
-            MaterialTheme(
-                colors = if (isSystemInDarkTheme()) DarkColors else LightColors
-            ) {
-                RootContent(
-                    rememberRootComponent {
-                        RootComponent(
-                            context = it,
-                            dependencies = object : RootComponent.Dependencies { }
-                        )
-                    }
-                )
-            }
-        }
-
         /*
         val sdk = Sdk.create(
             this,
@@ -38,21 +27,23 @@ class MainActivity : AppCompatActivity() {
             BuildConfig.API_KEY,
             BuildConfig.SECRET
         )
+        */
 
-        val displayWidth = with (windowManager.defaultDisplay) {
-            val size = Point()
-            getSize(size)
-            size.x / resources.displayMetrics.density
-        }
-
-        WindowCompat.setDecorFitsSystemWindows(window, false)
+        //WindowCompat.setDecorFitsSystemWindows(window, false)
 
         setContent {
-            val systemUiController = remember { SystemUiController(window) }
-            CompositionLocalProvider(LocalSysUiController provides systemUiController) {
-                LastikApp(sdk, displayWidth)
+            MaterialTheme(
+                colors = if (isSystemInDarkTheme()) DarkColors else LightColors
+            ) {
+                RootContent(
+                    rememberRootComponent {
+                        RootComponentImpl(
+                            componentContext = it,
+                            storeFactory = DefaultStoreFactory
+                        )
+                    }
+                )
             }
         }
-         */
     }
 }

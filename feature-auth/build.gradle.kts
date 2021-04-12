@@ -8,8 +8,11 @@ kotlin {
 
         named("commonMain") {
             dependencies {
-                implementation(Libs.ArkIvanov.MVIKotlin.common)
+                implementation(Libs.Kotlin.Coroutines.core)
                 implementation(Libs.ArkIvanov.Decompose.common)
+                implementation(Libs.ArkIvanov.MVIKotlin.rx)
+                implementation(Libs.ArkIvanov.MVIKotlin.common)
+                implementation(Libs.ArkIvanov.MVIKotlin.coroutines)
             }
         }
     }

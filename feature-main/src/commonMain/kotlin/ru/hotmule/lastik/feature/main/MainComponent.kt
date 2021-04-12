@@ -4,15 +4,10 @@ import com.arkivanov.decompose.ComponentContext
 
 interface MainComponent {
 
-    interface Dependencies {
-
-    }
 }
 
 fun MainComponent(
-    context: ComponentContext,
-    dependencies: MainComponent.Dependencies
+    context: ComponentContext
 ): MainComponent = MainComponentImpl(
-    context,
-    dependencies
+    context
 )
