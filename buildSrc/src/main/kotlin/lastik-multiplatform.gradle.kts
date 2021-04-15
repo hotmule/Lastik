@@ -1,8 +1,8 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
+    kotlin("multiplatform")
     id("lastik-android")
-    id("kotlin-multiplatform")
 }
 
 /*
@@ -18,8 +18,12 @@ configurations {
 
 kotlin {
 
-    jvm("desktop")
     android()
+    jvm("desktop") {
+        compilations.all {
+            kotlinOptions.jvmTarget = "11"
+        }
+    }
 
     tasks.withType<KotlinCompile> {
         kotlinOptions.jvmTarget = "1.8"

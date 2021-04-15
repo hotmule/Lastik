@@ -10,6 +10,7 @@ include(
 
     ":ui-compose",
 
+    ":utils",
     ":sdk"
 )
 

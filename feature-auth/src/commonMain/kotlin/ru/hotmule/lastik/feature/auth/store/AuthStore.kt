@@ -9,10 +9,13 @@ interface AuthStore : Store<Intent, State, Nothing> {
         data class ChangeLogin(val login: String) : Intent()
         data class ChangePassword(val password: String) : Intent()
         object SignIn : Intent()
+        object SignInWithLastFm : Intent()
+        data class GetTokenFromUrl(val url: String) : Intent()
     }
 
     data class State(
         val login: String = "",
-        val password: String = ""
+        val password: String = "",
+        val isLoading: Boolean = false
     )
 }

@@ -20,5 +20,7 @@ kotlin {
                 implementation(Libs.ArkIvanov.Decompose.composeExtensions)
             }
         }
+        val androidMain by getting
+        val desktopMain by getting
     }
 }

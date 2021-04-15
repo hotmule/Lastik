@@ -8,24 +8,27 @@ import com.arkivanov.decompose.statekeeper.Parcelize
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import ru.hotmule.lastik.feature.auth.AuthComponent
+import ru.hotmule.lastik.feature.auth.AuthComponentImpl
 import ru.hotmule.lastik.feature.main.MainComponent
 import ru.hotmule.lastik.feature.root.RootComponent.*
 
 class RootComponentImpl internal constructor(
-    componentContext: ComponentContext,
-    private val auth: (ComponentContext) -> AuthComponent,
-    private val main: (ComponentContext) -> MainComponent
+    private val componentContext: ComponentContext,
+    private val auth: (ComponentContext) -> AuthComponentImpl,
+    private val main: (ComponentContext) -> MainComponent,
 ) : RootComponent, ComponentContext by componentContext {
 
     constructor(
         componentContext: ComponentContext,
-        storeFactory: StoreFactory
+        storeFactory: StoreFactory,
+        webBrowser: (String) -> Unit
     ) : this(
         componentContext = componentContext,
         auth = { childContext ->
-            AuthComponent(
+            AuthComponentImpl(
                 componentContext = childContext,
-                storeFactory = storeFactory
+                storeFactory = storeFactory,
+                webBrowser = webBrowser
             )
         },
         main = { childContext ->
@@ -40,8 +43,8 @@ class RootComponentImpl internal constructor(
         handleBackButton = true,
         componentFactory = { config, context ->
             when (config) {
-                is Config.Auth -> Child.Auth(auth(context))
                 is Config.Main -> Child.Main(main(context))
+                is Config.Auth -> Child.Auth(auth(context))
             }
         }
     )
@@ -49,9 +52,14 @@ class RootComponentImpl internal constructor(
     override val routerState: Value<RouterState<*, Child>> = router.state
 
     private sealed class Config : Parcelable {
-        @Parcelize
-        object Auth : Config()
-        @Parcelize
-        object Main : Config()
+        @Parcelize object Auth : Config()
+        @Parcelize object Main : Config()
+    }
+
+    override fun onTokenUrlReceived(url: String) {
+        val currentChild = routerState.value.activeChild.component
+        if (currentChild is Child.Auth) {
+            currentChild.component.onTokenUrlReceived(url)
+        }
     }
 }

@@ -28,4 +28,8 @@ class AuthApi(
     suspend fun getSession() = client.get<SessionResponse?> {
         authApi("getSession")
     }
+
+    suspend fun getMobileSession() = client.get<SessionResponse?> {
+        authApi("getMobileSession")
+    }
 }

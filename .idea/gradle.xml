@@ -18,9 +18,9 @@
             <option value="$PROJECT_DIR$/feature-root" />
             <option value="$PROJECT_DIR$/sdk" />
             <option value="$PROJECT_DIR$/ui-compose" />
+            <option value="$PROJECT_DIR$/utils" />
           </set>
         </option>
-        <option name="resolveModulePerSourceSet" value="false" />
       </GradleProjectSettings>
     </option>
   </component>
