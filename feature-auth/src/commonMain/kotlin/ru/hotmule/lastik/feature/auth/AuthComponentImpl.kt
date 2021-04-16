@@ -8,6 +8,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.map
 import ru.hotmule.lastik.feature.auth.store.AuthStore.*
 import ru.hotmule.lastik.feature.auth.store.AuthStoreFactory
 import ru.hotmule.lastik.utils.getStore
@@ -25,7 +26,13 @@ class AuthComponentImpl(
         ).create()
     }
 
-    override val state = store.states
+    override val model = store.states.map {
+        AuthComponent.Model(
+            it.login,
+            it.password,
+            it.isLoading
+        )
+    }
 
     override fun onLoginChanged(login: String) {
         store.accept(Intent.ChangeLogin(login))

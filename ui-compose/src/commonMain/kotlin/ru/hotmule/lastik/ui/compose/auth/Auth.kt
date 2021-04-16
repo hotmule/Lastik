@@ -9,8 +9,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import ru.hotmule.lastik.feature.auth.AuthComponent
 import ru.hotmule.lastik.feature.auth.AuthComponentImpl
-import ru.hotmule.lastik.feature.auth.store.AuthStore
 import ru.hotmule.lastik.ui.compose.Res
 
 @Composable
@@ -38,7 +38,7 @@ fun AuthBody(
     component: AuthComponentImpl
 ) {
 
-    val state by component.state.collectAsState(AuthStore.State())
+    val state by component.model.collectAsState(AuthComponent.Model())
 
     Column(
         modifier = Modifier

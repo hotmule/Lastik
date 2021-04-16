@@ -8,6 +8,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import ru.hotmule.lastik.feature.auth.store.AuthStore.*
+import ru.hotmule.lastik.utils.AppCoroutineDispatcher
 
 internal class AuthStoreFactory(
     private val storeFactory: StoreFactory,
@@ -21,12 +22,6 @@ internal class AuthStoreFactory(
             executorFactory = ::ExecutorImpl,
             reducer = ReducerImpl
         ) {}
-
-    sealed class Result {
-        data class LoginChanged(val login: String) : Result()
-        data class PasswordChanged(val password: String) : Result()
-        data class Loading(val isLoading: Boolean) : Result()
-    }
 
     private inner class ExecutorImpl : SuspendExecutor<Intent, Nothing, State, Result, Nothing>() {
 
@@ -47,9 +42,11 @@ internal class AuthStoreFactory(
             login: String,
             password: String
         ) {
-            withContext(Dispatchers.Main) {
+            withContext(AppCoroutineDispatcher.Main) {
                 dispatch(Result.Loading(true))
-                delay(1000)
+                withContext(AppCoroutineDispatcher.IO) {
+                    delay(1000)
+                }
                 dispatch(Result.Loading(false))
             }
         }
@@ -61,9 +58,11 @@ internal class AuthStoreFactory(
         }
 
         private suspend fun getTokenFromUrl(url: String) {
-            withContext(Dispatchers.Main) {
+            withContext(AppCoroutineDispatcher.Main) {
                 dispatch(Result.Loading(true))
-                delay(1000)
+                withContext(AppCoroutineDispatcher.IO) {
+                    delay(1000)
+                }
                 dispatch(Result.Loading(false))
             }
         }

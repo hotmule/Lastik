@@ -5,7 +5,7 @@ import ru.hotmule.lastik.feature.auth.store.AuthStore
 
 interface AuthComponent {
 
-    val state: Flow<AuthStore.State>
+    val model: Flow<Model>
 
     fun onLoginChanged(login: String)
 
@@ -16,4 +16,10 @@ interface AuthComponent {
     fun onSignInWithLastFm()
 
     fun onTokenUrlReceived(url: String)
+
+    data class Model(
+        val login: String = "",
+        val password: String = "",
+        val isLoading: Boolean = false
+    )
 }

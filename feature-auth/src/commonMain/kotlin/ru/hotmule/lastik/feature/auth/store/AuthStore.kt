@@ -13,6 +13,12 @@ interface AuthStore : Store<Intent, State, Nothing> {
         data class GetTokenFromUrl(val url: String) : Intent()
     }
 
+    sealed class Result {
+        data class LoginChanged(val login: String) : Result()
+        data class PasswordChanged(val password: String) : Result()
+        data class Loading(val isLoading: Boolean) : Result()
+    }
+
     data class State(
         val login: String = "",
         val password: String = "",
