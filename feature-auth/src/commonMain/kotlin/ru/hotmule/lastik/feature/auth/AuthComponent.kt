@@ -22,4 +22,8 @@ interface AuthComponent {
         val password: String = "",
         val isLoading: Boolean = false
     )
+
+    sealed class Output {
+        data class SignInWithLastFmSelected(val url: String): Output()
+    }
 }

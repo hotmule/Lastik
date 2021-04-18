@@ -28,6 +28,11 @@ object Module {
         const val main = ":feature-main"
     }
 
+    object Data {
+        const val prefs = ":data-prefs"
+        const val remote = ":data-remote"
+    }
+
     object UI {
         const val compose = ":ui-compose"
     }
@@ -52,30 +57,25 @@ object Libs {
     }
 
     object Ktor {
-        private const val version = "1.4.1"
+        private const val version = "1.5.3"
 
         object Core {
             const val common = "io.ktor:ktor-client-core:$version"
-            const val android = "io.ktor:ktor-client-core-jvm:$version"
-        }
-
-        object Auth {
-            const val common = "io.ktor:ktor-client-auth:$version"
-            const val android = "io.ktor:ktor-client-auth-jvm:$version"
-        }
-
-        object Engine {
-            const val android = "io.ktor:ktor-client-okhttp:$version"
+            const val jvm = "io.ktor:ktor-client-core-jvm:$version"
         }
 
         object Logging {
             const val common = "io.ktor:ktor-client-logging:$version"
-            const val android = "io.ktor:ktor-client-logging-jvm:$version"
+            const val jvm = "io.ktor:ktor-client-logging-jvm:$version"
         }
 
         object Serialization {
             const val common = "io.ktor:ktor-client-serialization:$version"
-            const val android = "io.ktor:ktor-client-serialization-jvm:$version"
+            const val jvm = "io.ktor:ktor-client-serialization-jvm:$version"
+        }
+
+        object Engine {
+            const val okhttp = "io.ktor:ktor-client-okhttp:$version"
         }
     }
 
@@ -92,6 +92,7 @@ object Libs {
         object Decompose {
             private const val version = "0.1.9"
             const val common = "com.arkivanov.decompose:decompose:$version"
+            const val jvm = "com.arkivanov.decompose:decompose-jvm:$version"
             const val composeExtensions = "com.arkivanov.decompose:extensions-compose-jetbrains:$version"
         }
     }
@@ -103,13 +104,13 @@ object Libs {
 
         object Driver {
             const val android = "com.squareup.sqldelight:android-driver:$version"
+            const val sqlite = "com.squareup.sqldelight:sqlite-driver:$version"
         }
     }
 
-    object Napier {
-        private const val version = "1.3.0"
-        const val common = "com.github.aakira:napier:$version"
-        const val android = "com.github.aakira:napier-android:$version"
+    object Kermit {
+        private const val version = "0.1.7"
+        const val common = "co.touchlab:kermit:$version"
     }
 
     object GradleVersions {

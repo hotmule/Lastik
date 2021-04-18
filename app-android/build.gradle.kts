@@ -17,18 +17,6 @@ android {
 
         minSdkVersion(Sdk.Version.min)
         targetSdkVersion(Sdk.Version.target)
-
-        buildConfigField(
-            "String",
-            "API_KEY",
-            project.property("apiKey") as String
-        )
-
-        buildConfigField(
-            "String",
-            "SECRET",
-            project.property("secret") as String
-        )
     }
 
     compileOptions {
@@ -43,8 +31,11 @@ android {
 
 dependencies {
 
-    implementation(project(Module.UI.compose))
     implementation(project(Module.Feature.root))
+    implementation(project(Module.Data.remote))
+    implementation(project(Module.Data.prefs))
+    implementation(project(Module.UI.compose))
+    implementation(project(Module.utils))
 
     implementation(Libs.ArkIvanov.MVIKotlin.main)
     implementation(Libs.ArkIvanov.MVIKotlin.common)

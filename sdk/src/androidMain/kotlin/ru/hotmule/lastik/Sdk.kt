@@ -3,8 +3,6 @@ package ru.hotmule.lastik
 import android.content.Context
 import android.webkit.WebSettings
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.github.aakira.napier.DebugAntilog
-import com.github.aakira.napier.Napier
 import com.russhwolf.settings.AndroidSettings
 import com.squareup.sqldelight.android.AndroidSqliteDriver
 import io.ktor.client.engine.okhttp.OkHttp
@@ -20,7 +18,6 @@ fun Sdk.Companion.create(
     apiKey: String,
     secret: String
 ): Sdk {
-    Napier.base(DebugAntilog())
     //context.deleteDatabase("lastik.db")
     return Sdk(
         HttpClientFactory(

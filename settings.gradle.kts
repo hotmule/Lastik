@@ -8,6 +8,9 @@ include(
     ":feature-auth",
     ":feature-main",
 
+    ":data-remote",
+    ":data-prefs",
+
     ":ui-compose",
 
     ":utils",

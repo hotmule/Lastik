@@ -4,11 +4,9 @@ import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.labels
 import com.arkivanov.mvikotlin.extensions.coroutines.states
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
+import ru.hotmule.lastik.data.prefs.PrefsStore
+import ru.hotmule.lastik.data.remote.LastikHttpClient
 import ru.hotmule.lastik.feature.auth.store.AuthStore.*
 import ru.hotmule.lastik.feature.auth.store.AuthStoreFactory
 import ru.hotmule.lastik.utils.getStore
@@ -16,13 +14,17 @@ import ru.hotmule.lastik.utils.getStore
 class AuthComponentImpl(
     componentContext: ComponentContext,
     storeFactory: StoreFactory,
-    private val webBrowser: (String) -> Unit
+    httpClient: LastikHttpClient,
+    prefs: PrefsStore,
+    private val output: (AuthComponent.Output) -> Unit
 ) : AuthComponent, ComponentContext by componentContext {
 
     private val store = instanceKeeper.getStore {
         AuthStoreFactory(
             storeFactory = storeFactory,
-            webBrowser = webBrowser
+            authApi = httpClient.authApi,
+            output = output,
+            prefs = prefs
         ).create()
     }
 
@@ -33,6 +35,8 @@ class AuthComponentImpl(
             it.isLoading
         )
     }
+
+    val label = store.labels
 
     override fun onLoginChanged(login: String) {
         store.accept(Intent.ChangeLogin(login))

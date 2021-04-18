@@ -4,26 +4,29 @@ import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
+import ru.hotmule.lastik.data.prefs.PrefsStore
+import ru.hotmule.lastik.data.remote.api.AuthApi
+import ru.hotmule.lastik.feature.auth.AuthComponent
 import ru.hotmule.lastik.feature.auth.store.AuthStore.*
 import ru.hotmule.lastik.utils.AppCoroutineDispatcher
 
 internal class AuthStoreFactory(
     private val storeFactory: StoreFactory,
-    private val webBrowser: (String) -> Unit
+    private val authApi: AuthApi,
+    private val prefs: PrefsStore,
+    private val output: (AuthComponent.Output) -> Unit
 ) {
 
     fun create(): AuthStore =
-        object : AuthStore, Store<Intent, State, Nothing> by storeFactory.create(
+        object : AuthStore, Store<Intent, State, Label> by storeFactory.create(
             name = AuthStore::class.simpleName,
             initialState = State(),
             executorFactory = ::ExecutorImpl,
             reducer = ReducerImpl
         ) {}
 
-    private inner class ExecutorImpl : SuspendExecutor<Intent, Nothing, State, Result, Nothing>() {
+    private inner class ExecutorImpl : SuspendExecutor<Intent, Nothing, State, Result, Label>() {
 
         override suspend fun executeIntent(
             intent: Intent,
@@ -42,28 +45,47 @@ internal class AuthStoreFactory(
             login: String,
             password: String
         ) {
-            withContext(AppCoroutineDispatcher.Main) {
-                dispatch(Result.Loading(true))
-                withContext(AppCoroutineDispatcher.IO) {
-                    delay(1000)
+            setLoading(true)
+            withContext(AppCoroutineDispatcher.IO) {
+                try {
+                    authApi.getSession()
+                } catch (e: Exception) {
+                    sendError(e.message)
                 }
-                dispatch(Result.Loading(false))
             }
+            setLoading(false)
         }
 
         private fun signInWithLastFm() {
-            webBrowser(
-                "http://www.last.fm/api/auth/?api_key=########&cb=hotmule://lastik"
-            )
+            output(AuthComponent.Output.SignInWithLastFmSelected(authApi.getAuthUrl()))
         }
 
         private suspend fun getTokenFromUrl(url: String) {
-            withContext(AppCoroutineDispatcher.Main) {
-                dispatch(Result.Loading(true))
-                withContext(AppCoroutineDispatcher.IO) {
-                    delay(1000)
+            setLoading(true)
+            withContext(AppCoroutineDispatcher.IO) {
+                if (url.contains("token")) {
+                    prefs.token = url.substringAfter("token=")
+                    try {
+                        authApi.getSession()
+                    } catch (e: Exception) {
+                        sendError(e.message)
+                    }
+                } else {
+                    sendError("Sign in error")
                 }
-                dispatch(Result.Loading(false))
+            }
+            setLoading(false)
+        }
+
+        private suspend fun setLoading(isLoading: Boolean) {
+            withContext(AppCoroutineDispatcher.Main) {
+                dispatch(Result.Loading(isLoading))
+            }
+        }
+
+        private suspend fun sendError(message: String?) {
+            withContext(AppCoroutineDispatcher.Main) {
+                publish(Label.ErrorReceived(message ?: "Unknown"))
             }
         }
     }

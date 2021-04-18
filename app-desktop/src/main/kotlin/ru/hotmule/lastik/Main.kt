@@ -5,10 +5,12 @@ import androidx.compose.desktop.Window
 import ru.hotmule.lastik.ui.compose.root.RootContent
 import com.arkivanov.decompose.extensions.compose.jetbrains.rememberRootComponent
 import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
+import ru.hotmule.lastik.data.prefs.PrefsStore
+import ru.hotmule.lastik.data.prefs.desktopPrefs
 import ru.hotmule.lastik.feature.root.RootComponentImpl
 import ru.hotmule.lastik.ui.compose.theme.LightColors
-import java.awt.Desktop
-import java.net.URI
+import ru.hotmule.lastik.data.remote.LastikHttpClient
+import ru.hotmule.lastik.utils.DesktopBrowser
 
 fun main() {
 
@@ -21,13 +23,9 @@ fun main() {
                     RootComponentImpl(
                         componentContext = it,
                         storeFactory = DefaultStoreFactory,
-                        webBrowser = { url ->
-                            if (Desktop.isDesktopSupported() &&
-                                Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)
-                            ) {
-                                Desktop.getDesktop().browse(URI(url))
-                            }
-                        }
+                        httpClient = LastikHttpClient(),
+                        prefsStore = PrefsStore(desktopPrefs()),
+                        webBrowser = DesktopBrowser()
                     )
                 }
             )

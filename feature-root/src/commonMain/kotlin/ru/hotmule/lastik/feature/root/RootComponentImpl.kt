@@ -7,28 +7,37 @@ import com.arkivanov.decompose.statekeeper.Parcelable
 import com.arkivanov.decompose.statekeeper.Parcelize
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.mvikotlin.core.store.StoreFactory
+import ru.hotmule.lastik.data.prefs.PrefsStore
+import ru.hotmule.lastik.data.remote.LastikHttpClient
 import ru.hotmule.lastik.feature.auth.AuthComponent
 import ru.hotmule.lastik.feature.auth.AuthComponentImpl
 import ru.hotmule.lastik.feature.main.MainComponent
 import ru.hotmule.lastik.feature.root.RootComponent.*
+import ru.hotmule.lastik.utils.WebBrowser
 
 class RootComponentImpl internal constructor(
+    private val webBrowser: WebBrowser,
     private val componentContext: ComponentContext,
-    private val auth: (ComponentContext) -> AuthComponentImpl,
+    private val auth: (ComponentContext, (AuthComponent.Output) -> Unit) -> AuthComponentImpl,
     private val main: (ComponentContext) -> MainComponent,
 ) : RootComponent, ComponentContext by componentContext {
 
     constructor(
         componentContext: ComponentContext,
         storeFactory: StoreFactory,
-        webBrowser: (String) -> Unit
+        httpClient: LastikHttpClient,
+        prefsStore: PrefsStore,
+        webBrowser: WebBrowser
     ) : this(
+        webBrowser = webBrowser,
         componentContext = componentContext,
-        auth = { childContext ->
+        auth = { childContext, output ->
             AuthComponentImpl(
                 componentContext = childContext,
                 storeFactory = storeFactory,
-                webBrowser = webBrowser
+                httpClient = httpClient,
+                output = output,
+                prefs = prefsStore
             )
         },
         main = { childContext ->
@@ -44,7 +53,13 @@ class RootComponentImpl internal constructor(
         componentFactory = { config, context ->
             when (config) {
                 is Config.Main -> Child.Main(main(context))
-                is Config.Auth -> Child.Auth(auth(context))
+                is Config.Auth -> Child.Auth(auth(context) { output ->
+                    when (output) {
+                        is AuthComponent.Output.SignInWithLastFmSelected -> {
+                            webBrowser.open(output.url)
+                        }
+                    }
+                })
             }
         }
     )

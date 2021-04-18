@@ -7,8 +7,11 @@ plugins {
 
 dependencies {
 
-    implementation(project(Module.UI.compose))
     implementation(project(Module.Feature.root))
+    implementation(project(Module.Data.remote))
+    implementation(project(Module.Data.prefs))
+    implementation(project(Module.UI.compose))
+    implementation(project(Module.utils))
 
     implementation(Libs.ArkIvanov.MVIKotlin.main)
     implementation(Libs.ArkIvanov.MVIKotlin.common)

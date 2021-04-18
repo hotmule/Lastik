@@ -9,9 +9,8 @@ kotlin {
         named("commonMain") {
             dependencies {
                 implementation(Libs.Krypto.common)
-                implementation(Libs.Napier.common)
+                implementation(Libs.Kermit.common)
                 implementation(Libs.Ktor.Core.common)
-                implementation(Libs.Ktor.Auth.common)
                 implementation(Libs.Ktor.Logging.common)
                 implementation(Libs.Ktor.Serialization.common)
                 implementation(Libs.SqlDelight.coroutines)
@@ -22,14 +21,20 @@ kotlin {
         }
         named("androidMain") {
             dependencies {
-                implementation(Libs.Krypto.android)
-                implementation(Libs.Napier.android)
-                implementation(Libs.Ktor.Core.android)
-                implementation(Libs.Ktor.Auth.android)
-                implementation(Libs.Ktor.Engine.android)
-                implementation(Libs.Ktor.Logging.android)
-                implementation(Libs.Ktor.Serialization.android)
+                implementation(Libs.Ktor.Core.jvm)
+                implementation(Libs.Ktor.Logging.jvm)
+                implementation(Libs.Ktor.Engine.okhttp)
+                implementation(Libs.Ktor.Serialization.jvm)
                 implementation(Libs.SqlDelight.Driver.android)
+            }
+        }
+        named("desktopMain") {
+            dependencies {
+                implementation(Libs.Ktor.Core.jvm)
+                implementation(Libs.Ktor.Logging.jvm)
+                implementation(Libs.Ktor.Engine.okhttp)
+                implementation(Libs.Ktor.Serialization.jvm)
+                implementation(Libs.SqlDelight.Driver.sqlite)
             }
         }
     }
