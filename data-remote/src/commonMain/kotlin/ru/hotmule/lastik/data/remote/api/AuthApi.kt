@@ -2,11 +2,12 @@ package ru.hotmule.lastik.data.remote.api
 
 import io.ktor.client.*
 import io.ktor.client.request.*
+import ru.hotmule.lastik.data.prefs.PrefsStore
 import ru.hotmule.lastik.data.remote.entities.SessionResponse
 
 class AuthApi(
     private val client: HttpClient,
-    //private val prefs: PrefsSource,
+    private val prefs: PrefsStore,
     private val apiKey: String,
     private val secret: String
 ) {
@@ -18,7 +19,7 @@ class AuthApi(
             params = mapOf(
                 "method" to "auth.$method",
                 "api_key" to apiKey,
-                //"token" to prefs.token,
+                "token" to prefs.token,
             ),
             secret = secret
         )

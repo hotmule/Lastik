@@ -66,7 +66,8 @@ internal class AuthStoreFactory(
                 if (url.contains("token")) {
                     prefs.token = url.substringAfter("token=")
                     try {
-                        authApi.getSession()
+                        val session = authApi.getSession()
+                        prefs.sessionKey = session?.params?.key
                     } catch (e: Exception) {
                         sendError(e.message)
                     }

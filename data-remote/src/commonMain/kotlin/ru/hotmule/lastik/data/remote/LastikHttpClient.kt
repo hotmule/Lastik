@@ -11,14 +11,19 @@ import io.ktor.utils.io.*
 import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
+import ru.hotmule.lastik.data.prefs.PrefsStore
 import ru.hotmule.lastik.data.remote.api.AuthApi
 
-class LastikHttpClient {
+class LastikHttpClient(
+    prefs: PrefsStore
+) {
 
     private val kermit = Kermit()
     private val config = LastikHttpClientConfig()
 
     private val client = HttpClient(config.engine) {
+
+        expectSuccess = false
 
         if (config.loggingEnabled) {
             install(Logging) {
@@ -41,18 +46,10 @@ class LastikHttpClient {
             )
         }
 
-        config.userAgent?.let {
-            install(UserAgent) {
-                agent = it
-            }
-        }
-
-        expectSuccess = false
+        BrowserUserAgent()
 
         HttpResponseValidator {
             validateResponse {
-
-                kermit.d("mytag") { it.status.description }
 
                 if (!it.status.isSuccess()) {
                     when (it.status.value) {
@@ -82,5 +79,5 @@ class LastikHttpClient {
         }
     }
 
-    val authApi = AuthApi(client, config.apiKey, config.secret)
+    val authApi = AuthApi(client, prefs, config.apiKey, config.secret)
 }

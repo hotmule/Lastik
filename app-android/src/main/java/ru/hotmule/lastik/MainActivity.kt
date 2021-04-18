@@ -3,6 +3,8 @@ package ru.hotmule.lastik
 import android.content.Intent
 import android.content.res.Resources
 import android.os.Bundle
+import android.util.Log
+import android.webkit.WebView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.activity.compose.setContent
 import androidx.compose.ui.unit.dp
@@ -11,8 +13,8 @@ import com.arkivanov.decompose.extensions.compose.jetbrains.rememberRootComponen
 import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
 import dev.chrisbanes.accompanist.insets.LocalWindowInsets
 import dev.chrisbanes.accompanist.insets.ProvideWindowInsets
+import ru.hotmule.lastik.data.prefs.AndroidPrefs
 import ru.hotmule.lastik.data.prefs.PrefsStore
-import ru.hotmule.lastik.data.prefs.androidPrefs
 import ru.hotmule.lastik.data.remote.LastikHttpClient
 import ru.hotmule.lastik.feature.root.RootComponent
 import ru.hotmule.lastik.feature.root.RootComponentImpl
@@ -33,17 +35,18 @@ class MainActivity : AppCompatActivity() {
             AndroidLastikTheme {
                 ProvideWindowInsets {
 
+                    val prefs = PrefsStore(AndroidPrefs(this))
+                    val insets = LocalWindowInsets.current.systemBars
+
                     rootComponent = rememberRootComponent {
                         RootComponentImpl(
                             componentContext = it,
                             storeFactory = DefaultStoreFactory,
-                            httpClient = LastikHttpClient(),
-                            prefsStore = PrefsStore(androidPrefs(this)),
+                            httpClient = LastikHttpClient(prefs),
+                            prefsStore = prefs,
                             webBrowser = AndroidBrowser(this)
                         )
                     }
-
-                    val insets = LocalWindowInsets.current.systemBars
 
                     RootContent(
                         rootComponent,

@@ -3,7 +3,8 @@ package ru.hotmule.lastik.data.prefs
 import android.content.Context
 import com.russhwolf.settings.AndroidSettings
 
-fun androidPrefs(
+@Suppress("FunctionName")
+fun AndroidPrefs(
     context: Context
 ) = AndroidSettings(
     delegate = context.getSharedPreferences(

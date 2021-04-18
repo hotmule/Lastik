@@ -5,7 +5,7 @@ import ru.hotmule.lastik.ui.compose.root.RootContent
 import com.arkivanov.decompose.extensions.compose.jetbrains.rememberRootComponent
 import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
 import ru.hotmule.lastik.data.prefs.PrefsStore
-import ru.hotmule.lastik.data.prefs.desktopPrefs
+import ru.hotmule.lastik.data.prefs.DesktopPrefs
 import ru.hotmule.lastik.feature.root.RootComponentImpl
 import ru.hotmule.lastik.data.remote.LastikHttpClient
 import ru.hotmule.lastik.ui.compose.DesktopLastikTheme
@@ -15,13 +15,16 @@ fun main() {
 
     Window("Lastik") {
         DesktopLastikTheme {
+
+            val prefs = DesktopPrefs()
+
             RootContent(
                 rememberRootComponent {
                     RootComponentImpl(
                         componentContext = it,
                         storeFactory = DefaultStoreFactory,
-                        httpClient = LastikHttpClient(),
-                        prefsStore = PrefsStore(desktopPrefs()),
+                        httpClient = LastikHttpClient(prefs),
+                        prefsStore = PrefsStore(prefs),
                         webBrowser = DesktopBrowser()
                     )
                 }

@@ -7,7 +7,6 @@ import java.util.concurrent.TimeUnit
 actual class LastikHttpClientConfig {
     actual val apiKey: String = ""
     actual val secret: String = ""
-    actual val userAgent: String? = null
     actual val loggingEnabled: Boolean = false
     actual val engine: HttpClientEngine = OkHttp.create {
         config {
