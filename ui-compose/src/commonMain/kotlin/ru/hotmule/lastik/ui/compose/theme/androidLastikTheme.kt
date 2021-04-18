@@ -2,7 +2,6 @@ package ru.hotmule.lastik.ui.compose.theme
 
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 

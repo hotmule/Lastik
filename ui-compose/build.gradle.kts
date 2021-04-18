@@ -16,9 +16,14 @@ kotlin {
                 implementation(project(Module.Feature.main))
                 implementation(compose.material)
                 implementation(compose.materialIconsExtended)
-                implementation(Libs.Accompanist.insets)
                 implementation(Libs.ArkIvanov.Decompose.common)
                 implementation(Libs.ArkIvanov.Decompose.composeExtensions)
+            }
+        }
+
+        named("desktopMain") {
+            dependencies {
+                implementation(compose.desktop.currentOs)
             }
         }
     }
