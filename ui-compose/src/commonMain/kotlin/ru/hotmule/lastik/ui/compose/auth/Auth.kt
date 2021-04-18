@@ -8,6 +8,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.flow.collect
 import ru.hotmule.lastik.feature.auth.AuthComponent
@@ -17,14 +18,14 @@ import ru.hotmule.lastik.ui.compose.Res
 
 @Composable
 fun AuthContent(
-    component: AuthComponentImpl
+    component: AuthComponentImpl,
+    topInset: Dp,
+    bottomInset: Dp
 ) {
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = {
-                    Text(Res.String.auth)
-                }
+            AuthBar(
+                topInset = topInset
             )
         },
         content = {
@@ -33,8 +34,27 @@ fun AuthContent(
             )
         },
         snackbarHost = { hostState ->
-            ErrorMessage(hostState, component)
+            AuthMessage(
+                hostState = hostState,
+                component = component,
+                bottomInset = bottomInset
+            )
         }
+    )
+}
+
+@Composable
+private fun AuthBar(
+    topInset: Dp
+) {
+    TopAppBar(
+        title = {
+            Text(
+                text = Res.String.auth,
+                modifier = Modifier.padding(top = topInset)
+            )
+        },
+        modifier = Modifier.height(Res.Dimen.appBarHeight + topInset)
     )
 }
 
@@ -105,9 +125,10 @@ private fun AuthBody(
 }
 
 @Composable
-private fun ErrorMessage(
+private fun AuthMessage(
+    component: AuthComponentImpl,
     hostState: SnackbarHostState,
-    component: AuthComponentImpl
+    bottomInset: Dp
 ) {
     SnackbarHost(
         hostState = hostState,
@@ -117,7 +138,8 @@ private fun ErrorMessage(
             ) {
                 Text(hostState.currentSnackbarData?.message ?: "")
             }
-        }
+        },
+        modifier = Modifier.padding(bottom = bottomInset)
     )
 
     LaunchedEffect("showError") {

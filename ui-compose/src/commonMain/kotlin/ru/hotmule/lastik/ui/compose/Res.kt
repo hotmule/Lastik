@@ -1,6 +1,12 @@
 package ru.hotmule.lastik.ui.compose
 
+import androidx.compose.ui.unit.dp
+
 object Res {
+
+    object Dimen {
+        val appBarHeight = 56.dp
+    }
 
     object String {
 
