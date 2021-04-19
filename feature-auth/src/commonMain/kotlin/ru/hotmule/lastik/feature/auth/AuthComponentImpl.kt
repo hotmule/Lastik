@@ -9,6 +9,7 @@ import ru.hotmule.lastik.data.prefs.PrefsStore
 import ru.hotmule.lastik.data.remote.LastikHttpClient
 import ru.hotmule.lastik.feature.auth.store.AuthStore.*
 import ru.hotmule.lastik.feature.auth.store.AuthStoreFactory
+import ru.hotmule.lastik.utils.WebBrowser
 import ru.hotmule.lastik.utils.getStore
 
 class AuthComponentImpl(
@@ -16,15 +17,15 @@ class AuthComponentImpl(
     storeFactory: StoreFactory,
     httpClient: LastikHttpClient,
     prefs: PrefsStore,
-    private val output: (AuthComponent.Output) -> Unit
+    webBrowser: WebBrowser
 ) : AuthComponent, ComponentContext by componentContext {
 
     private val store = instanceKeeper.getStore {
         AuthStoreFactory(
             storeFactory = storeFactory,
             authApi = httpClient.authApi,
-            output = output,
-            prefs = prefs
+            prefs = prefs,
+            webBrowser = webBrowser
         ).create()
     }
 

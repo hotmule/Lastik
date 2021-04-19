@@ -21,7 +21,7 @@ interface AuthStore : Store<Intent, State, Label> {
     }
 
     sealed class Label {
-        data class ErrorReceived(val message: String): Label()
+        data class MessageReceived(val message: String): Label()
     }
 
     data class State(

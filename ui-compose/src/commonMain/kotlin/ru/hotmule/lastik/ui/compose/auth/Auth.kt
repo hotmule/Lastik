@@ -145,7 +145,7 @@ private fun AuthMessage(
     LaunchedEffect("showError") {
         component.label.collect { label ->
             when (label) {
-                is AuthStore.Label.ErrorReceived -> {
+                is AuthStore.Label.MessageReceived -> {
                     hostState.showSnackbar(label.message)
                 }
             }

@@ -7,15 +7,15 @@ import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
 import kotlinx.coroutines.withContext
 import ru.hotmule.lastik.data.prefs.PrefsStore
 import ru.hotmule.lastik.data.remote.api.AuthApi
-import ru.hotmule.lastik.feature.auth.AuthComponent
 import ru.hotmule.lastik.feature.auth.store.AuthStore.*
 import ru.hotmule.lastik.utils.AppCoroutineDispatcher
+import ru.hotmule.lastik.utils.WebBrowser
 
 internal class AuthStoreFactory(
     private val storeFactory: StoreFactory,
     private val authApi: AuthApi,
     private val prefs: PrefsStore,
-    private val output: (AuthComponent.Output) -> Unit
+    private val webBrowser: WebBrowser
 ) {
 
     fun create(): AuthStore =
@@ -50,14 +50,14 @@ internal class AuthStoreFactory(
                 try {
                     authApi.getSession()
                 } catch (e: Exception) {
-                    sendError(e.message)
+                    sendMessage(e.message)
                 }
             }
             setLoading(false)
         }
 
         private fun signInWithLastFm() {
-            output(AuthComponent.Output.SignInWithLastFmSelected(authApi.getAuthUrl()))
+            webBrowser.open(authApi.getAuthUrl())
         }
 
         private suspend fun getTokenFromUrl(url: String) {
@@ -69,10 +69,10 @@ internal class AuthStoreFactory(
                         val session = authApi.getSession()
                         prefs.sessionKey = session?.params?.key
                     } catch (e: Exception) {
-                        sendError(e.message)
+                        sendMessage(e.message)
                     }
                 } else {
-                    sendError("Sign in error")
+                    sendMessage("Sign in error")
                 }
             }
             setLoading(false)
@@ -84,9 +84,9 @@ internal class AuthStoreFactory(
             }
         }
 
-        private suspend fun sendError(message: String?) {
+        private suspend fun sendMessage(message: String?) {
             withContext(AppCoroutineDispatcher.Main) {
-                publish(Label.ErrorReceived(message ?: "Unknown"))
+                publish(Label.MessageReceived(message ?: "Unknown"))
             }
         }
     }

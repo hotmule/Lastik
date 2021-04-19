@@ -6,8 +6,10 @@ import io.ktor.client.features.*
 import io.ktor.client.features.json.*
 import io.ktor.client.features.json.serializer.*
 import io.ktor.client.features.logging.*
+import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.utils.io.*
+import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
@@ -52,31 +54,32 @@ class LastikHttpClient(
             validateResponse {
 
                 if (!it.status.isSuccess()) {
-                    when (it.status.value) {
-                        //HttpStatusCode.Unauthorized -> interactor.signOut()
-                        else -> {
-
-                            var errorMessage = "Unknown error"
-
-                            it.content.readUTF8Line()?.let { error ->
-                                kotlinx.serialization.json.Json.parseToJsonElement(error)
-                                    .jsonObject["message"]
-                                    ?.jsonPrimitive
-                                    ?.contentOrNull
-                                    ?.let { message -> errorMessage = message }
-                            }
-
-                            error(errorMessage)
-                        }
+                    when (it.status) {
+                        HttpStatusCode.Unauthorized -> prefs.sessionKey = null
+                        else -> throwErrorWithMessage(it)
                     }
                 }
 
                 handleResponseException { throwable ->
-
                     error(throwable.message ?: "Unknown Error")
                 }
             }
         }
+    }
+
+    private suspend fun throwErrorWithMessage(it: HttpResponse) {
+
+        var errorMessage = "Unknown error"
+
+        it.content.readUTF8Line()?.let { error ->
+            Json.parseToJsonElement(error)
+                .jsonObject["message"]
+                ?.jsonPrimitive
+                ?.contentOrNull
+                ?.let { message -> errorMessage = message }
+        }
+
+        error(errorMessage)
     }
 
     val authApi = AuthApi(client, prefs, config.apiKey, config.secret)
