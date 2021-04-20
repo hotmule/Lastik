@@ -11,7 +11,7 @@ object Res {
     object String {
 
         const val auth = "Authorization"
-        const val login = "Login"
+        const val username = "Username"
         const val password = "Password"
         const val sign_in = "Sign in"
         const val sign_in_with_last_fm = "Sign in with Last.fm"

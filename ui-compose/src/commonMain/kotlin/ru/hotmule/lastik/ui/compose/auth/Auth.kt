@@ -4,21 +4,26 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Visibility
+import androidx.compose.material.icons.rounded.VisibilityOff
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.flow.collect
 import ru.hotmule.lastik.feature.auth.AuthComponent
-import ru.hotmule.lastik.feature.auth.AuthComponentImpl
-import ru.hotmule.lastik.feature.auth.store.AuthStore
 import ru.hotmule.lastik.ui.compose.Res
 
 @Composable
 fun AuthContent(
-    component: AuthComponentImpl,
+    component: AuthComponent,
     topInset: Dp,
     bottomInset: Dp
 ) {
@@ -60,7 +65,7 @@ private fun AuthBar(
 
 @Composable
 private fun AuthBody(
-    component: AuthComponentImpl
+    component: AuthComponent
 ) {
 
     val model by component.model.collectAsState(AuthComponent.Model())
@@ -71,8 +76,11 @@ private fun AuthBody(
             .fillMaxWidth()
     ) {
         OutlinedTextField(
-            label = { Text(Res.String.login) },
-            value = model.login,
+            label = { Text(Res.String.username) },
+            value = model.username,
+            keyboardOptions = KeyboardOptions(
+                autoCorrect = false
+            ),
             onValueChange = {
                 component.onLoginChanged(it)
             },
@@ -82,6 +90,31 @@ private fun AuthBody(
         OutlinedTextField(
             label = { Text(Res.String.password) },
             value = model.password,
+            keyboardOptions = KeyboardOptions(
+                autoCorrect = false,
+                keyboardType = KeyboardType.Password
+            ),
+            visualTransformation = if (model.isPasswordVisible) {
+                VisualTransformation.None
+            } else {
+                PasswordVisualTransformation()
+            },
+            trailingIcon = {
+                IconButton(
+                    onClick = {
+                        component.onPasswordVisibilityChanged()
+                    }
+                ) {
+                    Icon(
+                        imageVector = if (model.isPasswordVisible) {
+                            Icons.Rounded.VisibilityOff
+                        } else {
+                            Icons.Rounded.Visibility
+                        },
+                        contentDescription = "passwordVisibility"
+                    )
+                }
+            },
             onValueChange = {
                 component.onPasswordChanged(it)
             },
@@ -126,7 +159,7 @@ private fun AuthBody(
 
 @Composable
 private fun AuthMessage(
-    component: AuthComponentImpl,
+    component: AuthComponent,
     hostState: SnackbarHostState,
     bottomInset: Dp
 ) {
@@ -143,10 +176,10 @@ private fun AuthMessage(
     )
 
     LaunchedEffect("showError") {
-        component.label.collect { label ->
-            when (label) {
-                is AuthStore.Label.MessageReceived -> {
-                    hostState.showSnackbar(label.message)
+        component.events.collect { event ->
+            when (event) {
+                is AuthComponent.Event.MessageReceived -> {
+                    hostState.showSnackbar(event.message)
                 }
             }
         }

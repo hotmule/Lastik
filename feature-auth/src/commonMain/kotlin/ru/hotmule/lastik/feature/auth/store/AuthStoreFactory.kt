@@ -1,9 +1,11 @@
 package ru.hotmule.lastik.feature.auth.store
 
 import com.arkivanov.mvikotlin.core.store.Reducer
+import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.withContext
 import ru.hotmule.lastik.data.prefs.PrefsStore
 import ru.hotmule.lastik.data.remote.api.AuthApi
@@ -14,19 +16,30 @@ import ru.hotmule.lastik.utils.WebBrowser
 internal class AuthStoreFactory(
     private val storeFactory: StoreFactory,
     private val authApi: AuthApi,
-    private val prefs: PrefsStore,
-    private val webBrowser: WebBrowser
+    private val prefs: PrefsStore
 ) {
 
     fun create(): AuthStore =
         object : AuthStore, Store<Intent, State, Label> by storeFactory.create(
             name = AuthStore::class.simpleName,
             initialState = State(),
+            bootstrapper = SimpleBootstrapper(Unit),
             executorFactory = ::ExecutorImpl,
             reducer = ReducerImpl
         ) {}
 
-    private inner class ExecutorImpl : SuspendExecutor<Intent, Nothing, State, Result, Label>() {
+    private inner class ExecutorImpl : SuspendExecutor<Intent, Unit, State, Result, Label>(
+        AppCoroutineDispatcher.Main
+    ) {
+
+        override suspend fun executeAction(
+            action: Unit,
+            getState: () -> State
+        ) {
+            prefs.tokenReceived.collect {
+                if (it) getSession()
+            }
+        }
 
         override suspend fun executeIntent(
             intent: Intent,
@@ -35,9 +48,8 @@ internal class AuthStoreFactory(
             when (intent) {
                 is Intent.ChangeLogin -> dispatch(Result.LoginChanged(intent.login))
                 is Intent.ChangePassword -> dispatch(Result.PasswordChanged(intent.password))
+                Intent.ChangePasswordVisibility -> dispatch(Result.PasswordVisibilityChanged)
                 Intent.SignIn -> signIn(getState().login, getState().password)
-                Intent.SignInWithLastFm -> signInWithLastFm()
-                is Intent.GetTokenFromUrl -> getTokenFromUrl(intent.url)
             }
         }
 
@@ -45,48 +57,31 @@ internal class AuthStoreFactory(
             login: String,
             password: String
         ) {
-            setLoading(true)
-            withContext(AppCoroutineDispatcher.IO) {
-                try {
-                    authApi.getSession()
-                } catch (e: Exception) {
-                    sendMessage(e.message)
-                }
-            }
-            setLoading(false)
-        }
-
-        private fun signInWithLastFm() {
-            webBrowser.open(authApi.getAuthUrl())
-        }
-
-        private suspend fun getTokenFromUrl(url: String) {
-            setLoading(true)
-            withContext(AppCoroutineDispatcher.IO) {
-                if (url.contains("token")) {
-                    prefs.token = url.substringAfter("token=")
-                    try {
-                        val session = authApi.getSession()
-                        prefs.sessionKey = session?.params?.key
-                    } catch (e: Exception) {
-                        sendMessage(e.message)
-                    }
-                } else {
-                    sendMessage("Sign in error")
-                }
-            }
-            setLoading(false)
-        }
-
-        private suspend fun setLoading(isLoading: Boolean) {
-            withContext(AppCoroutineDispatcher.Main) {
-                dispatch(Result.Loading(isLoading))
+            launch {
+                val session = authApi.getMobileSession(login, password)
+                prefs.login = login
+                prefs.password = password
+                prefs.sessionKey = session?.params?.key
             }
         }
 
-        private suspend fun sendMessage(message: String?) {
-            withContext(AppCoroutineDispatcher.Main) {
-                publish(Label.MessageReceived(message ?: "Unknown"))
+        private suspend fun getSession() {
+            launch {
+                val session = authApi.getSession()
+                prefs.sessionKey = session?.params?.key
+            }
+        }
+
+        private suspend fun launch(
+            unit: suspend () -> Unit
+        ) {
+            try {
+                dispatch(Result.Loading(true))
+                withContext(AppCoroutineDispatcher.IO) { unit() }
+            } catch (e: Exception) {
+                publish(Label.MessageReceived(e.message ?: "Unknown"))
+            } finally {
+                dispatch(Result.Loading(false))
             }
         }
     }
@@ -96,6 +91,7 @@ internal class AuthStoreFactory(
         override fun State.reduce(result: Result): State = when (result) {
             is Result.LoginChanged -> copy(login = result.login)
             is Result.PasswordChanged -> copy(password = result.password)
+            Result.PasswordVisibilityChanged -> copy(isPasswordVisible = !isPasswordVisible)
             is Result.Loading -> copy(isLoading = result.isLoading)
         }
     }

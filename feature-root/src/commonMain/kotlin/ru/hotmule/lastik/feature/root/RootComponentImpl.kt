@@ -1,27 +1,30 @@
 package ru.hotmule.lastik.feature.root
 
-import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.RouterState
-import com.arkivanov.decompose.replaceCurrent
-import com.arkivanov.decompose.router
+import com.arkivanov.decompose.*
+import com.arkivanov.decompose.lifecycle.doOnDestroy
 import com.arkivanov.decompose.statekeeper.Parcelable
 import com.arkivanov.decompose.statekeeper.Parcelize
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.mvikotlin.core.store.StoreFactory
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import ru.hotmule.lastik.data.prefs.PrefsStore
 import ru.hotmule.lastik.data.remote.LastikHttpClient
+import ru.hotmule.lastik.feature.auth.AuthComponent
 import ru.hotmule.lastik.feature.auth.AuthComponentImpl
 import ru.hotmule.lastik.feature.main.MainComponent
 import ru.hotmule.lastik.feature.root.RootComponent.*
+import ru.hotmule.lastik.utils.AppCoroutineDispatcher
 import ru.hotmule.lastik.utils.WebBrowser
-import ru.hotmule.lastik.utils.componentCoroutineScope
 
 class RootComponentImpl internal constructor(
     private val componentContext: ComponentContext,
+    private val httpClient: LastikHttpClient,
     private val prefsStore: PrefsStore,
-    private val auth: (ComponentContext) -> AuthComponentImpl,
+    private val webBrowser: WebBrowser,
+    private val auth: (ComponentContext, (AuthComponent.Output) -> Unit) -> AuthComponent,
     private val main: (ComponentContext) -> MainComponent,
 ) : RootComponent, ComponentContext by componentContext {
 
@@ -33,14 +36,16 @@ class RootComponentImpl internal constructor(
         webBrowser: WebBrowser
     ) : this(
         componentContext = componentContext,
+        httpClient = httpClient,
         prefsStore = prefsStore,
-        auth = { childContext ->
+        webBrowser = webBrowser,
+        auth = { childContext, output ->
             AuthComponentImpl(
                 componentContext = childContext,
                 storeFactory = storeFactory,
                 httpClient = httpClient,
-                webBrowser = webBrowser,
-                prefs = prefsStore
+                prefs = prefsStore,
+                output = output
             )
         },
         main = { childContext ->
@@ -56,36 +61,54 @@ class RootComponentImpl internal constructor(
         componentFactory = { config, context ->
             when (config) {
                 is Config.Main -> Child.Main(main(context))
-                is Config.Auth -> Child.Auth(auth(context))
+                is Config.Auth -> Child.Auth(auth(context) { output ->
+                    when (output) {
+                        AuthComponent.Output.SignInWithLastFm -> {
+                            webBrowser.open(httpClient.authUrl)
+                        }
+                    }
+                })
             }
         }
     )
 
     override val routerState: Value<RouterState<*, Child>> = router.state
+    private val componentScope = CoroutineScope(AppCoroutineDispatcher.Main)
 
     init {
 
-        lifecycle.componentCoroutineScope.launch {
+        componentScope.launch {
             prefsStore.isSessionActive.collect { isActive ->
-                router.state.value.activeChild.configuration.also { config ->
-                    when {
-                        config !is Config.Auth && !isActive -> router.replaceCurrent(Config.Auth)
-                        config !is Config.Main && isActive -> router.replaceCurrent(Config.Main)
-                    }
-                }
+                if (isActive)
+                    setConfig<Child.Main>(Config.Main)
+                else
+                    setConfig<Child.Auth>(Config.Auth)
             }
+        }
+
+        lifecycle.doOnDestroy {
+            componentScope.cancel()
+        }
+    }
+
+    private inline fun <reified T: Child> setConfig(
+        config: Config
+    ) {
+        with (router) {
+            if (state.value.activeChild.component !is T) {
+                replaceCurrent(config)
+            }
+        }
+    }
+
+    override fun onTokenUrlReceived(url: String) {
+        if (url.contains("token")) {
+            prefsStore.token = url.substringAfter("token=")
         }
     }
 
     private sealed class Config : Parcelable {
         @Parcelize object Auth : Config()
         @Parcelize object Main : Config()
-    }
-
-    override fun onTokenUrlReceived(url: String) {
-        val child = routerState.value.activeChild.component
-        if (child is Child.Auth) {
-            child.component.onTokenUrlReceived(url)
-        }
     }
 }

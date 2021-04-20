@@ -82,5 +82,9 @@ class LastikHttpClient(
         error(errorMessage)
     }
 
+    val authUrl = "http://www.last.fm/api/auth/" + "?" +
+            "api_key=${config.apiKey}" + "&" +
+            "cb=hotmule://lastik"
+
     val authApi = AuthApi(client, prefs, config.apiKey, config.secret)
 }

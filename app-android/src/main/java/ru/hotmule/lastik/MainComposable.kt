@@ -26,7 +26,6 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
 import ru.hotmule.lastik.domain.TopPeriod
 import ru.hotmule.lastik.domain.TopType
-import ru.hotmule.lastik.screen.AuthScreen
 import ru.hotmule.lastik.screen.LibraryList
 import ru.hotmule.lastik.ui.compose.theme.barHeight
 
@@ -204,7 +203,6 @@ private fun MainNavHost(
     isUpdating: (Boolean) -> Unit
 ) {
     NavHost(navController, NavGraph.library) {
-        composable(NavGraph.auth) { AuthScreen(sdk, navController) }
         composable(
             NavGraph.library, listOf(
                 navArgument(NavGraph.Args.sectionId) { type = NavType.IntType })

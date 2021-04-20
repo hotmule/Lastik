@@ -13,27 +13,34 @@ class AuthApi(
 ) {
 
     private fun HttpRequestBuilder.authApi(
-        method: String
+        method: String,
+        parameters: Map<String, String> = mapOf()
     ) {
         api(
-            params = mapOf(
+            params = parameters + mutableMapOf(
                 "method" to "auth.$method",
-                "api_key" to apiKey,
-                "token" to prefs.token,
-            ),
+                "api_key" to apiKey
+            ).apply {
+                prefs.token?.let { set("token", it) }
+            },
             secret = secret
         )
     }
-
-    fun getAuthUrl() = "http://www.last.fm/api/auth/" + "?" +
-            "api_key=$apiKey" + "&" +
-            "cb=hotmule://lastik"
 
     suspend fun getSession() = client.get<SessionResponse?> {
         authApi("getSession")
     }
 
-    suspend fun getMobileSession() = client.get<SessionResponse?> {
-        authApi("getMobileSession")
+    suspend fun getMobileSession(
+        login: String,
+        password: String
+    ) = client.post<SessionResponse?> {
+        authApi(
+            "getMobileSession",
+            mapOf(
+                "username" to login,
+                "password" to password
+            )
+        )
     }
 }

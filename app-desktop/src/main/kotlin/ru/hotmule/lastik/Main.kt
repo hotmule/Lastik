@@ -16,7 +16,7 @@ fun main() {
     Window("Lastik") {
         DesktopLastikTheme {
 
-            val prefs = DesktopPrefs()
+            val prefs = PrefsStore(DesktopPrefs())
 
             RootContent(
                 rememberRootComponent {
@@ -24,7 +24,7 @@ fun main() {
                         componentContext = it,
                         storeFactory = DefaultStoreFactory,
                         httpClient = LastikHttpClient(prefs),
-                        prefsStore = PrefsStore(prefs),
+                        prefsStore = prefs,
                         webBrowser = DesktopBrowser()
                     )
                 }
