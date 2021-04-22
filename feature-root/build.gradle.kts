@@ -10,7 +10,7 @@ kotlin {
         named("commonMain") {
             dependencies {
                 implementation(project(Module.Feature.auth))
-                implementation(project(Module.Feature.main))
+                implementation(project(Module.Feature.library))
                 implementation(project(Module.Data.prefs))
                 implementation(project(Module.Data.remote))
                 implementation(project(Module.utils))

@@ -1,7 +1,7 @@
 package ru.hotmule.lastik
 
 import androidx.compose.desktop.Window
-import ru.hotmule.lastik.ui.compose.root.RootContent
+import ru.hotmule.lastik.ui.compose.RootContent
 import com.arkivanov.decompose.extensions.compose.jetbrains.rememberRootComponent
 import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
 import ru.hotmule.lastik.data.prefs.PrefsStore

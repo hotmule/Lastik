@@ -14,7 +14,8 @@ import ru.hotmule.lastik.data.prefs.PrefsStore
 import ru.hotmule.lastik.data.remote.LastikHttpClient
 import ru.hotmule.lastik.feature.auth.AuthComponent
 import ru.hotmule.lastik.feature.auth.AuthComponentImpl
-import ru.hotmule.lastik.feature.main.MainComponent
+import ru.hotmule.lastik.feature.library.LibraryComponent
+import ru.hotmule.lastik.feature.library.LibraryComponentImpl
 import ru.hotmule.lastik.feature.root.RootComponent.*
 import ru.hotmule.lastik.utils.AppCoroutineDispatcher
 import ru.hotmule.lastik.utils.WebBrowser
@@ -25,7 +26,7 @@ class RootComponentImpl internal constructor(
     private val prefsStore: PrefsStore,
     private val webBrowser: WebBrowser,
     private val auth: (ComponentContext, (AuthComponent.Output) -> Unit) -> AuthComponent,
-    private val main: (ComponentContext) -> MainComponent,
+    private val library: (ComponentContext) -> LibraryComponent,
 ) : RootComponent, ComponentContext by componentContext {
 
     constructor(
@@ -48,20 +49,21 @@ class RootComponentImpl internal constructor(
                 output = output
             )
         },
-        main = { childContext ->
-            MainComponent(
-                context = childContext
+        library = { childContext ->
+            LibraryComponentImpl(
+                componentContext = childContext,
+                storeFactory = storeFactory
             )
         }
     )
 
     private val router = router<Config, Child>(
-        initialConfiguration = Config.Main,
+        initialConfiguration = Config.Library,
         handleBackButton = true,
-        componentFactory = { config, context ->
-            when (config) {
-                is Config.Main -> Child.Main(main(context))
-                is Config.Auth -> Child.Auth(auth(context) { output ->
+        componentFactory = { configuration, componentContext ->
+            when (configuration) {
+                is Config.Library -> Child.Library(library(componentContext))
+                is Config.Auth -> Child.Auth(auth(componentContext) { output ->
                     when (output) {
                         AuthComponent.Output.SignInWithLastFm -> {
                             webBrowser.open(httpClient.authUrl)
@@ -80,7 +82,7 @@ class RootComponentImpl internal constructor(
         componentScope.launch {
             prefsStore.isSessionActive.collect { isActive ->
                 if (isActive)
-                    setConfig<Child.Main>(Config.Main)
+                    setConfig<Child.Library>(Config.Library)
                 else
                     setConfig<Child.Auth>(Config.Auth)
             }
@@ -108,7 +110,7 @@ class RootComponentImpl internal constructor(
     }
 
     private sealed class Config : Parcelable {
+        @Parcelize object Library : Config()
         @Parcelize object Auth : Config()
-        @Parcelize object Main : Config()
     }
 }

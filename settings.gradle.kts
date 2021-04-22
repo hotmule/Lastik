@@ -6,7 +6,8 @@ include(
 
     ":feature-root",
     ":feature-auth",
-    ":feature-main",
+    ":feature-library",
+    ":feature-shelf",
 
     ":data-remote",
     ":data-prefs",

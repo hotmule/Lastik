@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CompilerConfiguration">
-    <bytecodeTargetLevel target="11" />
+    <bytecodeTargetLevel target="11">
+      <module name="Lastik.feature-main.commonMain" target="1.8" />
+      <module name="Lastik.feature-main.commonTest" target="1.8" />
+      <module name="Lastik.feature-main.desktopMain" target="1.8" />
+      <module name="Lastik.feature-main.desktopTest" target="1.8" />
+    </bytecodeTargetLevel>
   </component>
 </project>

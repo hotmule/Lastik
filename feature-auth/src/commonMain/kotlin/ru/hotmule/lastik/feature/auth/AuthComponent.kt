@@ -12,7 +12,7 @@ interface AuthComponent {
     )
 
     sealed class Event {
-        data class MessageReceived(val message: String): Event()
+        data class MessageReceived(val message: String?): Event()
     }
 
     sealed class Output {

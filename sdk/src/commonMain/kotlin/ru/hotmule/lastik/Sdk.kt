@@ -1,12 +1,10 @@
 package ru.hotmule.lastik
 
 import com.russhwolf.settings.ObservableSettings
-import com.russhwolf.settings.Settings
 import com.squareup.sqldelight.ColumnAdapter
 import com.squareup.sqldelight.db.SqlDriver
 import ru.hotmule.lastik.data.prefs.PrefsStore
 import ru.hotmule.lastik.data.remote.HttpClientFactory
-import ru.hotmule.lastik.data.remote.api.AuthApi
 import ru.hotmule.lastik.data.remote.api.UserApi
 import ru.hotmule.lastik.data.local.LastikDatabase
 import ru.hotmule.lastik.data.local.Top
@@ -38,7 +36,6 @@ open class Sdk(
     val signOutInteractor = SignOutInteractor(prefs, db.profileQueries)
     private val httpClient = httpClientFactory.create(signOutInteractor)
 
-    private val authApi = AuthApi(httpClient, prefs, apiKey, secret)
     private val userApi = UserApi(httpClient, prefs, apiKey)
     private val trackApi = TrackApi(httpClient, prefs, apiKey, secret)
 
@@ -48,10 +45,6 @@ open class Sdk(
 
     val profileInteractor = ProfileInteractor(
         userApi, prefs, db.trackQueries, db.profileQueries, artistsInteractor
-    )
-
-    val authInteractor = AuthInteractor(
-        apiKey, authApi, prefs, profileInteractor
     )
 
     val scrobblesInteractor = ScrobblesInteractor(

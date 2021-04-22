@@ -18,7 +18,6 @@ internal class AuthStoreFactory(
     private val authApi: AuthApi,
     private val prefs: PrefsStore
 ) {
-
     fun create(): AuthStore =
         object : AuthStore, Store<Intent, State, Label> by storeFactory.create(
             name = AuthStore::class.simpleName,
@@ -79,7 +78,7 @@ internal class AuthStoreFactory(
                 dispatch(Result.Loading(true))
                 withContext(AppCoroutineDispatcher.IO) { unit() }
             } catch (e: Exception) {
-                publish(Label.MessageReceived(e.message ?: "Unknown"))
+                publish(Label.MessageReceived(e.message))
             } finally {
                 dispatch(Result.Loading(false))
             }

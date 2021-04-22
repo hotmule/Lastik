@@ -3,8 +3,6 @@ package ru.hotmule.lastik
 import android.content.Intent
 import android.content.res.Resources
 import android.os.Bundle
-import android.util.Log
-import android.webkit.WebView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.activity.compose.setContent
 import androidx.compose.ui.unit.dp
@@ -19,7 +17,7 @@ import ru.hotmule.lastik.data.remote.LastikHttpClient
 import ru.hotmule.lastik.feature.root.RootComponent
 import ru.hotmule.lastik.feature.root.RootComponentImpl
 import ru.hotmule.lastik.ui.compose.AndroidLastikTheme
-import ru.hotmule.lastik.ui.compose.root.RootContent
+import ru.hotmule.lastik.ui.compose.RootContent
 import ru.hotmule.lastik.utils.AndroidBrowser
 
 class MainActivity : AppCompatActivity() {
