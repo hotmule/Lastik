@@ -1,7 +1,6 @@
 package ru.hotmule.lastik.feature.library
 
 import com.arkivanov.decompose.RouterState
-import com.arkivanov.decompose.statekeeper.Parcelize
 import com.arkivanov.decompose.value.Value
 import kotlinx.coroutines.flow.Flow
 import ru.hotmule.lastik.feature.shelf.ShelfComponent
@@ -20,6 +19,7 @@ interface LibraryComponent {
         val activeShelfIndex: Int = 0,
         val periodSelectable: Boolean = false,
         val periodsOpened: Boolean = false,
+        val selectedPeriodIndex: Int = 0,
         val logOutAllowed: Boolean = false
     )
 

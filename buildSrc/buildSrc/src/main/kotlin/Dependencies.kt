@@ -48,7 +48,6 @@ object Libs {
     object Kotlin {
 
         const val version = "1.4.32"
-        const val reflect = "org.jetbrains.kotlin:kotlin-reflect:$version"
         const val gradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version"
         const val serialization = "org.jetbrains.kotlin:kotlin-serialization:$version"
 
@@ -138,6 +137,7 @@ object Libs {
 
     object AndroidX {
 
+        const val browser = "androidx.browser:browser:1.3.0"
         const val appCompat = "androidx.appcompat:appcompat:1.3.0-rc01"
 
         object Compose {

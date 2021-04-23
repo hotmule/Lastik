@@ -55,7 +55,7 @@ class LastikHttpClient(
 
                 if (!it.status.isSuccess()) {
                     when (it.status) {
-                        HttpStatusCode.Unauthorized -> prefs.sessionKey = null
+                        HttpStatusCode.Unauthorized -> prefs.clear()
                         else -> throwErrorWithMessage(it)
                     }
                 }

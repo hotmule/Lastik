@@ -26,52 +26,50 @@ fun LibraryContent(
 
     Scaffold(
         topBar = {
-            Box {
-                TopAppBar(
-                    modifier = Modifier.height(Res.Dimen.barHeight + topInset),
-                    title = {
-                        Text(
-                            modifier = Modifier.padding(top = topInset),
-                            text = Res.Array.shelves[model.activeShelfIndex]
-                        )
-                    },
-                    actions = {
+            TopAppBar(
+                modifier = Modifier.height(Res.Dimen.barHeight + topInset),
+                title = {
+                    Text(
+                        modifier = Modifier.padding(top = topInset),
+                        text = Res.Array.shelves[model.activeShelfIndex]
+                    )
+                },
+                actions = {
 
-                        if (model.periodSelectable) {
+                    if (model.periodSelectable) {
 
-                            TextButton(
-                                onClick = component::onPeriodSelectOpen,
-                                colors = ButtonDefaults.textButtonColors(
-                                    contentColor = Color.White
-                                ),
-                                modifier = Modifier.padding(
-                                    top = topInset,
-                                    end = 2.dp
-                                )
-                            ) {
-                                Text(text = "All time")
-                                Icon(Icons.Rounded.ExpandMore, null)
-                            }
-
-                            PeriodDropDown(
-                                expanded = model.periodsOpened,
-                                onDismissRequest = component::onPeriodSelectClose,
-                                onPeriodSelect = component::onShelfSelect
+                        TextButton(
+                            onClick = component::onPeriodSelectOpen,
+                            colors = ButtonDefaults.textButtonColors(
+                                contentColor = Color.White
+                            ),
+                            modifier = Modifier.padding(
+                                top = topInset,
+                                end = 2.dp
                             )
+                        ) {
+                            Text(text = Res.Array.periods[model.selectedPeriodIndex])
+                            Icon(Icons.Rounded.ExpandMore, null)
                         }
 
-                        if (model.logOutAllowed) {
+                        PeriodDropDown(
+                            expanded = model.periodsOpened,
+                            onDismissRequest = component::onPeriodSelectClose,
+                            onPeriodSelect = component::onPeriodSelected
+                        )
+                    }
 
-                            IconButton(
-                                modifier = Modifier.padding(top = topInset),
-                                onClick = { component.onLogOut() }
-                            ) {
-                                Icon(Icons.Rounded.ExitToApp, "logOut")
-                            }
+                    if (model.logOutAllowed) {
+
+                        IconButton(
+                            modifier = Modifier.padding(top = topInset),
+                            onClick = { component.onLogOut() }
+                        ) {
+                            Icon(Icons.Rounded.ExitToApp, "logOut")
                         }
                     }
-                )
-            }
+                }
+            )
         },
         content = {
             Children(component.routerState) { child, _ ->
@@ -112,6 +110,6 @@ fun LibraryContent(
 @Composable
 expect fun PeriodDropDown(
     expanded: Boolean,
-    onPeriodSelect: (Int) -> Unit,
-    onDismissRequest: () -> Unit
+    onDismissRequest: () -> Unit,
+    onPeriodSelect: (Int) -> Unit
 )

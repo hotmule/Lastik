@@ -9,6 +9,7 @@ import com.arkivanov.mvikotlin.extensions.coroutines.states
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
+import ru.hotmule.lastik.data.prefs.PrefsStore
 import ru.hotmule.lastik.feature.library.LibraryComponent.*
 import ru.hotmule.lastik.feature.library.store.LibraryStore
 import ru.hotmule.lastik.feature.library.store.LibraryStore.*
@@ -20,6 +21,7 @@ import ru.hotmule.lastik.utils.getStore
 class LibraryComponentImpl internal constructor(
     private val componentContext: ComponentContext,
     private val storeFactory: StoreFactory,
+    private val prefsStore: PrefsStore,
     private val scrobbles: (ComponentContext) -> ShelfComponent,
     private val artists: (ComponentContext) -> ShelfComponent,
     private val albums: (ComponentContext) -> ShelfComponent,
@@ -40,10 +42,12 @@ class LibraryComponentImpl internal constructor(
 
     constructor(
         componentContext: ComponentContext,
-        storeFactory: StoreFactory
+        storeFactory: StoreFactory,
+        prefsStore: PrefsStore
     ) : this(
         componentContext = componentContext,
         storeFactory = storeFactory,
+        prefsStore = prefsStore,
         scrobbles = createShelf(storeFactory),
         artists = createShelf(storeFactory),
         albums = createShelf(storeFactory),
@@ -66,7 +70,8 @@ class LibraryComponentImpl internal constructor(
 
     private val store = instanceKeeper.getStore {
         LibraryStoreFactory(
-            storeFactory = storeFactory
+            storeFactory = storeFactory,
+            prefsStore = prefsStore
         ).create()
     }
 
@@ -77,6 +82,7 @@ class LibraryComponentImpl internal constructor(
             activeShelfIndex = it.activeShelfIndex,
             periodSelectable = it.periodSelectable,
             periodsOpened = it.periodsOpened,
+            selectedPeriodIndex = it.selectedPeriodIndex,
             logOutAllowed = it.logOutAllowed
         )
     }

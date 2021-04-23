@@ -52,7 +52,8 @@ class RootComponentImpl internal constructor(
         library = { childContext ->
             LibraryComponentImpl(
                 componentContext = childContext,
-                storeFactory = storeFactory
+                storeFactory = storeFactory,
+                prefsStore = prefsStore
             )
         }
     )
@@ -83,8 +84,10 @@ class RootComponentImpl internal constructor(
             prefsStore.isSessionActive.collect { isActive ->
                 if (isActive)
                     setConfig<Child.Library>(Config.Library)
-                else
+                else {
+                    prefsStore.token = null
                     setConfig<Child.Auth>(Config.Auth)
+                }
             }
         }
 

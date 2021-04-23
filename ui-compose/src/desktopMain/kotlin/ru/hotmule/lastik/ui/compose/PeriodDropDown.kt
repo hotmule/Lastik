@@ -9,8 +9,8 @@ import androidx.compose.runtime.Composable
 @Composable
 actual fun PeriodDropDown(
     expanded: Boolean,
-    onPeriodSelect: (Int) -> Unit,
-    onDismissRequest: () -> Unit
+    onDismissRequest: () -> Unit,
+    onPeriodSelect: (Int) -> Unit
 ) {
     DropdownMenu(
         expanded = expanded,

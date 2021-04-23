@@ -14,15 +14,17 @@ interface LibraryStore : Store<Intent, State, Nothing> {
     }
 
     sealed class Result {
-        data class ShelfSelected(val index: Int) : Result()
+        data class ShelfSelected(val index: Int, val periodIndex: Int?) : Result()
         object PeriodsOpened : Result()
         object PeriodsClosed : Result()
+        data class PeriodSelected(val index: Int) : Result()
     }
 
     data class State(
         val activeShelfIndex: Int = 0,
         val periodSelectable: Boolean = false,
         val periodsOpened: Boolean = false,
+        val selectedPeriodIndex: Int = 0,
         val logOutAllowed: Boolean = false
     )
 }
