@@ -1,13 +1,29 @@
-package ru.hotmule.lastik.ui.compose
+package ru.hotmule.lastik.ui.compose.res
 
+import androidx.compose.material.darkColors
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.*
+import androidx.compose.material.lightColors
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 object Res {
 
     object Dimen {
         val barHeight = 56.dp
+    }
+
+    object Color {
+
+        //red
+        private val sangria = Color(0xff9d0000)
+        private val crimson = Color(0xffd50000)
+
+        //yellow
+        val sunflower = Color(0xffffc900)
+
+        val lights = lightColors(primary = sangria)
+        val darks = darkColors(primary = crimson)
     }
 
     object String {

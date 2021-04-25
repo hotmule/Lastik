@@ -14,7 +14,7 @@ import ru.hotmule.lastik.LibrarySection
 import ru.hotmule.lastik.Sdk
 import ru.hotmule.lastik.components.LibraryListItem
 import ru.hotmule.lastik.data.local.ListItem
-import ru.hotmule.lastik.ui.compose.theme.barHeight
+import ru.hotmule.lastik.ui.compose.res.Res
 
 @Composable
 fun LibraryList(
@@ -73,7 +73,7 @@ fun LibraryList(
     var moreItemsLoading by remember { mutableStateOf(false) }
 
     LazyColumn(
-        modifier = Modifier.padding(bottom = barHeight + 16.dp)
+        modifier = Modifier.padding(bottom = Res.Dimen.barHeight + 16.dp)
     ) {
 
         if (currentSection == LibrarySection.Profile) {

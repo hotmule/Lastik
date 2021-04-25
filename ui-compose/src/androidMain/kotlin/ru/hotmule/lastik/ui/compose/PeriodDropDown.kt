@@ -5,6 +5,7 @@ import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import ru.hotmule.lastik.ui.compose.res.Res
 
 @Composable
 actual fun PeriodDropDown(

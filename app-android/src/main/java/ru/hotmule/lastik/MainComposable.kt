@@ -27,7 +27,7 @@ import kotlinx.coroutines.flow.map
 import ru.hotmule.lastik.domain.TopPeriod
 import ru.hotmule.lastik.domain.TopType
 import ru.hotmule.lastik.screen.LibraryList
-import ru.hotmule.lastik.ui.compose.theme.barHeight
+import ru.hotmule.lastik.ui.compose.res.Res
 
 enum class LibrarySection(
     @StringRes val title: Int,
@@ -100,7 +100,7 @@ private fun LibraryTopBar(
     isUpdating: MutableState<Boolean>
 ) {
     TopAppBar(
-        modifier = Modifier.statusBarsHeight(additional = barHeight),
+        modifier = Modifier.statusBarsHeight(additional = Res.Dimen.barHeight),
         title = {
             Text(
                 modifier = Modifier.statusBarsPadding(),
@@ -230,7 +230,7 @@ private fun LibraryBottomBar(
     currentSection: LibrarySection
 ) {
     BottomNavigation(
-        modifier = Modifier.navigationBarsHeight(additional = barHeight)
+        modifier = Modifier.navigationBarsHeight(additional = Res.Dimen.barHeight)
     ) {
         LibrarySection
             .values()

@@ -24,7 +24,6 @@ import androidx.compose.ui.unit.dp
 import dev.chrisbanes.accompanist.coil.CoilImage
 import ru.hotmule.lastik.R
 import ru.hotmule.lastik.data.local.ListItem
-import ru.hotmule.lastik.ui.compose.theme.sunflower
 import ru.hotmule.lastik.utlis.toCommasString
 import ru.hotmule.lastik.utlis.toDateString
 
@@ -68,7 +67,7 @@ fun LibraryListItem(
 
             if (nowPlaying == true) {
                 Surface(
-                    color = sunflower.copy(alpha = 0.1f),
+                    //color = sunflower.copy(alpha = 0.1f),
                     modifier = Modifier.fillMaxSize()
                 ) { }
             }

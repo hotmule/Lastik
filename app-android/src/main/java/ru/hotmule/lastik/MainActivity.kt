@@ -30,8 +30,8 @@ class MainActivity : AppCompatActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
         setContent {
-            AndroidLastikTheme {
-                ProvideWindowInsets {
+            ProvideWindowInsets {
+                AndroidLastikTheme {
 
                     val prefs = PrefsStore(AndroidPrefs(this))
                     val insets = LocalWindowInsets.current.systemBars

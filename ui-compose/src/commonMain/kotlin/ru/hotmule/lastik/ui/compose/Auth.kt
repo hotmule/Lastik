@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.flow.collect
 import ru.hotmule.lastik.feature.auth.AuthComponent
+import ru.hotmule.lastik.ui.compose.res.Res
 
 @Composable
 fun AuthContent(
