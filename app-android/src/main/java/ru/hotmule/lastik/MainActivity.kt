@@ -11,6 +11,8 @@ import com.arkivanov.decompose.extensions.compose.jetbrains.rememberRootComponen
 import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
 import dev.chrisbanes.accompanist.insets.LocalWindowInsets
 import dev.chrisbanes.accompanist.insets.ProvideWindowInsets
+import ru.hotmule.lastik.data.local.AndroidDatabaseDriver
+import ru.hotmule.lastik.data.local.LastikDatabase
 import ru.hotmule.lastik.data.prefs.AndroidPrefs
 import ru.hotmule.lastik.data.prefs.PrefsStore
 import ru.hotmule.lastik.data.remote.LastikHttpClient
@@ -41,6 +43,7 @@ class MainActivity : AppCompatActivity() {
                             componentContext = it,
                             storeFactory = DefaultStoreFactory,
                             httpClient = LastikHttpClient(prefs),
+                            database = LastikDatabase(AndroidDatabaseDriver(this)),
                             prefsStore = prefs,
                             webBrowser = AndroidBrowser(this)
                         )

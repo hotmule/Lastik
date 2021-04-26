@@ -1,27 +1,28 @@
-package ru.hotmule.lastik.data.local
+package ru.hotmule.lastik.`data`.local
 
 import com.squareup.sqldelight.Transacter
 import com.squareup.sqldelight.db.SqlDriver
-import ru.hotmule.lastik.data.local.sdk.newInstance
-import ru.hotmule.lastik.data.local.sdk.schema
+import ru.hotmule.lastik.`data`.local.sdk.newInstance
+import ru.hotmule.lastik.`data`.local.sdk.schema
 
-interface LastikDatabase : Transacter {
-  val albumQueries: AlbumQueries
+public interface LastikDatabase : Transacter {
+  public val albumQueries: AlbumQueries
 
-  val artistQueries: ArtistQueries
+  public val artistQueries: ArtistQueries
 
-  val profileQueries: ProfileQueries
+  public val profileQueries: ProfileQueries
 
-  val scrobbleQueries: ScrobbleQueries
+  public val scrobbleQueries: ScrobbleQueries
 
-  val topQueries: TopQueries
+  public val topQueries: TopQueries
 
-  val trackQueries: TrackQueries
+  public val trackQueries: TrackQueries
 
-  companion object {
-    val Schema: SqlDriver.Schema
+  public companion object {
+    public val Schema: SqlDriver.Schema
       get() = LastikDatabase::class.schema
 
-    operator fun invoke(driver: SqlDriver, topAdapter: Top.Adapter): LastikDatabase =
-        LastikDatabase::class.newInstance(driver, topAdapter)}
+    public operator fun invoke(driver: SqlDriver, topAdapter: Top.Adapter): LastikDatabase =
+        LastikDatabase::class.newInstance(driver, topAdapter)
+  }
 }

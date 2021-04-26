@@ -2,7 +2,7 @@ CREATE TABLE scrobble (
     id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     trackId INTEGER NOT NULL,
     listenedAt INTEGER NOT NULL,
-    nowPlaying INTEGER as Boolean DEFAULT 0 NOT NULL,
+    nowPlaying INTEGER AS Boolean DEFAULT 0 NOT NULL,
     UNIQUE (trackId, listenedAt),
     FOREIGN KEY (trackId) REFERENCES track(id) ON DELETE CASCADE
 );

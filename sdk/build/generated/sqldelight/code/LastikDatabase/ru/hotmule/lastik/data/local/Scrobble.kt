@@ -1,16 +1,16 @@
-package ru.hotmule.lastik.data.local
+package ru.hotmule.lastik.`data`.local
 
 import kotlin.Boolean
 import kotlin.Long
 import kotlin.String
 
-data class Scrobble(
-  val id: Long,
-  val trackId: Long,
-  val listenedAt: Long,
-  val nowPlaying: Boolean
+public data class Scrobble(
+  public val id: Long,
+  public val trackId: Long,
+  public val listenedAt: Long,
+  public val nowPlaying: Boolean
 ) {
-  override fun toString(): String = """
+  public override fun toString(): String = """
   |Scrobble [
   |  id: $id
   |  trackId: $trackId

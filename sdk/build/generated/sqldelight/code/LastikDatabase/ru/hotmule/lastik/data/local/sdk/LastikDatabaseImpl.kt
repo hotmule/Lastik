@@ -1,32 +1,33 @@
-package ru.hotmule.lastik.data.local.sdk
+package ru.hotmule.lastik.`data`.local.sdk
 
 import com.squareup.sqldelight.Query
 import com.squareup.sqldelight.TransacterImpl
+import com.squareup.sqldelight.`internal`.copyOnWriteList
 import com.squareup.sqldelight.db.SqlCursor
 import com.squareup.sqldelight.db.SqlDriver
-import com.squareup.sqldelight.internal.copyOnWriteList
 import kotlin.Any
 import kotlin.Boolean
 import kotlin.Int
 import kotlin.Long
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.MutableList
 import kotlin.jvm.JvmField
 import kotlin.reflect.KClass
-import ru.hotmule.lastik.data.local.AlbumQueries
-import ru.hotmule.lastik.data.local.AlbumTop
-import ru.hotmule.lastik.data.local.ArtistQueries
-import ru.hotmule.lastik.data.local.ArtistTop
-import ru.hotmule.lastik.data.local.LastikDatabase
-import ru.hotmule.lastik.data.local.LovedTracks
-import ru.hotmule.lastik.data.local.Profile
-import ru.hotmule.lastik.data.local.ProfileQueries
-import ru.hotmule.lastik.data.local.ScrobbleData
-import ru.hotmule.lastik.data.local.ScrobbleQueries
-import ru.hotmule.lastik.data.local.Top
-import ru.hotmule.lastik.data.local.TopQueries
-import ru.hotmule.lastik.data.local.TrackQueries
-import ru.hotmule.lastik.data.local.TrackTop
+import ru.hotmule.lastik.`data`.local.AlbumQueries
+import ru.hotmule.lastik.`data`.local.AlbumTop
+import ru.hotmule.lastik.`data`.local.ArtistQueries
+import ru.hotmule.lastik.`data`.local.ArtistTop
+import ru.hotmule.lastik.`data`.local.LastikDatabase
+import ru.hotmule.lastik.`data`.local.LovedTracks
+import ru.hotmule.lastik.`data`.local.Profile
+import ru.hotmule.lastik.`data`.local.ProfileQueries
+import ru.hotmule.lastik.`data`.local.ScrobbleData
+import ru.hotmule.lastik.`data`.local.ScrobbleQueries
+import ru.hotmule.lastik.`data`.local.Top
+import ru.hotmule.lastik.`data`.local.TopQueries
+import ru.hotmule.lastik.`data`.local.TrackQueries
+import ru.hotmule.lastik.`data`.local.TrackTop
 import ru.hotmule.lastik.domain.TopPeriod
 import ru.hotmule.lastik.domain.TopType
 
@@ -40,23 +41,23 @@ private class LastikDatabaseImpl(
   driver: SqlDriver,
   internal val topAdapter: Top.Adapter
 ) : TransacterImpl(driver), LastikDatabase {
-  override val albumQueries: AlbumQueriesImpl = AlbumQueriesImpl(this, driver)
+  public override val albumQueries: AlbumQueriesImpl = AlbumQueriesImpl(this, driver)
 
-  override val artistQueries: ArtistQueriesImpl = ArtistQueriesImpl(this, driver)
+  public override val artistQueries: ArtistQueriesImpl = ArtistQueriesImpl(this, driver)
 
-  override val profileQueries: ProfileQueriesImpl = ProfileQueriesImpl(this, driver)
+  public override val profileQueries: ProfileQueriesImpl = ProfileQueriesImpl(this, driver)
 
-  override val scrobbleQueries: ScrobbleQueriesImpl = ScrobbleQueriesImpl(this, driver)
+  public override val scrobbleQueries: ScrobbleQueriesImpl = ScrobbleQueriesImpl(this, driver)
 
-  override val topQueries: TopQueriesImpl = TopQueriesImpl(this, driver)
+  public override val topQueries: TopQueriesImpl = TopQueriesImpl(this, driver)
 
-  override val trackQueries: TrackQueriesImpl = TrackQueriesImpl(this, driver)
+  public override val trackQueries: TrackQueriesImpl = TrackQueriesImpl(this, driver)
 
-  object Schema : SqlDriver.Schema {
-    override val version: Int
+  public object Schema : SqlDriver.Schema {
+    public override val version: Int
       get() = 1
 
-    override fun create(driver: SqlDriver) {
+    public override fun create(driver: SqlDriver): Unit {
       driver.execute(null, """
           |CREATE TABLE album (
           |    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
@@ -123,11 +124,11 @@ private class LastikDatabaseImpl(
           """.trimMargin(), 0)
     }
 
-    override fun migrate(
+    public override fun migrate(
       driver: SqlDriver,
       oldVersion: Int,
       newVersion: Int
-    ) {
+    ): Unit {
     }
   }
 }
@@ -138,17 +139,17 @@ private class AlbumQueriesImpl(
 ) : TransacterImpl(driver), AlbumQueries {
   internal val getId: MutableList<Query<*>> = copyOnWriteList()
 
-  override fun getId(artistId: Long, name: String): Query<Long> = GetIdQuery(artistId, name) {
-      cursor ->
+  public override fun getId(artistId: Long, name: String): Query<Long> = GetIdQuery(artistId,
+      name) { cursor ->
     cursor.getLong(0)!!
   }
 
-  override fun insert(
+  public override fun insert(
     artistId: Long,
     name: String,
     lowArtwork: String?,
     highArtwork: String?
-  ) {
+  ): Unit {
     driver.execute(1619406,
         """INSERT OR IGNORE INTO album(artistId, name, lowArtwork, highArtwork) VALUES (?, ?, ?, ?)""",
         4) {
@@ -164,18 +165,18 @@ private class AlbumQueriesImpl(
 
   private inner class GetIdQuery<out T : Any>(
     @JvmField
-    val artistId: Long,
+    public val artistId: Long,
     @JvmField
-    val name: String,
+    public val name: String,
     mapper: (SqlCursor) -> T
   ) : Query<T>(getId, mapper) {
-    override fun execute(): SqlCursor = driver.executeQuery(-1248988836,
+    public override fun execute(): SqlCursor = driver.executeQuery(-1248988836,
         """SELECT id FROM album WHERE artistId = ? AND name = ?""", 2) {
       bindLong(1, artistId)
       bindString(2, name)
     }
 
-    override fun toString(): String = "album.sq:getId"
+    public override fun toString(): String = "album.sq:getId"
   }
 }
 
@@ -185,11 +186,11 @@ private class ArtistQueriesImpl(
 ) : TransacterImpl(driver), ArtistQueries {
   internal val getId: MutableList<Query<*>> = copyOnWriteList()
 
-  override fun getId(name: String): Query<Long> = GetIdQuery(name) { cursor ->
+  public override fun getId(name: String): Query<Long> = GetIdQuery(name) { cursor ->
     cursor.getLong(0)!!
   }
 
-  override fun insert(name: String) {
+  public override fun insert(name: String): Unit {
     driver.execute(-1722171082, """INSERT OR IGNORE INTO artist(name) VALUES (?)""", 1) {
       bindString(1, name)
     }
@@ -199,30 +200,31 @@ private class ArtistQueriesImpl(
         database.trackQueries.lovedTracks})
   }
 
-  override fun deleteLovedTracks() {
+  public override fun deleteLovedTracks(): Unit {
     driver.execute(-131000046, """
     |DELETE FROM artist WHERE EXISTS (
     |    SELECT t.id FROM track t
     |    WHERE artist.id = t.artistId AND t.lovedAt NOT NULL
     |)
     """.trimMargin(), 0)
-    notifyQueries(-131000046, {database.artistQueries.getId +
+    notifyQueries(-131000046, {database.albumQueries.getId + database.artistQueries.getId +
         database.scrobbleQueries.scrobbleData + database.topQueries.artistTop +
         database.topQueries.albumTop + database.topQueries.trackTop +
+        database.trackQueries.getLovedTracksPageCount + database.trackQueries.getId +
         database.trackQueries.lovedTracks})
   }
 
   private inner class GetIdQuery<out T : Any>(
     @JvmField
-    val name: String,
+    public val name: String,
     mapper: (SqlCursor) -> T
   ) : Query<T>(getId, mapper) {
-    override fun execute(): SqlCursor = driver.executeQuery(-473310988,
+    public override fun execute(): SqlCursor = driver.executeQuery(-473310988,
         """SELECT id FROM artist WHERE name = ?""", 1) {
       bindString(1, name)
     }
 
-    override fun toString(): String = "artist.sq:getId"
+    public override fun toString(): String = "artist.sq:getId"
   }
 }
 
@@ -234,7 +236,7 @@ private class ProfileQueriesImpl(
 
   internal val getFriends: MutableList<Query<*>> = copyOnWriteList()
 
-  override fun <T : Any> getProfile(mapper: (
+  public override fun <T : Any> getProfile(mapper: (
     userName: String,
     parentUserName: String?,
     realName: String?,
@@ -255,8 +257,8 @@ private class ProfileQueriesImpl(
     )
   }
 
-  override fun getProfile(): Query<Profile> = getProfile { userName, parentUserName, realName,
-      lowResImage, highResImage, playCount, registerDate ->
+  public override fun getProfile(): Query<Profile> = getProfile { userName, parentUserName,
+      realName, lowResImage, highResImage, playCount, registerDate ->
     Profile(
       userName,
       parentUserName,
@@ -268,7 +270,7 @@ private class ProfileQueriesImpl(
     )
   }
 
-  override fun <T : Any> getFriends(parentUserName: String?, mapper: (
+  public override fun <T : Any> getFriends(parentUserName: String?, mapper: (
     userName: String,
     parentUserName: String?,
     realName: String?,
@@ -288,8 +290,9 @@ private class ProfileQueriesImpl(
     )
   }
 
-  override fun getFriends(parentUserName: String?): Query<Profile> = getFriends(parentUserName) {
-      userName, parentUserName_, realName, lowResImage, highResImage, playCount, registerDate ->
+  public override fun getFriends(parentUserName: String?): Query<Profile> =
+      getFriends(parentUserName) { userName, parentUserName_, realName, lowResImage, highResImage,
+      playCount, registerDate ->
     Profile(
       userName,
       parentUserName_,
@@ -301,7 +304,7 @@ private class ProfileQueriesImpl(
     )
   }
 
-  override fun deleteFriends(parentUserName: String?) {
+  public override fun deleteFriends(parentUserName: String?): Unit {
     driver.execute(null,
         """DELETE FROM profile WHERE parentUserName ${ if (parentUserName == null) "IS" else "=" } ?""",
         1) {
@@ -311,13 +314,13 @@ private class ProfileQueriesImpl(
         database.profileQueries.getFriends})
   }
 
-  override fun deleteAll() {
+  public override fun deleteAll(): Unit {
     driver.execute(1716453831, """DELETE FROM profile""", 0)
     notifyQueries(1716453831, {database.profileQueries.getProfile +
         database.profileQueries.getFriends})
   }
 
-  override fun upsert(
+  public override fun upsert(
     parentUsername: String?,
     realName: String?,
     lowResImage: String?,
@@ -326,7 +329,7 @@ private class ProfileQueriesImpl(
     registerDate: Long?,
     userName: String,
     parentUserName: String?
-  ) {
+  ): Unit {
     driver.execute(-1086870225, """
     |UPDATE profile
     |    SET parentUserName = ?,
@@ -364,16 +367,16 @@ private class ProfileQueriesImpl(
 
   private inner class GetFriendsQuery<out T : Any>(
     @JvmField
-    val parentUserName: String?,
+    public val parentUserName: String?,
     mapper: (SqlCursor) -> T
   ) : Query<T>(getFriends, mapper) {
-    override fun execute(): SqlCursor = driver.executeQuery(null,
+    public override fun execute(): SqlCursor = driver.executeQuery(null,
         """SELECT * FROM profile WHERE parentUserName ${ if (parentUserName == null) "IS" else "=" } ?""",
         1) {
       bindString(1, parentUserName)
     }
 
-    override fun toString(): String = "profile.sq:getFriends"
+    public override fun toString(): String = "profile.sq:getFriends"
   }
 }
 
@@ -385,12 +388,12 @@ private class ScrobbleQueriesImpl(
 
   internal val scrobbleData: MutableList<Query<*>> = copyOnWriteList()
 
-  override fun getScrobblesCount(): Query<Long> = Query(139991260, getScrobblesCount, driver,
+  public override fun getScrobblesCount(): Query<Long> = Query(139991260, getScrobblesCount, driver,
       "scrobble.sq", "getScrobblesCount", "SELECT COUNT(id) FROM scrobble") { cursor ->
     cursor.getLong(0)!!
   }
 
-  override fun <T : Any> scrobbleData(mapper: (
+  public override fun <T : Any> scrobbleData(mapper: (
     listenedAt: Long,
     nowPlaying: Boolean,
     loved: Boolean?,
@@ -424,8 +427,8 @@ private class ScrobbleQueriesImpl(
     )
   }
 
-  override fun scrobbleData(): Query<ScrobbleData> = scrobbleData { listenedAt, nowPlaying, loved,
-      track, artist, album, lowArtwork ->
+  public override fun scrobbleData(): Query<ScrobbleData> = scrobbleData { listenedAt, nowPlaying,
+      loved, track, artist, album, lowArtwork ->
     ScrobbleData(
       listenedAt,
       nowPlaying,
@@ -437,11 +440,11 @@ private class ScrobbleQueriesImpl(
     )
   }
 
-  override fun insert(
+  public override fun insert(
     trackId: Long,
     listenedAt: Long,
     nowPlaying: Boolean
-  ) {
+  ): Unit {
     driver.execute(-1853325067,
         """INSERT INTO scrobble(trackId, listenedAt, nowPlaying) VALUES (?, ?, ?)""", 3) {
       bindLong(1, trackId)
@@ -452,7 +455,7 @@ private class ScrobbleQueriesImpl(
         database.scrobbleQueries.scrobbleData})
   }
 
-  override fun deleteAll() {
+  public override fun deleteAll(): Unit {
     driver.execute(-576659398, """DELETE FROM scrobble""", 0)
     notifyQueries(-576659398, {database.scrobbleQueries.getScrobblesCount +
         database.scrobbleQueries.scrobbleData})
@@ -471,12 +474,12 @@ private class TopQueriesImpl(
 
   internal val trackTop: MutableList<Query<*>> = copyOnWriteList()
 
-  override fun getTopCount(type: TopType, period: TopPeriod): Query<Long> = GetTopCountQuery(type,
-      period) { cursor ->
+  public override fun getTopCount(type: TopType, period: TopPeriod): Query<Long> =
+      GetTopCountQuery(type, period) { cursor ->
     cursor.getLong(0)!!
   }
 
-  override fun <T : Any> artistTop(period: TopPeriod, mapper: (
+  public override fun <T : Any> artistTop(period: TopPeriod, mapper: (
     name: String?,
     rank: Int,
     playCount: Long?,
@@ -490,8 +493,8 @@ private class TopQueriesImpl(
     )
   }
 
-  override fun artistTop(period: TopPeriod): Query<ArtistTop> = artistTop(period) { name, rank,
-      playCount, lowArtwork ->
+  public override fun artistTop(period: TopPeriod): Query<ArtistTop> = artistTop(period) { name,
+      rank, playCount, lowArtwork ->
     ArtistTop(
       name,
       rank,
@@ -500,7 +503,7 @@ private class TopQueriesImpl(
     )
   }
 
-  override fun <T : Any> albumTop(period: TopPeriod, mapper: (
+  public override fun <T : Any> albumTop(period: TopPeriod, mapper: (
     artist: String?,
     album: String?,
     lowArtwork: String?,
@@ -516,8 +519,8 @@ private class TopQueriesImpl(
     )
   }
 
-  override fun albumTop(period: TopPeriod): Query<AlbumTop> = albumTop(period) { artist, album,
-      lowArtwork, rank, playCount ->
+  public override fun albumTop(period: TopPeriod): Query<AlbumTop> = albumTop(period) { artist,
+      album, lowArtwork, rank, playCount ->
     AlbumTop(
       artist,
       album,
@@ -527,7 +530,7 @@ private class TopQueriesImpl(
     )
   }
 
-  override fun <T : Any> trackTop(period: TopPeriod, mapper: (
+  public override fun <T : Any> trackTop(period: TopPeriod, mapper: (
     artist: String?,
     track: String?,
     rank: Int,
@@ -543,8 +546,8 @@ private class TopQueriesImpl(
     )
   }
 
-  override fun trackTop(period: TopPeriod): Query<TrackTop> = trackTop(period) { artist, track,
-      rank, playCount, lowArtwork ->
+  public override fun trackTop(period: TopPeriod): Query<TrackTop> = trackTop(period) { artist,
+      track, rank, playCount, lowArtwork ->
     TrackTop(
       artist,
       track,
@@ -554,13 +557,13 @@ private class TopQueriesImpl(
     )
   }
 
-  override fun insert(
+  public override fun insert(
     type: TopType,
     period: TopPeriod,
     rank: Int,
     itemId: Long?,
     playCount: Long?
-  ) {
+  ): Unit {
     driver.execute(1869053748,
         """INSERT INTO top(type, period, rank, itemId, playCount) VALUES (?, ?, ?, ?, ?)""", 5) {
       bindLong(1, database.topAdapter.typeAdapter.encode(type))
@@ -573,7 +576,7 @@ private class TopQueriesImpl(
         database.topQueries.albumTop + database.topQueries.trackTop})
   }
 
-  override fun deleteTop(type: TopType, period: TopPeriod) {
+  public override fun deleteTop(type: TopType, period: TopPeriod): Unit {
     driver.execute(1050021199, """DELETE FROM top WHERE type = ? AND period = ?""", 2) {
       bindLong(1, database.topAdapter.typeAdapter.encode(type))
       bindLong(2, database.topAdapter.periodAdapter.encode(period))
@@ -582,13 +585,13 @@ private class TopQueriesImpl(
         database.topQueries.albumTop + database.topQueries.trackTop})
   }
 
-  override fun upsert(
+  public override fun upsert(
     itemId: Long?,
     playCount: Long?,
     type: TopType,
     period: TopPeriod,
     rank: Int
-  ) {
+  ): Unit {
     driver.execute(2078219995, """
     |UPDATE top
     |    SET itemId = ?, playCount = ?
@@ -616,26 +619,26 @@ private class TopQueriesImpl(
 
   private inner class GetTopCountQuery<out T : Any>(
     @JvmField
-    val type: TopType,
+    public val type: TopType,
     @JvmField
-    val period: TopPeriod,
+    public val period: TopPeriod,
     mapper: (SqlCursor) -> T
   ) : Query<T>(getTopCount, mapper) {
-    override fun execute(): SqlCursor = driver.executeQuery(1971077781,
+    public override fun execute(): SqlCursor = driver.executeQuery(1971077781,
         """SELECT COUNT(id) FROM top WHERE type = ? AND period = ?""", 2) {
       bindLong(1, database.topAdapter.typeAdapter.encode(type))
       bindLong(2, database.topAdapter.periodAdapter.encode(period))
     }
 
-    override fun toString(): String = "top.sq:getTopCount"
+    public override fun toString(): String = "top.sq:getTopCount"
   }
 
   private inner class ArtistTopQuery<out T : Any>(
     @JvmField
-    val period: TopPeriod,
+    public val period: TopPeriod,
     mapper: (SqlCursor) -> T
   ) : Query<T>(artistTop, mapper) {
-    override fun execute(): SqlCursor = driver.executeQuery(1983249971, """
+    public override fun execute(): SqlCursor = driver.executeQuery(1983249971, """
     |SELECT
     |    ar.name,
     |    t.rank,
@@ -653,15 +656,15 @@ private class TopQueriesImpl(
       bindLong(1, database.topAdapter.periodAdapter.encode(period))
     }
 
-    override fun toString(): String = "top.sq:artistTop"
+    public override fun toString(): String = "top.sq:artistTop"
   }
 
   private inner class AlbumTopQuery<out T : Any>(
     @JvmField
-    val period: TopPeriod,
+    public val period: TopPeriod,
     mapper: (SqlCursor) -> T
   ) : Query<T>(albumTop, mapper) {
-    override fun execute(): SqlCursor = driver.executeQuery(1854605857, """
+    public override fun execute(): SqlCursor = driver.executeQuery(1854605857, """
     |SELECT
     |    ar.name AS artist,
     |    al.name AS album,
@@ -676,15 +679,15 @@ private class TopQueriesImpl(
       bindLong(1, database.topAdapter.periodAdapter.encode(period))
     }
 
-    override fun toString(): String = "top.sq:albumTop"
+    public override fun toString(): String = "top.sq:albumTop"
   }
 
   private inner class TrackTopQuery<out T : Any>(
     @JvmField
-    val period: TopPeriod,
+    public val period: TopPeriod,
     mapper: (SqlCursor) -> T
   ) : Query<T>(trackTop, mapper) {
-    override fun execute(): SqlCursor = driver.executeQuery(1593006533, """
+    public override fun execute(): SqlCursor = driver.executeQuery(1593006533, """
     |SELECT
     |    ar.name AS artist,
     |    tr.name AS track,
@@ -700,7 +703,7 @@ private class TopQueriesImpl(
       bindLong(1, database.topAdapter.periodAdapter.encode(period))
     }
 
-    override fun toString(): String = "top.sq:trackTop"
+    public override fun toString(): String = "top.sq:trackTop"
   }
 }
 
@@ -714,18 +717,18 @@ private class TrackQueriesImpl(
 
   internal val lovedTracks: MutableList<Query<*>> = copyOnWriteList()
 
-  override fun getLovedTracksPageCount(): Query<Long> = Query(-1872453589, getLovedTracksPageCount,
-      driver, "track.sq", "getLovedTracksPageCount",
+  public override fun getLovedTracksPageCount(): Query<Long> = Query(-1872453589,
+      getLovedTracksPageCount, driver, "track.sq", "getLovedTracksPageCount",
       "SELECT COUNT(track.id) FROM track WHERE lovedAt NOT NULL") { cursor ->
     cursor.getLong(0)!!
   }
 
-  override fun getId(artistId: Long, name: String): Query<Long> = GetIdQuery(artistId, name) {
-      cursor ->
+  public override fun getId(artistId: Long, name: String): Query<Long> = GetIdQuery(artistId,
+      name) { cursor ->
     cursor.getLong(0)!!
   }
 
-  override fun <T : Any> lovedTracks(mapper: (
+  public override fun <T : Any> lovedTracks(mapper: (
     artist: String?,
     track: String,
     loved: Boolean,
@@ -752,8 +755,8 @@ private class TrackQueriesImpl(
     )
   }
 
-  override fun lovedTracks(): Query<LovedTracks> = lovedTracks { artist, track, loved, lovedAt,
-      lowArtwork ->
+  public override fun lovedTracks(): Query<LovedTracks> = lovedTracks { artist, track, loved,
+      lovedAt, lowArtwork ->
     LovedTracks(
       artist,
       track,
@@ -763,13 +766,13 @@ private class TrackQueriesImpl(
     )
   }
 
-  override fun insert(
+  public override fun insert(
     artistId: Long,
     albumId: Long?,
     name: String,
     loved: Boolean,
     lovedAt: Long?
-  ) {
+  ): Unit {
     driver.execute(1405765034,
         """INSERT OR IGNORE INTO track(artistId, albumId, name, loved, lovedAt) VALUES (?, ?, ?, ?, ?)""",
         5) {
@@ -784,7 +787,7 @@ private class TrackQueriesImpl(
         database.trackQueries.getId + database.trackQueries.lovedTracks})
   }
 
-  override fun dropLovedTrackDates() {
+  public override fun dropLovedTrackDates(): Unit {
     driver.execute(50389644, """
     |UPDATE track SET lovedAt = NULL WHERE id IN (
     |    SELECT id FROM track WHERE lovedAt NOT NULL
@@ -795,11 +798,11 @@ private class TrackQueriesImpl(
         database.trackQueries.lovedTracks})
   }
 
-  override fun updateTrackLove(
+  public override fun updateTrackLove(
     loved: Boolean,
     track: String,
     artist: String
-  ) {
+  ): Unit {
     driver.execute(-1313635133, """
     |UPDATE track SET loved = ? WHERE name = ? AND artistId = (
     |    SELECT artistId FROM artist WHERE name = ?
@@ -814,13 +817,13 @@ private class TrackQueriesImpl(
         database.trackQueries.getId + database.trackQueries.lovedTracks})
   }
 
-  override fun upsertRecentTrack(
+  public override fun upsertRecentTrack(
     albumId: Long?,
     loved: Boolean,
     artistId: Long,
     name: String,
     lovedAt: Long?
-  ) {
+  ): Unit {
     driver.execute(-440884447, """
     |UPDATE track
     |    SET albumId = ?,
@@ -848,13 +851,13 @@ private class TrackQueriesImpl(
         database.trackQueries.getId + database.trackQueries.lovedTracks})
   }
 
-  override fun upsertLovedTrack(
+  public override fun upsertLovedTrack(
     loved: Boolean,
     lovedAt: Long?,
     artistId: Long,
     name: String,
     albumId: Long?
-  ) {
+  ): Unit {
     driver.execute(688319210, """
     |UPDATE track
     |    SET loved = ?,
@@ -884,17 +887,17 @@ private class TrackQueriesImpl(
 
   private inner class GetIdQuery<out T : Any>(
     @JvmField
-    val artistId: Long,
+    public val artistId: Long,
     @JvmField
-    val name: String,
+    public val name: String,
     mapper: (SqlCursor) -> T
   ) : Query<T>(getId, mapper) {
-    override fun execute(): SqlCursor = driver.executeQuery(-1480788480,
+    public override fun execute(): SqlCursor = driver.executeQuery(-1480788480,
         """SELECT id FROM track WHERE artistId = ? AND name = ?""", 2) {
       bindLong(1, artistId)
       bindString(2, name)
     }
 
-    override fun toString(): String = "track.sq:getId"
+    public override fun toString(): String = "track.sq:getId"
   }
 }

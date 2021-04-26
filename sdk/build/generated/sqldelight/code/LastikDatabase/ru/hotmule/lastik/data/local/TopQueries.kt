@@ -1,4 +1,4 @@
-package ru.hotmule.lastik.data.local
+package ru.hotmule.lastik.`data`.local
 
 import com.squareup.sqldelight.Query
 import com.squareup.sqldelight.Transacter
@@ -6,22 +6,23 @@ import kotlin.Any
 import kotlin.Int
 import kotlin.Long
 import kotlin.String
+import kotlin.Unit
 import ru.hotmule.lastik.domain.TopPeriod
 import ru.hotmule.lastik.domain.TopType
 
-interface TopQueries : Transacter {
-  fun getTopCount(type: TopType, period: TopPeriod): Query<Long>
+public interface TopQueries : Transacter {
+  public fun getTopCount(type: TopType, period: TopPeriod): Query<Long>
 
-  fun <T : Any> artistTop(period: TopPeriod, mapper: (
+  public fun <T : Any> artistTop(period: TopPeriod, mapper: (
     name: String?,
     rank: Int,
     playCount: Long?,
     lowArtwork: String?
   ) -> T): Query<T>
 
-  fun artistTop(period: TopPeriod): Query<ArtistTop>
+  public fun artistTop(period: TopPeriod): Query<ArtistTop>
 
-  fun <T : Any> albumTop(period: TopPeriod, mapper: (
+  public fun <T : Any> albumTop(period: TopPeriod, mapper: (
     artist: String?,
     album: String?,
     lowArtwork: String?,
@@ -29,9 +30,9 @@ interface TopQueries : Transacter {
     playCount: Long?
   ) -> T): Query<T>
 
-  fun albumTop(period: TopPeriod): Query<AlbumTop>
+  public fun albumTop(period: TopPeriod): Query<AlbumTop>
 
-  fun <T : Any> trackTop(period: TopPeriod, mapper: (
+  public fun <T : Any> trackTop(period: TopPeriod, mapper: (
     artist: String?,
     track: String?,
     rank: Int,
@@ -39,23 +40,23 @@ interface TopQueries : Transacter {
     lowArtwork: String?
   ) -> T): Query<T>
 
-  fun trackTop(period: TopPeriod): Query<TrackTop>
+  public fun trackTop(period: TopPeriod): Query<TrackTop>
 
-  fun insert(
+  public fun insert(
     type: TopType,
     period: TopPeriod,
     rank: Int,
     itemId: Long?,
     playCount: Long?
-  )
+  ): Unit
 
-  fun deleteTop(type: TopType, period: TopPeriod)
+  public fun deleteTop(type: TopType, period: TopPeriod): Unit
 
-  fun upsert(
+  public fun upsert(
     itemId: Long?,
     playCount: Long?,
     type: TopType,
     period: TopPeriod,
     rank: Int
-  )
+  ): Unit
 }

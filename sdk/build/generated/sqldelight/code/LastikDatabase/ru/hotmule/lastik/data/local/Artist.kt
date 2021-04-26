@@ -1,13 +1,13 @@
-package ru.hotmule.lastik.data.local
+package ru.hotmule.lastik.`data`.local
 
 import kotlin.Long
 import kotlin.String
 
-data class Artist(
-  val id: Long,
-  val name: String
+public data class Artist(
+  public val id: Long,
+  public val name: String
 ) {
-  override fun toString(): String = """
+  public override fun toString(): String = """
   |Artist [
   |  id: $id
   |  name: $name

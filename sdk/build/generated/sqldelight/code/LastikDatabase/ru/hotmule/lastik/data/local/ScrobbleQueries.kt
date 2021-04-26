@@ -1,4 +1,4 @@
-package ru.hotmule.lastik.data.local
+package ru.hotmule.lastik.`data`.local
 
 import com.squareup.sqldelight.Query
 import com.squareup.sqldelight.Transacter
@@ -6,11 +6,12 @@ import kotlin.Any
 import kotlin.Boolean
 import kotlin.Long
 import kotlin.String
+import kotlin.Unit
 
-interface ScrobbleQueries : Transacter {
-  fun getScrobblesCount(): Query<Long>
+public interface ScrobbleQueries : Transacter {
+  public fun getScrobblesCount(): Query<Long>
 
-  fun <T : Any> scrobbleData(mapper: (
+  public fun <T : Any> scrobbleData(mapper: (
     listenedAt: Long,
     nowPlaying: Boolean,
     loved: Boolean?,
@@ -20,13 +21,13 @@ interface ScrobbleQueries : Transacter {
     lowArtwork: String?
   ) -> T): Query<T>
 
-  fun scrobbleData(): Query<ScrobbleData>
+  public fun scrobbleData(): Query<ScrobbleData>
 
-  fun insert(
+  public fun insert(
     trackId: Long,
     listenedAt: Long,
     nowPlaying: Boolean
-  )
+  ): Unit
 
-  fun deleteAll()
+  public fun deleteAll(): Unit
 }

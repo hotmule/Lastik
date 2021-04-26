@@ -1,17 +1,18 @@
-package ru.hotmule.lastik.data.local
+package ru.hotmule.lastik.`data`.local
 
 import com.squareup.sqldelight.Query
 import com.squareup.sqldelight.Transacter
 import kotlin.Long
 import kotlin.String
+import kotlin.Unit
 
-interface AlbumQueries : Transacter {
-  fun getId(artistId: Long, name: String): Query<Long>
+public interface AlbumQueries : Transacter {
+  public fun getId(artistId: Long, name: String): Query<Long>
 
-  fun insert(
+  public fun insert(
     artistId: Long,
     name: String,
     lowArtwork: String?,
     highArtwork: String?
-  )
+  ): Unit
 }

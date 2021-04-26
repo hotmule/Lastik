@@ -12,12 +12,12 @@ kotlin {
         }
         named("androidMain") {
             dependencies {
-                implementation(Libs.SqlDelight.Driver.android)
+                api(Libs.SqlDelight.Driver.android)
             }
         }
         named("desktopMain") {
             dependencies {
-                implementation(Libs.SqlDelight.Driver.sqlite)
+                api(Libs.SqlDelight.Driver.sqlite)
             }
         }
     }

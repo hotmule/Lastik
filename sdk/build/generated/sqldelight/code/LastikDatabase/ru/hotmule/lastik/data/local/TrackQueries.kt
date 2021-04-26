@@ -1,4 +1,4 @@
-package ru.hotmule.lastik.data.local
+package ru.hotmule.lastik.`data`.local
 
 import com.squareup.sqldelight.Query
 import com.squareup.sqldelight.Transacter
@@ -6,13 +6,14 @@ import kotlin.Any
 import kotlin.Boolean
 import kotlin.Long
 import kotlin.String
+import kotlin.Unit
 
-interface TrackQueries : Transacter {
-  fun getLovedTracksPageCount(): Query<Long>
+public interface TrackQueries : Transacter {
+  public fun getLovedTracksPageCount(): Query<Long>
 
-  fun getId(artistId: Long, name: String): Query<Long>
+  public fun getId(artistId: Long, name: String): Query<Long>
 
-  fun <T : Any> lovedTracks(mapper: (
+  public fun <T : Any> lovedTracks(mapper: (
     artist: String?,
     track: String,
     loved: Boolean,
@@ -20,37 +21,37 @@ interface TrackQueries : Transacter {
     lowArtwork: String?
   ) -> T): Query<T>
 
-  fun lovedTracks(): Query<LovedTracks>
+  public fun lovedTracks(): Query<LovedTracks>
 
-  fun insert(
+  public fun insert(
     artistId: Long,
     albumId: Long?,
     name: String,
     loved: Boolean,
     lovedAt: Long?
-  )
+  ): Unit
 
-  fun dropLovedTrackDates()
+  public fun dropLovedTrackDates(): Unit
 
-  fun updateTrackLove(
+  public fun updateTrackLove(
     loved: Boolean,
     track: String,
     artist: String
-  )
+  ): Unit
 
-  fun upsertRecentTrack(
+  public fun upsertRecentTrack(
     albumId: Long?,
     loved: Boolean,
     artistId: Long,
     name: String,
     lovedAt: Long?
-  )
+  ): Unit
 
-  fun upsertLovedTrack(
+  public fun upsertLovedTrack(
     loved: Boolean,
     lovedAt: Long?,
     artistId: Long,
     name: String,
     albumId: Long?
-  )
+  ): Unit
 }

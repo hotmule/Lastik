@@ -1,18 +1,18 @@
-package ru.hotmule.lastik.data.local
+package ru.hotmule.lastik.`data`.local
 
 import kotlin.Long
 import kotlin.String
 
-data class Profile(
-  val userName: String,
-  val parentUserName: String?,
-  val realName: String?,
-  val lowResImage: String?,
-  val highResImage: String?,
-  val playCount: Long?,
-  val registerDate: Long?
+public data class Profile(
+  public val userName: String,
+  public val parentUserName: String?,
+  public val realName: String?,
+  public val lowResImage: String?,
+  public val highResImage: String?,
+  public val playCount: Long?,
+  public val registerDate: Long?
 ) {
-  override fun toString(): String = """
+  public override fun toString(): String = """
   |Profile [
   |  userName: $userName
   |  parentUserName: $parentUserName

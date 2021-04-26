@@ -1,17 +1,17 @@
-package ru.hotmule.lastik.data.local
+package ru.hotmule.lastik.`data`.local
 
 import kotlin.Int
 import kotlin.Long
 import kotlin.String
 
-data class AlbumTop(
-  val artist: String?,
-  val album: String?,
-  val lowArtwork: String?,
-  val rank: Int,
-  val playCount: Long?
+public data class AlbumTop(
+  public val artist: String?,
+  public val album: String?,
+  public val lowArtwork: String?,
+  public val rank: Int,
+  public val playCount: Long?
 ) {
-  override fun toString(): String = """
+  public override fun toString(): String = """
   |AlbumTop [
   |  artist: $artist
   |  album: $album

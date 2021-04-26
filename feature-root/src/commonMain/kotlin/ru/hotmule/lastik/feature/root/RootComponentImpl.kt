@@ -10,6 +10,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import ru.hotmule.lastik.data.local.LastikDatabase
 import ru.hotmule.lastik.data.prefs.PrefsStore
 import ru.hotmule.lastik.data.remote.LastikHttpClient
 import ru.hotmule.lastik.feature.auth.AuthComponent
@@ -33,6 +34,7 @@ class RootComponentImpl internal constructor(
         componentContext: ComponentContext,
         storeFactory: StoreFactory,
         httpClient: LastikHttpClient,
+        database: LastikDatabase,
         prefsStore: PrefsStore,
         webBrowser: WebBrowser
     ) : this(
@@ -54,6 +56,7 @@ class RootComponentImpl internal constructor(
                 componentContext = childContext,
                 storeFactory = storeFactory,
                 httpClient = httpClient,
+                database = database,
                 prefsStore = prefsStore
             )
         }

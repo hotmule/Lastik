@@ -8,6 +8,7 @@ import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.states
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import ru.hotmule.lastik.data.local.LastikDatabase
 import ru.hotmule.lastik.data.prefs.PrefsStore
 import ru.hotmule.lastik.data.remote.LastikHttpClient
 import ru.hotmule.lastik.feature.library.LibraryComponent.*
@@ -28,6 +29,7 @@ class LibraryComponentImpl internal constructor(
         componentContext: ComponentContext,
         storeFactory: StoreFactory,
         httpClient: LastikHttpClient,
+        database: LastikDatabase,
         prefsStore: PrefsStore
     ) : this(
         componentContext = componentContext,
@@ -40,6 +42,7 @@ class LibraryComponentImpl internal constructor(
                         componentContext = childContext,
                         storeFactory = storeFactory,
                         httpClient = httpClient,
+                        database = database,
                         prefsStore = prefsStore,
                         index = shelfIndex
                     )

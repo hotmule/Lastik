@@ -31,6 +31,7 @@ object Module {
 
     object Data {
         const val prefs = ":data-prefs"
+        const val local = ":data-local"
         const val remote = ":data-remote"
     }
 
@@ -99,7 +100,7 @@ object Libs {
     }
 
     object SqlDelight {
-        private const val version = "1.4.4"
+        private const val version = "1.5.0"
         const val gradlePlugin = "com.squareup.sqldelight:gradle-plugin:$version"
         const val coroutines = "com.squareup.sqldelight:coroutines-extensions:$version"
 
@@ -120,13 +121,13 @@ object Libs {
     }
 
     object Krypto {
-        private const val version = "2.0.6"
+        private const val version = "2.0.7"
         const val common = "com.soywiz.korlibs.krypto:krypto:$version"
         const val android = "com.soywiz.korlibs.krypto:krypto-android:$version"
     }
 
     object Settings {
-        private const val version = "0.7.3"
+        private const val version = "0.7.5"
         const val common = "com.russhwolf:multiplatform-settings:$version"
         const val coroutines = "com.russhwolf:multiplatform-settings-coroutines:$version"
     }

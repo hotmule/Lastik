@@ -1,13 +1,14 @@
-package ru.hotmule.lastik.data.local
+package ru.hotmule.lastik.`data`.local
 
 import com.squareup.sqldelight.Query
 import com.squareup.sqldelight.Transacter
 import kotlin.Any
 import kotlin.Long
 import kotlin.String
+import kotlin.Unit
 
-interface ProfileQueries : Transacter {
-  fun <T : Any> getProfile(mapper: (
+public interface ProfileQueries : Transacter {
+  public fun <T : Any> getProfile(mapper: (
     userName: String,
     parentUserName: String?,
     realName: String?,
@@ -17,9 +18,9 @@ interface ProfileQueries : Transacter {
     registerDate: Long?
   ) -> T): Query<T>
 
-  fun getProfile(): Query<Profile>
+  public fun getProfile(): Query<Profile>
 
-  fun <T : Any> getFriends(parentUserName: String?, mapper: (
+  public fun <T : Any> getFriends(parentUserName: String?, mapper: (
     userName: String,
     parentUserName: String?,
     realName: String?,
@@ -29,13 +30,13 @@ interface ProfileQueries : Transacter {
     registerDate: Long?
   ) -> T): Query<T>
 
-  fun getFriends(parentUserName: String?): Query<Profile>
+  public fun getFriends(parentUserName: String?): Query<Profile>
 
-  fun deleteFriends(parentUserName: String?)
+  public fun deleteFriends(parentUserName: String?): Unit
 
-  fun deleteAll()
+  public fun deleteAll(): Unit
 
-  fun upsert(
+  public fun upsert(
     parentUsername: String?,
     realName: String?,
     lowResImage: String?,
@@ -44,5 +45,5 @@ interface ProfileQueries : Transacter {
     registerDate: Long?,
     userName: String,
     parentUserName: String?
-  )
+  ): Unit
 }

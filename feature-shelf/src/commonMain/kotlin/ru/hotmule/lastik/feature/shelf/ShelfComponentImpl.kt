@@ -5,6 +5,7 @@ import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.states
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import ru.hotmule.lastik.data.local.LastikDatabase
 import ru.hotmule.lastik.data.prefs.PrefsStore
 import ru.hotmule.lastik.data.remote.LastikHttpClient
 import ru.hotmule.lastik.feature.shelf.ShelfComponent.*
@@ -15,6 +16,7 @@ class ShelfComponentImpl(
     componentContext: ComponentContext,
     storeFactory: StoreFactory,
     httpClient: LastikHttpClient,
+    database: LastikDatabase,
     prefsStore: PrefsStore,
     index: Int
 ) : ShelfComponent, ComponentContext by componentContext {
@@ -22,8 +24,9 @@ class ShelfComponentImpl(
     private val store = instanceKeeper.getStore {
         ShelfStoreFactory(
             storeFactory = storeFactory,
-            prefsStore = prefsStore,
-            userApi = httpClient.userApi,
+            database = database,
+            prefs = prefsStore,
+            api = httpClient.userApi,
             index = index
         ).create()
     }
