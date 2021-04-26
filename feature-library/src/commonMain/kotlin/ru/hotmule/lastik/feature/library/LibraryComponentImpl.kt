@@ -7,11 +7,10 @@ import com.arkivanov.decompose.value.Value
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.states
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import ru.hotmule.lastik.data.prefs.PrefsStore
+import ru.hotmule.lastik.data.remote.LastikHttpClient
 import ru.hotmule.lastik.feature.library.LibraryComponent.*
-import ru.hotmule.lastik.feature.library.store.LibraryStore
 import ru.hotmule.lastik.feature.library.store.LibraryStore.*
 import ru.hotmule.lastik.feature.library.store.LibraryStoreFactory
 import ru.hotmule.lastik.feature.shelf.ShelfComponent
@@ -22,48 +21,45 @@ class LibraryComponentImpl internal constructor(
     private val componentContext: ComponentContext,
     private val storeFactory: StoreFactory,
     private val prefsStore: PrefsStore,
-    private val scrobbles: (ComponentContext) -> ShelfComponent,
-    private val artists: (ComponentContext) -> ShelfComponent,
-    private val albums: (ComponentContext) -> ShelfComponent,
-    private val tracks: (ComponentContext) -> ShelfComponent,
-    private val profile: (ComponentContext) -> ShelfComponent,
+    private val shelves: List<(ComponentContext) -> ShelfComponent>
 ) : LibraryComponent, ComponentContext by componentContext {
-
-    companion object {
-        private fun createShelf(
-            storeFactory: StoreFactory
-        ) = { childContext: ComponentContext ->
-            ShelfComponentImpl(
-                componentContext = childContext,
-                storeFactory = storeFactory
-            )
-        }
-    }
 
     constructor(
         componentContext: ComponentContext,
         storeFactory: StoreFactory,
+        httpClient: LastikHttpClient,
         prefsStore: PrefsStore
     ) : this(
         componentContext = componentContext,
         storeFactory = storeFactory,
         prefsStore = prefsStore,
-        scrobbles = createShelf(storeFactory),
-        artists = createShelf(storeFactory),
-        albums = createShelf(storeFactory),
-        tracks = createShelf(storeFactory),
-        profile = createShelf(storeFactory)
+        shelves = mutableListOf<(ComponentContext) -> ShelfComponent>().apply {
+            for (shelfIndex in 0..4) {
+                add { childContext: ComponentContext ->
+                    ShelfComponentImpl(
+                        componentContext = childContext,
+                        storeFactory = storeFactory,
+                        httpClient = httpClient,
+                        prefsStore = prefsStore,
+                        index = shelfIndex
+                    )
+                }
+            }
+        }
     )
 
-    private val router = router<Config, Child>(
+    private val router = router(
         initialConfiguration = Config.Scrobbles,
         componentFactory = { configuration, componentContext ->
+
+            val component = shelves[configuration.ordinal](componentContext)
+
             when (configuration) {
-                Config.Scrobbles -> Child.Scrobbles(scrobbles(componentContext))
-                Config.Artists -> Child.Artists(artists(componentContext))
-                Config.Albums -> Child.Albums(albums(componentContext))
-                Config.Tracks -> Child.Tracks(tracks(componentContext))
-                Config.Profile -> Child.Profile(profile(componentContext))
+                Config.Scrobbles -> Child.Scrobbles(component)
+                Config.Artists -> Child.Artists(component)
+                Config.Albums -> Child.Albums(component)
+                Config.Tracks -> Child.Tracks(component)
+                Config.Profile -> Child.Profile(component)
             }
         }
     )
@@ -89,15 +85,7 @@ class LibraryComponentImpl internal constructor(
 
     override fun onShelfSelect(index: Int) {
         store.accept(Intent.ChangeShelf(index))
-        router.replaceCurrent(
-            when (index) {
-                0 -> Config.Scrobbles
-                1 -> Config.Artists
-                2 -> Config.Albums
-                3 -> Config.Tracks
-                else -> Config.Profile
-            }
-        )
+        router.push(Config.values()[index])
     }
 
     override fun onPeriodSelectOpen() {
@@ -116,15 +104,6 @@ class LibraryComponentImpl internal constructor(
         store.accept(Intent.LogOut)
     }
 
-    private sealed class Config : Parcelable {
-        @Parcelize object Scrobbles : Config()
-        @Parcelize object Artists : Config()
-        @Parcelize object Albums : Config()
-        @Parcelize object Tracks : Config()
-        @Parcelize object Profile : Config()
-    }
-
-    /*
     @Parcelize
     enum class Config : Parcelable {
         Scrobbles,
@@ -133,5 +112,4 @@ class LibraryComponentImpl internal constructor(
         Tracks,
         Profile
     }
-    */
 }

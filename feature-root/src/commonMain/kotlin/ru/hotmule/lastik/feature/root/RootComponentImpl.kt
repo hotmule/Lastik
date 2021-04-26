@@ -53,6 +53,7 @@ class RootComponentImpl internal constructor(
             LibraryComponentImpl(
                 componentContext = childContext,
                 storeFactory = storeFactory,
+                httpClient = httpClient,
                 prefsStore = prefsStore
             )
         }

@@ -11,6 +11,7 @@ kotlin {
             dependencies {
                 implementation(project(Module.utils))
                 implementation(project(Module.Data.prefs))
+                implementation(project(Module.Data.remote))
                 implementation(project(Module.Feature.shelf))
                 implementation(Libs.Kotlin.Coroutines.core)
                 implementation(Libs.ArkIvanov.Decompose.common)
