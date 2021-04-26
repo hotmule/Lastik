@@ -10,6 +10,7 @@ include(
     ":feature-shelf",
 
     ":data-remote",
+    ":data-local",
     ":data-prefs",
 
     ":ui-compose",

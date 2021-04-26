@@ -13,6 +13,7 @@ buildscript {
         classpath(Libs.Kotlin.gradlePlugin)
         classpath(Libs.Kotlin.serialization)
         classpath(Libs.SqlDelight.gradlePlugin)
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.32")
     }
 }
 

@@ -1,0 +1,17 @@
+CREATE TABLE artist (
+    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    name TEXT NOT NULL,
+    UNIQUE (name)
+);
+
+insert:
+INSERT OR IGNORE INTO artist(name) VALUES (?);
+
+getId:
+SELECT id FROM artist WHERE name = ?;
+
+deleteLovedTracks:
+DELETE FROM artist WHERE EXISTS (
+    SELECT t.id FROM track t
+    WHERE artist.id = t.artistId AND t.lovedAt NOT NULL
+);
