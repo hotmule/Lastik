@@ -20,6 +20,7 @@ import ru.hotmule.lastik.feature.shelf.ShelfComponent
 import ru.hotmule.lastik.feature.shelf.ShelfComponent.*
 import ru.hotmule.lastik.feature.shelf.store.ShelfStore.*
 import ru.hotmule.lastik.utils.AppCoroutineDispatcher
+import ru.hotmule.lastik.utils.Formatter
 
 internal class ShelfStoreFactory(
     private val storeFactory: StoreFactory,
@@ -124,8 +125,11 @@ internal class ShelfStoreFactory(
                         image = it.lowArtwork ?: ShelfComponent.defaultImageUrl,
                         title = it.track ?: ShelfComponent.defaultTitle,
                         subtitle = it.artist,
-                        hint = if (it.listenedAt != 0L) it.listenedAt.toString() else null,
-                        loved = it.loved
+                        loved = it.loved,
+                        hint = if (it.listenedAt != 0L)
+                            Formatter.utsDateToString(it.listenedAt, "d MMM, HH:mm")
+                        else
+                            "Scrobbling now",
                     )
                 }
             }
@@ -138,6 +142,7 @@ internal class ShelfStoreFactory(
                     ShelfItem(
                         image = it.lowArtwork ?: ShelfComponent.defaultImageUrl,
                         title = it.name ?: ShelfComponent.defaultTitle,
+                        hint = "${Formatter.numberToCommasString(it.playCount)} scrobbles",
                         rank = it.rank,
                         playCount = it.playCount,
                     )
@@ -152,6 +157,7 @@ internal class ShelfStoreFactory(
                     ShelfItem(
                         image = it.lowArtwork ?: ShelfComponent.defaultImageUrl,
                         title = it.album ?: ShelfComponent.defaultTitle,
+                        hint = "${Formatter.numberToCommasString(it.playCount)} scrobbles",
                         subtitle = it.artist,
                         rank = it.rank,
                         playCount = it.playCount
@@ -167,6 +173,7 @@ internal class ShelfStoreFactory(
                     ShelfItem(
                         image = it.lowArtwork ?: ShelfComponent.defaultImageUrl,
                         title = it.track ?: ShelfComponent.defaultTitle,
+                        hint = "${Formatter.numberToCommasString(it.playCount)} scrobbles",
                         subtitle = it.artist,
                         rank = it.rank,
                         playCount = it.playCount
@@ -183,7 +190,7 @@ internal class ShelfStoreFactory(
                         image = it.lowArtwork ?: ShelfComponent.defaultImageUrl,
                         title = it.track,
                         subtitle = it.artist,
-                        hint = it.lovedAt.toString(),
+                        hint = Formatter.utsDateToString(it.lovedAt, "d MMM, HH:mm"),
                         loved = it.loved
                     )
                 }

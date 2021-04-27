@@ -149,24 +149,17 @@ private fun ShelfItemContent(
                 }
             }
 
-            /*
-            if (time != null || playCount != null || nowPlaying == true) {
+            hint?.let {
                 CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                     Text(
+                        text = it,
                         style = MaterialTheme.typography.body2,
                         modifier = Modifier
                             .align(Alignment.BottomEnd)
                             .padding(16.dp),
-                        text = when {
-                            time != null -> time!!.toDateString("d MMM, HH:mm")
-                            playCount != null -> playCount!!.toCommasString() + " " +
-                                    stringResource(R.string.scrobbles)
-                            else -> stringResource(R.string.scrobbling_now)
-                        }
                     )
                 }
             }
-            */
 
             Divider(
                 modifier = Modifier
