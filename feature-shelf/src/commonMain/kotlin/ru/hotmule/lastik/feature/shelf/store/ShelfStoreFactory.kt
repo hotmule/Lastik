@@ -5,12 +5,19 @@ import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
+import com.squareup.sqldelight.runtime.coroutines.asFlow
+import com.squareup.sqldelight.runtime.coroutines.mapToList
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import ru.hotmule.lastik.data.local.LastikDatabase
 import ru.hotmule.lastik.data.prefs.PrefsStore
 import ru.hotmule.lastik.data.remote.api.UserApi
 import ru.hotmule.lastik.data.remote.entities.Date
 import ru.hotmule.lastik.data.remote.entities.Image
+import ru.hotmule.lastik.data.remote.entities.LibraryItem
+import ru.hotmule.lastik.feature.shelf.ShelfComponent
+import ru.hotmule.lastik.feature.shelf.ShelfComponent.*
 import ru.hotmule.lastik.feature.shelf.store.ShelfStore.*
 import ru.hotmule.lastik.utils.AppCoroutineDispatcher
 
@@ -19,7 +26,8 @@ internal class ShelfStoreFactory(
     private val database: LastikDatabase,
     private val prefs: PrefsStore,
     private val api: UserApi,
-    private val index: Int
+    private val index: Int,
+    private val period: Long = prefs.getShelfPeriod(index).toLong()
 ) {
 
     fun create(): ShelfStore =
@@ -31,23 +39,23 @@ internal class ShelfStoreFactory(
             reducer = ReducerImpl
         ) {}
 
+    private object ReducerImpl : Reducer<State, Result> {
+
+        override fun State.reduce(result: Result): State = when (result) {
+            is Result.ItemsReceived -> copy(items = result.items)
+        }
+    }
+
     private inner class ExecutorImpl : SuspendExecutor<Intent, Unit, State, Result, Nothing>(
         AppCoroutineDispatcher.Main
     ) {
-
-        private val periodNames = arrayOf(
-            "overall", "7day", "1month", "3month", "6month", "12month"
-        )
 
         override suspend fun executeAction(
             action: Unit,
             getState: () -> State
         ) {
-            val periodName = periodNames[prefs.getShelfPeriod(index)]
-
-            when (index) {
-                0 -> updateRecentTracks()
-            }
+            shelfFlow().collect { dispatch(Result.ItemsReceived(it)) }
+            loadPage(1)
         }
 
         override suspend fun executeIntent(
@@ -57,40 +65,182 @@ internal class ShelfStoreFactory(
 
         }
 
-        private suspend fun updateRecentTracks() {
+        private fun shelfFlow() = when (index) {
+            0 -> scrobblesFlow()
+            1 -> topArtistsFlow()
+            2 -> topAlbumsFlow()
+            3 -> topTracksFlow()
+            else -> lovedTracksFlow()
+        }
+
+        private suspend fun loadPage(page: Int) {
             withContext(AppCoroutineDispatcher.IO) {
 
-                api.getRecentTracks(1)?.recent?.tracks?.forEach { track ->
+                val periodName = arrayOf(
+                    "overall", "7day", "1month", "3month", "6month", "12month"
+                )[period.toInt()]
 
-                    if (track.date?.uts == null && track.attributes?.nowPlaying == "true")
-                        track.date = Date(0)
+                val items: List<LibraryItem>?
+                val save: (LibraryItem) -> Unit
 
-                    database.transaction {
-
-                        val artistId = insertArtist(
-                            track.artist?.name
-                        )
-
-                        val albumId = insertAlbum(
-                            artistId,
-                            track.album?.name,
-                            track.images
-                        )
-
-                        val trackId = insertScrobbleTrack(
-                            artistId,
-                            albumId,
-                            track.name,
-                            track.loved,
-                        )
-
-                        insertScrobble(
-                            trackId,
-                            track.date?.uts,
-                            track.attributes?.nowPlaying
-                        )
+                when (index) {
+                    0 -> {
+                        items = api.getScrobbles(page)?.recent?.tracks
+                        save = ::saveScrobble
+                    }
+                    1 -> {
+                        items = api.getTopArtists(page, periodName)?.top?.artists
+                        save = ::saveTopArtist
+                    }
+                    2 -> {
+                        items = api.getTopAlbums(page, periodName)?.top?.albums
+                        save = ::saveTopAlbum
+                    }
+                    3 -> {
+                        items = api.getTopTracks(page, periodName)?.top?.tracks
+                        save = ::saveTopTrack
+                    }
+                    else -> {
+                        items = api.getLovedTracks(1)?.loved?.tracks
+                        save = ::saveLovedTrack
                     }
                 }
+
+                database.transaction {
+                    items?.forEach { item ->
+                        save(item)
+                    }
+                }
+            }
+        }
+
+        private fun scrobblesFlow() = database.scrobbleQueries.scrobbleData()
+            .asFlow()
+            .mapToList()
+            .map { scrobbles ->
+                scrobbles.map {
+                    ShelfItem(
+                        highlighted = it.nowPlaying,
+                        image = it.lowArtwork ?: "",
+                        title = it.track ?: "",
+                        subtitle = it.artist,
+                        hint = if (it.listenedAt != 0L) it.listenedAt.toString() else null,
+                        loved = it.loved
+                    )
+                }
+            }
+
+        private fun topArtistsFlow() = database.topQueries.artistTop(period)
+            .asFlow()
+            .mapToList()
+            .map { artists ->
+                artists.map {
+                    ShelfItem(
+                        image = it.lowArtwork ?: "",
+                        title = it.name ?: "",
+                        rank = it.rank,
+                        playCount = it.playCount,
+                    )
+                }
+            }
+
+        private fun topAlbumsFlow() = database.topQueries.albumTop(period)
+            .asFlow()
+            .mapToList()
+            .map { albums ->
+                albums.map {
+                    ShelfItem(
+                        image = it.lowArtwork ?: "",
+                        title = it.album ?: "",
+                        subtitle = it.artist,
+                        rank = it.rank,
+                        playCount = it.playCount
+                    )
+                }
+            }
+
+        private fun topTracksFlow() = database.topQueries.trackTop(period)
+            .asFlow()
+            .mapToList()
+            .map { tracks ->
+                tracks.map {
+                    ShelfItem(
+                        image = it.lowArtwork ?: "",
+                        title = it.track ?: "",
+                        subtitle = it.artist,
+                        rank = it.rank,
+                        playCount = it.playCount
+                    )
+                }
+            }
+
+        private fun lovedTracksFlow() = database.trackQueries.lovedTracks()
+            .asFlow()
+            .mapToList()
+            .map { tracks ->
+                tracks.map {
+                    ShelfItem(
+                        image = it.lowArtwork ?: "",
+                        title = it.track,
+                        subtitle = it.artist,
+                        hint = it.lovedAt.toString(),
+                        loved = it.loved
+                    )
+                }
+            }
+
+        private fun saveScrobble(scrobble: LibraryItem) {
+
+            if (scrobble.date?.uts == null && scrobble.attributes?.nowPlaying == "true")
+                scrobble.date = Date(0)
+
+            val artistId = insertArtist(scrobble.artist?.name)
+            val albumId = insertAlbum(artistId, scrobble.album?.name, scrobble.images)
+            val trackId = upsertScrobbleTrack(artistId, albumId, scrobble.name, scrobble.loved)
+            insertScrobble(trackId, scrobble.date?.uts, scrobble.attributes?.nowPlaying)
+        }
+
+        private fun saveTopArtist(artist: LibraryItem) {
+            val artistId = insertArtist(artist.name)
+            insertTop(index, period, artistId, artist.attributes?.rank, artist.playCount)
+        }
+
+        private fun saveTopAlbum(album: LibraryItem) {
+            val artistId = insertArtist(album.artist?.name)
+            val albumId = insertAlbum(artistId, album.name, album.images)
+            insertTop(index, period, albumId, album.attributes?.rank, album.playCount)
+        }
+
+        private fun saveTopTrack(track: LibraryItem) {
+            val artistId = insertArtist(track.artist?.name)
+            val trackId = insertTrack(artistId, track.name)
+            insertTop(index, period, trackId, track.attributes?.rank, track.playCount)
+        }
+
+        private fun saveLovedTrack(track: LibraryItem) {
+            val artistId = insertArtist(track.artist?.name)
+            upsertLovedTrack(artistId, track.name, track.date?.uts)
+        }
+
+        private fun insertScrobble(
+            trackId: Long?,
+            trackDate: Long?,
+            nowPlaying: String?
+        ) {
+            if (trackId != null && trackDate != null) {
+                database.scrobbleQueries.insert(trackId, trackDate, nowPlaying == "true")
+            }
+        }
+
+        private fun insertTop(
+            index: Int,
+            period: Long,
+            artistId: Long?,
+            rank: Int?,
+            playCount: Long?
+        ) {
+            if (rank != null) {
+                database.topQueries.insert(index.toLong(), period, rank, artistId, playCount)
             }
         }
 
@@ -109,51 +259,41 @@ internal class ShelfStoreFactory(
             images: List<Image>?,
         ) = if (artistId != null && name != null) {
             with(database.albumQueries) {
-                insert(
-                    artistId = artistId,
-                    name = name,
-                    lowArtwork = images?.get(2)?.url,
-                    highArtwork = images?.get(3)?.url
-                )
+                insert(artistId, name, images?.get(2)?.url, images?.get(3)?.url)
                 getId(artistId, name).executeAsOneOrNull()
             }
         } else null
 
-        private fun insertScrobbleTrack(
+        private fun insertTrack(
+            artistId: Long?,
+            name: String?
+        ) = if (artistId != null && name != null) {
+            with(database.trackQueries) {
+                insert(artistId, null, name, false, null)
+                getId(artistId, name).executeAsOneOrNull()
+            }
+        } else null
+
+        private fun upsertScrobbleTrack(
             artistId: Long?,
             albumId: Long?,
             name: String?,
             loved: Int?
         ) = if (artistId != null && name != null) {
             with(database.trackQueries) {
-                upsertRecentTrack(
-                    artistId = artistId,
-                    albumId = albumId,
-                    name = name,
-                    loved = loved == 1,
-                    lovedAt = null
-                )
+                upsertRecentTrack(albumId, loved == 1, artistId, name, null)
                 getId(artistId, name).executeAsOneOrNull()
             }
         } else null
 
-        private fun insertScrobble(
-            trackId: Long?,
-            trackDate: Long?,
-            nowPlaying: String?
+        private fun upsertLovedTrack(
+            artistId: Long?,
+            name: String?,
+            lovedAt: Long?
         ) {
-            if (trackId != null && trackDate != null) {
-                database.scrobbleQueries.insert(
-                    trackId = trackId,
-                    listenedAt = trackDate,
-                    nowPlaying = nowPlaying == "true"
-                )
+            if (artistId != null && name != null) {
+                database.trackQueries.upsertLovedTrack(true, lovedAt, artistId, name, null)
             }
         }
-    }
-
-    object ReducerImpl : Reducer<State, Result> {
-
-        override fun State.reduce(result: Result): State = copy()
     }
 }

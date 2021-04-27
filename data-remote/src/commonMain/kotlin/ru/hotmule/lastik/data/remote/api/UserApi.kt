@@ -56,7 +56,7 @@ class UserApi(
         userApiPage("getFriends", page)
     }
 
-    suspend fun getRecentTracks(
+    suspend fun getScrobbles(
         page: Int
     ) = client.get<ScrobblesResponse?> {
         userApiPage("getRecentTracks", page, "extended" to 1)

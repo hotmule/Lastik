@@ -18,7 +18,7 @@ upsert {
 }
 
 insert:
-INSERT INTO top(type, period, rank, itemId, playCount) VALUES (?, ?, ?, ?, ?);
+INSERT OR IGNORE INTO top(type, period, rank, itemId, playCount) VALUES (?, ?, ?, ?, ?);
 
 getTopCount:
 SELECT COUNT(id) FROM top WHERE type = ? AND period = ?;

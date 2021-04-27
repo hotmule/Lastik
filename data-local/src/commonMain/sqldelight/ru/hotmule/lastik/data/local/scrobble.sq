@@ -11,7 +11,7 @@ getScrobblesCount:
 SELECT COUNT(id) FROM scrobble;
 
 insert:
-INSERT INTO scrobble(trackId, listenedAt, nowPlaying) VALUES (:trackId, :listenedAt, :nowPlaying);
+INSERT OR IGNORE INTO scrobble(trackId, listenedAt, nowPlaying) VALUES (:trackId, :listenedAt, :nowPlaying);
 
 deleteAll:
 DELETE FROM scrobble;

@@ -49,7 +49,7 @@ data class LovedTracksResponse(
 @Serializable
 data class Tracks(
     @SerialName("@attr") val attributes: PageAttributes? = null,
-    @SerialName("track") val list: List<LibraryItem>? = null
+    @SerialName("track") val tracks: List<LibraryItem>? = null
 )
 
 @Serializable
