@@ -28,6 +28,7 @@ kotlin {
         named("androidMain") {
             dependencies {
                 implementation(Libs.Accompanist.coil)
+                implementation(Libs.Accompanist.swipeRefresh)
             }
         }
 

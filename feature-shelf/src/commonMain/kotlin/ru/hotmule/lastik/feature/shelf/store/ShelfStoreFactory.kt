@@ -54,8 +54,8 @@ internal class ShelfStoreFactory(
             action: Unit,
             getState: () -> State
         ) {
-            shelfFlow().collect { dispatch(Result.ItemsReceived(it)) }
             loadPage(1)
+            shelfFlow().collect { dispatch(Result.ItemsReceived(it)) }
         }
 
         override suspend fun executeIntent(
@@ -121,8 +121,8 @@ internal class ShelfStoreFactory(
                 scrobbles.map {
                     ShelfItem(
                         highlighted = it.nowPlaying,
-                        image = it.lowArtwork ?: "",
-                        title = it.track ?: "",
+                        image = it.lowArtwork ?: ShelfComponent.defaultImageUrl,
+                        title = it.track ?: ShelfComponent.defaultTitle,
                         subtitle = it.artist,
                         hint = if (it.listenedAt != 0L) it.listenedAt.toString() else null,
                         loved = it.loved
@@ -136,8 +136,8 @@ internal class ShelfStoreFactory(
             .map { artists ->
                 artists.map {
                     ShelfItem(
-                        image = it.lowArtwork ?: "",
-                        title = it.name ?: "",
+                        image = it.lowArtwork ?: ShelfComponent.defaultImageUrl,
+                        title = it.name ?: ShelfComponent.defaultTitle,
                         rank = it.rank,
                         playCount = it.playCount,
                     )
@@ -150,8 +150,8 @@ internal class ShelfStoreFactory(
             .map { albums ->
                 albums.map {
                     ShelfItem(
-                        image = it.lowArtwork ?: "",
-                        title = it.album ?: "",
+                        image = it.lowArtwork ?: ShelfComponent.defaultImageUrl,
+                        title = it.album ?: ShelfComponent.defaultTitle,
                         subtitle = it.artist,
                         rank = it.rank,
                         playCount = it.playCount
@@ -165,8 +165,8 @@ internal class ShelfStoreFactory(
             .map { tracks ->
                 tracks.map {
                     ShelfItem(
-                        image = it.lowArtwork ?: "",
-                        title = it.track ?: "",
+                        image = it.lowArtwork ?: ShelfComponent.defaultImageUrl,
+                        title = it.track ?: ShelfComponent.defaultTitle,
                         subtitle = it.artist,
                         rank = it.rank,
                         playCount = it.playCount
@@ -180,7 +180,7 @@ internal class ShelfStoreFactory(
             .map { tracks ->
                 tracks.map {
                     ShelfItem(
-                        image = it.lowArtwork ?: "",
+                        image = it.lowArtwork ?: ShelfComponent.defaultImageUrl,
                         title = it.track,
                         subtitle = it.artist,
                         hint = it.lovedAt.toString(),
@@ -235,12 +235,12 @@ internal class ShelfStoreFactory(
         private fun insertTop(
             index: Int,
             period: Long,
-            artistId: Long?,
+            itemId: Long?,
             rank: Int?,
             playCount: Long?
         ) {
-            if (rank != null) {
-                database.topQueries.insert(index.toLong(), period, rank, artistId, playCount)
+            if (itemId != null && rank != null) {
+                database.topQueries.insert(index.toLong(), period, rank, itemId, playCount)
             }
         }
 

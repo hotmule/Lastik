@@ -3,7 +3,7 @@ CREATE TABLE top (
     type INTEGER NOT NULL,
     period INTEGER NOT NULL,
     rank INTEGER AS Int NOT NULL,
-    itemId INTEGER,
+    itemId INTEGER NOT NULL,
     playCount INTEGER,
     UNIQUE (type, period, rank)
 );
@@ -39,7 +39,7 @@ LEFT JOIN album al ON al.id = (
     LEFT JOIN top t_al ON a.id = t_al.itemId
     WHERE a.artistId = ar.id ORDER BY t_al.playCount DESC LIMIT 1
 )
-WHERE t.type = 0 AND t.period = ? ORDER BY t.rank;
+WHERE t.type = 1 AND t.period = ? ORDER BY t.rank;
 
 albumTop:
 SELECT
@@ -51,7 +51,7 @@ SELECT
 FROM top t
 LEFT JOIN album al ON itemId = al.id
 LEFT JOIN artist ar ON al.artistId = ar.id
-WHERE t.type = 1 AND t.period = ? ORDER BY t.rank;
+WHERE t.type = 2 AND t.period = ? ORDER BY t.rank;
 
 trackTop:
 SELECT
@@ -64,4 +64,4 @@ FROM top t
 LEFT JOIN track tr ON itemId = tr.id
 LEFT JOIN album al ON tr.albumId = al.id
 LEFT JOIN artist ar ON tr.artistId = ar.id
-WHERE t.type = 2 AND t.period = ? ORDER BY t.rank;
+WHERE t.type = 3 AND t.period = ? ORDER BY t.rank;

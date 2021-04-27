@@ -34,9 +34,14 @@ fun ShelfContent(
 ) {
     val model by component.model.collectAsState(Model())
 
-    LazyColumn {
-        items(model.items) {
-            ShelfItemContent(it)
+    Refreshable(
+        isRefreshing = false,
+        onRefresh = { }
+    ) {
+        LazyColumn {
+            items(model.items) {
+                ShelfItemContent(it)
+            }
         }
     }
 }
@@ -171,6 +176,13 @@ private fun ShelfItemContent(
         }
     }
 }
+
+@Composable
+expect fun Refreshable(
+    isRefreshing: Boolean,
+    onRefresh: () -> Unit,
+    content: @Composable () -> Unit
+)
 
 @Composable
 expect fun RemoteImage(

@@ -24,6 +24,7 @@ import ru.hotmule.lastik.utils.WebBrowser
 class RootComponentImpl internal constructor(
     private val componentContext: ComponentContext,
     private val httpClient: LastikHttpClient,
+    private val database: LastikDatabase,
     private val prefsStore: PrefsStore,
     private val webBrowser: WebBrowser,
     private val auth: (ComponentContext, (AuthComponent.Output) -> Unit) -> AuthComponent,
@@ -40,6 +41,7 @@ class RootComponentImpl internal constructor(
     ) : this(
         componentContext = componentContext,
         httpClient = httpClient,
+        database = database,
         prefsStore = prefsStore,
         webBrowser = webBrowser,
         auth = { childContext, output ->
@@ -89,7 +91,7 @@ class RootComponentImpl internal constructor(
                 if (isActive)
                     setConfig<Child.Library>(Config.Library)
                 else {
-                    prefsStore.token = null
+                    database.profileQueries.deleteAll()
                     setConfig<Child.Auth>(Config.Auth)
                 }
             }

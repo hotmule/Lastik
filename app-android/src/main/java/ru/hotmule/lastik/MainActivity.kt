@@ -9,8 +9,8 @@ import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import com.arkivanov.decompose.extensions.compose.jetbrains.rememberRootComponent
 import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
-import dev.chrisbanes.accompanist.insets.LocalWindowInsets
-import dev.chrisbanes.accompanist.insets.ProvideWindowInsets
+import com.google.accompanist.insets.LocalWindowInsets
+import com.google.accompanist.insets.ProvideWindowInsets
 import ru.hotmule.lastik.data.local.AndroidDatabaseDriver
 import ru.hotmule.lastik.data.local.LastikDatabase
 import ru.hotmule.lastik.data.prefs.AndroidPrefs

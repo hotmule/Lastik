@@ -133,7 +133,7 @@ object Libs {
     }
 
     object Compose {
-        const val version = "0.4.0-build184"
+        const val version = "0.4.0-build185"
     }
 
     object AndroidX {
@@ -158,9 +158,10 @@ object Libs {
     }
 
     object Accompanist {
-        private const val version = "0.6.2"
-        const val coil = "dev.chrisbanes.accompanist:accompanist-coil:$version"
-        const val insets = "dev.chrisbanes.accompanist:accompanist-insets:$version"
+        private const val version = "0.8.1"
+        const val coil = "com.google.accompanist:accompanist-coil:$version"
+        const val insets = "com.google.accompanist:accompanist-insets:$version"
+        const val swipeRefresh = "com.google.accompanist:accompanist-swiperefresh:$version"
     }
 }
 
