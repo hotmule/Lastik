@@ -5,10 +5,9 @@ import com.squareup.sqldelight.runtime.coroutines.mapToList
 import com.squareup.sqldelight.runtime.coroutines.mapToOneOrNull
 import ru.hotmule.lastik.data.local.ProfileQueries
 import ru.hotmule.lastik.data.prefs.PrefsStore
-import ru.hotmule.lastik.data.remote.api.UserApi
 
 class ProfileInteractor(
-    private val api: UserApi,
+    //private val api: UserApi,
     private val prefs: PrefsStore,
     private val profileQueries: ProfileQueries
 ) {
@@ -28,10 +27,11 @@ class ProfileInteractor(
     suspend fun refreshProfile(
         isFirstPage: Boolean
     ) {
-        refreshInfo()
-        refreshFriends()
+        //refreshInfo()
+        //refreshFriends()
     }
 
+    /*
     private suspend fun refreshInfo() {
         api.getInfo().also {
             it?.user?.let { user ->
@@ -66,6 +66,8 @@ class ProfileInteractor(
             }
         }
     }
+
+     */
 
     fun insertUser(
         nickname: String,

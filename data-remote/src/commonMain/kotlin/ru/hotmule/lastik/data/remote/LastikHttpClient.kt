@@ -15,6 +15,7 @@ import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import ru.hotmule.lastik.data.prefs.PrefsStore
 import ru.hotmule.lastik.data.remote.api.AuthApi
+import ru.hotmule.lastik.data.remote.api.TrackApi
 import ru.hotmule.lastik.data.remote.api.UserApi
 
 class LastikHttpClient(
@@ -83,10 +84,7 @@ class LastikHttpClient(
         error(errorMessage)
     }
 
-    val authUrl = "http://www.last.fm/api/auth/" + "?" +
-            "api_key=${config.apiKey}" + "&" +
-            "cb=hotmule://lastik"
-
     val authApi = AuthApi(client, prefs, config.apiKey, config.secret)
+    val trackApi = TrackApi(client, prefs, config.apiKey, config.secret)
     val userApi = UserApi(client, prefs, config.apiKey)
 }

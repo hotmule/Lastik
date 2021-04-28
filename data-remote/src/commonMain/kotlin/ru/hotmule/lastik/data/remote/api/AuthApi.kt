@@ -27,6 +27,10 @@ class AuthApi(
         )
     }
 
+    val authUrl = "http://www.last.fm/api/auth/" + "?" +
+            "api_key=$apiKey" + "&" +
+            "cb=hotmule://lastik"
+
     suspend fun getSession() = client.get<SessionResponse?> {
         authApi("getSession")
     }

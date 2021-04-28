@@ -30,6 +30,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
+        val density = Resources.getSystem().displayMetrics.density
 
         setContent {
             ProvideWindowInsets {
@@ -51,8 +52,8 @@ class MainActivity : AppCompatActivity() {
 
                     RootContent(
                         rootComponent,
-                        insets.top.toDp.dp,
-                        insets.bottom.toDp.dp
+                        (insets.top / density).dp,
+                        (insets.bottom / density).dp
                     )
                 }
             }
@@ -66,6 +67,4 @@ class MainActivity : AppCompatActivity() {
             rootComponent.onTokenUrlReceived(it.toString())
         }
     }
-
-    private val Int.toDp get() = (this / Resources.getSystem().displayMetrics.density).toInt()
 }

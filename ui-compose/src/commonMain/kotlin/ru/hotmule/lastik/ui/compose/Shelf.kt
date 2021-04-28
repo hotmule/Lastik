@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import ru.hotmule.lastik.feature.shelf.ShelfComponent
 import ru.hotmule.lastik.feature.shelf.ShelfComponent.*
 import ru.hotmule.lastik.ui.compose.res.Res
+import kotlin.reflect.KFunction3
 
 @Composable
 fun ShelfContent(
@@ -36,7 +37,7 @@ fun ShelfContent(
     modifier: Modifier
 ) {
     val model by component.model.collectAsState(Model())
-    val scrobbleWidth = scrobbleWidth(model.items.firstOrNull())
+    val scrobbleWidth = provideScrobbleWidth(model.items.firstOrNull()?.playCount)
 
     Refreshable(
         isRefreshing = model.isRefreshing,
@@ -55,7 +56,11 @@ fun ShelfContent(
                 }
                 */
 
-                ShelfItemContent(item, scrobbleWidth)
+                ShelfItemContent(
+                    item = item,
+                    scrobbleWidth = scrobbleWidth,
+                    onLove = component::onMakeLove
+                )
 
                 if (index == model.items.lastIndex) {
                     AdditionalProgress(model.isMoreLoading)
@@ -69,7 +74,8 @@ fun ShelfContent(
 @Composable
 private fun ShelfItemContent(
     item: ShelfItem,
-    scrobbleWidth: Float
+    scrobbleWidth: Float,
+    onLove: (String, String?, Boolean) -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -111,7 +117,7 @@ private fun ShelfItemContent(
 
             item.loved?.let {
                 IconButton(
-                    onClick = { },
+                    onClick = { onLove(item.title, item.subtitle, it) },
                     modifier = Modifier
                         .padding(2.dp)
                         .align(Alignment.CenterVertically)
@@ -189,6 +195,12 @@ private fun ShelfItemContent(
 }
 
 @Composable
+private fun provideScrobbleWidth(playCount: Long?): Float {
+    val widthInPx = if (playCount != null) getScreenWidth() / playCount.toFloat() else 0f
+    return widthInPx / LocalDensity.current.density
+}
+
+@Composable
 private fun AdditionalProgress(
     isLoading: Boolean
 ) {
@@ -204,13 +216,6 @@ private fun AdditionalProgress(
             )
         }
     }
-}
-
-@Composable
-private fun scrobbleWidth(firstItem: ShelfItem?): Float {
-    val playCount = firstItem?.playCount
-    val widthInPx = if (playCount != null) getScreenWidth() / playCount.toFloat() else 0f
-    return widthInPx / LocalDensity.current.density
 }
 
 @Composable

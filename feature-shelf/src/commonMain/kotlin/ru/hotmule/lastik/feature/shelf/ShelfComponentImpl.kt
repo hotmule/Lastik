@@ -25,9 +25,9 @@ class ShelfComponentImpl(
     private val store = instanceKeeper.getStore {
         ShelfStoreFactory(
             storeFactory = storeFactory,
+            httpClient = httpClient,
             database = database,
             prefs = prefsStore,
-            api = httpClient.userApi,
             index = index
         ).create()
     }

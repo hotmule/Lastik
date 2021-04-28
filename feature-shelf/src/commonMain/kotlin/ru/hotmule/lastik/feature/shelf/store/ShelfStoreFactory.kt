@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ru.hotmule.lastik.data.local.LastikDatabase
 import ru.hotmule.lastik.data.prefs.PrefsStore
-import ru.hotmule.lastik.data.remote.api.UserApi
+import ru.hotmule.lastik.data.remote.LastikHttpClient
 import ru.hotmule.lastik.data.remote.entities.Date
 import ru.hotmule.lastik.data.remote.entities.Image
 import ru.hotmule.lastik.data.remote.entities.LibraryItem
@@ -25,9 +25,9 @@ import ru.hotmule.lastik.utils.Formatter
 
 internal class ShelfStoreFactory(
     private val storeFactory: StoreFactory,
+    private val httpClient: LastikHttpClient,
     private val database: LastikDatabase,
     private val prefs: PrefsStore,
-    private val api: UserApi,
     private val index: Int,
     private val period: Long = prefs.getShelfPeriod(index).toLong()
 ) {
@@ -72,8 +72,7 @@ internal class ShelfStoreFactory(
             when (intent) {
                 Intent.RefreshItems -> loadPage(true)
                 Intent.LoadMoreItems -> loadPage(false)
-                is Intent.MakeLove -> {
-                }
+                is Intent.MakeLove -> makeLove(intent.title, intent.subtitle ?: "", !intent.isLoved)
             }
         }
 
@@ -121,26 +120,28 @@ internal class ShelfStoreFactory(
                             val items: List<LibraryItem>?
                             val save: (LibraryItem) -> Unit
 
-                            when (index) {
-                                0 -> {
-                                    items = api.getScrobbles(page)?.recent?.tracks
-                                    save = ::saveScrobble
-                                }
-                                1 -> {
-                                    items = api.getTopArtists(page, periodName)?.top?.artists
-                                    save = ::saveTopArtist
-                                }
-                                2 -> {
-                                    items = api.getTopAlbums(page, periodName)?.top?.albums
-                                    save = ::saveTopAlbum
-                                }
-                                3 -> {
-                                    items = api.getTopTracks(page, periodName)?.top?.tracks
-                                    save = ::saveTopTrack
-                                }
-                                else -> {
-                                    items = api.getLovedTracks(page)?.loved?.tracks
-                                    save = ::saveLovedTrack
+                            with (httpClient.userApi) {
+                                when (index) {
+                                    0 -> {
+                                        items = getScrobbles(page)?.recent?.tracks
+                                        save = ::saveScrobble
+                                    }
+                                    1 -> {
+                                        items = getTopArtists(page, periodName)?.top?.artists
+                                        save = ::saveTopArtist
+                                    }
+                                    2 -> {
+                                        items = getTopAlbums(page, periodName)?.top?.albums
+                                        save = ::saveTopAlbum
+                                    }
+                                    3 -> {
+                                        items = getTopTracks(page, periodName)?.top?.tracks
+                                        save = ::saveTopTrack
+                                    }
+                                    else -> {
+                                        items = getLovedTracks(page)?.loved?.tracks
+                                        save = ::saveLovedTrack
+                                    }
                                 }
                             }
 
@@ -166,6 +167,17 @@ internal class ShelfStoreFactory(
                     withContext(AppCoroutineDispatcher.Main) {
                         dispatch(Result.Loading(isLoading = false, isFirstPage = isFirst))
                     }
+                }
+            }
+        }
+
+        private suspend fun makeLove(track: String, artist: String, isLoved: Boolean) {
+            withContext(AppCoroutineDispatcher.IO) {
+                try {
+                    httpClient.trackApi.setLoved(track, artist, isLoved)
+                    database.trackQueries.updateTrackLove(isLoved, track, artist)
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
             }
         }

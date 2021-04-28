@@ -73,7 +73,7 @@ class RootComponentImpl internal constructor(
                 is Config.Auth -> Child.Auth(auth(componentContext) { output ->
                     when (output) {
                         AuthComponent.Output.SignInWithLastFm -> {
-                            webBrowser.open(httpClient.authUrl)
+                            webBrowser.open(httpClient.authApi.authUrl)
                         }
                     }
                 })
