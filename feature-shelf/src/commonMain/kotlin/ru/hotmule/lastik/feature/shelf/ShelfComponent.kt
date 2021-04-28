@@ -24,8 +24,15 @@ interface ShelfComponent {
     data class Model(
         val items: List<ShelfItem> = listOf(),
         val isLoading: Boolean = false,
-        val isLoadingMore: Boolean = false
+        val isLoadingMore: Boolean = false,
+        val isRefreshing: Boolean = false
     )
 
     val model: Flow<Model>
+
+    fun onRefreshItems()
+
+    fun onLoadMoreItems()
+
+    fun onMakeLove(title: String, subtitle: String?, isLoved: Boolean)
 }

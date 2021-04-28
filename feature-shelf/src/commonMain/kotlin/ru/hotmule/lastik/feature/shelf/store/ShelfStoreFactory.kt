@@ -9,6 +9,7 @@ import com.squareup.sqldelight.runtime.coroutines.asFlow
 import com.squareup.sqldelight.runtime.coroutines.mapToList
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ru.hotmule.lastik.data.local.LastikDatabase
 import ru.hotmule.lastik.data.prefs.PrefsStore
@@ -17,7 +18,7 @@ import ru.hotmule.lastik.data.remote.entities.Date
 import ru.hotmule.lastik.data.remote.entities.Image
 import ru.hotmule.lastik.data.remote.entities.LibraryItem
 import ru.hotmule.lastik.feature.shelf.ShelfComponent
-import ru.hotmule.lastik.feature.shelf.ShelfComponent.*
+import ru.hotmule.lastik.feature.shelf.ShelfComponent.ShelfItem
 import ru.hotmule.lastik.feature.shelf.store.ShelfStore.*
 import ru.hotmule.lastik.utils.AppCoroutineDispatcher
 import ru.hotmule.lastik.utils.Formatter
@@ -44,6 +45,8 @@ internal class ShelfStoreFactory(
 
         override fun State.reduce(result: Result): State = when (result) {
             is Result.ItemsReceived -> copy(items = result.items)
+            is Result.ItemsRefreshing -> copy(isRefreshing = result.isRefreshing)
+            is Result.MoreItemsLoading -> copy(isLoadingMore = result.isLoadingMore)
         }
     }
 
@@ -55,61 +58,108 @@ internal class ShelfStoreFactory(
             action: Unit,
             getState: () -> State
         ) {
-            loadPage(1)
-            shelfFlow().collect { dispatch(Result.ItemsReceived(it)) }
+            withContext(AppCoroutineDispatcher.IO) {
+                launch { collectItems() }
+                launch { loadPage(true) }
+            }
         }
 
         override suspend fun executeIntent(
             intent: Intent,
             getState: () -> State
         ) {
+            when (intent) {
+                Intent.RefreshItems -> {
+                    dispatch(Result.ItemsRefreshing(true))
+                    loadPage(true)
+                    dispatch(Result.ItemsRefreshing(false))
+                }
+                Intent.LoadMoreItems -> {
+                    dispatch(Result.MoreItemsLoading(true))
+                    loadPage(false)
+                    dispatch(Result.MoreItemsLoading(false))
+                }
+                is Intent.MakeLove -> {
 
+                }
+            }
         }
 
-        private fun shelfFlow() = when (index) {
-            0 -> scrobblesFlow()
-            1 -> topArtistsFlow()
-            2 -> topAlbumsFlow()
-            3 -> topTracksFlow()
-            else -> lovedTracksFlow()
+        private suspend fun collectItems() {
+
+            val itemsFlow = when (index) {
+                0 -> scrobblesFlow()
+                1 -> topArtistsFlow()
+                2 -> topAlbumsFlow()
+                3 -> topTracksFlow()
+                else -> lovedTracksFlow()
+            }
+
+            itemsFlow.collect {
+                withContext(AppCoroutineDispatcher.Main) {
+                    dispatch(Result.ItemsReceived(it))
+                }
+            }
         }
 
-        private suspend fun loadPage(page: Int) {
+        private suspend fun loadPage(isFirst: Boolean) {
             withContext(AppCoroutineDispatcher.IO) {
 
                 val periodName = arrayOf(
                     "overall", "7day", "1month", "3month", "6month", "12month"
                 )[period.toInt()]
 
-                val items: List<LibraryItem>?
-                val save: (LibraryItem) -> Unit
+                with(database) {
 
-                when (index) {
-                    0 -> {
-                        items = api.getScrobbles(page)?.recent?.tracks
-                        save = ::saveScrobble
-                    }
-                    1 -> {
-                        items = api.getTopArtists(page, periodName)?.top?.artists
-                        save = ::saveTopArtist
-                    }
-                    2 -> {
-                        items = api.getTopAlbums(page, periodName)?.top?.albums
-                        save = ::saveTopAlbum
-                    }
-                    3 -> {
-                        items = api.getTopTracks(page, periodName)?.top?.tracks
-                        save = ::saveTopTrack
-                    }
-                    else -> {
-                        items = api.getLovedTracks(1)?.loved?.tracks
-                        save = ::saveLovedTrack
-                    }
-                }
+                    val count = when (index) {
+                        0 -> scrobbleQueries.getScrobblesCount()
+                        1, 2, 3 -> topQueries.getTopCount(index.toLong(), period)
+                        else -> trackQueries.getLovedTracksPageCount()
+                    }.executeAsOne().toInt()
 
-                database.transaction {
-                    items?.forEach { item ->
-                        save(item)
+                    if (isFirst || count.rem(50) == 0) {
+
+                        val page = if (isFirst) 1 else count / 50 + 1
+                        val items: List<LibraryItem>?
+                        val save: (LibraryItem) -> Unit
+
+                        when (index) {
+                            0 -> {
+                                items = api.getScrobbles(page)?.recent?.tracks
+                                save = ::saveScrobble
+                            }
+                            1 -> {
+                                items = api.getTopArtists(page, periodName)?.top?.artists
+                                save = ::saveTopArtist
+                            }
+                            2 -> {
+                                items = api.getTopAlbums(page, periodName)?.top?.albums
+                                save = ::saveTopAlbum
+                            }
+                            3 -> {
+                                items = api.getTopTracks(page, periodName)?.top?.tracks
+                                save = ::saveTopTrack
+                            }
+                            else -> {
+                                items = api.getLovedTracks(page)?.loved?.tracks
+                                save = ::saveLovedTrack
+                            }
+                        }
+
+                        transaction {
+
+                            if (isFirst) {
+                                when (index) {
+                                    0 -> scrobbleQueries.deleteAll()
+                                    1, 2, 3 -> topQueries.deleteTop(index.toLong(), period)
+                                    4 -> trackQueries.dropLovedTrackDates()
+                                }
+                            }
+
+                            items?.forEach { item ->
+                                save(item)
+                            }
+                        }
                     }
                 }
             }
@@ -117,7 +167,7 @@ internal class ShelfStoreFactory(
 
         private fun scrobblesFlow() = database.scrobbleQueries.scrobbleData()
             .asFlow()
-            .mapToList()
+            .mapToList(AppCoroutineDispatcher.IO)
             .map { scrobbles ->
                 scrobbles.map {
                     ShelfItem(
@@ -136,7 +186,7 @@ internal class ShelfStoreFactory(
 
         private fun topArtistsFlow() = database.topQueries.artistTop(period)
             .asFlow()
-            .mapToList()
+            .mapToList(AppCoroutineDispatcher.IO)
             .map { artists ->
                 artists.map {
                     ShelfItem(
@@ -151,7 +201,7 @@ internal class ShelfStoreFactory(
 
         private fun topAlbumsFlow() = database.topQueries.albumTop(period)
             .asFlow()
-            .mapToList()
+            .mapToList(AppCoroutineDispatcher.IO)
             .map { albums ->
                 albums.map {
                     ShelfItem(
@@ -167,7 +217,7 @@ internal class ShelfStoreFactory(
 
         private fun topTracksFlow() = database.topQueries.trackTop(period)
             .asFlow()
-            .mapToList()
+            .mapToList(AppCoroutineDispatcher.IO)
             .map { tracks ->
                 tracks.map {
                     ShelfItem(
@@ -183,7 +233,7 @@ internal class ShelfStoreFactory(
 
         private fun lovedTracksFlow() = database.trackQueries.lovedTracks()
             .asFlow()
-            .mapToList()
+            .mapToList(AppCoroutineDispatcher.IO)
             .map { tracks ->
                 tracks.map {
                     ShelfItem(

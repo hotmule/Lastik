@@ -9,6 +9,7 @@ import ru.hotmule.lastik.data.local.LastikDatabase
 import ru.hotmule.lastik.data.prefs.PrefsStore
 import ru.hotmule.lastik.data.remote.LastikHttpClient
 import ru.hotmule.lastik.feature.shelf.ShelfComponent.*
+import ru.hotmule.lastik.feature.shelf.store.ShelfStore.*
 import ru.hotmule.lastik.feature.shelf.store.ShelfStoreFactory
 import ru.hotmule.lastik.utils.getStore
 
@@ -35,7 +36,24 @@ class ShelfComponentImpl(
         Model(
             items = it.items,
             isLoading = it.isLoading,
-            isLoadingMore = it.isLoadingMore
+            isLoadingMore = it.isLoadingMore,
+            isRefreshing = it.isRefreshing
         )
+    }
+
+    override fun onRefreshItems() {
+        store.accept(Intent.RefreshItems)
+    }
+
+    override fun onLoadMoreItems() {
+        store.accept(Intent.LoadMoreItems)
+    }
+
+    override fun onMakeLove(
+        title: String,
+        subtitle: String?,
+        isLoved: Boolean
+    ) {
+        store.accept(Intent.MakeLove(title, subtitle, isLoved))
     }
 }

@@ -4,7 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -35,12 +35,22 @@ fun ShelfContent(
     val model by component.model.collectAsState(Model())
 
     Refreshable(
-        isRefreshing = false,
-        onRefresh = { }
+        isRefreshing = model.isRefreshing,
+        onRefresh = component::onRefreshItems
     ) {
         LazyColumn {
-            items(model.items) {
-                ShelfItemContent(it)
+            itemsIndexed(model.items) { index, item ->
+
+                ShelfItemContent(item)
+
+                if (index == model.items.lastIndex) {
+
+                    component.onLoadMoreItems()
+
+                    if (model.isLoadingMore) {
+                        ShelfItemProgress()
+                    }
+                }
             }
         }
     }
@@ -167,6 +177,21 @@ private fun ShelfItemContent(
                     .align(Alignment.BottomCenter)
             )
         }
+    }
+}
+
+@Composable
+private fun ShelfItemProgress() {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight()
+    ) {
+        CircularProgressIndicator(
+            modifier = Modifier
+                .padding(16.dp)
+                .align(Alignment.Center)
+        )
     }
 }
 
