@@ -18,14 +18,12 @@ interface ShelfStore : Store<Intent, State, Nothing> {
 
     sealed class Result {
         data class ItemsReceived(val items: List<ShelfItem>) : Result()
-        data class ItemsRefreshing(val isRefreshing: Boolean) : Result()
-        data class MoreItemsLoading(val isLoadingMore: Boolean) : Result()
+        data class Loading(val isLoading: Boolean, val isFirstPage: Boolean) : Result()
     }
 
     data class State(
         val items: List<ShelfItem> = listOf(),
-        val isLoading: Boolean = false,
-        val isLoadingMore: Boolean = false,
-        val isRefreshing: Boolean = false
+        val isRefreshing: Boolean = false,
+        val isMoreLoading: Boolean = false
     )
 }

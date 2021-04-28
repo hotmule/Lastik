@@ -23,9 +23,8 @@ interface ShelfComponent {
 
     data class Model(
         val items: List<ShelfItem> = listOf(),
-        val isLoading: Boolean = false,
-        val isLoadingMore: Boolean = false,
-        val isRefreshing: Boolean = false
+        val isRefreshing: Boolean = false,
+        val isMoreLoading: Boolean = false
     )
 
     val model: Flow<Model>

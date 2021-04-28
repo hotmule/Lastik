@@ -1,16 +1,13 @@
 package ru.hotmule.lastik.`data`.local
 
-import com.squareup.sqldelight.ColumnAdapter
 import kotlin.Int
 import kotlin.Long
 import kotlin.String
-import ru.hotmule.lastik.domain.TopPeriod
-import ru.hotmule.lastik.domain.TopType
 
 public data class Top(
   public val id: Long,
-  public val type: TopType,
-  public val period: TopPeriod,
+  public val type: Long,
+  public val period: Long,
   public val rank: Int,
   public val itemId: Long?,
   public val playCount: Long?
@@ -25,9 +22,4 @@ public data class Top(
   |  playCount: $playCount
   |]
   """.trimMargin()
-
-  public class Adapter(
-    public val typeAdapter: ColumnAdapter<TopType, Long>,
-    public val periodAdapter: ColumnAdapter<TopPeriod, Long>
-  )
 }

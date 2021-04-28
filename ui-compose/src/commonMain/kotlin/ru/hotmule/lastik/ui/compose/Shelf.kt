@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -30,7 +31,8 @@ import ru.hotmule.lastik.ui.compose.res.Res
 
 @Composable
 fun ShelfContent(
-    component: ShelfComponent
+    component: ShelfComponent,
+    modifier: Modifier
 ) {
     val model by component.model.collectAsState(Model())
 
@@ -38,18 +40,34 @@ fun ShelfContent(
         isRefreshing = model.isRefreshing,
         onRefresh = component::onRefreshItems
     ) {
-        LazyColumn {
+
+        /*
+        var scrobbleWidth: Float? = null
+        if (!items.isNullOrEmpty()) {
+            items[0].playCount?.let {
+                scrobbleWidth = displayWidth / it
+            }
+        }
+        */
+
+        LazyColumn(modifier = modifier) {
             itemsIndexed(model.items) { index, item ->
+
+                /*
+                if (currentSection == LibrarySection.Profile) {
+                    item {
+                        ProfileHeader(
+                            interactor = sdk.profileInteractor
+                        )
+                    }
+                }
+                */
 
                 ShelfItemContent(item)
 
                 if (index == model.items.lastIndex) {
-
+                    AdditionalProgress(model.isMoreLoading)
                     component.onLoadMoreItems()
-
-                    if (model.isLoadingMore) {
-                        ShelfItemProgress()
-                    }
                 }
             }
         }
@@ -118,8 +136,8 @@ private fun ShelfItemContent(
                     }
                 }
 
-                RemoteImage(
-                    data = image,
+                Image(
+                    painter = remoteImagePainter(image),
                     contentDescription = "artwork",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
@@ -181,17 +199,20 @@ private fun ShelfItemContent(
 }
 
 @Composable
-private fun ShelfItemProgress() {
+private fun AdditionalProgress(
+    isLoading: Boolean
+) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .wrapContentHeight()
+            .height(82.dp)
     ) {
-        CircularProgressIndicator(
-            modifier = Modifier
-                .padding(16.dp)
-                .align(Alignment.Center)
-        )
+        if (isLoading) {
+            CircularProgressIndicator(
+                modifier = Modifier
+                    .align(Alignment.Center)
+            )
+        }
     }
 }
 
@@ -203,9 +224,4 @@ expect fun Refreshable(
 )
 
 @Composable
-expect fun RemoteImage(
-    data: String,
-    contentDescription: String?,
-    modifier: Modifier = Modifier,
-    contentScale: ContentScale = ContentScale.Fit
-)
+expect fun remoteImagePainter(data: String) : Painter

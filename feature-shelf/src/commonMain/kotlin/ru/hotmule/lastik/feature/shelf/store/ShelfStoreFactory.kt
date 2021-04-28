@@ -32,21 +32,22 @@ internal class ShelfStoreFactory(
     private val period: Long = prefs.getShelfPeriod(index).toLong()
 ) {
 
-    fun create(): ShelfStore =
-        object : ShelfStore, Store<Intent, State, Nothing> by storeFactory.create(
-            name = "${ShelfStore::class.simpleName} $index",
-            initialState = State(),
-            bootstrapper = SimpleBootstrapper(Unit),
-            executorFactory = ::ExecutorImpl,
-            reducer = ReducerImpl
-        ) {}
+    fun create(): ShelfStore = object : ShelfStore, Store<Intent, State, Nothing> by storeFactory.create(
+        name = "${ShelfStore::class.simpleName} $index",
+        initialState = State(),
+        bootstrapper = SimpleBootstrapper(Unit),
+        executorFactory = ::ExecutorImpl,
+        reducer = ReducerImpl
+    ) {}
 
     private object ReducerImpl : Reducer<State, Result> {
 
         override fun State.reduce(result: Result): State = when (result) {
             is Result.ItemsReceived -> copy(items = result.items)
-            is Result.ItemsRefreshing -> copy(isRefreshing = result.isRefreshing)
-            is Result.MoreItemsLoading -> copy(isLoadingMore = result.isLoadingMore)
+            is Result.Loading -> copy(
+                isRefreshing = result.isLoading && result.isFirstPage,
+                isMoreLoading = result.isLoading && !result.isFirstPage
+            )
         }
     }
 
@@ -69,18 +70,9 @@ internal class ShelfStoreFactory(
             getState: () -> State
         ) {
             when (intent) {
-                Intent.RefreshItems -> {
-                    dispatch(Result.ItemsRefreshing(true))
-                    loadPage(true)
-                    dispatch(Result.ItemsRefreshing(false))
-                }
-                Intent.LoadMoreItems -> {
-                    dispatch(Result.MoreItemsLoading(true))
-                    loadPage(false)
-                    dispatch(Result.MoreItemsLoading(false))
-                }
+                Intent.RefreshItems -> loadPage(true)
+                Intent.LoadMoreItems -> loadPage(false)
                 is Intent.MakeLove -> {
-
                 }
             }
         }
@@ -105,61 +97,74 @@ internal class ShelfStoreFactory(
         private suspend fun loadPage(isFirst: Boolean) {
             withContext(AppCoroutineDispatcher.IO) {
 
-                val periodName = arrayOf(
-                    "overall", "7day", "1month", "3month", "6month", "12month"
-                )[period.toInt()]
+                try {
 
-                with(database) {
+                    withContext(AppCoroutineDispatcher.Main) {
+                        dispatch(Result.Loading(isLoading = true, isFirstPage = isFirst))
+                    }
 
-                    val count = when (index) {
-                        0 -> scrobbleQueries.getScrobblesCount()
-                        1, 2, 3 -> topQueries.getTopCount(index.toLong(), period)
-                        else -> trackQueries.getLovedTracksPageCount()
-                    }.executeAsOne().toInt()
+                    val periodName = arrayOf(
+                        "overall", "7day", "1month", "3month", "6month", "12month"
+                    )[period.toInt()]
 
-                    if (isFirst || count.rem(50) == 0) {
+                    with(database) {
 
-                        val page = if (isFirst) 1 else count / 50 + 1
-                        val items: List<LibraryItem>?
-                        val save: (LibraryItem) -> Unit
+                        val count = when (index) {
+                            0 -> scrobbleQueries.getScrobblesCount()
+                            1, 2, 3 -> topQueries.getTopCount(index.toLong(), period)
+                            else -> trackQueries.getLovedTracksPageCount()
+                        }.executeAsOne().toInt()
 
-                        when (index) {
-                            0 -> {
-                                items = api.getScrobbles(page)?.recent?.tracks
-                                save = ::saveScrobble
-                            }
-                            1 -> {
-                                items = api.getTopArtists(page, periodName)?.top?.artists
-                                save = ::saveTopArtist
-                            }
-                            2 -> {
-                                items = api.getTopAlbums(page, periodName)?.top?.albums
-                                save = ::saveTopAlbum
-                            }
-                            3 -> {
-                                items = api.getTopTracks(page, periodName)?.top?.tracks
-                                save = ::saveTopTrack
-                            }
-                            else -> {
-                                items = api.getLovedTracks(page)?.loved?.tracks
-                                save = ::saveLovedTrack
-                            }
-                        }
+                        if (isFirst || count.rem(50) == 0) {
 
-                        transaction {
+                            val page = if (isFirst) 1 else count / 50 + 1
+                            val items: List<LibraryItem>?
+                            val save: (LibraryItem) -> Unit
 
-                            if (isFirst) {
-                                when (index) {
-                                    0 -> scrobbleQueries.deleteAll()
-                                    1, 2, 3 -> topQueries.deleteTop(index.toLong(), period)
-                                    4 -> trackQueries.dropLovedTrackDates()
+                            when (index) {
+                                0 -> {
+                                    items = api.getScrobbles(page)?.recent?.tracks
+                                    save = ::saveScrobble
+                                }
+                                1 -> {
+                                    items = api.getTopArtists(page, periodName)?.top?.artists
+                                    save = ::saveTopArtist
+                                }
+                                2 -> {
+                                    items = api.getTopAlbums(page, periodName)?.top?.albums
+                                    save = ::saveTopAlbum
+                                }
+                                3 -> {
+                                    items = api.getTopTracks(page, periodName)?.top?.tracks
+                                    save = ::saveTopTrack
+                                }
+                                else -> {
+                                    items = api.getLovedTracks(page)?.loved?.tracks
+                                    save = ::saveLovedTrack
                                 }
                             }
 
-                            items?.forEach { item ->
-                                save(item)
+                            transaction {
+
+                                if (isFirst) {
+                                    when (index) {
+                                        0 -> scrobbleQueries.deleteAll()
+                                        1, 2, 3 -> topQueries.deleteTop(index.toLong(), period)
+                                        4 -> trackQueries.dropLovedTrackDates()
+                                    }
+                                }
+
+                                items?.forEach { item ->
+                                    save(item)
+                                }
                             }
                         }
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                } finally {
+                    withContext(AppCoroutineDispatcher.Main) {
+                        dispatch(Result.Loading(isLoading = false, isFirstPage = isFirst))
                     }
                 }
             }
@@ -252,7 +257,7 @@ internal class ShelfStoreFactory(
                 scrobble.date = Date(0)
 
             val artistId = insertArtist(scrobble.artist?.name)
-            val albumId = insertAlbum(artistId, scrobble.album?.name, scrobble.images)
+            val albumId = insertAlbum(artistId, scrobble.album?.text, scrobble.images)
             val trackId = upsertScrobbleTrack(artistId, albumId, scrobble.name, scrobble.loved)
             insertScrobble(trackId, scrobble.date?.uts, scrobble.attributes?.nowPlaying)
         }

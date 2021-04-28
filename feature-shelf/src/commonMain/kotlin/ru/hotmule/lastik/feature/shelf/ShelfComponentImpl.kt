@@ -35,9 +35,8 @@ class ShelfComponentImpl(
     override val model: Flow<Model> = store.states.map {
         Model(
             items = it.items,
-            isLoading = it.isLoading,
-            isLoadingMore = it.isLoadingMore,
-            isRefreshing = it.isRefreshing
+            isRefreshing = it.isRefreshing,
+            isMoreLoading = it.isMoreLoading
         )
     }
 

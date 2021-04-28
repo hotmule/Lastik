@@ -37,7 +37,8 @@ fun LibraryContent(
         },
         content = {
             LibraryBody(
-                routerState = component.routerState
+                routerState = component.routerState,
+                bottomInset = bottomInset
             )
         },
         bottomBar = {
@@ -115,11 +116,15 @@ expect fun PeriodDropDown(
 
 @Composable
 private fun LibraryBody(
-    routerState: Value<RouterState<*, Child>>
+    routerState: Value<RouterState<*, Child>>,
+    bottomInset: Dp
 ) {
     Children(routerState) { child, _ ->
         ShelfContent(
-            when (child) {
+            modifier = Modifier
+                .padding(bottom = Res.Dimen.barHeight + bottomInset)
+                .fillMaxSize(),
+            component = when (child) {
                 is Child.Scrobbles -> child.component
                 is Child.Artists -> child.component
                 is Child.Albums -> child.component

@@ -1,7 +1,7 @@
 CREATE TABLE top (
     id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-    type INTEGER AS ru.hotmule.lastik.domain.TopType NOT NULL,
-    period INTEGER AS ru.hotmule.lastik.domain.TopPeriod NOT NULL,
+    type INTEGER NOT NULL,
+    period INTEGER NOT NULL,
     rank INTEGER AS Int NOT NULL,
     itemId INTEGER,
     playCount INTEGER,

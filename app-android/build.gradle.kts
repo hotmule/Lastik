@@ -1,7 +1,7 @@
 plugins {
     id("com.android.application")
     id("kotlin-android")
-    id("org.jetbrains.compose") version Libs.Compose.version
+    id("org.jetbrains.compose") version Libs.AndroidX.Compose.version
 }
 
 android {
@@ -44,15 +44,7 @@ dependencies {
     implementation(Libs.ArkIvanov.Decompose.composeExtensions)
 
     implementation(compose.material)
-    implementation(compose.materialIconsExtended)
-
-    implementation(project(Module.sdk))
-
-    implementation(Libs.Accompanist.coil)
     implementation(Libs.Accompanist.insets)
-
     implementation(Libs.AndroidX.appCompat)
     implementation(Libs.AndroidX.Compose.activity)
-    implementation(Libs.AndroidX.Compose.navigation)
-    implementation(Libs.AndroidX.Compose.constraintLayout)
 }

@@ -24,22 +24,18 @@ import ru.hotmule.lastik.`data`.local.Profile
 import ru.hotmule.lastik.`data`.local.ProfileQueries
 import ru.hotmule.lastik.`data`.local.ScrobbleData
 import ru.hotmule.lastik.`data`.local.ScrobbleQueries
-import ru.hotmule.lastik.`data`.local.Top
 import ru.hotmule.lastik.`data`.local.TopQueries
 import ru.hotmule.lastik.`data`.local.TrackQueries
 import ru.hotmule.lastik.`data`.local.TrackTop
-import ru.hotmule.lastik.domain.TopPeriod
-import ru.hotmule.lastik.domain.TopType
 
 internal val KClass<LastikDatabase>.schema: SqlDriver.Schema
   get() = LastikDatabaseImpl.Schema
 
-internal fun KClass<LastikDatabase>.newInstance(driver: SqlDriver, topAdapter: Top.Adapter):
-    LastikDatabase = LastikDatabaseImpl(driver, topAdapter)
+internal fun KClass<LastikDatabase>.newInstance(driver: SqlDriver): LastikDatabase =
+    LastikDatabaseImpl(driver)
 
 private class LastikDatabaseImpl(
-  driver: SqlDriver,
-  internal val topAdapter: Top.Adapter
+  driver: SqlDriver
 ) : TransacterImpl(driver), LastikDatabase {
   public override val albumQueries: AlbumQueriesImpl = AlbumQueriesImpl(this, driver)
 
@@ -474,12 +470,12 @@ private class TopQueriesImpl(
 
   internal val trackTop: MutableList<Query<*>> = copyOnWriteList()
 
-  public override fun getTopCount(type: TopType, period: TopPeriod): Query<Long> =
-      GetTopCountQuery(type, period) { cursor ->
+  public override fun getTopCount(type: Long, period: Long): Query<Long> = GetTopCountQuery(type,
+      period) { cursor ->
     cursor.getLong(0)!!
   }
 
-  public override fun <T : Any> artistTop(period: TopPeriod, mapper: (
+  public override fun <T : Any> artistTop(period: Long, mapper: (
     name: String?,
     rank: Int,
     playCount: Long?,
@@ -493,8 +489,8 @@ private class TopQueriesImpl(
     )
   }
 
-  public override fun artistTop(period: TopPeriod): Query<ArtistTop> = artistTop(period) { name,
-      rank, playCount, lowArtwork ->
+  public override fun artistTop(period: Long): Query<ArtistTop> = artistTop(period) { name, rank,
+      playCount, lowArtwork ->
     ArtistTop(
       name,
       rank,
@@ -503,7 +499,7 @@ private class TopQueriesImpl(
     )
   }
 
-  public override fun <T : Any> albumTop(period: TopPeriod, mapper: (
+  public override fun <T : Any> albumTop(period: Long, mapper: (
     artist: String?,
     album: String?,
     lowArtwork: String?,
@@ -519,8 +515,8 @@ private class TopQueriesImpl(
     )
   }
 
-  public override fun albumTop(period: TopPeriod): Query<AlbumTop> = albumTop(period) { artist,
-      album, lowArtwork, rank, playCount ->
+  public override fun albumTop(period: Long): Query<AlbumTop> = albumTop(period) { artist, album,
+      lowArtwork, rank, playCount ->
     AlbumTop(
       artist,
       album,
@@ -530,7 +526,7 @@ private class TopQueriesImpl(
     )
   }
 
-  public override fun <T : Any> trackTop(period: TopPeriod, mapper: (
+  public override fun <T : Any> trackTop(period: Long, mapper: (
     artist: String?,
     track: String?,
     rank: Int,
@@ -546,8 +542,8 @@ private class TopQueriesImpl(
     )
   }
 
-  public override fun trackTop(period: TopPeriod): Query<TrackTop> = trackTop(period) { artist,
-      track, rank, playCount, lowArtwork ->
+  public override fun trackTop(period: Long): Query<TrackTop> = trackTop(period) { artist, track,
+      rank, playCount, lowArtwork ->
     TrackTop(
       artist,
       track,
@@ -558,16 +554,16 @@ private class TopQueriesImpl(
   }
 
   public override fun insert(
-    type: TopType,
-    period: TopPeriod,
+    type: Long,
+    period: Long,
     rank: Int,
     itemId: Long?,
     playCount: Long?
   ): Unit {
     driver.execute(1869053748,
         """INSERT INTO top(type, period, rank, itemId, playCount) VALUES (?, ?, ?, ?, ?)""", 5) {
-      bindLong(1, database.topAdapter.typeAdapter.encode(type))
-      bindLong(2, database.topAdapter.periodAdapter.encode(period))
+      bindLong(1, type)
+      bindLong(2, period)
       bindLong(3, rank.toLong())
       bindLong(4, itemId)
       bindLong(5, playCount)
@@ -576,10 +572,10 @@ private class TopQueriesImpl(
         database.topQueries.albumTop + database.topQueries.trackTop})
   }
 
-  public override fun deleteTop(type: TopType, period: TopPeriod): Unit {
+  public override fun deleteTop(type: Long, period: Long): Unit {
     driver.execute(1050021199, """DELETE FROM top WHERE type = ? AND period = ?""", 2) {
-      bindLong(1, database.topAdapter.typeAdapter.encode(type))
-      bindLong(2, database.topAdapter.periodAdapter.encode(period))
+      bindLong(1, type)
+      bindLong(2, period)
     }
     notifyQueries(1050021199, {database.topQueries.getTopCount + database.topQueries.artistTop +
         database.topQueries.albumTop + database.topQueries.trackTop})
@@ -588,8 +584,8 @@ private class TopQueriesImpl(
   public override fun upsert(
     itemId: Long?,
     playCount: Long?,
-    type: TopType,
-    period: TopPeriod,
+    type: Long,
+    period: Long,
     rank: Int
   ): Unit {
     driver.execute(2078219995, """
@@ -599,16 +595,16 @@ private class TopQueriesImpl(
     """.trimMargin(), 5) {
       bindLong(1, itemId)
       bindLong(2, playCount)
-      bindLong(3, database.topAdapter.typeAdapter.encode(type))
-      bindLong(4, database.topAdapter.periodAdapter.encode(period))
+      bindLong(3, type)
+      bindLong(4, period)
       bindLong(5, rank.toLong())
     }
     driver.execute(2078219996, """
     |INSERT OR IGNORE INTO top(type, period, rank, itemId, playCount)
     |    VALUES (?, ?, ?, ?, ?)
     """.trimMargin(), 5) {
-      bindLong(1, database.topAdapter.typeAdapter.encode(type))
-      bindLong(2, database.topAdapter.periodAdapter.encode(period))
+      bindLong(1, type)
+      bindLong(2, period)
       bindLong(3, rank.toLong())
       bindLong(4, itemId)
       bindLong(5, playCount)
@@ -619,15 +615,15 @@ private class TopQueriesImpl(
 
   private inner class GetTopCountQuery<out T : Any>(
     @JvmField
-    public val type: TopType,
+    public val type: Long,
     @JvmField
-    public val period: TopPeriod,
+    public val period: Long,
     mapper: (SqlCursor) -> T
   ) : Query<T>(getTopCount, mapper) {
     public override fun execute(): SqlCursor = driver.executeQuery(1971077781,
         """SELECT COUNT(id) FROM top WHERE type = ? AND period = ?""", 2) {
-      bindLong(1, database.topAdapter.typeAdapter.encode(type))
-      bindLong(2, database.topAdapter.periodAdapter.encode(period))
+      bindLong(1, type)
+      bindLong(2, period)
     }
 
     public override fun toString(): String = "top.sq:getTopCount"
@@ -635,7 +631,7 @@ private class TopQueriesImpl(
 
   private inner class ArtistTopQuery<out T : Any>(
     @JvmField
-    public val period: TopPeriod,
+    public val period: Long,
     mapper: (SqlCursor) -> T
   ) : Query<T>(artistTop, mapper) {
     public override fun execute(): SqlCursor = driver.executeQuery(1983249971, """
@@ -653,7 +649,7 @@ private class TopQueriesImpl(
     |)
     |WHERE t.type = 0 AND t.period = ? ORDER BY t.rank
     """.trimMargin(), 1) {
-      bindLong(1, database.topAdapter.periodAdapter.encode(period))
+      bindLong(1, period)
     }
 
     public override fun toString(): String = "top.sq:artistTop"
@@ -661,7 +657,7 @@ private class TopQueriesImpl(
 
   private inner class AlbumTopQuery<out T : Any>(
     @JvmField
-    public val period: TopPeriod,
+    public val period: Long,
     mapper: (SqlCursor) -> T
   ) : Query<T>(albumTop, mapper) {
     public override fun execute(): SqlCursor = driver.executeQuery(1854605857, """
@@ -676,7 +672,7 @@ private class TopQueriesImpl(
     |LEFT JOIN artist ar ON al.artistId = ar.id
     |WHERE t.type = 1 AND t.period = ? ORDER BY t.rank
     """.trimMargin(), 1) {
-      bindLong(1, database.topAdapter.periodAdapter.encode(period))
+      bindLong(1, period)
     }
 
     public override fun toString(): String = "top.sq:albumTop"
@@ -684,7 +680,7 @@ private class TopQueriesImpl(
 
   private inner class TrackTopQuery<out T : Any>(
     @JvmField
-    public val period: TopPeriod,
+    public val period: Long,
     mapper: (SqlCursor) -> T
   ) : Query<T>(trackTop, mapper) {
     public override fun execute(): SqlCursor = driver.executeQuery(1593006533, """
@@ -700,7 +696,7 @@ private class TopQueriesImpl(
     |LEFT JOIN artist ar ON tr.artistId = ar.id
     |WHERE t.type = 2 AND t.period = ? ORDER BY t.rank
     """.trimMargin(), 1) {
-      bindLong(1, database.topAdapter.periodAdapter.encode(period))
+      bindLong(1, period)
     }
 
     public override fun toString(): String = "top.sq:trackTop"

@@ -20,44 +20,11 @@ open class Sdk(
 ) {
 
     private val prefs = PrefsStore(settings)
-    private val db = LastikDatabase(sqlDriver, Top.Adapter(
 
-        object : ColumnAdapter<TopType, Long> {
-            override fun decode(databaseValue: Long) = TopType.values()[databaseValue.toInt()]
-            override fun encode(value: TopType) = value.ordinal.toLong()
-        },
-
-        object : ColumnAdapter<TopPeriod, Long> {
-            override fun decode(databaseValue: Long) = TopPeriod.values()[databaseValue.toInt()]
-            override fun encode(value: TopPeriod) = value.ordinal.toLong()
-        }
-    ))
-
-    val signOutInteractor = SignOutInteractor(prefs, db.profileQueries)
-    private val httpClient = httpClientFactory.create(signOutInteractor)
+    private val httpClient = httpClientFactory.create()
 
     private val userApi = UserApi(httpClient, prefs, apiKey)
     private val trackApi = TrackApi(httpClient, prefs, apiKey, secret)
-
-    private val artistsInteractor = ArtistsInteractor(
-        db.artistQueries
-    )
-
-    val profileInteractor = ProfileInteractor(
-        userApi, prefs, db.trackQueries, db.profileQueries, artistsInteractor
-    )
-
-    val scrobblesInteractor = ScrobblesInteractor(
-        userApi, db.albumQueries, db.trackQueries, db.scrobbleQueries, artistsInteractor
-    )
-
-    val topInteractor = TopInteractor(
-        userApi, prefs, db.albumQueries, db.trackQueries, db.topQueries, artistsInteractor
-    )
-
-    val trackInteractor = TrackInteractor(
-        trackApi, db.trackQueries
-    )
 
     companion object
 }

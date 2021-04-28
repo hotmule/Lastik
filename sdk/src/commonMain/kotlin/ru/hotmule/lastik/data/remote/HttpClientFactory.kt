@@ -10,7 +10,6 @@ import io.ktor.client.features.logging.Logger
 import io.ktor.client.features.logging.Logging
 import io.ktor.http.*
 import kotlinx.serialization.json.Json
-import ru.hotmule.lastik.domain.SignOutInteractor
 
 class HttpClientFactory(
     private val loggingEnabled: Boolean,
@@ -18,9 +17,7 @@ class HttpClientFactory(
     private val engine: HttpClientEngine
 ) {
 
-    fun create(
-        interactor: SignOutInteractor
-    ) = HttpClient(engine) {
+    fun create() = HttpClient(engine) {
 
         if (loggingEnabled) {
             install(Logging) {

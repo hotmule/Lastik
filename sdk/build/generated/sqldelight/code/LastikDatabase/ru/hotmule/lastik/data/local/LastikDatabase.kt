@@ -22,7 +22,7 @@ public interface LastikDatabase : Transacter {
     public val Schema: SqlDriver.Schema
       get() = LastikDatabase::class.schema
 
-    public operator fun invoke(driver: SqlDriver, topAdapter: Top.Adapter): LastikDatabase =
-        LastikDatabase::class.newInstance(driver, topAdapter)
+    public operator fun invoke(driver: SqlDriver): LastikDatabase =
+        LastikDatabase::class.newInstance(driver)
   }
 }

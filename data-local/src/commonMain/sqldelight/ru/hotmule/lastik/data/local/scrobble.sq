@@ -28,5 +28,5 @@ SELECT
 FROM scrobble s
 LEFT JOIN track t ON s.trackId = t.id
 LEFT JOIN album al ON t.albumId = al.id
-LEFT JOIN artist ar ON al.artistId = ar.id
+LEFT JOIN artist ar ON t.artistId = ar.id
 ORDER BY nowPlaying DESC, s.listenedAt DESC;
