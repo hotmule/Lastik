@@ -21,6 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -35,21 +36,12 @@ fun ShelfContent(
     modifier: Modifier
 ) {
     val model by component.model.collectAsState(Model())
+    val scrobbleWidth = scrobbleWidth(model.items.firstOrNull())
 
     Refreshable(
         isRefreshing = model.isRefreshing,
         onRefresh = component::onRefreshItems
     ) {
-
-        /*
-        var scrobbleWidth: Float? = null
-        if (!items.isNullOrEmpty()) {
-            items[0].playCount?.let {
-                scrobbleWidth = displayWidth / it
-            }
-        }
-        */
-
         LazyColumn(modifier = modifier) {
             itemsIndexed(model.items) { index, item ->
 
@@ -63,7 +55,7 @@ fun ShelfContent(
                 }
                 */
 
-                ShelfItemContent(item)
+                ShelfItemContent(item, scrobbleWidth)
 
                 if (index == model.items.lastIndex) {
                     AdditionalProgress(model.isMoreLoading)
@@ -76,7 +68,8 @@ fun ShelfContent(
 
 @Composable
 private fun ShelfItemContent(
-    item: ShelfItem
+    item: ShelfItem,
+    scrobbleWidth: Float
 ) {
     Box(
         modifier = Modifier
@@ -84,117 +77,114 @@ private fun ShelfItemContent(
             .fillMaxWidth()
     ) {
 
-        with(item) {
+        if (item.highlighted) {
+            Surface(
+                content = {},
+                color = Res.Color.sunflower.copy(alpha = 0.1f),
+                modifier = Modifier.fillMaxSize()
+            )
+        }
 
-            if (highlighted) {
-                Surface(
-                    color = Res.Color.sunflower.copy(alpha = 0.1f),
-                    modifier = Modifier.fillMaxSize()
-                ) {}
-            }
+        item.playCount?.let {
+            Surface(
+                content = {},
+                color = MaterialTheme.colors.primary.copy(alpha = 0.1f),
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .width((scrobbleWidth * it).dp)
+                    .align(Alignment.CenterEnd)
+            )
+        }
 
-            /*
-            if (scrobbleWidth != null && playCount != null) {
-                Surface(
-                    color = MaterialTheme.colors.primary.copy(alpha = 0.1f),
+        Row(modifier = Modifier.fillMaxSize()) {
+
+            item.rank?.let {
+                Text(
+                    text = it.toString(),
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.body2,
                     modifier = Modifier
-                        .fillMaxHeight()
-                        .width((scrobbleWidth * playCount!!).dp)
-                        .align(Alignment.CenterEnd)
-                ) { }
+                        .width(52.dp)
+                        .align(Alignment.CenterVertically)
+                )
             }
-             */
 
-            Row(modifier = Modifier.fillMaxSize()) {
-
-                rank?.let {
-                    Text(
-                        text = it.toString(),
-                        textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.body2,
-                        modifier = Modifier
-                            .width(52.dp)
-                            .align(Alignment.CenterVertically)
+            item.loved?.let {
+                IconButton(
+                    onClick = { },
+                    modifier = Modifier
+                        .padding(2.dp)
+                        .align(Alignment.CenterVertically)
+                ) {
+                    Image(
+                        colorFilter = ColorFilter.tint(MaterialTheme.colors.primary),
+                        contentDescription = "love",
+                        imageVector = if (it)
+                            Icons.Rounded.Favorite
+                        else
+                            Icons.Rounded.FavoriteBorder
                     )
                 }
+            }
 
-                loved?.let {
-                    IconButton(
-                        onClick = { },
-                        modifier = Modifier
-                            .padding(2.dp)
-                            .align(Alignment.CenterVertically)
-                    ) {
-                        Image(
-                            colorFilter = ColorFilter.tint(MaterialTheme.colors.primary),
-                            contentDescription = "love",
-                            imageVector = if (it)
-                                Icons.Rounded.Favorite
-                            else
-                                Icons.Rounded.FavoriteBorder
+            Image(
+                painter = remoteImagePainter(item.image),
+                contentDescription = "artwork",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .align(Alignment.CenterVertically)
+                    .width(50.dp)
+                    .height(50.dp)
+                    .clip(shape = RoundedCornerShape(8))
+                    .background(Color.LightGray)
+            )
+
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(start = 16.dp, end = 16.dp)
+                    .align(Alignment.CenterVertically)
+            ) {
+
+                Text(
+                    text = item.title,
+                    maxLines = 1,
+                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.body1,
+                    overflow = TextOverflow.Ellipsis
+                )
+
+                item.subtitle?.let {
+
+                    CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+                        Text(
+                            text = it,
+                            style = MaterialTheme.typography.body2,
+                            modifier = Modifier
+                                .padding(top = 8.dp)
                         )
                     }
                 }
-
-                Image(
-                    painter = remoteImagePainter(image),
-                    contentDescription = "artwork",
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .align(Alignment.CenterVertically)
-                        .width(50.dp)
-                        .height(50.dp)
-                        .clip(shape = RoundedCornerShape(8))
-                        .background(Color.LightGray)
-                )
-
-                Column(
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(start = 16.dp, end = 16.dp)
-                        .align(Alignment.CenterVertically)
-                ) {
-
-                    Text(
-                        text = title,
-                        maxLines = 1,
-                        fontWeight = FontWeight.Bold,
-                        style = MaterialTheme.typography.body1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-
-                    subtitle?.let {
-
-                        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-                            Text(
-                                text = it,
-                                style = MaterialTheme.typography.body2,
-                                modifier = Modifier
-                                    .padding(top = 8.dp)
-                            )
-                        }
-                    }
-                }
             }
-
-            hint?.let {
-                CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-                    Text(
-                        text = it,
-                        style = MaterialTheme.typography.body2,
-                        modifier = Modifier
-                            .align(Alignment.BottomEnd)
-                            .padding(16.dp),
-                    )
-                }
-            }
-
-            Divider(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.BottomCenter)
-            )
         }
+
+        item.hint?.let {
+            CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+                Text(
+                    text = it,
+                    style = MaterialTheme.typography.body2,
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .padding(16.dp),
+                )
+            }
+        }
+
+        Divider(
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.BottomCenter)
+        )
     }
 }
 
@@ -217,6 +207,13 @@ private fun AdditionalProgress(
 }
 
 @Composable
+private fun scrobbleWidth(firstItem: ShelfItem?): Float {
+    val playCount = firstItem?.playCount
+    val widthInPx = if (playCount != null) getScreenWidth() / playCount.toFloat() else 0f
+    return widthInPx / LocalDensity.current.density
+}
+
+@Composable
 expect fun Refreshable(
     isRefreshing: Boolean,
     onRefresh: () -> Unit,
@@ -224,4 +221,6 @@ expect fun Refreshable(
 )
 
 @Composable
-expect fun remoteImagePainter(data: String) : Painter
+expect fun remoteImagePainter(data: String): Painter
+
+expect fun getScreenWidth(): Int
