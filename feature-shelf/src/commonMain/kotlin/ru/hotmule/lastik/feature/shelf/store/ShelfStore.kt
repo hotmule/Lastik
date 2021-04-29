@@ -9,11 +9,7 @@ interface ShelfStore : Store<Intent, State, Nothing> {
     sealed class Intent {
         object RefreshItems : Intent()
         object LoadMoreItems : Intent()
-        data class MakeLove(
-            val title: String,
-            val subtitle: String?,
-            val isLoved: Boolean
-        ) : Intent()
+        data class MakeLove(val title: String, val subtitle: String?, val isLoved: Boolean) : Intent()
     }
 
     sealed class Result {

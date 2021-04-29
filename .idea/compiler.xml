@@ -46,6 +46,10 @@
       <module name="Lastik.feature-auth.androidTest" target="1.8" />
       <module name="Lastik.feature-auth.androidTestDebug" target="1.8" />
       <module name="Lastik.feature-auth.androidTestRelease" target="1.8" />
+      <module name="Lastik.feature-friends.commonMain" target="1.8" />
+      <module name="Lastik.feature-friends.commonTest" target="1.8" />
+      <module name="Lastik.feature-friends.desktopMain" target="1.8" />
+      <module name="Lastik.feature-friends.desktopTest" target="1.8" />
       <module name="Lastik.feature-library.androidAndroidTest" target="1.8" />
       <module name="Lastik.feature-library.androidAndroidTestDebug" target="1.8" />
       <module name="Lastik.feature-library.androidDebug" target="1.8" />

@@ -1,0 +1,18 @@
+CREATE TABLE friend (
+    profileId INTEGER NOT NULL,
+    parentProfileId INTEGER NOT NULL,
+    FOREIGN KEY (profileId) REFERENCES profile(id) ON DELETE CASCADE,
+    FOREIGN KEY (parentProfileId) REFERENCES profile(id) ON DELETE CASCADE
+);
+
+deleteAll:
+DELETE FROM friend WHERE parentProfileId = ?;
+
+insert:
+INSERT INTO friend(profileId, parentProfileId) VALUES (?, ?);
+
+friendsData:
+SELECT f.profileId, p.userName, p.lowResImage
+FROM friend f
+LEFT JOIN profile p ON f.profileId = p.id
+WHERE parentProfileId = ?;

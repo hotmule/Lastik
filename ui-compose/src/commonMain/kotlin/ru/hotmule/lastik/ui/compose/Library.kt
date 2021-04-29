@@ -120,18 +120,13 @@ private fun LibraryBody(
     bottomInset: Dp
 ) {
     Children(routerState) { child, _ ->
-        ShelfContent(
-            modifier = Modifier
-                .padding(bottom = Res.Dimen.barHeight + bottomInset)
-                .fillMaxSize(),
-            component = when (child) {
-                is Child.Scrobbles -> child.component
-                is Child.Artists -> child.component
-                is Child.Albums -> child.component
-                is Child.Tracks -> child.component
-                is Child.Profile -> child.component
-            }
-        )
+        when (child) {
+            is Child.Scrobbles -> ShelfContent(child.component, bottomInset)
+            is Child.Artists -> ShelfContent(child.component, bottomInset)
+            is Child.Albums -> ShelfContent(child.component, bottomInset)
+            is Child.Tracks -> ShelfContent(child.component, bottomInset)
+            is Child.Profile -> ProfileContent(child.component, bottomInset)
+        }
     }
 }
 

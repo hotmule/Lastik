@@ -102,10 +102,6 @@ internal class ShelfStoreFactory(
                         dispatch(Result.Loading(isLoading = true, isFirstPage = isFirst))
                     }
 
-                    val periodName = arrayOf(
-                        "overall", "7day", "1month", "3month", "6month", "12month"
-                    )[period.toInt()]
-
                     with(database) {
 
                         val count = when (index) {
@@ -115,6 +111,10 @@ internal class ShelfStoreFactory(
                         }.executeAsOne().toInt()
 
                         if (isFirst || count.rem(50) == 0) {
+
+                            val periodName = arrayOf(
+                                "overall", "7day", "1month", "3month", "6month", "12month"
+                            )[period.toInt()]
 
                             val page = if (isFirst) 1 else count / 50 + 1
                             val items: List<LibraryItem>?

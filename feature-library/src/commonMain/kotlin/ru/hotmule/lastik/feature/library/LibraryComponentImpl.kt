@@ -14,6 +14,8 @@ import ru.hotmule.lastik.data.remote.LastikHttpClient
 import ru.hotmule.lastik.feature.library.LibraryComponent.*
 import ru.hotmule.lastik.feature.library.store.LibraryStore.*
 import ru.hotmule.lastik.feature.library.store.LibraryStoreFactory
+import ru.hotmule.lastik.feature.profile.ProfileComponent
+import ru.hotmule.lastik.feature.profile.ProfileComponentImpl
 import ru.hotmule.lastik.feature.shelf.ShelfComponent
 import ru.hotmule.lastik.feature.shelf.ShelfComponentImpl
 import ru.hotmule.lastik.utils.getStore
@@ -22,7 +24,8 @@ class LibraryComponentImpl internal constructor(
     private val componentContext: ComponentContext,
     private val storeFactory: StoreFactory,
     private val prefsStore: PrefsStore,
-    private val shelves: List<(ComponentContext) -> ShelfComponent>
+    private val shelves: List<(ComponentContext) -> ShelfComponent>,
+    private val profile: (ComponentContext) -> ProfileComponent
 ) : LibraryComponent, ComponentContext by componentContext {
 
     constructor(
@@ -36,8 +39,8 @@ class LibraryComponentImpl internal constructor(
         storeFactory = storeFactory,
         prefsStore = prefsStore,
         shelves = mutableListOf<(ComponentContext) -> ShelfComponent>().apply {
-            for (shelfIndex in 0..4) {
-                add { childContext: ComponentContext ->
+            for (shelfIndex in 0..3) {
+                add { childContext ->
                     ShelfComponentImpl(
                         componentContext = childContext,
                         storeFactory = storeFactory,
@@ -48,21 +51,28 @@ class LibraryComponentImpl internal constructor(
                     )
                 }
             }
+        },
+        profile = { childContext ->
+            ProfileComponentImpl(
+                childContext,
+                storeFactory = storeFactory,
+                httpClient = httpClient,
+                database = database,
+                prefsStore = prefsStore
+            )
         }
     )
 
-    private val router = router(
+    private val router = router<Config, Child>(
         initialConfiguration = Config.Scrobbles,
         componentFactory = { configuration, componentContext ->
 
-            val component = shelves[configuration.ordinal](componentContext)
-
             when (configuration) {
-                Config.Scrobbles -> Child.Scrobbles(component)
-                Config.Artists -> Child.Artists(component)
-                Config.Albums -> Child.Albums(component)
-                Config.Tracks -> Child.Tracks(component)
-                Config.Profile -> Child.Profile(component)
+                is Config.Scrobbles -> Child.Scrobbles(shelves[0](componentContext))
+                is Config.Artists -> Child.Artists(shelves[1](componentContext))
+                is Config.Albums -> Child.Albums(shelves[2](componentContext))
+                is Config.Tracks -> Child.Tracks(shelves[3](componentContext))
+                is Config.Profile -> Child.Profile(profile(componentContext))
             }
         }
     )
@@ -88,7 +98,15 @@ class LibraryComponentImpl internal constructor(
 
     override fun onShelfSelect(index: Int) {
         store.accept(Intent.ChangeShelf(index))
-        router.push(Config.values()[index])
+        router.push(
+            when (index) {
+                0 -> Config.Scrobbles
+                1 -> Config.Artists
+                2 -> Config.Albums
+                3 -> Config.Tracks
+                else -> Config.Profile
+            }
+        )
     }
 
     override fun onPeriodSelectOpen() {
@@ -107,12 +125,11 @@ class LibraryComponentImpl internal constructor(
         store.accept(Intent.LogOut)
     }
 
-    @Parcelize
-    enum class Config : Parcelable {
-        Scrobbles,
-        Artists,
-        Albums,
-        Tracks,
-        Profile
+    sealed class Config : Parcelable {
+        @Parcelize object Scrobbles : Config()
+        @Parcelize object Artists : Config()
+        @Parcelize object Albums : Config()
+        @Parcelize object Tracks : Config()
+        @Parcelize object Profile : Config()
     }
 }

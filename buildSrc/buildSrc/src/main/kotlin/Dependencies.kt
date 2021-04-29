@@ -26,6 +26,7 @@ object Module {
         const val root = ":feature-root"
         const val auth = ":feature-auth"
         const val library = ":feature-library"
+        const val profile = ":feature-profile"
         const val shelf = ":feature-shelf"
     }
 

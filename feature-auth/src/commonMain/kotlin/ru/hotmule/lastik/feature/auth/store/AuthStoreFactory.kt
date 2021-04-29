@@ -7,25 +7,25 @@ import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.withContext
+import ru.hotmule.lastik.data.local.ProfileQueries
 import ru.hotmule.lastik.data.prefs.PrefsStore
 import ru.hotmule.lastik.data.remote.api.AuthApi
 import ru.hotmule.lastik.feature.auth.store.AuthStore.*
 import ru.hotmule.lastik.utils.AppCoroutineDispatcher
-import ru.hotmule.lastik.utils.WebBrowser
 
 internal class AuthStoreFactory(
     private val storeFactory: StoreFactory,
-    private val authApi: AuthApi,
-    private val prefs: PrefsStore
+    private val queries: ProfileQueries,
+    private val prefs: PrefsStore,
+    private val api: AuthApi
 ) {
-    fun create(): AuthStore =
-        object : AuthStore, Store<Intent, State, Label> by storeFactory.create(
-            name = AuthStore::class.simpleName,
-            initialState = State(),
-            bootstrapper = SimpleBootstrapper(Unit),
-            executorFactory = ::ExecutorImpl,
-            reducer = ReducerImpl
-        ) {}
+    fun create(): AuthStore = object : AuthStore, Store<Intent, State, Label> by storeFactory.create(
+        name = AuthStore::class.simpleName,
+        initialState = State(),
+        bootstrapper = SimpleBootstrapper(Unit),
+        executorFactory = ::ExecutorImpl,
+        reducer = ReducerImpl
+    ) {}
 
     private inner class ExecutorImpl : SuspendExecutor<Intent, Unit, State, Result, Label>(
         AppCoroutineDispatcher.Main
@@ -57,7 +57,7 @@ internal class AuthStoreFactory(
             password: String
         ) {
             launch {
-                val session = authApi.getMobileSession(login, password)
+                val session = api.getMobileSession(login, password)
                 prefs.login = login
                 prefs.password = password
                 prefs.sessionKey = session?.params?.key
@@ -66,8 +66,9 @@ internal class AuthStoreFactory(
 
         private suspend fun getSession() {
             launch {
-                val session = authApi.getSession()
+                val session = api.getSession()
                 prefs.sessionKey = session?.params?.key
+                queries.insert(session?.params?.name)
             }
         }
 

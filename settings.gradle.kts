@@ -8,6 +8,7 @@ include(
     ":feature-auth",
     ":feature-library",
     ":feature-shelf",
+    ":feature-profile",
 
     ":data-remote",
     ":data-local",

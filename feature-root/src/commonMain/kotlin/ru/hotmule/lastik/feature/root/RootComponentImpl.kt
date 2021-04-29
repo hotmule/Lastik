@@ -27,8 +27,8 @@ class RootComponentImpl internal constructor(
     private val database: LastikDatabase,
     private val prefsStore: PrefsStore,
     private val webBrowser: WebBrowser,
-    private val auth: (ComponentContext, (AuthComponent.Output) -> Unit) -> AuthComponent,
-    private val library: (ComponentContext) -> LibraryComponent,
+    val auth: (ComponentContext, (AuthComponent.Output) -> Unit) -> AuthComponent,
+    val library: (ComponentContext) -> LibraryComponent,
 ) : RootComponent, ComponentContext by componentContext {
 
     constructor(
@@ -49,6 +49,7 @@ class RootComponentImpl internal constructor(
                 componentContext = childContext,
                 storeFactory = storeFactory,
                 httpClient = httpClient,
+                database = database,
                 prefs = prefsStore,
                 output = output
             )

@@ -6,18 +6,19 @@ import com.arkivanov.mvikotlin.extensions.coroutines.labels
 import com.arkivanov.mvikotlin.extensions.coroutines.states
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import ru.hotmule.lastik.data.local.LastikDatabase
 import ru.hotmule.lastik.data.prefs.PrefsStore
 import ru.hotmule.lastik.data.remote.LastikHttpClient
 import ru.hotmule.lastik.feature.auth.AuthComponent.*
 import ru.hotmule.lastik.feature.auth.store.AuthStore.*
 import ru.hotmule.lastik.feature.auth.store.AuthStoreFactory
-import ru.hotmule.lastik.utils.WebBrowser
 import ru.hotmule.lastik.utils.getStore
 
 class AuthComponentImpl(
     componentContext: ComponentContext,
     storeFactory: StoreFactory,
     httpClient: LastikHttpClient,
+    database: LastikDatabase,
     prefs: PrefsStore,
     private val output: (Output) -> Unit
 ) : AuthComponent, ComponentContext by componentContext {
@@ -25,7 +26,8 @@ class AuthComponentImpl(
     private val store = instanceKeeper.getStore {
         AuthStoreFactory(
             storeFactory = storeFactory,
-            authApi = httpClient.authApi,
+            queries = database.profileQueries,
+            api = httpClient.authApi,
             prefs = prefs
         ).create()
     }

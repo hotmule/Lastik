@@ -15,6 +15,7 @@ kotlin {
                 implementation(project(Module.Feature.root))
                 implementation(project(Module.Feature.auth))
                 implementation(project(Module.Feature.library))
+                implementation(project(Module.Feature.profile))
                 implementation(project(Module.Feature.shelf))
 
                 implementation(compose.material)

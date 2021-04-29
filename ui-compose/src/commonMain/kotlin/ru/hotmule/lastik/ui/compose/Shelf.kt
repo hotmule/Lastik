@@ -25,6 +25,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import ru.hotmule.lastik.feature.shelf.ShelfComponent
 import ru.hotmule.lastik.feature.shelf.ShelfComponent.*
@@ -34,7 +35,8 @@ import kotlin.reflect.KFunction3
 @Composable
 fun ShelfContent(
     component: ShelfComponent,
-    modifier: Modifier
+    bottomInset: Dp,
+    header: @Composable () -> Unit = { }
 ) {
     val model by component.model.collectAsState(Model())
     val scrobbleWidth = provideScrobbleWidth(model.items.firstOrNull()?.playCount)
@@ -43,18 +45,15 @@ fun ShelfContent(
         isRefreshing = model.isRefreshing,
         onRefresh = component::onRefreshItems
     ) {
-        LazyColumn(modifier = modifier) {
-            itemsIndexed(model.items) { index, item ->
+        LazyColumn(
+            modifier = Modifier
+                .padding(bottom = Res.Dimen.barHeight + bottomInset)
+                .fillMaxSize()
+        ) {
 
-                /*
-                if (currentSection == LibrarySection.Profile) {
-                    item {
-                        ProfileHeader(
-                            interactor = sdk.profileInteractor
-                        )
-                    }
-                }
-                */
+            item { header() }
+
+            itemsIndexed(model.items) { index, item ->
 
                 ShelfItemContent(
                     item = item,
@@ -211,8 +210,7 @@ private fun AdditionalProgress(
     ) {
         if (isLoading) {
             CircularProgressIndicator(
-                modifier = Modifier
-                    .align(Alignment.Center)
+                modifier = Modifier.align(Alignment.Center)
             )
         }
     }

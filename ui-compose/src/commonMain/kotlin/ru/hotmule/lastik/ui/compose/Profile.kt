@@ -1,117 +1,132 @@
 package ru.hotmule.lastik.ui.compose
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.ContentAlpha
+import androidx.compose.material.LocalContentAlpha
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.runtime.*
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.arkivanov.decompose.extensions.compose.jetbrains.Children
+import ru.hotmule.lastik.feature.profile.ProfileComponent
+import ru.hotmule.lastik.feature.profile.ProfileComponent.*
+import ru.hotmule.lastik.feature.profile.store.ProfileStore
+import ru.hotmule.lastik.ui.compose.res.Res
 
 @Composable
-fun ProfileHeader(
-    modifier: Modifier = Modifier,
-    //interactor: ProfileInteractor
+fun ProfileContent(
+    component: ProfileComponent,
+    bottomInset: Dp
 ) {
-    //val info by interactor.observeInfo().collectAsState(initial = null)
-    //val friends by interactor.observeFriends().collectAsState(initial = null)
+    val model by component.model.collectAsState(Model())
 
-    Column {
+    Children(component.routerState) { child, _ ->
+        when (child) {
+            is Child.Shelf -> ShelfContent(child.component, bottomInset) {
 
-        /*
-        ConstraintLayout(modifier = modifier.fillMaxWidth(),
-            content = {
-
-                val (image, regDate, playCount) = createRefs()
-
-                ProfileImage(
-                    url = info?.highResImage,
-                    modifier = Modifier
-                        .height(96.dp)
-                        .width(96.dp)
-                        .constrainAs(image) {
-                            top.linkTo(parent.top, 24.dp)
-                            start.linkTo(parent.start, 24.dp)
-                        }
-                )
-
-                info?.registerDate?.let {
-
-                    ProfileStat(
-                        titleId = R.string.scrobbling_since,
-                        subtitle = "", //it.toDateString("d MMMM yyyy"),
-                        modifier = Modifier.constrainAs(regDate) {
-                            start.linkTo(image.end)
-                            top.linkTo(image.top)
-                            end.linkTo(playCount.start)
-                            bottom.linkTo(image.bottom)
-                        }
-                    )
-                }
-
-                info?.playCount?.let {
-
-                    ProfileStat(
-                        titleId = R.string.scrobbles_upper,
-                        subtitle = "", //it.toCommasString(),
-                        modifier = Modifier.constrainAs(playCount) {
-                            start.linkTo(regDate.end)
-                            top.linkTo(image.top)
-                            end.linkTo(parent.end)
-                            bottom.linkTo(image.bottom)
-                        }
-                    )
-                }
-            })
-
-        friends?.let {
-
-            TitleText(
-                titleId = R.string.friends,
-                modifier = Modifier.padding(
-                    start = 16.dp,
-                    top = 24.dp
-                )
-            )
-
-            LazyRow(
-                modifier = Modifier.padding(top = 8.dp)
-            ) {
-                itemsIndexed(it) { index, friend ->
-                    Friend(
-                        friend = friend,
-                        modifier = Modifier.padding(
-                            top = 8.dp,
-                            start = if (index == 0) 16.dp else 8.dp,
-                            end = if (index == it.lastIndex) 16.dp else 8.dp
-                        )
-                    )
+                Column {
+                    Friends(model.friends, model.isMoreFriendsLoading)
                 }
             }
         }
-
-        TitleText(
-            titleId = R.string.loved_tracks,
-            modifier = Modifier.padding(
-                start = 16.dp,
-                top = 24.dp
-            )
-        )
-         */
     }
+}
+
+@Composable
+fun Friends(
+    friends: List<ProfileStore.User>,
+    loadingMore: Boolean
+) {
+    TitleText(
+        text = Res.String.friends,
+        modifier = Modifier.padding(start = 16.dp, top = 24.dp)
+    )
+    LazyRow(
+        modifier = Modifier.padding(top = 8.dp)
+    ) {
+        itemsIndexed(friends) { index, friend ->
+            Friend(
+                friend = friend,
+                modifier = Modifier.padding(
+                    top = 8.dp,
+                    start = if (index == 0) 16.dp else 8.dp,
+                    end = if (index == friends.lastIndex) 16.dp else 8.dp
+                )
+            )
+        }
+    }
+}
+
+@Composable
+fun Friend(
+    modifier: Modifier = Modifier,
+    friend: ProfileStore.User
+) {
+    Column(
+        modifier = modifier.width(72.dp)
+    ) {
+
+        ProfileImage(
+            url = friend.image,
+            modifier = Modifier
+                .width(72.dp)
+                .height(72.dp)
+                .fillMaxWidth()
+        )
+
+        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+            Text(
+                text = friend.username,
+                maxLines = 1,
+                fontSize = 12.sp,
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(top = 4.dp)
+            )
+        }
+    }
+}
+
+@Composable
+fun ProfileImage(
+    modifier: Modifier = Modifier,
+    url: String
+) {
+    Image(
+        painter = remoteImagePainter(url),
+        contentDescription = "profileImage",
+        contentScale = ContentScale.Crop,
+        modifier = modifier
+            .clip(CircleShape)
+            .background(Color.LightGray)
+    )
 }
 
 @Composable
 fun ProfileStat(
     modifier: Modifier = Modifier,
-    titleId: Int,
+    text: String,
     subtitle: String
 ) {
     Column(modifier) {
 
         TitleText(
-            titleId = titleId,
+            text = text,
             modifier = Modifier.align(Alignment.CenterHorizontally)
         )
 
@@ -129,60 +144,13 @@ fun ProfileStat(
 @Composable
 private fun TitleText(
     modifier: Modifier = Modifier,
-    titleId: Int
+    text: String
 ) {
     CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
         Text(
             modifier = modifier,
-            text = "", //stringResource(id = titleId),
+            text = text,
             style = MaterialTheme.typography.body2,
         )
     }
-}
-
-@Composable
-fun Friend(
-    modifier: Modifier = Modifier,
-    //friend: Profile
-) {
-    Column(
-        modifier = modifier.width(72.dp)
-    ) {
-
-        ProfileImage(
-            url = "", //friend.highResImage,
-            modifier = Modifier
-                .width(72.dp)
-                .height(72.dp)
-                .fillMaxWidth()
-        )
-
-        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-            Text(
-                text = "", //friend.userName,
-                maxLines = 1,
-                fontSize = 12.sp,
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .padding(top = 4.dp)
-            )
-        }
-    }
-}
-
-@Composable
-fun ProfileImage(
-    modifier: Modifier = Modifier,
-    url: String?
-) {
-    /*
-    CoilImage(
-        data = url ?: "",
-        contentDescription = "avatar",
-        contentScale = ContentScale.Crop,
-        modifier = modifier
-            .clip(CircleShape)
-            .background(Color.LightGray)
-    )
-     */
 }
