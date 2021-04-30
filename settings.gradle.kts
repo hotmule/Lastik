@@ -7,12 +7,14 @@ include(
     ":feature-root",
     ":feature-auth",
     ":feature-library",
-    ":feature-shelf",
+    ":feature-top",
     ":feature-profile",
+    ":feature-scrobbles",
+    ":feature-shelf",
 
-    ":data-remote",
-    ":data-local",
     ":data-prefs",
+    ":data-local",
+    ":data-remote",
 
     ":ui-compose",
 

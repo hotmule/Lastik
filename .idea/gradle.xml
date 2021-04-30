@@ -20,7 +20,9 @@
             <option value="$PROJECT_DIR$/feature-library" />
             <option value="$PROJECT_DIR$/feature-profile" />
             <option value="$PROJECT_DIR$/feature-root" />
+            <option value="$PROJECT_DIR$/feature-scrobbles" />
             <option value="$PROJECT_DIR$/feature-shelf" />
+            <option value="$PROJECT_DIR$/feature-top" />
             <option value="$PROJECT_DIR$/sdk" />
             <option value="$PROJECT_DIR$/ui-compose" />
             <option value="$PROJECT_DIR$/utils" />

@@ -4,15 +4,17 @@ import com.arkivanov.decompose.RouterState
 import com.arkivanov.decompose.value.Value
 import kotlinx.coroutines.flow.Flow
 import ru.hotmule.lastik.feature.profile.ProfileComponent
+import ru.hotmule.lastik.feature.scrobbles.ScrobblesComponent
 import ru.hotmule.lastik.feature.shelf.ShelfComponent
+import ru.hotmule.lastik.feature.top.TopComponent
 
 interface LibraryComponent {
 
     sealed class Child {
-        data class Scrobbles(val component: ShelfComponent) : Child()
-        data class Artists(val component: ShelfComponent) : Child()
-        data class Albums(val component: ShelfComponent) : Child()
-        data class Tracks(val component: ShelfComponent) : Child()
+        data class Scrobbles(val component: ScrobblesComponent) : Child()
+        data class Artists(val component: TopComponent) : Child()
+        data class Albums(val component: TopComponent) : Child()
+        data class Tracks(val component: TopComponent) : Child()
         data class Profile(val component: ProfileComponent) : Child()
     }
 

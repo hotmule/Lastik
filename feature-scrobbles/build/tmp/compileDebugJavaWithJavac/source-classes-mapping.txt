@@ -1,0 +1,2 @@
+ru/hotmule/lastik/feature/scrobbles/BuildConfig.java
+ ru.hotmule.lastik.feature.scrobbles.BuildConfig

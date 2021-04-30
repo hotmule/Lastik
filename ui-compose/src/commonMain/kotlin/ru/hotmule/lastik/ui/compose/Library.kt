@@ -123,10 +123,10 @@ private fun LibraryBody(
 ) {
     Children(routerState) { child, _ ->
         when (child) {
-            is Child.Scrobbles -> ShelfContent(child.component, bottomInset)
-            is Child.Artists -> ShelfContent(child.component, bottomInset)
-            is Child.Albums -> ShelfContent(child.component, bottomInset)
-            is Child.Tracks -> ShelfContent(child.component, bottomInset)
+            is Child.Scrobbles -> ScrobblesContent(child.component, topInset, bottomInset)
+            is Child.Artists -> TopContent(child.component, topInset, bottomInset)
+            is Child.Albums -> TopContent(child.component, topInset, bottomInset)
+            is Child.Tracks -> TopContent(child.component, topInset, bottomInset)
             is Child.Profile -> ProfileContent(child.component, topInset, bottomInset)
         }
     }

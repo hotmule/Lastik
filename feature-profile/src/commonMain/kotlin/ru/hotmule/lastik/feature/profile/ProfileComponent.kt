@@ -7,6 +7,10 @@ import ru.hotmule.lastik.feature.shelf.ShelfComponent
 
 interface ProfileComponent {
 
+    sealed class Child {
+        data class Shelf(val component: ShelfComponent) : Child()
+    }
+
     data class Model(
         val profile: User = User(),
         val friends: List<User> = listOf(),
@@ -19,10 +23,6 @@ interface ProfileComponent {
         val playCount: String = "",
         val scrobblingSince: String = ""
     )
-
-    sealed class Child {
-        data class Shelf(val component: ShelfComponent) : Child()
-    }
 
     val model: Flow<Model>
 
