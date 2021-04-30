@@ -38,6 +38,7 @@ fun LibraryContent(
         content = {
             LibraryBody(
                 routerState = component.routerState,
+                topInset = topInset,
                 bottomInset = bottomInset
             )
         },
@@ -117,6 +118,7 @@ expect fun PeriodDropDown(
 @Composable
 private fun LibraryBody(
     routerState: Value<RouterState<*, Child>>,
+    topInset: Dp,
     bottomInset: Dp
 ) {
     Children(routerState) { child, _ ->
@@ -125,7 +127,7 @@ private fun LibraryBody(
             is Child.Artists -> ShelfContent(child.component, bottomInset)
             is Child.Albums -> ShelfContent(child.component, bottomInset)
             is Child.Tracks -> ShelfContent(child.component, bottomInset)
-            is Child.Profile -> ProfileContent(child.component, bottomInset)
+            is Child.Profile -> ProfileContent(child.component, topInset, bottomInset)
         }
     }
 }

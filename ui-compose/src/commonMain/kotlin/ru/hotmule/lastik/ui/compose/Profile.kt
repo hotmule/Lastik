@@ -6,10 +6,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.ContentAlpha
-import androidx.compose.material.LocalContentAlpha
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.ExitToApp
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -30,27 +29,76 @@ import ru.hotmule.lastik.ui.compose.res.Res
 @Composable
 fun ProfileContent(
     component: ProfileComponent,
+    topInset: Dp,
     bottomInset: Dp
 ) {
-    Children(component.routerState) { child, _ ->
-        when (child) {
-            is Child.Shelf -> ShelfContent(child.component, bottomInset) { ProfileInfo(component) }
+    val model by component.model.collectAsState(Model())
+
+    Scaffold(
+        topBar = {
+            ProfileTopBar(
+                topInset = topInset,
+                username = model.profile.username,
+                onLogOut = component::onLogOut
+            )
+        },
+        content = {
+            Children(component.routerState) { child, _ ->
+                when (child) {
+                    is Child.Shelf -> ShelfContent(child.component, bottomInset) {
+                        ProfileInfo(
+                            profile = model.profile,
+                            friends = model.friends,
+                            isMoreFriendsLoading = model.isMoreFriendsLoading
+                        )
+                    }
+                }
+            }
         }
-    }
+    )
+}
+
+@Composable
+private fun ProfileTopBar(
+    topInset: Dp,
+    username: String,
+    onLogOut: () -> Unit
+) {
+    TopAppBar(
+        modifier = Modifier.height(Res.Dimen.barHeight + topInset),
+        title = {
+            Text(
+                modifier = Modifier.padding(top = topInset),
+                text = username
+            )
+        },
+        actions = {
+            IconButton(
+                modifier = Modifier.padding(top = topInset),
+                onClick = { onLogOut() }
+            ) {
+                Icon(
+                    imageVector = Icons.Rounded.ExitToApp,
+                    contentDescription = "logOut",
+                    tint = Color.White
+                )
+            }
+        }
+    )
 }
 
 @Composable
 private fun ProfileInfo(
-    component: ProfileComponent
+    profile: User,
+    friends: List<User>,
+    isMoreFriendsLoading: Boolean
 ) {
-    val model by component.model.collectAsState(Model())
-
     Column {
 
         ProfileStatistic(
-            imageUrl = model.profile.image,
-            scrobblingSince = model.profile.scrobblingSince,
-            playCount = model.profile.playCount
+            imageUrl = profile.image,
+            scrobblingSince = profile.scrobblingSince,
+            playCount = profile.playCount
         )
 
         TitleText(
@@ -59,8 +107,8 @@ private fun ProfileInfo(
         )
 
         Friends(
-            friends = model.friends,
-            isMoreLoading = model.isMoreFriendsLoading
+            friends = friends,
+            isMoreLoading = isMoreFriendsLoading
         )
 
         TitleText(
@@ -70,6 +118,7 @@ private fun ProfileInfo(
     }
 }
 
+@Composable
 private fun ProfileStatistic(
     imageUrl: String,
     scrobblingSince: String,
