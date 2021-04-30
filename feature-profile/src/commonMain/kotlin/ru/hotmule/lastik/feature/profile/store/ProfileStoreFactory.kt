@@ -52,6 +52,20 @@ class ProfileStoreFactory(
             }
         }
 
+        override suspend fun executeIntent(
+            intent: Intent,
+            getState: () -> State
+        ) {
+            when (intent) {
+                Intent.RefreshProfile -> refreshProfile()
+                Intent.LoadMoreFriends -> {
+                    val profileId = profileQueries.getProfile().executeAsOneOrNull()?.id
+                    loadFriends(false, profileId)
+                }
+                Intent.LogOut -> prefsStore.clear()
+            }
+        }
+
         private suspend fun collectProfile() {
             profileQueries.getProfile()
                 .asFlow()
@@ -90,27 +104,48 @@ class ProfileStoreFactory(
 
         private suspend fun refreshProfile() {
             withContext(AppCoroutineDispatcher.IO) {
-                val profileRequest = async { api.getInfo() }
-                val friendsRequest = async { api.getFriends(1) }
+                val profile = api.getInfo()?.user
+                val profileId = insertUser(profile)
+                loadFriends(true, profileId)
+            }
+        }
 
-                val profile = profileRequest.await()?.user
-                val friends = friendsRequest.await()?.friends?.user
+        private suspend fun loadFriends(
+            isFirstPage: Boolean,
+            profileId: Long?
+        ) {
+            withContext(AppCoroutineDispatcher.IO) {
 
-                friendQueries.transaction {
-                    val profileId = insertUser(profile)
-                    insertFriends(profileId, friends)
+                if (profileId != null) {
+
+                    val friendsCount = friendQueries.getCount(profileId).executeAsOne().toInt()
+
+                    if (isFirstPage || friendsCount.rem(50) == 0) {
+
+                        val page = if (isFirstPage) 1 else friendsCount / 50 + 1
+                        val friends = api.getFriends(page)?.friends?.user
+
+                        with (friendQueries) {
+                            transaction {
+                                if (isFirstPage) deleteAll(profileId)
+                                insertFriends(profileId, friends)
+                            }
+                        }
+                    }
                 }
             }
         }
 
-        override suspend fun executeIntent(
-            intent: Intent,
-            getState: () -> State
+        private fun insertFriends(
+            profileId: Long?,
+            friends: List<User>?
         ) {
-            when (intent) {
-                Intent.RefreshProfile -> { }
-                Intent.LoadMoreFriends -> { }
-                Intent.LogOut -> prefsStore.clear()
+            if (profileId != null) {
+                friends?.forEach {
+                    insertUser(it)?.also { friendId ->
+                        friendQueries.insert(friendId, profileId)
+                    }
+                }
             }
         }
 
@@ -125,20 +160,6 @@ class ProfileStoreFactory(
                     registerDate = user?.registered?.time?.toLongOrNull()
                 )
                 return getId(user?.nickname).executeAsOneOrNull()
-            }
-        }
-
-        private fun insertFriends(
-            profileId: Long?,
-            friends: List<User>?
-        ) {
-            if (profileId != null) {
-                with(friendQueries) {
-                    deleteAll(profileId)
-                    friends?.forEach {
-                        insertUser(it)?.also { friendId -> insert(friendId, profileId) }
-                    }
-                }
             }
         }
     }

@@ -16,3 +16,6 @@ SELECT f.profileId, p.userName, p.lowResImage
 FROM friend f
 LEFT JOIN profile p ON f.profileId = p.id
 WHERE parentProfileId = ?;
+
+getCount:
+SELECT COUNT(profileId) FROM friend WHERE parentProfileId = ?;

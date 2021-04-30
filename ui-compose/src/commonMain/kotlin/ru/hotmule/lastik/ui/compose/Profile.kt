@@ -45,13 +45,18 @@ fun ProfileContent(
         content = {
             Children(component.routerState) { child, _ ->
                 when (child) {
-                    is Child.Shelf -> ShelfContent(child.component, bottomInset) {
-                        ProfileInfo(
-                            profile = model.profile,
-                            friends = model.friends,
-                            isMoreFriendsLoading = model.isMoreFriendsLoading
-                        )
-                    }
+                    is Child.Shelf -> ShelfContent(
+                        component = child.component,
+                        bottomInset = bottomInset,
+                        header = {
+                            ProfileInfo(
+                                profile = model.profile,
+                                friends = model.friends,
+                                isMoreFriendsLoading = model.isMoreFriendsLoading
+                            )
+                        },
+                        onRefreshHeader = component::onRefresh
+                    )
                 }
             }
         }
@@ -226,6 +231,10 @@ private fun Friends(
                     end = if (index == friends.lastIndex) 16.dp else 8.dp
                 )
             )
+
+            if (index == friends.lastIndex) {
+
+            }
         }
     }
 }

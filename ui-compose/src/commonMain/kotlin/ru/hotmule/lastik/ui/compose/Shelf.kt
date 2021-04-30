@@ -36,14 +36,18 @@ import kotlin.reflect.KFunction3
 fun ShelfContent(
     component: ShelfComponent,
     bottomInset: Dp,
-    header: @Composable () -> Unit = { }
+    header: @Composable () -> Unit = { },
+    onRefreshHeader: () -> Unit = { }
 ) {
     val model by component.model.collectAsState(Model())
     val scrobbleWidth = provideScrobbleWidth(model.items.firstOrNull()?.playCount)
 
     Refreshable(
         isRefreshing = model.isRefreshing,
-        onRefresh = component::onRefreshItems
+        onRefresh = {
+            component.onRefreshItems()
+            onRefreshHeader()
+        }
     ) {
         LazyColumn(
             modifier = Modifier

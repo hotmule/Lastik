@@ -6,9 +6,13 @@ import java.util.*
 
 actual object Formatter {
 
-    actual fun numberToCommasString(number: Long?): String =
+    actual fun numberToCommasString(number: Long?): String = if (number != null)
         DecimalFormat("#,###,###").format(number)
+    else
+        "0"
 
-    actual fun utsDateToString(uts: Long?, pattern: String): String =
-        SimpleDateFormat(pattern, Locale.getDefault()).format(Date(uts?.times(1000) ?: 0))
+    actual fun utsDateToString(uts: Long?, pattern: String): String = if (uts != null)
+        SimpleDateFormat(pattern, Locale.getDefault()).format(Date(uts * 1000))
+    else
+        ""
 }
