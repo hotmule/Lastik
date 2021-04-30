@@ -1,0 +1,122 @@
+[
+    {
+        "merged": "/home/hotmule/StudioProjects/Lastik/feature-scrobbles/build/intermediates/res/merged/androidTest/debug/drawable-hdpi-v4_notification_bg_low_pressed.9.png.flat",
+        "source": "/home/hotmule/.gradle/caches/transforms-3/a63dca43bbbbdd53a277dc3b148721a1/transformed/core-1.1.0/res/drawable-hdpi-v4/notification_bg_low_pressed.9.png"
+    },
+    {
+        "merged": "/home/hotmule/StudioProjects/Lastik/feature-scrobbles/build/intermediates/res/merged/androidTest/debug/drawable-hdpi-v4_notification_bg_low_normal.9.png.flat",
+        "source": "/home/hotmule/.gradle/caches/transforms-3/a63dca43bbbbdd53a277dc3b148721a1/transformed/core-1.1.0/res/drawable-hdpi-v4/notification_bg_low_normal.9.png"
+    },
+    {
+        "merged": "/home/hotmule/StudioProjects/Lastik/feature-scrobbles/build/intermediates/res/merged/androidTest/debug/layout_browser_actions_context_menu_page.xml.flat",
+        "source": "/home/hotmule/.gradle/caches/transforms-3/e679d61d57b3ff02882e070e0a86a5a7/transformed/browser-1.3.0/res/layout/browser_actions_context_menu_page.xml"
+    },
+    {
+        "merged": "/home/hotmule/StudioProjects/Lastik/feature-scrobbles/build/intermediates/res/merged/androidTest/debug/drawable-xhdpi-v4_notification_bg_low_pressed.9.png.flat",
+        "source": "/home/hotmule/.gradle/caches/transforms-3/a63dca43bbbbdd53a277dc3b148721a1/transformed/core-1.1.0/res/drawable-xhdpi-v4/notification_bg_low_pressed.9.png"
+    },
+    {
+        "merged": "/home/hotmule/StudioProjects/Lastik/feature-scrobbles/build/intermediates/res/merged/androidTest/debug/drawable-hdpi-v4_notification_bg_normal.9.png.flat",
+        "source": "/home/hotmule/.gradle/caches/transforms-3/a63dca43bbbbdd53a277dc3b148721a1/transformed/core-1.1.0/res/drawable-hdpi-v4/notification_bg_normal.9.png"
+    },
+    {
+        "merged": "/home/hotmule/StudioProjects/Lastik/feature-scrobbles/build/intermediates/res/merged/androidTest/debug/layout-v21_notification_template_icon_group.xml.flat",
+        "source": "/home/hotmule/.gradle/caches/transforms-3/a63dca43bbbbdd53a277dc3b148721a1/transformed/core-1.1.0/res/layout-v21/notification_template_icon_group.xml"
+    },
+    {
+        "merged": "/home/hotmule/StudioProjects/Lastik/feature-scrobbles/build/intermediates/res/merged/androidTest/debug/drawable-hdpi-v4_notify_panel_notification_icon_bg.png.flat",
+        "source": "/home/hotmule/.gradle/caches/transforms-3/a63dca43bbbbdd53a277dc3b148721a1/transformed/core-1.1.0/res/drawable-hdpi-v4/notify_panel_notification_icon_bg.png"
+    },
+    {
+        "merged": "/home/hotmule/StudioProjects/Lastik/feature-scrobbles/build/intermediates/res/merged/androidTest/debug/xml_image_share_filepaths.xml.flat",
+        "source": "/home/hotmule/.gradle/caches/transforms-3/e679d61d57b3ff02882e070e0a86a5a7/transformed/browser-1.3.0/res/xml/image_share_filepaths.xml"
+    },
+    {
+        "merged": "/home/hotmule/StudioProjects/Lastik/feature-scrobbles/build/intermediates/res/merged/androidTest/debug/drawable_notification_bg.xml.flat",
+        "source": "/home/hotmule/.gradle/caches/transforms-3/a63dca43bbbbdd53a277dc3b148721a1/transformed/core-1.1.0/res/drawable/notification_bg.xml"
+    },
+    {
+        "merged": "/home/hotmule/StudioProjects/Lastik/feature-scrobbles/build/intermediates/res/merged/androidTest/debug/drawable-mdpi-v4_notification_bg_normal_pressed.9.png.flat",
+        "source": "/home/hotmule/.gradle/caches/transforms-3/a63dca43bbbbdd53a277dc3b148721a1/transformed/core-1.1.0/res/drawable-mdpi-v4/notification_bg_normal_pressed.9.png"
+    },
+    {
+        "merged": "/home/hotmule/StudioProjects/Lastik/feature-scrobbles/build/intermediates/res/merged/androidTest/debug/layout-v21_notification_action.xml.flat",
+        "source": "/home/hotmule/.gradle/caches/transforms-3/a63dca43bbbbdd53a277dc3b148721a1/transformed/core-1.1.0/res/layout-v21/notification_action.xml"
+    },
+    {
+        "merged": "/home/hotmule/StudioProjects/Lastik/feature-scrobbles/build/intermediates/res/merged/androidTest/debug/drawable-v21_notification_action_background.xml.flat",
+        "source": "/home/hotmule/.gradle/caches/transforms-3/a63dca43bbbbdd53a277dc3b148721a1/transformed/core-1.1.0/res/drawable-v21/notification_action_background.xml"
+    },
+    {
+        "merged": "/home/hotmule/StudioProjects/Lastik/feature-scrobbles/build/intermediates/res/merged/androidTest/debug/drawable-mdpi-v4_notify_panel_notification_icon_bg.png.flat",
+        "source": "/home/hotmule/.gradle/caches/transforms-3/a63dca43bbbbdd53a277dc3b148721a1/transformed/core-1.1.0/res/drawable-mdpi-v4/notify_panel_notification_icon_bg.png"
+    },
+    {
+        "merged": "/home/hotmule/StudioProjects/Lastik/feature-scrobbles/build/intermediates/res/merged/androidTest/debug/drawable-mdpi-v4_notification_bg_low_normal.9.png.flat",
+        "source": "/home/hotmule/.gradle/caches/transforms-3/a63dca43bbbbdd53a277dc3b148721a1/transformed/core-1.1.0/res/drawable-mdpi-v4/notification_bg_low_normal.9.png"
+    },
+    {
+        "merged": "/home/hotmule/StudioProjects/Lastik/feature-scrobbles/build/intermediates/res/merged/androidTest/debug/drawable_notification_bg_low.xml.flat",
+        "source": "/home/hotmule/.gradle/caches/transforms-3/a63dca43bbbbdd53a277dc3b148721a1/transformed/core-1.1.0/res/drawable/notification_bg_low.xml"
+    },
+    {
+        "merged": "/home/hotmule/StudioProjects/Lastik/feature-scrobbles/build/intermediates/res/merged/androidTest/debug/layout_browser_actions_context_menu_row.xml.flat",
+        "source": "/home/hotmule/.gradle/caches/transforms-3/e679d61d57b3ff02882e070e0a86a5a7/transformed/browser-1.3.0/res/layout/browser_actions_context_menu_row.xml"
+    },
+    {
+        "merged": "/home/hotmule/StudioProjects/Lastik/feature-scrobbles/build/intermediates/res/merged/androidTest/debug/layout_notification_template_part_chronometer.xml.flat",
+        "source": "/home/hotmule/.gradle/caches/transforms-3/a63dca43bbbbdd53a277dc3b148721a1/transformed/core-1.1.0/res/layout/notification_template_part_chronometer.xml"
+    },
+    {
+        "merged": "/home/hotmule/StudioProjects/Lastik/feature-scrobbles/build/intermediates/res/merged/androidTest/debug/drawable-mdpi-v4_notification_bg_low_pressed.9.png.flat",
+        "source": "/home/hotmule/.gradle/caches/transforms-3/a63dca43bbbbdd53a277dc3b148721a1/transformed/core-1.1.0/res/drawable-mdpi-v4/notification_bg_low_pressed.9.png"
+    },
+    {
+        "merged": "/home/hotmule/StudioProjects/Lastik/feature-scrobbles/build/intermediates/res/merged/androidTest/debug/drawable_notification_tile_bg.xml.flat",
+        "source": "/home/hotmule/.gradle/caches/transforms-3/a63dca43bbbbdd53a277dc3b148721a1/transformed/core-1.1.0/res/drawable/notification_tile_bg.xml"
+    },
+    {
+        "merged": "/home/hotmule/StudioProjects/Lastik/feature-scrobbles/build/intermediates/res/merged/androidTest/debug/layout_custom_dialog.xml.flat",
+        "source": "/home/hotmule/.gradle/caches/transforms-3/a63dca43bbbbdd53a277dc3b148721a1/transformed/core-1.1.0/res/layout/custom_dialog.xml"
+    },
+    {
+        "merged": "/home/hotmule/StudioProjects/Lastik/feature-scrobbles/build/intermediates/res/merged/androidTest/debug/drawable-xhdpi-v4_notification_bg_normal.9.png.flat",
+        "source": "/home/hotmule/.gradle/caches/transforms-3/a63dca43bbbbdd53a277dc3b148721a1/transformed/core-1.1.0/res/drawable-xhdpi-v4/notification_bg_normal.9.png"
+    },
+    {
+        "merged": "/home/hotmule/StudioProjects/Lastik/feature-scrobbles/build/intermediates/res/merged/androidTest/debug/layout-v21_notification_action_tombstone.xml.flat",
+        "source": "/home/hotmule/.gradle/caches/transforms-3/a63dca43bbbbdd53a277dc3b148721a1/transformed/core-1.1.0/res/layout-v21/notification_action_tombstone.xml"
+    },
+    {
+        "merged": "/home/hotmule/StudioProjects/Lastik/feature-scrobbles/build/intermediates/res/merged/androidTest/debug/drawable-xhdpi-v4_notification_bg_low_normal.9.png.flat",
+        "source": "/home/hotmule/.gradle/caches/transforms-3/a63dca43bbbbdd53a277dc3b148721a1/transformed/core-1.1.0/res/drawable-xhdpi-v4/notification_bg_low_normal.9.png"
+    },
+    {
+        "merged": "/home/hotmule/StudioProjects/Lastik/feature-scrobbles/build/intermediates/res/merged/androidTest/debug/drawable-xhdpi-v4_notification_bg_normal_pressed.9.png.flat",
+        "source": "/home/hotmule/.gradle/caches/transforms-3/a63dca43bbbbdd53a277dc3b148721a1/transformed/core-1.1.0/res/drawable-xhdpi-v4/notification_bg_normal_pressed.9.png"
+    },
+    {
+        "merged": "/home/hotmule/StudioProjects/Lastik/feature-scrobbles/build/intermediates/res/merged/androidTest/debug/layout_notification_template_part_time.xml.flat",
+        "source": "/home/hotmule/.gradle/caches/transforms-3/a63dca43bbbbdd53a277dc3b148721a1/transformed/core-1.1.0/res/layout/notification_template_part_time.xml"
+    },
+    {
+        "merged": "/home/hotmule/StudioProjects/Lastik/feature-scrobbles/build/intermediates/res/merged/androidTest/debug/layout-v21_notification_template_custom_big.xml.flat",
+        "source": "/home/hotmule/.gradle/caches/transforms-3/a63dca43bbbbdd53a277dc3b148721a1/transformed/core-1.1.0/res/layout-v21/notification_template_custom_big.xml"
+    },
+    {
+        "merged": "/home/hotmule/StudioProjects/Lastik/feature-scrobbles/build/intermediates/res/merged/androidTest/debug/drawable_notification_icon_background.xml.flat",
+        "source": "/home/hotmule/.gradle/caches/transforms-3/a63dca43bbbbdd53a277dc3b148721a1/transformed/core-1.1.0/res/drawable/notification_icon_background.xml"
+    },
+    {
+        "merged": "/home/hotmule/StudioProjects/Lastik/feature-scrobbles/build/intermediates/res/merged/androidTest/debug/drawable-hdpi-v4_notification_bg_normal_pressed.9.png.flat",
+        "source": "/home/hotmule/.gradle/caches/transforms-3/a63dca43bbbbdd53a277dc3b148721a1/transformed/core-1.1.0/res/drawable-hdpi-v4/notification_bg_normal_pressed.9.png"
+    },
+    {
+        "merged": "/home/hotmule/StudioProjects/Lastik/feature-scrobbles/build/intermediates/res/merged/androidTest/debug/drawable-mdpi-v4_notification_bg_normal.9.png.flat",
+        "source": "/home/hotmule/.gradle/caches/transforms-3/a63dca43bbbbdd53a277dc3b148721a1/transformed/core-1.1.0/res/drawable-mdpi-v4/notification_bg_normal.9.png"
+    },
+    {
+        "merged": "/home/hotmule/StudioProjects/Lastik/feature-scrobbles/build/intermediates/res/merged/androidTest/debug/drawable-xhdpi-v4_notify_panel_notification_icon_bg.png.flat",
+        "source": "/home/hotmule/.gradle/caches/transforms-3/a63dca43bbbbdd53a277dc3b148721a1/transformed/core-1.1.0/res/drawable-xhdpi-v4/notify_panel_notification_icon_bg.png"
+    }
+]

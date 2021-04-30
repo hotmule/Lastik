@@ -1,0 +1,18 @@
+{
+  "version": 2,
+  "artifactType": {
+    "type": "PROCESSED_RES",
+    "kind": "Directory"
+  },
+  "applicationId": "ru.hotmule.lastik.feature.top.test",
+  "variantName": "processDebugAndroidTestResources",
+  "elements": [
+    {
+      "type": "SINGLE",
+      "filters": [],
+      "versionCode": 0,
+      "versionName": "",
+      "outputFile": "resources-debugAndroidTest.ap_"
+    }
+  ]
+}

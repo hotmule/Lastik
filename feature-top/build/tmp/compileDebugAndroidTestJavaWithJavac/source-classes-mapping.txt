@@ -1,0 +1,2 @@
+ru/hotmule/lastik/feature/top/test/BuildConfig.java
+ ru.hotmule.lastik.feature.top.test.BuildConfig
