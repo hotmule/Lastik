@@ -50,24 +50,28 @@ private fun LastikTopAppBar(
     TopAppBar(
         modifier = Modifier.height(Res.Dimen.barHeight + topInset),
         title = {
-            Text(
-                modifier = Modifier.padding(top = topInset),
-                text = Res.Array.shelves[model.shelfIndex]
-            )
+            model.shelfIndex?.let {
+                Text(
+                    modifier = Modifier.padding(top = topInset),
+                    text = Res.Array.shelves[it]
+                )
+            }
         },
         actions = {
-            TextButton(
-                onClick = component::onPeriodsOpen,
-                colors = ButtonDefaults.textButtonColors(
-                    contentColor = Color.White
-                ),
-                modifier = Modifier.padding(
-                    top = topInset,
-                    end = 2.dp
-                )
-            ) {
-                Text(text = Res.Array.periods[model.periodIndex])
-                Icon(Icons.Rounded.ExpandMore, null)
+            model.periodIndex?.let {
+                TextButton(
+                    onClick = component::onPeriodsOpen,
+                    colors = ButtonDefaults.textButtonColors(
+                        contentColor = Color.White
+                    ),
+                    modifier = Modifier.padding(
+                        top = topInset,
+                        end = 2.dp
+                    )
+                ) {
+                    Text(text = Res.Array.periods[it])
+                    Icon(Icons.Rounded.ExpandMore, null)
+                }
             }
 
             PeriodDropDown(

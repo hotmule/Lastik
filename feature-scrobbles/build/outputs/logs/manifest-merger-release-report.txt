@@ -1,0 +1,25 @@
+-- Merging decision tree log ---
+manifest
+ADDED from /home/hotmule/StudioProjects/Lastik/feature-scrobbles/src/androidMain/AndroidManifest.xml:2:1-58
+INJECTED from /home/hotmule/StudioProjects/Lastik/feature-scrobbles/src/androidMain/AndroidManifest.xml:2:1-58
+INJECTED from /home/hotmule/StudioProjects/Lastik/feature-scrobbles/src/androidMain/AndroidManifest.xml:2:1-58
+	package
+		ADDED from /home/hotmule/StudioProjects/Lastik/feature-scrobbles/src/androidMain/AndroidManifest.xml:2:11-56
+		INJECTED from /home/hotmule/StudioProjects/Lastik/feature-scrobbles/src/androidMain/AndroidManifest.xml
+		INJECTED from /home/hotmule/StudioProjects/Lastik/feature-scrobbles/src/androidMain/AndroidManifest.xml
+	xmlns:android
+		ADDED from /home/hotmule/StudioProjects/Lastik/feature-scrobbles/src/androidMain/AndroidManifest.xml:2:1-58
+uses-sdk
+INJECTED from /home/hotmule/StudioProjects/Lastik/feature-scrobbles/src/androidMain/AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from /home/hotmule/StudioProjects/Lastik/feature-scrobbles/src/androidMain/AndroidManifest.xml
+INJECTED from /home/hotmule/StudioProjects/Lastik/feature-scrobbles/src/androidMain/AndroidManifest.xml
+INJECTED from /home/hotmule/StudioProjects/Lastik/feature-scrobbles/src/androidMain/AndroidManifest.xml
+INJECTED from /home/hotmule/StudioProjects/Lastik/feature-scrobbles/src/androidMain/AndroidManifest.xml
+	android:targetSdkVersion
+		INJECTED from /home/hotmule/StudioProjects/Lastik/feature-scrobbles/src/androidMain/AndroidManifest.xml
+		ADDED from /home/hotmule/StudioProjects/Lastik/feature-scrobbles/src/androidMain/AndroidManifest.xml
+		INJECTED from /home/hotmule/StudioProjects/Lastik/feature-scrobbles/src/androidMain/AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from /home/hotmule/StudioProjects/Lastik/feature-scrobbles/src/androidMain/AndroidManifest.xml
+		ADDED from /home/hotmule/StudioProjects/Lastik/feature-scrobbles/src/androidMain/AndroidManifest.xml
+		INJECTED from /home/hotmule/StudioProjects/Lastik/feature-scrobbles/src/androidMain/AndroidManifest.xml

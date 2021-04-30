@@ -12,8 +12,8 @@ interface TopComponent {
     }
 
     data class Model(
-        val shelfIndex: Int = 0,
-        val periodIndex: Int = 0,
+        val shelfIndex: Int? = null,
+        val periodIndex: Int? = null,
         val periodsOpened: Boolean = false
     )
 
