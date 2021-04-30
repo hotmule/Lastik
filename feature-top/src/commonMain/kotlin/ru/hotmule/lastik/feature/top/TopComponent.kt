@@ -12,8 +12,9 @@ interface TopComponent {
     }
 
     data class Model(
-        val periodsOpened: Boolean = false,
-        val selectedPeriodIndex: Int = 0
+        val shelfIndex: Int = 0,
+        val periodIndex: Int = 0,
+        val periodsOpened: Boolean = false
     )
 
     val model: Flow<Model>

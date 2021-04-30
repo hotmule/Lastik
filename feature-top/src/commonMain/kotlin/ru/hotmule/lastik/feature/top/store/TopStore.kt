@@ -18,7 +18,7 @@ interface TopStore : Store<Intent, State, Nothing> {
     }
 
     data class State(
-        val periodsOpened: Boolean = false,
-        val selectedPeriodIndex: Int = 0,
+        val periodIndex: Int = 0,
+        val periodsOpened: Boolean = false
     )
 }

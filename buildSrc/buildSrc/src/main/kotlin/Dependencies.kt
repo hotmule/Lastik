@@ -19,7 +19,6 @@ object Sdk {
 
 object Module {
 
-    const val sdk = ":sdk"
     const val utils = ":utils"
 
     object Feature {

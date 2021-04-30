@@ -73,8 +73,9 @@ class TopComponentImpl(
 
     override val model: Flow<Model> = store.states.map {
         Model(
+            shelfIndex = index,
+            periodIndex = it.periodIndex,
             periodsOpened = it.periodsOpened,
-            selectedPeriodIndex = it.selectedPeriodIndex
         )
     }
 

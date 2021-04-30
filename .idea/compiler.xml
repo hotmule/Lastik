@@ -98,6 +98,10 @@
       <module name="Lastik.sdk.androidTest" target="1.8" />
       <module name="Lastik.sdk.androidTestDebug" target="1.8" />
       <module name="Lastik.sdk.androidTestRelease" target="1.8" />
+      <module name="Lastik.sdk.commonMain" target="1.8" />
+      <module name="Lastik.sdk.commonTest" target="1.8" />
+      <module name="Lastik.sdk.desktopMain" target="1.8" />
+      <module name="Lastik.sdk.desktopTest" target="1.8" />
       <module name="Lastik.ui-compose.androidAndroidTest" target="1.8" />
       <module name="Lastik.ui-compose.androidAndroidTestDebug" target="1.8" />
       <module name="Lastik.ui-compose.androidDebug" target="1.8" />

@@ -17,9 +17,7 @@ include(
     ":data-remote",
 
     ":ui-compose",
-
-    ":utils",
-    ":sdk"
+    ":utils"
 )
 
 pluginManagement {

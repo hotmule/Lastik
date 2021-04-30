@@ -10,33 +10,17 @@ import ru.hotmule.lastik.feature.top.TopComponent
 
 interface LibraryComponent {
 
-    sealed class Child {
-        data class Scrobbles(val component: ScrobblesComponent) : Child()
-        data class Artists(val component: TopComponent) : Child()
-        data class Albums(val component: TopComponent) : Child()
-        data class Tracks(val component: TopComponent) : Child()
-        data class Profile(val component: ProfileComponent) : Child()
+    sealed class Child(val index: Int) {
+        data class Scrobbles(val component: ScrobblesComponent) : Child(0)
+        data class Artists(val component: TopComponent) : Child(1)
+        data class Albums(val component: TopComponent) : Child(2)
+        data class Tracks(val component: TopComponent) : Child(3)
+        data class Profile(val component: ProfileComponent) : Child(4)
     }
-
-    data class Model(
-        val activeShelfIndex: Int = 0,
-        val periodSelectable: Boolean = false,
-        val periodsOpened: Boolean = false,
-        val selectedPeriodIndex: Int = 0,
-        val logOutAllowed: Boolean = false
-    )
 
     val routerState: Value<RouterState<*, Child>>
 
-    val model: Flow<Model>
+    val activeChildIndex: Value<Int>
 
     fun onShelfSelect(index: Int)
-
-    fun onPeriodSelectOpen()
-
-    fun onPeriodSelectClose()
-
-    fun onPeriodSelected(index: Int)
-
-    fun onLogOut()
 }

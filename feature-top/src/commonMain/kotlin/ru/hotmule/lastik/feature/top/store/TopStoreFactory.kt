@@ -44,7 +44,7 @@ class TopStoreFactory(
             Result.PeriodsOpened -> copy(periodsOpened = true)
             Result.PeriodsClosed -> copy(periodsOpened = false)
             is Result.PeriodSelected -> copy(
-                selectedPeriodIndex = result.index,
+                periodIndex = result.index,
                 periodsOpened = false
             )
         }
