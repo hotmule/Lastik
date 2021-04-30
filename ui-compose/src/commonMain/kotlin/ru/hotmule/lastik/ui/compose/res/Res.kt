@@ -39,6 +39,7 @@ object Res {
         const val scrobbling_now = "Scrobbling now"
 
         const val scrobbling_since = "Scrobbling since"
+        const val scrobbes = "Scrobbles"
         const val friends = "Friends"
         const val loved_tracks = "Loved tracks"
     }

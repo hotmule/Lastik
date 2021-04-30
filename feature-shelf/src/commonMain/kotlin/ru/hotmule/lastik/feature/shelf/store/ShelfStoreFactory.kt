@@ -189,8 +189,8 @@ internal class ShelfStoreFactory(
                 scrobbles.map {
                     ShelfItem(
                         highlighted = it.nowPlaying,
-                        image = it.lowArtwork ?: ShelfComponent.defaultImageUrl,
-                        title = it.track ?: ShelfComponent.defaultTitle,
+                        image = it.lowArtwork ?: LastikHttpClient.defaultImageUrl,
+                        title = it.track ?: "",
                         subtitle = it.artist,
                         loved = it.loved,
                         hint = if (it.listenedAt != 0L)
@@ -207,8 +207,8 @@ internal class ShelfStoreFactory(
             .map { artists ->
                 artists.map {
                     ShelfItem(
-                        image = it.lowArtwork ?: ShelfComponent.defaultImageUrl,
-                        title = it.name ?: ShelfComponent.defaultTitle,
+                        image = it.lowArtwork ?: LastikHttpClient.defaultImageUrl,
+                        title = it.name ?: "",
                         hint = "${Formatter.numberToCommasString(it.playCount)} scrobbles",
                         rank = it.rank,
                         playCount = it.playCount,
@@ -222,8 +222,8 @@ internal class ShelfStoreFactory(
             .map { albums ->
                 albums.map {
                     ShelfItem(
-                        image = it.lowArtwork ?: ShelfComponent.defaultImageUrl,
-                        title = it.album ?: ShelfComponent.defaultTitle,
+                        image = it.lowArtwork ?: LastikHttpClient.defaultImageUrl,
+                        title = it.album ?: "",
                         hint = "${Formatter.numberToCommasString(it.playCount)} scrobbles",
                         subtitle = it.artist,
                         rank = it.rank,
@@ -238,8 +238,8 @@ internal class ShelfStoreFactory(
             .map { tracks ->
                 tracks.map {
                     ShelfItem(
-                        image = it.lowArtwork ?: ShelfComponent.defaultImageUrl,
-                        title = it.track ?: ShelfComponent.defaultTitle,
+                        image = it.lowArtwork ?: LastikHttpClient.defaultImageUrl,
+                        title = it.track ?: "",
                         hint = "${Formatter.numberToCommasString(it.playCount)} scrobbles",
                         subtitle = it.artist,
                         rank = it.rank,
@@ -254,7 +254,7 @@ internal class ShelfStoreFactory(
             .map { tracks ->
                 tracks.map {
                     ShelfItem(
-                        image = it.lowArtwork ?: ShelfComponent.defaultImageUrl,
+                        image = it.lowArtwork ?: LastikHttpClient.defaultImageUrl,
                         title = it.track,
                         subtitle = it.artist,
                         hint = Formatter.utsDateToString(it.lovedAt, "d MMM, HH:mm"),

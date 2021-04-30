@@ -15,10 +15,13 @@ import kotlinx.coroutines.withContext
 import ru.hotmule.lastik.data.local.FriendQueries
 import ru.hotmule.lastik.data.local.ProfileQueries
 import ru.hotmule.lastik.data.prefs.PrefsStore
+import ru.hotmule.lastik.data.remote.LastikHttpClient
 import ru.hotmule.lastik.data.remote.api.UserApi
 import ru.hotmule.lastik.data.remote.entities.User
+import ru.hotmule.lastik.feature.profile.ProfileComponent
 import ru.hotmule.lastik.feature.profile.store.ProfileStore.*
 import ru.hotmule.lastik.utils.AppCoroutineDispatcher
+import ru.hotmule.lastik.utils.Formatter
 
 class ProfileStoreFactory(
     private val storeFactory: StoreFactory,
@@ -56,11 +59,11 @@ class ProfileStoreFactory(
                 .collect {
                     dispatch(
                         Result.ProfileReceived(
-                            User(
+                            ProfileComponent.User(
                                 username = it?.userName ?: "",
-                                image = it?.lowResImage ?: "",
-                                playCount = it?.playCount,
-                                registerDate = it?.registerDate
+                                image = it?.lowResImage ?: LastikHttpClient.defaultImageUrl,
+                                playCount = Formatter.numberToCommasString(it?.playCount),
+                                scrobblingSince = Formatter.utsDateToString(it?.registerDate, "d MMMM yyyy")
                             )
                         )
                     )
@@ -75,9 +78,9 @@ class ProfileStoreFactory(
                     dispatch(
                         Result.FriendsReceived(
                             friends.map {
-                                User(
+                                ProfileComponent.User(
                                     username = it.userName ?: "",
-                                    image = it.lowResImage ?: ""
+                                    image = it.lowResImage ?: LastikHttpClient.defaultImageUrl
                                 )
                             }
                         )

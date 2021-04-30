@@ -3,7 +3,6 @@ package ru.hotmule.lastik.feature.profile
 import com.arkivanov.decompose.RouterState
 import com.arkivanov.decompose.value.Value
 import kotlinx.coroutines.flow.Flow
-import ru.hotmule.lastik.feature.profile.store.ProfileStore.*
 import ru.hotmule.lastik.feature.shelf.ShelfComponent
 
 interface ProfileComponent {
@@ -12,6 +11,13 @@ interface ProfileComponent {
         val profile: User = User(),
         val friends: List<User> = listOf(),
         val isMoreFriendsLoading: Boolean = false
+    )
+
+    data class User(
+        val username: String = "",
+        val image: String = "",
+        val playCount: String = "",
+        val scrobblingSince: String = ""
     )
 
     sealed class Child {

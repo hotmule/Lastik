@@ -25,7 +25,6 @@ import androidx.compose.ui.unit.sp
 import com.arkivanov.decompose.extensions.compose.jetbrains.Children
 import ru.hotmule.lastik.feature.profile.ProfileComponent
 import ru.hotmule.lastik.feature.profile.ProfileComponent.*
-import ru.hotmule.lastik.feature.profile.store.ProfileStore
 import ru.hotmule.lastik.ui.compose.res.Res
 
 @Composable
@@ -33,29 +32,139 @@ fun ProfileContent(
     component: ProfileComponent,
     bottomInset: Dp
 ) {
-    val model by component.model.collectAsState(Model())
-
     Children(component.routerState) { child, _ ->
         when (child) {
-            is Child.Shelf -> ShelfContent(child.component, bottomInset) {
-
-                Column {
-                    Friends(model.friends, model.isMoreFriendsLoading)
-                }
-            }
+            is Child.Shelf -> ShelfContent(child.component, bottomInset) { ProfileInfo(component) }
         }
     }
 }
 
 @Composable
-fun Friends(
-    friends: List<ProfileStore.User>,
-    loadingMore: Boolean
+private fun ProfileInfo(
+    component: ProfileComponent
 ) {
-    TitleText(
-        text = Res.String.friends,
-        modifier = Modifier.padding(start = 16.dp, top = 24.dp)
+    val model by component.model.collectAsState(Model())
+
+    Column {
+
+        ProfileStatistic(
+            imageUrl = model.profile.image,
+            scrobblingSince = model.profile.scrobblingSince,
+            playCount = model.profile.playCount
+        )
+
+        TitleText(
+            title = Res.String.friends,
+            modifier = Modifier.padding(start = 16.dp)
+        )
+
+        Friends(
+            friends = model.friends,
+            isMoreLoading = model.isMoreFriendsLoading
+        )
+
+        TitleText(
+            title = Res.String.loved_tracks,
+            modifier = Modifier.padding(start = 16.dp, top = 24.dp, bottom = 4.dp)
+        )
+    }
+}
+
+private fun ProfileStatistic(
+    imageUrl: String,
+    scrobblingSince: String,
+    playCount: String
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(end = 24.dp)
+    ) {
+
+        ProfileImage(
+            url = imageUrl,
+            modifier = Modifier
+                .padding(24.dp)
+                .height(96.dp)
+                .width(96.dp)
+        )
+
+        Statistic(
+            title = Res.String.scrobbling_since,
+            subtitle = scrobblingSince,
+            modifier = Modifier
+                .align(Alignment.CenterVertically)
+                .weight(1f)
+        )
+
+        Statistic(
+            title = Res.String.scrobbes,
+            subtitle = playCount,
+            modifier = Modifier
+                .align(Alignment.CenterVertically)
+                .weight(1f)
+        )
+    }
+}
+
+@Composable
+private fun ProfileImage(
+    modifier: Modifier = Modifier,
+    url: String
+) {
+    Image(
+        painter = remoteImagePainter(url),
+        contentDescription = "profileImage",
+        contentScale = ContentScale.Crop,
+        modifier = modifier
+            .clip(CircleShape)
+            .background(Color.LightGray)
     )
+}
+
+@Composable
+private fun Statistic(
+    modifier: Modifier = Modifier,
+    title: String,
+    subtitle: String
+) {
+    Column(modifier) {
+
+        TitleText(
+            title = title,
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+        )
+
+        Text(
+            text = subtitle,
+            fontSize = 20.sp,
+            style = MaterialTheme.typography.h6,
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(top = 8.dp)
+        )
+    }
+}
+
+@Composable
+private fun TitleText(
+    modifier: Modifier = Modifier,
+    title: String
+) {
+    CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+        Text(
+            modifier = modifier,
+            text = title,
+            style = MaterialTheme.typography.body2,
+        )
+    }
+}
+
+@Composable
+private fun Friends(
+    friends: List<User>,
+    isMoreLoading: Boolean
+) {
     LazyRow(
         modifier = Modifier.padding(top = 8.dp)
     ) {
@@ -73,9 +182,9 @@ fun Friends(
 }
 
 @Composable
-fun Friend(
+private fun Friend(
     modifier: Modifier = Modifier,
-    friend: ProfileStore.User
+    friend: User
 ) {
     Column(
         modifier = modifier.width(72.dp)
@@ -99,58 +208,5 @@ fun Friend(
                     .padding(top = 4.dp)
             )
         }
-    }
-}
-
-@Composable
-fun ProfileImage(
-    modifier: Modifier = Modifier,
-    url: String
-) {
-    Image(
-        painter = remoteImagePainter(url),
-        contentDescription = "profileImage",
-        contentScale = ContentScale.Crop,
-        modifier = modifier
-            .clip(CircleShape)
-            .background(Color.LightGray)
-    )
-}
-
-@Composable
-fun ProfileStat(
-    modifier: Modifier = Modifier,
-    text: String,
-    subtitle: String
-) {
-    Column(modifier) {
-
-        TitleText(
-            text = text,
-            modifier = Modifier.align(Alignment.CenterHorizontally)
-        )
-
-        Text(
-            text = subtitle,
-            fontSize = 20.sp,
-            style = MaterialTheme.typography.h6,
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(top = 8.dp)
-        )
-    }
-}
-
-@Composable
-private fun TitleText(
-    modifier: Modifier = Modifier,
-    text: String
-) {
-    CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-        Text(
-            modifier = modifier,
-            text = text,
-            style = MaterialTheme.typography.body2,
-        )
     }
 }

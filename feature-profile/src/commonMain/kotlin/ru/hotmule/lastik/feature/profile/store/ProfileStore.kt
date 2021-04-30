@@ -1,6 +1,7 @@
 package ru.hotmule.lastik.feature.profile.store
 
 import com.arkivanov.mvikotlin.core.store.Store
+import ru.hotmule.lastik.feature.profile.ProfileComponent.*
 import ru.hotmule.lastik.feature.profile.store.ProfileStore.*
 
 interface ProfileStore : Store<Intent, State, Nothing> {
@@ -21,12 +22,5 @@ interface ProfileStore : Store<Intent, State, Nothing> {
         val profile: User = User(),
         val friends: List<User> = listOf(),
         val isMoreFriendsLoading: Boolean = false
-    )
-
-    data class User(
-        val username: String = "",
-        val image: String = "",
-        val playCount: Long? = null,
-        val registerDate: Long? = null
     )
 }
