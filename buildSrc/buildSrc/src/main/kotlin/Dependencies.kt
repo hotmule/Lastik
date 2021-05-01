@@ -87,7 +87,6 @@ object Libs {
 
         object MVIKotlin {
             private const val version = "2.0.1"
-            const val rx = "com.arkivanov.mvikotlin:rx:$version"
             const val common = "com.arkivanov.mvikotlin:mvikotlin:$version"
             const val main = "com.arkivanov.mvikotlin:mvikotlin-main:$version"
             const val coroutines = "com.arkivanov.mvikotlin:mvikotlin-extensions-coroutines:$version"

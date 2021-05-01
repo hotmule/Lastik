@@ -11,6 +11,10 @@ class UserApi(
     private val apiKey: String
 ) {
 
+    private val periodNames = arrayOf(
+        "overall", "12month", "6month", "3month", "1month", "7day"
+    )
+
     private fun HttpRequestBuilder.userApi(
         method: String,
         params: Map<String, Any?> = mapOf()
@@ -63,24 +67,21 @@ class UserApi(
     }
 
     suspend fun getTopArtists(
-        page: Int,
-        period: String
+        page: Int
     ) = client.get<ArtistsResponse?> {
-        userApiLibraryPage("getTopArtists", page, period)
+        userApiLibraryPage("getTopArtists", page, periodNames[prefs.artistsPeriod])
     }
 
     suspend fun getTopAlbums(
-        page: Int,
-        period: String
+        page: Int
     ) = client.get<AlbumsResponse?> {
-        userApiLibraryPage("getTopAlbums", page, period)
+        userApiLibraryPage("getTopAlbums", page, periodNames[prefs.albumsPeriod])
     }
 
     suspend fun getTopTracks(
-        page: Int,
-        period: String
+        page: Int
     ) = client.get<TopTracksResponse?> {
-        userApiLibraryPage("getTopTracks", page, period)
+        userApiLibraryPage("getTopTracks", page, periodNames[prefs.tracksPeriod])
     }
 
     suspend fun getLovedTracks(

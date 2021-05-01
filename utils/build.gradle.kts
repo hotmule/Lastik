@@ -9,7 +9,6 @@ kotlin {
         named("commonMain") {
             dependencies {
                 implementation(Libs.Kotlin.Coroutines.core)
-                implementation(Libs.ArkIvanov.MVIKotlin.rx)
                 implementation(Libs.ArkIvanov.MVIKotlin.common)
                 implementation(Libs.ArkIvanov.Decompose.common)
             }

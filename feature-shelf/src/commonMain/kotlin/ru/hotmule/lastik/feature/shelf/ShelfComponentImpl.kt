@@ -9,6 +9,7 @@ import ru.hotmule.lastik.data.local.LastikDatabase
 import ru.hotmule.lastik.data.prefs.PrefsStore
 import ru.hotmule.lastik.data.remote.LastikHttpClient
 import ru.hotmule.lastik.feature.shelf.ShelfComponent.*
+import ru.hotmule.lastik.feature.shelf.store.ShelfStoreRepository
 import ru.hotmule.lastik.feature.shelf.store.ShelfStore.*
 import ru.hotmule.lastik.feature.shelf.store.ShelfStoreFactory
 import ru.hotmule.lastik.utils.getStore
@@ -25,10 +26,7 @@ class ShelfComponentImpl(
     private val store = instanceKeeper.getStore {
         ShelfStoreFactory(
             storeFactory = storeFactory,
-            httpClient = httpClient,
-            database = database,
-            prefs = prefsStore,
-            index = index
+            repository = ShelfStoreRepository(httpClient, database, prefsStore, index)
         ).create()
     }
 

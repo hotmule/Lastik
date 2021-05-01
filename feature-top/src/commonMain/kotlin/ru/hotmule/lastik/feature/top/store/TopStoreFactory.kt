@@ -6,7 +6,6 @@ import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.withContext
 import ru.hotmule.lastik.data.prefs.PrefsStore
 import ru.hotmule.lastik.feature.top.store.TopStore.*
 import ru.hotmule.lastik.utils.AppCoroutineDispatcher
@@ -32,7 +31,7 @@ class TopStoreFactory(
             action: Unit,
             getState: () -> State
         ) {
-            prefsStore.getShelfPeriodFlow(index).collect {
+            prefsStore.getTopPeriodAsFlow(index).collect {
                 dispatch(Result.PeriodSelected(it))
             }
         }

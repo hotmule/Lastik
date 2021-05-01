@@ -89,6 +89,7 @@ class TopComponentImpl(
 
     override fun onPeriodSelected(index: Int) {
         store.accept(TopStore.Intent.SavePeriod(index))
+        (routerState.value.activeChild.component as Child.Shelf).component.onRefreshItems()
     }
 
     private sealed class Config : Parcelable {
