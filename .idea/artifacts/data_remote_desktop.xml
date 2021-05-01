@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="data-remote-desktop">
+    <output-path>$PROJECT_DIR$/data-remote/build/libs</output-path>
+    <root id="archive" name="data-remote-desktop.jar">
+      <element id="module-output" name="Lastik.data-remote.desktopMain" />
+    </root>
+  </artifact>
+</component>
