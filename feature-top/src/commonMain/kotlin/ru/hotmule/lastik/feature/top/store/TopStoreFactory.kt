@@ -1,9 +1,12 @@
 package ru.hotmule.lastik.feature.top.store
 
 import com.arkivanov.mvikotlin.core.store.Reducer
+import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.withContext
 import ru.hotmule.lastik.data.prefs.PrefsStore
 import ru.hotmule.lastik.feature.top.store.TopStore.*
 import ru.hotmule.lastik.utils.AppCoroutineDispatcher
@@ -17,13 +20,23 @@ class TopStoreFactory(
         object : TopStore, Store<Intent, State, Nothing> by storeFactory.create(
             TopStore::class.simpleName,
             initialState = State(),
+            bootstrapper = SimpleBootstrapper(Unit),
             executorFactory = ::ExecutorImpl,
             reducer = ReducerImpl
         ) {}
 
-    private inner class  ExecutorImpl : SuspendExecutor<Intent, Nothing, State, Result, Nothing>(
+    private inner class  ExecutorImpl : SuspendExecutor<Intent, Unit, State, Result, Nothing>(
         AppCoroutineDispatcher.Main
     ) {
+        override suspend fun executeAction(
+            action: Unit,
+            getState: () -> State
+        ) {
+            prefsStore.getShelfPeriodFlow(index).collect {
+                dispatch(Result.PeriodSelected(it))
+            }
+        }
+
         override suspend fun executeIntent(intent: Intent, getState: () -> State) {
             when (intent) {
                 Intent.OpenPeriods -> dispatch(Result.PeriodsOpened)
@@ -33,8 +46,13 @@ class TopStoreFactory(
         }
 
         private fun savePeriod(shelfIndex: Int, periodIndex: Int) {
-            prefsStore.saveShelfPeriod(shelfIndex, periodIndex)
-            dispatch(Result.PeriodSelected(periodIndex))
+            with (prefsStore) {
+                when (shelfIndex) {
+                    1 -> artistsPeriod = periodIndex
+                    2 -> albumsPeriod = periodIndex
+                    3 -> tracksPeriod = periodIndex
+                }
+            }
         }
     }
 

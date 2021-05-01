@@ -1,6 +1,8 @@
 package ru.hotmule.lastik.data.prefs
 
 import com.russhwolf.settings.ObservableSettings
+import com.russhwolf.settings.coroutines.getIntFlow
+import com.russhwolf.settings.coroutines.getIntOrNullFlow
 import com.russhwolf.settings.coroutines.getStringFlow
 import com.russhwolf.settings.coroutines.getStringOrNullFlow
 import com.russhwolf.settings.int
@@ -20,26 +22,20 @@ class PrefsStore(
     var password by settings.nullableString()
     var sessionKey by settings.nullableString()
 
+    var artistsPeriod by settings.int(defaultValue = 0)
+    var albumsPeriod by settings.int(defaultValue = 0)
+    var tracksPeriod by settings.int(defaultValue = 0)
+
     val tokenReceived = settings.getStringOrNullFlow("token").map { it != null }
     val isSessionActive = settings.getStringOrNullFlow("sessionKey").map { it != null }
 
-    private var artistsPeriod by settings.int(defaultValue = 0)
-    private var albumsPeriod by settings.int(defaultValue = 0)
-    private var tracksPeriod by settings.int(defaultValue = 0)
-
-    fun saveShelfPeriod(shelfIndex: Int, periodIndex: Int) {
+    fun getShelfPeriodFlow(shelfIndex: Int) = settings.getIntFlow(
         when (shelfIndex) {
-            1 -> artistsPeriod = periodIndex
-            2 -> albumsPeriod = periodIndex
-            3 -> tracksPeriod = periodIndex
+            1 -> "artistsPeriod"
+            2 -> "albumsPeriod"
+            else -> "tracksPeriod"
         }
-    }
-
-    fun getShelfPeriod(shelfIndex: Int) = when (shelfIndex) {
-        1 -> artistsPeriod
-        2 -> albumsPeriod
-        else -> tracksPeriod
-    }
+    )
 
     fun clear() {
         settings.clear()

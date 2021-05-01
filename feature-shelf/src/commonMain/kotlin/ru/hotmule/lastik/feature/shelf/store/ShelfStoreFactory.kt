@@ -7,8 +7,7 @@ import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
 import com.squareup.sqldelight.runtime.coroutines.asFlow
 import com.squareup.sqldelight.runtime.coroutines.mapToList
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ru.hotmule.lastik.data.local.LastikDatabase
@@ -28,8 +27,7 @@ internal class ShelfStoreFactory(
     private val httpClient: LastikHttpClient,
     private val database: LastikDatabase,
     private val prefs: PrefsStore,
-    private val index: Int,
-    private val period: Long = prefs.getShelfPeriod(index).toLong()
+    private val index: Int
 ) {
 
     fun create(): ShelfStore = object : ShelfStore, Store<Intent, State, Nothing> by storeFactory.create(
@@ -61,7 +59,7 @@ internal class ShelfStoreFactory(
         ) {
             withContext(AppCoroutineDispatcher.IO) {
                 launch { collectItems() }
-                launch { loadPage(true) }
+                launch { refreshItems() }
             }
         }
 
@@ -93,6 +91,16 @@ internal class ShelfStoreFactory(
             }
         }
 
+        private suspend fun refreshItems() {
+            if (index !in 1..3) {
+                loadPage(true)
+            } else {
+                prefs.getShelfPeriodFlow(index).collect {
+                    loadPage(true)
+                }
+            }
+        }
+
         private suspend fun loadPage(isFirst: Boolean) {
             withContext(AppCoroutineDispatcher.IO) {
 
@@ -104,23 +112,25 @@ internal class ShelfStoreFactory(
 
                     with(database) {
 
+                        val period = getShelfPeriod(index)
+
                         val count = when (index) {
                             0 -> scrobbleQueries.getScrobblesCount()
-                            1, 2, 3 -> topQueries.getTopCount(index.toLong(), period)
+                            1, 2, 3 -> topQueries.getTopCount(index.toLong(), period.toLong())
                             else -> trackQueries.getLovedTracksPageCount()
                         }.executeAsOne().toInt()
 
                         if (isFirst || count.rem(50) == 0) {
 
                             val periodName = arrayOf(
-                                "overall", "7day", "1month", "3month", "6month", "12month"
-                            )[period.toInt()]
+                                "overall", "12month", "6month", "3month", "1month", "7day"
+                            )[period]
 
                             val page = if (isFirst) 1 else count / 50 + 1
                             val items: List<LibraryItem>?
                             val save: (LibraryItem) -> Unit
 
-                            with (httpClient.userApi) {
+                            with(httpClient.userApi) {
                                 when (index) {
                                     0 -> {
                                         items = getScrobbles(page)?.recent?.tracks
@@ -150,7 +160,7 @@ internal class ShelfStoreFactory(
                                 if (isFirst) {
                                     when (index) {
                                         0 -> scrobbleQueries.deleteAll()
-                                        1, 2, 3 -> topQueries.deleteTop(index.toLong(), period)
+                                        1, 2, 3 -> topQueries.deleteTop(index.toLong(), period.toLong())
                                         4 -> trackQueries.dropLovedTrackDates()
                                     }
                                 }
@@ -169,6 +179,12 @@ internal class ShelfStoreFactory(
                     }
                 }
             }
+        }
+
+        private fun getShelfPeriod(shelfIndex: Int) = when (shelfIndex) {
+            1 -> prefs.artistsPeriod
+            2 -> prefs.albumsPeriod
+            else -> prefs.tracksPeriod
         }
 
         private suspend fun makeLove(track: String, artist: String, isLoved: Boolean) {
@@ -201,52 +217,58 @@ internal class ShelfStoreFactory(
                 }
             }
 
-        private fun topArtistsFlow() = database.topQueries.artistTop(period)
-            .asFlow()
-            .mapToList(AppCoroutineDispatcher.IO)
-            .map { artists ->
-                artists.map {
-                    ShelfItem(
-                        image = it.lowArtwork ?: LastikHttpClient.defaultImageUrl,
-                        title = it.name ?: "",
-                        hint = "${Formatter.numberToCommasString(it.playCount)} scrobbles",
-                        rank = it.rank,
-                        playCount = it.playCount,
-                    )
+        private fun topArtistsFlow() = prefs.getShelfPeriodFlow(index).flatMapLatest { period ->
+            database.topQueries.artistTop(period.toLong())
+                .asFlow()
+                .mapToList(AppCoroutineDispatcher.IO)
+                .map { artists ->
+                    artists.map {
+                        ShelfItem(
+                            image = it.lowArtwork ?: LastikHttpClient.defaultImageUrl,
+                            title = it.name ?: "",
+                            hint = "${Formatter.numberToCommasString(it.playCount)} scrobbles",
+                            rank = it.rank,
+                            playCount = it.playCount,
+                        )
+                    }
                 }
-            }
+        }
 
-        private fun topAlbumsFlow() = database.topQueries.albumTop(period)
-            .asFlow()
-            .mapToList(AppCoroutineDispatcher.IO)
-            .map { albums ->
-                albums.map {
-                    ShelfItem(
-                        image = it.lowArtwork ?: LastikHttpClient.defaultImageUrl,
-                        title = it.album ?: "",
-                        hint = "${Formatter.numberToCommasString(it.playCount)} scrobbles",
-                        subtitle = it.artist,
-                        rank = it.rank,
-                        playCount = it.playCount
-                    )
+        private fun topAlbumsFlow() = prefs.getShelfPeriodFlow(index).flatMapLatest { period ->
+            database.topQueries.albumTop(period.toLong())
+                .asFlow()
+                .mapToList(AppCoroutineDispatcher.IO)
+                .map { albums ->
+                    albums.map {
+                        ShelfItem(
+                            image = it.lowArtwork ?: LastikHttpClient.defaultImageUrl,
+                            title = it.album ?: "",
+                            hint = "${Formatter.numberToCommasString(it.playCount)} scrobbles",
+                            subtitle = it.artist,
+                            rank = it.rank,
+                            playCount = it.playCount
+                        )
+                    }
                 }
-            }
+        }
 
-        private fun topTracksFlow() = database.topQueries.trackTop(period)
-            .asFlow()
-            .mapToList(AppCoroutineDispatcher.IO)
-            .map { tracks ->
-                tracks.map {
-                    ShelfItem(
-                        image = it.lowArtwork ?: LastikHttpClient.defaultImageUrl,
-                        title = it.track ?: "",
-                        hint = "${Formatter.numberToCommasString(it.playCount)} scrobbles",
-                        subtitle = it.artist,
-                        rank = it.rank,
-                        playCount = it.playCount
-                    )
+        private fun topTracksFlow() = prefs.getShelfPeriodFlow(index).flatMapLatest { period ->
+            database.topQueries.trackTop(period.toLong())
+                .asFlow()
+                .mapToList(AppCoroutineDispatcher.IO)
+                .map { tracks ->
+                    tracks.map {
+                        ShelfItem(
+                            image = it.lowArtwork ?: LastikHttpClient.defaultImageUrl,
+                            title = it.track ?: "",
+                            hint = "${Formatter.numberToCommasString(it.playCount)} scrobbles",
+                            subtitle = it.artist,
+                            rank = it.rank,
+                            playCount = it.playCount
+                        )
+                    }
                 }
-            }
+        }
 
         private fun lovedTracksFlow() = database.trackQueries.lovedTracks()
             .asFlow()
@@ -276,19 +298,19 @@ internal class ShelfStoreFactory(
 
         private fun saveTopArtist(artist: LibraryItem) {
             val artistId = insertArtist(artist.name)
-            insertTop(index, period, artistId, artist.attributes?.rank, artist.playCount)
+            insertTop(index, getShelfPeriod(index).toLong(), artistId, artist.attributes?.rank, artist.playCount)
         }
 
         private fun saveTopAlbum(album: LibraryItem) {
             val artistId = insertArtist(album.artist?.name)
             val albumId = insertAlbum(artistId, album.name, album.images)
-            insertTop(index, period, albumId, album.attributes?.rank, album.playCount)
+            insertTop(index, getShelfPeriod(index).toLong(), albumId, album.attributes?.rank, album.playCount)
         }
 
         private fun saveTopTrack(track: LibraryItem) {
             val artistId = insertArtist(track.artist?.name)
             val trackId = insertTrack(artistId, track.name)
-            insertTop(index, period, trackId, track.attributes?.rank, track.playCount)
+            insertTop(index, getShelfPeriod(index).toLong(), trackId, track.attributes?.rank, track.playCount)
         }
 
         private fun saveLovedTrack(track: LibraryItem) {

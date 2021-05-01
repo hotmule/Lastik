@@ -64,11 +64,11 @@ object Res {
 
         val periods = arrayOf(
             "All time",
-            "Last 7 days",
-            "Last 30 days",
-            "Last 90 days",
-            "Last 180 days",
             "Last 365 days",
+            "Last 180 days",
+            "Last 90 days",
+            "Last 30 days",
+            "Last 7 days"
         )
     }
 }
