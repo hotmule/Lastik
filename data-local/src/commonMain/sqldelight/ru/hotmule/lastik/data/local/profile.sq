@@ -32,5 +32,12 @@ upsert {
 getProfile:
 SELECT * FROM profile LIMIT 1;
 
-deleteAll:
-DELETE FROM profile;
+deleteAll {
+    DELETE FROM scrobble;
+    DELETE FROM top;
+    DELETE FROM track;
+    DELETE FROM album;
+    DELETE FROM artist;
+    DELETE FROM friend;
+    DELETE FROM profile;
+}

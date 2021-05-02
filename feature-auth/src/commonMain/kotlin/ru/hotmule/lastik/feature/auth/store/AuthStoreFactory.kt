@@ -35,8 +35,8 @@ internal class AuthStoreFactory(
             action: Unit,
             getState: () -> State
         ) {
-            prefs.tokenReceived.collect {
-                if (it) getSession()
+            prefs.tokenAsFlow.collect {
+                if (it != null) getSession(it)
             }
         }
 
@@ -57,18 +57,24 @@ internal class AuthStoreFactory(
             password: String
         ) {
             launch {
-                val session = api.getMobileSession(login, password)
-                prefs.login = login
-                prefs.password = password
-                prefs.sessionKey = session?.params?.key
+                api.getMobileSession(login, password)?.also {
+                    prefs.login = login
+                    prefs.password = password
+                    prefs.sessionKey = it.params?.key
+                    queries.insert(it.params?.name)
+                }
             }
         }
 
-        private suspend fun getSession() {
+        private suspend fun getSession(
+            token: String
+        ) {
             launch {
-                val session = api.getSession()
-                prefs.sessionKey = session?.params?.key
-                queries.insert(session?.params?.name)
+                api.getSession(token)?.also {
+                    prefs.token = token
+                    prefs.sessionKey = it.params?.key
+                    queries.insert(it.params?.name)
+                }
             }
         }
 

@@ -89,7 +89,7 @@ class LastikHttpClient(
                 "2a96cbd8b46e442fc41c2b86b821562f.png"
     }
 
-    val authApi = AuthApi(client, prefs, config.apiKey, config.secret)
+    val authApi = AuthApi(client, config.apiKey, config.secret)
     val trackApi = TrackApi(client, prefs, config.apiKey, config.secret)
     val userApi = UserApi(client, prefs, config.apiKey)
 }

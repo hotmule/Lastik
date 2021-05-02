@@ -85,21 +85,23 @@ class ProfileStoreFactory(
         }
 
         private suspend fun collectFriends() {
-            friendQueries.friendsData(1)
-                .asFlow()
-                .mapToList(AppCoroutineDispatcher.IO)
-                .collect { friends ->
-                    dispatch(
-                        Result.FriendsReceived(
-                            friends.map {
-                                ProfileComponent.User(
-                                    username = it.userName ?: "",
-                                    image = it.lowResImage ?: LastikHttpClient.defaultImageUrl
-                                )
-                            }
+            profileQueries.getProfile().executeAsOneOrNull()?.let { profile ->
+                friendQueries.friendsData(profile.id)
+                    .asFlow()
+                    .mapToList(AppCoroutineDispatcher.IO)
+                    .collect { friends ->
+                        dispatch(
+                            Result.FriendsReceived(
+                                friends.map {
+                                    ProfileComponent.User(
+                                        username = it.userName ?: "",
+                                        image = it.lowResImage ?: LastikHttpClient.defaultImageUrl
+                                    )
+                                }
+                            )
                         )
-                    )
-                }
+                    }
+            }
         }
 
         private suspend fun refreshProfile() {

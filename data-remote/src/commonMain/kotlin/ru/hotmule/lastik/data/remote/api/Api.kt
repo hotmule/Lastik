@@ -10,7 +10,11 @@ fun HttpRequestBuilder.api(
     secret: String? = null
 ) {
 
-    val signature = if (params["token"] != null && secret != null) {
+    val token = params["token"]
+    val username = params["username"]
+    val password = params["password"]
+
+    val signature = if (secret != null && (token != null || (username != null && password != null))) {
         params
             .toList()
             .sortedBy { it.first }

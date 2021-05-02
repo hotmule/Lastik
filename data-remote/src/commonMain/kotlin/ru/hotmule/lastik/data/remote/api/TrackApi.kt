@@ -19,7 +19,6 @@ class TrackApi(
             params = parameters + mapOf(
                 "method" to "track.$method",
                 "api_key" to apiKey,
-                "token" to prefs.token,
                 "sk" to prefs.sessionKey,
             ),
             secret = secret
@@ -33,10 +32,14 @@ class TrackApi(
     ) = client.post<Any?> {
         trackApi(
             if (loved) "love" else "unlove",
-            mapOf(
+            mutableMapOf(
                 "track" to track,
                 "artist" to artist
-            )
+            ).apply {
+                prefs.token?.let { set("token", it) }
+                prefs.login?.let { set("username", it) }
+                prefs.password?.let { set("password", it) }
+            }
         )
     }
 }

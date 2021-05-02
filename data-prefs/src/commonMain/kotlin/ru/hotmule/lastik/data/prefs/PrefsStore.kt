@@ -24,7 +24,7 @@ class PrefsStore(
     var albumsPeriod by settings.int(defaultValue = 0)
     var tracksPeriod by settings.int(defaultValue = 0)
 
-    val tokenReceived = settings.getStringOrNullFlow("token").map { it != null }
+    val tokenAsFlow = settings.getStringOrNullFlow("token")
     val isSessionActive = settings.getStringOrNullFlow("sessionKey").map { it != null }
 
     fun getTopPeriodAsFlow(shelfIndex: Int) = settings.getIntFlow(
