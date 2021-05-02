@@ -47,8 +47,8 @@ internal class ShelfStoreFactory(
                 Intent.RefreshItems -> loadPage(true)
                 Intent.LoadMoreItems -> loadPage(false)
                 is Intent.MakeLove -> makeLove(
-                    artist = intent.title,
-                    track = intent.subtitle ?: "",
+                    artist = intent.subtitle ?: "",
+                    track = intent.title,
                     isLoved = !intent.isLoved
                 )
             }
@@ -82,7 +82,7 @@ internal class ShelfStoreFactory(
             }
         }
 
-        private suspend fun makeLove(track: String, artist: String, isLoved: Boolean) {
+        private suspend fun makeLove(artist: String, track: String, isLoved: Boolean) {
             try {
                 repository.setTrackLove(artist, track, isLoved)
             } catch (e: Exception) {
