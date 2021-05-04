@@ -4,7 +4,7 @@ import androidx.compose.desktop.Window
 import ru.hotmule.lastik.ui.compose.RootContent
 import com.arkivanov.decompose.extensions.compose.jetbrains.rememberRootComponent
 import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
-import ru.hotmule.lastik.data.local.DesktopDatabaseDriver
+import ru.hotmule.lastik.data.local.DriverFactory
 import ru.hotmule.lastik.data.local.LastikDatabase
 import ru.hotmule.lastik.data.prefs.PrefsStore
 import ru.hotmule.lastik.data.prefs.DesktopPrefs
@@ -26,7 +26,7 @@ fun main() {
                         componentContext = it,
                         storeFactory = DefaultStoreFactory,
                         httpClient = LastikHttpClient(prefs),
-                        database = LastikDatabase(DesktopDatabaseDriver()),
+                        database = LastikDatabase(DriverFactory().create()),
                         prefsStore = prefs,
                         webBrowser = DesktopBrowser()
                     )
