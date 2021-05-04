@@ -29,6 +29,7 @@ object Module {
         const val profile = ":feature-profile"
         const val scrobbles = ":feature-scrobbles"
         const val shelf = ":feature-shelf"
+        const val browser = ":feature-browser"
     }
 
     object Data {
@@ -109,6 +110,12 @@ object Libs {
             const val android = "com.squareup.sqldelight:android-driver:$version"
             const val sqlite = "com.squareup.sqldelight:sqlite-driver:$version"
         }
+    }
+
+    object Kodein {
+        private const val version = "7.5.0"
+        const val common = "org.kodein.di:kodein-di:$version"
+        const val android = "org.kodein.di:kodein-di-framework-android-core:$version"
     }
 
     object Kermit {

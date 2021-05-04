@@ -10,6 +10,7 @@ kotlin {
         named("commonMain") {
             dependencies {
                 implementation(project(Module.Data.prefs))
+                implementation(Libs.Kodein.common)
                 implementation(Libs.Krypto.common)
                 implementation(Libs.Kermit.common)
                 implementation(Libs.Ktor.Core.common)

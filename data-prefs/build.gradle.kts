@@ -7,6 +7,7 @@ kotlin {
         named("commonMain") {
             dependencies {
                 api(Libs.Settings.common)
+                implementation(Libs.Kodein.common)
                 implementation(Libs.Settings.coroutines)
                 implementation(Libs.Kotlin.Coroutines.core)
             }

@@ -31,6 +31,7 @@ android {
 
 dependencies {
 
+    implementation(project(Module.Feature.browser))
     implementation(project(Module.Feature.root))
     implementation(project(Module.Data.remote))
     implementation(project(Module.Data.local))
@@ -42,6 +43,9 @@ dependencies {
     implementation(Libs.ArkIvanov.MVIKotlin.common)
     implementation(Libs.ArkIvanov.Decompose.common)
     implementation(Libs.ArkIvanov.Decompose.composeExtensions)
+
+    implementation(Libs.Kodein.common)
+    implementation(Libs.Kodein.android)
 
     implementation(compose.material)
     implementation(Libs.Accompanist.insets)

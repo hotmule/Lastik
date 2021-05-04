@@ -13,11 +13,5 @@ kotlin {
                 implementation(Libs.ArkIvanov.Decompose.common)
             }
         }
-
-        named("androidMain") {
-            dependencies {
-                implementation(Libs.AndroidX.browser)
-            }
-        }
     }
 }

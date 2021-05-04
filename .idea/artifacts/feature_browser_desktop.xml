@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="feature-browser-desktop">
+    <output-path>$PROJECT_DIR$/feature-browser/build/libs</output-path>
+    <root id="archive" name="feature-browser-desktop.jar">
+      <element id="module-output" name="Lastik.feature-browser.desktopMain" />
+    </root>
+  </artifact>
+</component>

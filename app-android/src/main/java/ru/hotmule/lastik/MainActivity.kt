@@ -1,4 +1,4 @@
- package ru.hotmule.lastik
+package ru.hotmule.lastik
 
 import android.content.Intent
 import android.content.res.Resources
@@ -8,21 +8,31 @@ import androidx.activity.compose.setContent
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import com.arkivanov.decompose.extensions.compose.jetbrains.rememberRootComponent
+import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.ProvideWindowInsets
-import ru.hotmule.lastik.data.local.DriverFactory
+import org.kodein.di.DIAware
+import org.kodein.di.android.closestDI
+import org.kodein.di.instance
 import ru.hotmule.lastik.data.local.LastikDatabase
-import ru.hotmule.lastik.data.prefs.SettingsFactory
 import ru.hotmule.lastik.data.prefs.PrefsStore
 import ru.hotmule.lastik.data.remote.LastikHttpClient
+import ru.hotmule.lastik.feature.browser.WebBrowser
 import ru.hotmule.lastik.feature.root.RootComponent
 import ru.hotmule.lastik.feature.root.RootComponentImpl
 import ru.hotmule.lastik.ui.compose.AndroidLastikTheme
 import ru.hotmule.lastik.ui.compose.RootContent
-import ru.hotmule.lastik.utils.AndroidBrowser
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), DIAware {
+
+    override val di by closestDI()
+
+    private val prefs: PrefsStore by instance()
+    private val remote: LastikHttpClient by instance()
+    private val browser: WebBrowser by instance()
+    private val database: LastikDatabase by instance()
+    private val storeFactory: StoreFactory by instance()
 
     lateinit var rootComponent: RootComponent
 
@@ -36,17 +46,16 @@ class MainActivity : AppCompatActivity() {
             ProvideWindowInsets {
                 AndroidLastikTheme {
 
-                    val prefs = PrefsStore(SettingsFactory(this).create())
                     val insets = LocalWindowInsets.current.systemBars
 
                     rootComponent = rememberRootComponent {
                         RootComponentImpl(
                             componentContext = it,
-                            storeFactory = DefaultStoreFactory,
-                            httpClient = LastikHttpClient(prefs),
-                            database = LastikDatabase(DriverFactory(this).create()),
+                            storeFactory = storeFactory,
+                            httpClient = remote,
+                            database = database,
                             prefsStore = prefs,
-                            webBrowser = AndroidBrowser(this)
+                            webBrowser = browser
                         )
                     }
 

@@ -4,8 +4,14 @@ import android.content.Context
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.squareup.sqldelight.android.AndroidSqliteDriver
 import com.squareup.sqldelight.db.SqlDriver
+import org.kodein.di.DI
+import org.kodein.di.DIAware
+import org.kodein.di.instance
 
-actual class DriverFactory(private val context: Context) {
+actual class DriverFactory actual constructor(override val di: DI): DIAware {
+
+    private val context: Context by di.instance()
+
     actual fun create(): SqlDriver = AndroidSqliteDriver(
         schema = LastikDatabase.Schema,
         context = context,

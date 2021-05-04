@@ -7,6 +7,7 @@ kotlin {
     sourceSets {
         named("commonMain") {
             dependencies {
+                implementation(Libs.Kodein.common)
                 implementation(Libs.SqlDelight.coroutines)
             }
         }

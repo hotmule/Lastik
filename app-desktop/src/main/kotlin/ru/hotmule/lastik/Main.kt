@@ -11,7 +11,6 @@ import ru.hotmule.lastik.data.prefs.SettingsFactory
 import ru.hotmule.lastik.feature.root.RootComponentImpl
 import ru.hotmule.lastik.data.remote.LastikHttpClient
 import ru.hotmule.lastik.ui.compose.DesktopLastikTheme
-import ru.hotmule.lastik.utils.DesktopBrowser
 
 fun main() {
 

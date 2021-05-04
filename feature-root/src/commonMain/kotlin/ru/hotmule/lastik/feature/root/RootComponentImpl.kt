@@ -15,11 +15,11 @@ import ru.hotmule.lastik.data.prefs.PrefsStore
 import ru.hotmule.lastik.data.remote.LastikHttpClient
 import ru.hotmule.lastik.feature.auth.AuthComponent
 import ru.hotmule.lastik.feature.auth.AuthComponentImpl
+import ru.hotmule.lastik.feature.browser.WebBrowser
 import ru.hotmule.lastik.feature.library.LibraryComponent
 import ru.hotmule.lastik.feature.library.LibraryComponentImpl
 import ru.hotmule.lastik.feature.root.RootComponent.*
 import ru.hotmule.lastik.utils.AppCoroutineDispatcher
-import ru.hotmule.lastik.utils.WebBrowser
 
 class RootComponentImpl internal constructor(
     private val componentContext: ComponentContext,
