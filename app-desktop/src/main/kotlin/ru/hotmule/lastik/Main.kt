@@ -7,7 +7,7 @@ import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
 import ru.hotmule.lastik.data.local.DriverFactory
 import ru.hotmule.lastik.data.local.LastikDatabase
 import ru.hotmule.lastik.data.prefs.PrefsStore
-import ru.hotmule.lastik.data.prefs.DesktopPrefs
+import ru.hotmule.lastik.data.prefs.SettingsFactory
 import ru.hotmule.lastik.feature.root.RootComponentImpl
 import ru.hotmule.lastik.data.remote.LastikHttpClient
 import ru.hotmule.lastik.ui.compose.DesktopLastikTheme
@@ -18,7 +18,7 @@ fun main() {
     Window("Lastik") {
         DesktopLastikTheme {
 
-            val prefs = PrefsStore(DesktopPrefs())
+            val prefs = PrefsStore(SettingsFactory().create())
 
             RootContent(
                 rememberRootComponent {

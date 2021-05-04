@@ -3,6 +3,7 @@ include(
 
     ":app-android",
     ":app-desktop",
+    ":app-web",
 
     ":feature-root",
     ":feature-auth",

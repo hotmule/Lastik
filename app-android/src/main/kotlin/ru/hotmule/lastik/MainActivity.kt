@@ -1,4 +1,4 @@
-package ru.hotmule.lastik
+ package ru.hotmule.lastik
 
 import android.content.Intent
 import android.content.res.Resources
@@ -13,7 +13,7 @@ import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.ProvideWindowInsets
 import ru.hotmule.lastik.data.local.DriverFactory
 import ru.hotmule.lastik.data.local.LastikDatabase
-import ru.hotmule.lastik.data.prefs.AndroidPrefs
+import ru.hotmule.lastik.data.prefs.SettingsFactory
 import ru.hotmule.lastik.data.prefs.PrefsStore
 import ru.hotmule.lastik.data.remote.LastikHttpClient
 import ru.hotmule.lastik.feature.root.RootComponent
@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity() {
             ProvideWindowInsets {
                 AndroidLastikTheme {
 
-                    val prefs = PrefsStore(AndroidPrefs(this))
+                    val prefs = PrefsStore(SettingsFactory(this).create())
                     val insets = LocalWindowInsets.current.systemBars
 
                     rootComponent = rememberRootComponent {

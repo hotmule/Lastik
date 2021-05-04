@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CompilerConfiguration">
-    <bytecodeTargetLevel>
-      <module name="Lastik.android-app" target="15" />
-      <module name="Lastik.sdk" target="15" />
-    </bytecodeTargetLevel>
+    <bytecodeTargetLevel target="15" />
   </component>
 </project>
