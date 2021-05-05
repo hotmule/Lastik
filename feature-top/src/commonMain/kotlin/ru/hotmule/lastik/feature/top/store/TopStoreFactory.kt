@@ -24,7 +24,7 @@ class TopStoreFactory(
             reducer = ReducerImpl
         ) {}
 
-    private inner class  ExecutorImpl : SuspendExecutor<Intent, Unit, State, Result, Nothing>(
+    private inner class ExecutorImpl : SuspendExecutor<Intent, Unit, State, Result, Nothing>(
         AppCoroutineDispatcher.Main
     ) {
         override suspend fun executeAction(

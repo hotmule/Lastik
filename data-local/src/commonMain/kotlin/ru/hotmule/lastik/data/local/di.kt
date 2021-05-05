@@ -1,12 +1,17 @@
 package ru.hotmule.lastik.data.local
 
-import com.squareup.sqldelight.db.SqlDriver
-import org.kodein.di.DI
-import org.kodein.di.bind
-import org.kodein.di.instance
-import org.kodein.di.singleton
+import org.kodein.di.*
 
 val localDataModule = DI.Module("localData") {
-    bind<SqlDriver>() with singleton { DriverFactory(di).create() }
-    bind<LastikDatabase>() with singleton { LastikDatabase(instance()) }
+
+    bindSingleton { DriverFactory(di).create() }
+    bindSingleton { LastikDatabase(instance()) }
+
+    bindSingleton { instance<LastikDatabase>().albumQueries }
+    bindSingleton { instance<LastikDatabase>().artistQueries }
+    bindSingleton { instance<LastikDatabase>().friendQueries }
+    bindSingleton { instance<LastikDatabase>().profileQueries }
+    bindSingleton { instance<LastikDatabase>().scrobbleQueries }
+    bindSingleton { instance<LastikDatabase>().topQueries }
+    bindSingleton { instance<LastikDatabase>().trackQueries }
 }

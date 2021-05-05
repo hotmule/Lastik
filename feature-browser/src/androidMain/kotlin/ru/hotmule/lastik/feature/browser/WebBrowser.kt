@@ -8,7 +8,7 @@ import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.instance
 
-actual class WebBrowser actual constructor(override val di: DI): DIAware {
+actual class WebBrowser actual constructor(override val di: DI) : DIAware {
 
     private val context: Context by instance()
 

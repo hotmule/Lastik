@@ -115,6 +115,7 @@ object Libs {
     object Kodein {
         private const val version = "7.5.0"
         const val common = "org.kodein.di:kodein-di:$version"
+        const val compose = "org.kodein.di:kodein-di-framework-compose:$version"
         const val android = "org.kodein.di:kodein-di-framework-android-core:$version"
     }
 

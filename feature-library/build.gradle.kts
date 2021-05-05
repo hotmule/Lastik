@@ -20,6 +20,7 @@ kotlin {
                 implementation(project(Module.Feature.profile))
                 implementation(project(Module.Feature.scrobbles))
 
+                implementation(Libs.Kodein.common)
                 implementation(Libs.Kotlin.Coroutines.core)
                 implementation(Libs.ArkIvanov.Decompose.common)
                 implementation(Libs.ArkIvanov.MVIKotlin.common)

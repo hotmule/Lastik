@@ -1,35 +1,24 @@
 package ru.hotmule.lastik
 
 import androidx.compose.desktop.Window
+import com.arkivanov.decompose.ComponentContext
 import ru.hotmule.lastik.ui.compose.RootContent
 import com.arkivanov.decompose.extensions.compose.jetbrains.rememberRootComponent
-import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
-import ru.hotmule.lastik.data.local.DriverFactory
-import ru.hotmule.lastik.data.local.LastikDatabase
-import ru.hotmule.lastik.data.prefs.PrefsStore
-import ru.hotmule.lastik.data.prefs.SettingsFactory
-import ru.hotmule.lastik.feature.root.RootComponentImpl
-import ru.hotmule.lastik.data.remote.LastikHttpClient
+import org.kodein.di.DI
+import org.kodein.di.factory
+import ru.hotmule.lastik.feature.root.RootComponent
+import ru.hotmule.lastik.feature.root.rootComponentModule
 import ru.hotmule.lastik.ui.compose.DesktopLastikTheme
 
 fun main() {
 
+    val di = DI { import(rootComponentModule) }
+    val root by di.factory<ComponentContext, RootComponent>()
+
     Window("Lastik") {
         DesktopLastikTheme {
-
-            val prefs = PrefsStore(SettingsFactory().create())
-
             RootContent(
-                rememberRootComponent {
-                    RootComponentImpl(
-                        componentContext = it,
-                        storeFactory = DefaultStoreFactory,
-                        httpClient = LastikHttpClient(prefs),
-                        database = LastikDatabase(DriverFactory().create()),
-                        prefsStore = prefs,
-                        webBrowser = DesktopBrowser()
-                    )
-                }
+                rememberRootComponent { root(it) }
             )
         }
     }

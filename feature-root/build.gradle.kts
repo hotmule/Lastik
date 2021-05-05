@@ -16,11 +16,11 @@ kotlin {
                 implementation(project(Module.Data.remote))
                 implementation(project(Module.Feature.auth))
                 implementation(project(Module.Feature.library))
-                implementation(project(Module.Feature.browser))
 
                 implementation(Libs.Kodein.common)
                 implementation(Libs.Kotlin.Coroutines.core)
                 implementation(Libs.ArkIvanov.Decompose.common)
+                implementation(Libs.ArkIvanov.MVIKotlin.main)
                 implementation(Libs.ArkIvanov.MVIKotlin.common)
                 implementation(Libs.ArkIvanov.MVIKotlin.coroutines)
             }

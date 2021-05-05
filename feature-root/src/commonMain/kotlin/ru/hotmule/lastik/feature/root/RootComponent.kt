@@ -14,5 +14,5 @@ interface RootComponent {
         data class Auth(val component: AuthComponent) : Child()
     }
 
-    fun onTokenUrlReceived(url: String)
+    fun onUrlReceived(url: String?)
 }
