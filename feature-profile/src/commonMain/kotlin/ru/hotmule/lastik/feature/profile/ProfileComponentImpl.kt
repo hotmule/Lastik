@@ -20,7 +20,7 @@ import ru.hotmule.lastik.feature.shelf.ShelfComponent
 import ru.hotmule.lastik.feature.shelf.ShelfComponentImpl
 import ru.hotmule.lastik.utils.getStore
 
-class ProfileComponentImpl internal constructor(
+internal class ProfileComponentImpl internal constructor(
     private val componentContext: ComponentContext,
     private val storeFactory: StoreFactory,
     private val httpClient: LastikHttpClient,

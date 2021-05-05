@@ -23,7 +23,7 @@ import ru.hotmule.lastik.feature.profile.store.ProfileStore.*
 import ru.hotmule.lastik.utils.AppCoroutineDispatcher
 import ru.hotmule.lastik.utils.Formatter
 
-class ProfileStoreFactory(
+internal class ProfileStoreFactory(
     private val storeFactory: StoreFactory,
     private val profileQueries: ProfileQueries,
     private val friendQueries: FriendQueries,

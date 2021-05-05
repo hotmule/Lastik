@@ -16,6 +16,7 @@ kotlin {
                 implementation(project(Module.Data.remote))
                 implementation(project(Module.Feature.shelf))
 
+                implementation(Libs.Kodein.common)
                 implementation(Libs.SqlDelight.coroutines)
                 implementation(Libs.Kotlin.Coroutines.core)
 

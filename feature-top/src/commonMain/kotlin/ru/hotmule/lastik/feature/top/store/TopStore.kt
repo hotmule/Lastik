@@ -3,7 +3,7 @@ package ru.hotmule.lastik.feature.top.store
 import com.arkivanov.mvikotlin.core.store.Store
 import ru.hotmule.lastik.feature.top.store.TopStore.*
 
-interface TopStore : Store<Intent, State, Nothing> {
+internal interface TopStore : Store<Intent, State, Nothing> {
 
     sealed class Intent {
         object OpenPeriods : Intent()

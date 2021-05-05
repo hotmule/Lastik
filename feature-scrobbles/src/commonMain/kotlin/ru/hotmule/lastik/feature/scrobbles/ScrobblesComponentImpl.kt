@@ -14,7 +14,7 @@ import ru.hotmule.lastik.feature.scrobbles.ScrobblesComponent.*
 import ru.hotmule.lastik.feature.shelf.ShelfComponent
 import ru.hotmule.lastik.feature.shelf.ShelfComponentImpl
 
-class ScrobblesComponentImpl(
+internal class ScrobblesComponentImpl(
     private val componentContext: ComponentContext,
     private val storeFactory: StoreFactory,
     private val shelf: (ComponentContext) -> ShelfComponent

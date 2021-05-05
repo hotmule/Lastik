@@ -13,6 +13,7 @@ kotlin {
                 implementation(project(Module.Data.local))
                 implementation(project(Module.Data.remote))
                 implementation(project(Module.Feature.shelf))
+                implementation(Libs.Kodein.common)
                 implementation(Libs.ArkIvanov.Decompose.common)
                 implementation(Libs.ArkIvanov.MVIKotlin.common)
             }

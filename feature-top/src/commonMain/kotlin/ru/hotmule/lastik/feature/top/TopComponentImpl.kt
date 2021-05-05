@@ -20,7 +20,7 @@ import ru.hotmule.lastik.feature.top.store.TopStore
 import ru.hotmule.lastik.feature.top.store.TopStoreFactory
 import ru.hotmule.lastik.utils.getStore
 
-class TopComponentImpl(
+internal class TopComponentImpl(
     private val componentContext: ComponentContext,
     private val storeFactory: StoreFactory,
     private val prefsStore: PrefsStore,

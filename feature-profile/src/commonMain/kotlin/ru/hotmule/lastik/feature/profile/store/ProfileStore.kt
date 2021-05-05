@@ -4,7 +4,7 @@ import com.arkivanov.mvikotlin.core.store.Store
 import ru.hotmule.lastik.feature.profile.ProfileComponent.*
 import ru.hotmule.lastik.feature.profile.store.ProfileStore.*
 
-interface ProfileStore : Store<Intent, State, Nothing> {
+internal interface ProfileStore : Store<Intent, State, Nothing> {
 
     sealed class Intent {
         object LogOut : Intent()

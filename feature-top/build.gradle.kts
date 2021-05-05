@@ -15,6 +15,7 @@ kotlin {
                 implementation(project(Module.Data.remote))
                 implementation(project(Module.Feature.shelf))
 
+                implementation(Libs.Kodein.common)
                 implementation(Libs.Kotlin.Coroutines.core)
 
                 implementation(Libs.ArkIvanov.Decompose.common)

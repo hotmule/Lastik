@@ -5,76 +5,32 @@ import com.arkivanov.decompose.statekeeper.Parcelable
 import com.arkivanov.decompose.statekeeper.Parcelize
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.operator.map
-import com.arkivanov.mvikotlin.core.store.StoreFactory
-import ru.hotmule.lastik.data.local.LastikDatabase
-import ru.hotmule.lastik.data.prefs.PrefsStore
-import ru.hotmule.lastik.data.remote.LastikHttpClient
+import org.kodein.di.DI
+import org.kodein.di.DIAware
+import org.kodein.di.factory
 import ru.hotmule.lastik.feature.library.LibraryComponent.*
 import ru.hotmule.lastik.feature.profile.ProfileComponent
-import ru.hotmule.lastik.feature.profile.ProfileComponentImpl
 import ru.hotmule.lastik.feature.scrobbles.ScrobblesComponent
-import ru.hotmule.lastik.feature.scrobbles.ScrobblesComponentImpl
 import ru.hotmule.lastik.feature.top.TopComponent
-import ru.hotmule.lastik.feature.top.TopComponentImpl
+import ru.hotmule.lastik.feature.top.TopComponentParams
 
-class LibraryComponentImpl internal constructor(
-    private val componentContext: ComponentContext,
-    private val scrobbles: (ComponentContext) -> ScrobblesComponent,
-    private val tops: List<(ComponentContext) -> TopComponent>,
-    private val profile: (ComponentContext) -> ProfileComponent
-) : LibraryComponent, ComponentContext by componentContext {
+internal class LibraryComponentImpl(
+    override val di: DI,
+    private val componentContext: ComponentContext
+) : LibraryComponent, DIAware, ComponentContext by componentContext {
 
-    constructor(
-        componentContext: ComponentContext,
-        storeFactory: StoreFactory,
-        httpClient: LastikHttpClient,
-        database: LastikDatabase,
-        prefsStore: PrefsStore
-    ) : this(
-        componentContext = componentContext,
-        scrobbles = { childContext ->
-            ScrobblesComponentImpl(
-                componentContext = childContext,
-                storeFactory = storeFactory,
-                httpClient = httpClient,
-                database = database,
-                prefsStore = prefsStore
-            )
-        },
-        tops = mutableListOf<(ComponentContext) -> TopComponent>().apply {
-            for (shelfIndex in 1..3) {
-                add { childContext ->
-                    TopComponentImpl(
-                        componentContext = childContext,
-                        storeFactory = storeFactory,
-                        httpClient = httpClient,
-                        database = database,
-                        prefsStore = prefsStore,
-                        index = shelfIndex
-                    )
-                }
-            }
-        },
-        profile = { childContext ->
-            ProfileComponentImpl(
-                childContext,
-                storeFactory = storeFactory,
-                httpClient = httpClient,
-                database = database,
-                prefsStore = prefsStore
-            )
-        }
-    )
+    private val scrobbles by factory<ComponentContext, ScrobblesComponent>()
+    private val profile by factory<ComponentContext, ProfileComponent>()
+    private val top by factory<TopComponentParams, TopComponent>()
 
     private val router = router<Config, Child>(
         initialConfiguration = Config.Scrobbles,
         componentFactory = { configuration, componentContext ->
-
             when (configuration) {
                 is Config.Scrobbles -> Child.Scrobbles(scrobbles(componentContext))
-                is Config.Artists -> Child.Artists(tops[0](componentContext))
-                is Config.Albums -> Child.Albums(tops[1](componentContext))
-                is Config.Tracks -> Child.Tracks(tops[2](componentContext))
+                is Config.Artists -> Child.Artists(top(TopComponentParams(componentContext, 1)))
+                is Config.Albums -> Child.Albums(top(TopComponentParams(componentContext, 2)))
+                is Config.Tracks -> Child.Tracks(top(TopComponentParams(componentContext, 3)))
                 is Config.Profile -> Child.Profile(profile(componentContext))
             }
         }

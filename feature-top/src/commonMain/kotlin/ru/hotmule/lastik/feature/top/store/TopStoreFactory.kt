@@ -10,7 +10,7 @@ import ru.hotmule.lastik.data.prefs.PrefsStore
 import ru.hotmule.lastik.feature.top.store.TopStore.*
 import ru.hotmule.lastik.utils.AppCoroutineDispatcher
 
-class TopStoreFactory(
+internal class TopStoreFactory(
     private val storeFactory: StoreFactory,
     private val prefsStore: PrefsStore,
     private val index: Int
