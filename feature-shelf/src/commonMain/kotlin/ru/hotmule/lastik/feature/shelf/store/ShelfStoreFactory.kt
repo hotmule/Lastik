@@ -8,7 +8,6 @@ import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import ru.hotmule.lastik.data.prefs.PrefsStore
 import ru.hotmule.lastik.feature.shelf.store.ShelfStore.*
 import ru.hotmule.lastik.utils.AppCoroutineDispatcher
 

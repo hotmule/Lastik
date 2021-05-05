@@ -30,7 +30,6 @@ import androidx.compose.ui.unit.dp
 import ru.hotmule.lastik.feature.shelf.ShelfComponent
 import ru.hotmule.lastik.feature.shelf.ShelfComponent.*
 import ru.hotmule.lastik.ui.compose.res.Res
-import kotlin.reflect.KFunction3
 
 @Composable
 fun ShelfContent(

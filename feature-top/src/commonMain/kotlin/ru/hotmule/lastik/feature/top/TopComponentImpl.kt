@@ -6,65 +6,38 @@ import com.arkivanov.decompose.router
 import com.arkivanov.decompose.statekeeper.Parcelable
 import com.arkivanov.decompose.statekeeper.Parcelize
 import com.arkivanov.decompose.value.Value
-import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.states
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import ru.hotmule.lastik.data.local.LastikDatabase
-import ru.hotmule.lastik.data.prefs.PrefsStore
-import ru.hotmule.lastik.data.remote.LastikHttpClient
+import org.kodein.di.*
 import ru.hotmule.lastik.feature.shelf.ShelfComponent
-import ru.hotmule.lastik.feature.shelf.ShelfComponentImpl
+import ru.hotmule.lastik.feature.shelf.ShelfComponentParams
 import ru.hotmule.lastik.feature.top.TopComponent.*
 import ru.hotmule.lastik.feature.top.store.TopStore
 import ru.hotmule.lastik.feature.top.store.TopStoreFactory
 import ru.hotmule.lastik.utils.getStore
 
 internal class TopComponentImpl(
-    private val componentContext: ComponentContext,
-    private val storeFactory: StoreFactory,
-    private val prefsStore: PrefsStore,
+    override val di: DI,
     private val index: Int,
-    private val shelf: (ComponentContext) -> ShelfComponent
-): TopComponent, ComponentContext by componentContext {
+    private val componentContext: ComponentContext
+): TopComponent, DIAware, ComponentContext by componentContext {
 
-    constructor(
-        componentContext: ComponentContext,
-        storeFactory: StoreFactory,
-        httpClient: LastikHttpClient,
-        database: LastikDatabase,
-        prefsStore: PrefsStore,
-        index: Int,
-    ): this(
-        componentContext = componentContext,
-        storeFactory = storeFactory,
-        prefsStore = prefsStore,
-        index = index,
-        shelf = { childContext ->
-            ShelfComponentImpl(
-                componentContext = childContext,
-                storeFactory = storeFactory,
-                httpClient = httpClient,
-                database = database,
-                prefsStore = prefsStore,
-                index = index
-            )
-        }
-    )
+    private val shelf by factory<ShelfComponentParams, ShelfComponent>()
 
     private val router = router<Config, Child>(
         initialConfiguration = Config.Shelf,
         componentFactory = { configuration, componentContext ->
             when (configuration) {
-                is Config.Shelf -> Child.Shelf(shelf(componentContext))
+                is Config.Shelf -> Child.Shelf(shelf(ShelfComponentParams(componentContext, index)))
             }
         }
     )
 
     private val store = instanceKeeper.getStore {
         TopStoreFactory(
-            storeFactory = storeFactory,
-            prefsStore = prefsStore,
+            storeFactory = direct.instance(),
+            prefsStore = direct.instance(),
             index = index
         ).create()
     }

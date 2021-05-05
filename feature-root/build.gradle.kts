@@ -19,6 +19,7 @@ kotlin {
                 implementation(project(Module.Feature.library))
 
                 implementation(Libs.Kodein.common)
+                implementation(Libs.Kermit.common)
                 implementation(Libs.Kotlin.Coroutines.core)
                 implementation(Libs.ArkIvanov.Decompose.common)
                 implementation(Libs.ArkIvanov.MVIKotlin.main)

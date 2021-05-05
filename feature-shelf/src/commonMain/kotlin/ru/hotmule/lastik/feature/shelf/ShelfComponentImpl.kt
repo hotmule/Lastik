@@ -1,32 +1,34 @@
 package ru.hotmule.lastik.feature.shelf
 
 import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.states
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import ru.hotmule.lastik.data.local.LastikDatabase
-import ru.hotmule.lastik.data.prefs.PrefsStore
-import ru.hotmule.lastik.data.remote.LastikHttpClient
+import org.kodein.di.DirectDI
+import org.kodein.di.DirectDIAware
+import org.kodein.di.instance
 import ru.hotmule.lastik.feature.shelf.ShelfComponent.*
 import ru.hotmule.lastik.feature.shelf.store.ShelfStoreRepository
 import ru.hotmule.lastik.feature.shelf.store.ShelfStore.*
 import ru.hotmule.lastik.feature.shelf.store.ShelfStoreFactory
 import ru.hotmule.lastik.utils.getStore
 
-class ShelfComponentImpl(
-    componentContext: ComponentContext,
-    storeFactory: StoreFactory,
-    httpClient: LastikHttpClient,
-    database: LastikDatabase,
-    prefsStore: PrefsStore,
-    index: Int
-) : ShelfComponent, ComponentContext by componentContext {
+internal class ShelfComponentImpl(
+    override val directDI: DirectDI,
+    private val index: Int,
+    private val componentContext: ComponentContext,
+) : ShelfComponent, DirectDIAware, ComponentContext by componentContext {
 
     private val store = instanceKeeper.getStore {
         ShelfStoreFactory(
-            storeFactory = storeFactory,
-            repository = ShelfStoreRepository(httpClient, database, prefsStore, index)
+            storeFactory = instance(),
+            repository = ShelfStoreRepository(
+                prefsStore = instance(),
+                database = instance(),
+                trackApi = instance(),
+                userApi = instance(),
+                index = index
+            )
         ).create()
     }
 

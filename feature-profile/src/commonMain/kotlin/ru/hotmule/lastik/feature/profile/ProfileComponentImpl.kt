@@ -6,69 +6,40 @@ import com.arkivanov.decompose.router
 import com.arkivanov.decompose.statekeeper.Parcelable
 import com.arkivanov.decompose.statekeeper.Parcelize
 import com.arkivanov.decompose.value.Value
-import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.states
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import ru.hotmule.lastik.data.local.LastikDatabase
-import ru.hotmule.lastik.data.prefs.PrefsStore
-import ru.hotmule.lastik.data.remote.LastikHttpClient
+import org.kodein.di.*
 import ru.hotmule.lastik.feature.profile.ProfileComponent.*
 import ru.hotmule.lastik.feature.profile.store.ProfileStore.*
 import ru.hotmule.lastik.feature.profile.store.ProfileStoreFactory
 import ru.hotmule.lastik.feature.shelf.ShelfComponent
-import ru.hotmule.lastik.feature.shelf.ShelfComponentImpl
+import ru.hotmule.lastik.feature.shelf.ShelfComponentParams
 import ru.hotmule.lastik.utils.getStore
 
 internal class ProfileComponentImpl internal constructor(
-    private val componentContext: ComponentContext,
-    private val storeFactory: StoreFactory,
-    private val httpClient: LastikHttpClient,
-    private val database: LastikDatabase,
-    private val prefsStore: PrefsStore,
-    private val shelf: (ComponentContext) -> ShelfComponent,
-) : ProfileComponent, ComponentContext by componentContext {
+    override val di: DI,
+    private val componentContext: ComponentContext
+) : ProfileComponent, DIAware, ComponentContext by componentContext {
 
-    constructor(
-        componentContext: ComponentContext,
-        storeFactory: StoreFactory,
-        httpClient: LastikHttpClient,
-        database: LastikDatabase,
-        prefsStore: PrefsStore,
-    ): this(
-        componentContext = componentContext,
-        storeFactory = storeFactory,
-        httpClient = httpClient,
-        database = database,
-        prefsStore = prefsStore,
-        shelf = { childContext ->
-            ShelfComponentImpl(
-                componentContext = childContext,
-                storeFactory = storeFactory,
-                httpClient = httpClient,
-                database = database,
-                prefsStore = prefsStore,
-                index = 4
-            )
-        }
-    )
+    private val shelf by factory<ShelfComponentParams, ShelfComponent>()
 
     private val router = router<Config, Child>(
         initialConfiguration = Config.Shelf,
         componentFactory = { configuration, componentContext ->
             when (configuration) {
-                is Config.Shelf -> Child.Shelf(shelf(componentContext))
+                is Config.Shelf -> Child.Shelf(shelf(ShelfComponentParams(componentContext, 4)))
             }
         }
     )
 
     private val store = instanceKeeper.getStore {
         ProfileStoreFactory(
-            storeFactory = storeFactory,
-            profileQueries = database.profileQueries,
-            friendQueries = database.friendQueries,
-            prefsStore = prefsStore,
-            api = httpClient.userApi,
+            storeFactory = direct.instance(),
+            profileQueries = direct.instance(),
+            friendQueries = direct.instance(),
+            prefsStore = direct.instance(),
+            api = direct.instance(),
         ).create()
     }
 

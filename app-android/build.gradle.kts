@@ -45,7 +45,6 @@ dependencies {
     implementation(Libs.ArkIvanov.Decompose.composeExtensions)
 
     implementation(Libs.Kodein.common)
-    implementation(Libs.Kodein.compose)
     implementation(Libs.Kodein.android)
 
     implementation(compose.material)

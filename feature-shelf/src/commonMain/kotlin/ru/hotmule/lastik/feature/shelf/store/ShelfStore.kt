@@ -2,11 +2,10 @@ package ru.hotmule.lastik.feature.shelf.store
 
 import com.arkivanov.mvikotlin.core.store.Store
 import kotlinx.coroutines.flow.Flow
-import ru.hotmule.lastik.data.remote.entities.LibraryItem
 import ru.hotmule.lastik.feature.shelf.ShelfComponent.*
 import ru.hotmule.lastik.feature.shelf.store.ShelfStore.*
 
-interface ShelfStore : Store<Intent, State, Nothing> {
+internal interface ShelfStore : Store<Intent, State, Nothing> {
 
     sealed class Intent {
         object RefreshItems : Intent()

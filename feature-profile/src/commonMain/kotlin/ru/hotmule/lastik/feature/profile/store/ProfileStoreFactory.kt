@@ -8,14 +8,12 @@ import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
 import com.squareup.sqldelight.runtime.coroutines.asFlow
 import com.squareup.sqldelight.runtime.coroutines.mapToList
 import com.squareup.sqldelight.runtime.coroutines.mapToOneOrNull
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ru.hotmule.lastik.data.local.FriendQueries
 import ru.hotmule.lastik.data.local.ProfileQueries
 import ru.hotmule.lastik.data.prefs.PrefsStore
-import ru.hotmule.lastik.data.remote.LastikHttpClient
 import ru.hotmule.lastik.data.remote.api.UserApi
 import ru.hotmule.lastik.data.remote.entities.User
 import ru.hotmule.lastik.feature.profile.ProfileComponent
@@ -75,7 +73,7 @@ internal class ProfileStoreFactory(
                         Result.ProfileReceived(
                             ProfileComponent.User(
                                 username = it?.userName ?: "",
-                                image = it?.lowResImage ?: LastikHttpClient.defaultImageUrl,
+                                image = it?.lowResImage ?: UserApi.defaultImageUrl,
                                 playCount = Formatter.numberToCommasString(it?.playCount),
                                 scrobblingSince = Formatter.utsDateToString(it?.registerDate, "d MMMM yyyy")
                             )
@@ -95,7 +93,7 @@ internal class ProfileStoreFactory(
                                 friends.map {
                                     ProfileComponent.User(
                                         username = it.userName ?: "",
-                                        image = it.lowResImage ?: LastikHttpClient.defaultImageUrl
+                                        image = it.lowResImage ?: UserApi.defaultImageUrl
                                     )
                                 }
                             )

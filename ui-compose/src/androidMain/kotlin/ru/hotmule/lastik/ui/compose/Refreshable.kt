@@ -1,7 +1,6 @@
 package ru.hotmule.lastik.ui.compose
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 

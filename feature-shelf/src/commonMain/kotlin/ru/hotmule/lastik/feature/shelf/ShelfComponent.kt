@@ -1,13 +1,13 @@
 package ru.hotmule.lastik.feature.shelf
 
 import kotlinx.coroutines.flow.Flow
-import ru.hotmule.lastik.data.remote.LastikHttpClient
+import ru.hotmule.lastik.data.remote.api.UserApi
 
 interface ShelfComponent {
 
     data class ShelfItem(
         val highlighted: Boolean = false,
-        val image: String = LastikHttpClient.defaultImageUrl,
+        val image: String = UserApi.defaultImageUrl,
         val title: String = "",
         val subtitle: String? = null,
         val hint: String? = null,

@@ -1,7 +1,6 @@
 package ru.hotmule.lastik.feature.auth.store
 
 import com.arkivanov.mvikotlin.core.store.Store
-import ru.hotmule.lastik.feature.auth.AuthComponent
 import ru.hotmule.lastik.feature.auth.store.AuthStore.*
 
 internal interface AuthStore : Store<Intent, State, Label> {

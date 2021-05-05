@@ -3,7 +3,7 @@ package ru.hotmule.lastik.feature.top
 import com.arkivanov.decompose.ComponentContext
 import org.kodein.di.DI
 import org.kodein.di.bindFactory
-import org.kodein.di.instance
+import ru.hotmule.lastik.feature.shelf.shelfComponentModule
 
 data class TopComponentParams(
     val componentContext: ComponentContext,
@@ -12,14 +12,9 @@ data class TopComponentParams(
 
 val topComponentModule = DI.Module("topComponent") {
 
+    importOnce(shelfComponentModule)
+
     bindFactory<TopComponentParams, TopComponent> { params ->
-        TopComponentImpl(
-            componentContext = params.componentContext,
-            storeFactory = directDI.instance(),
-            httpClient = directDI.instance(),
-            database = directDI.instance(),
-            prefsStore = directDI.instance(),
-            index = params.index
-        )
+        TopComponentImpl(di,params.index, params.componentContext)
     }
 }

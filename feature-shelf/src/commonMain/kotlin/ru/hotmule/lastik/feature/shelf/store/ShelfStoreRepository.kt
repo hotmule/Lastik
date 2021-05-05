@@ -8,7 +8,8 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import ru.hotmule.lastik.data.local.LastikDatabase
 import ru.hotmule.lastik.data.prefs.PrefsStore
-import ru.hotmule.lastik.data.remote.LastikHttpClient
+import ru.hotmule.lastik.data.remote.api.TrackApi
+import ru.hotmule.lastik.data.remote.api.UserApi
 import ru.hotmule.lastik.data.remote.entities.Date
 import ru.hotmule.lastik.data.remote.entities.Image
 import ru.hotmule.lastik.data.remote.entities.LibraryItem
@@ -17,9 +18,10 @@ import ru.hotmule.lastik.utils.AppCoroutineDispatcher
 import ru.hotmule.lastik.utils.Formatter
 
 internal class ShelfStoreRepository(
-    private val httpClient: LastikHttpClient,
     private val database: LastikDatabase,
-    private val prefs: PrefsStore,
+    private val prefsStore: PrefsStore,
+    private val trackApi: TrackApi,
+    private val userApi: UserApi,
     private val index: Int
 ) : ShelfStore.Repository {
 
@@ -42,7 +44,7 @@ internal class ShelfStoreRepository(
     override suspend fun provideItems(page: Int) {
         withContext(AppCoroutineDispatcher.IO) {
 
-            val items = with(httpClient.userApi) {
+            val items = with(userApi) {
                 when (index) {
                     0 -> getScrobbles(page)?.recent?.tracks
                     1 -> getTopArtists(page)?.top?.artists
@@ -79,7 +81,7 @@ internal class ShelfStoreRepository(
 
     override suspend fun setTrackLove(artist: String, track: String, isLoved: Boolean) {
         withContext(AppCoroutineDispatcher.IO) {
-            httpClient.trackApi.setLoved(track, artist, isLoved)
+            trackApi.setLoved(track, artist, isLoved)
             database.trackQueries.updateTrackLove(isLoved, track, artist)
         }
     }
@@ -91,7 +93,7 @@ internal class ShelfStoreRepository(
             scrobbles.map {
                 ShelfItem(
                     highlighted = it.nowPlaying,
-                    image = it.lowArtwork ?: LastikHttpClient.defaultImageUrl,
+                    image = it.lowArtwork ?: UserApi.defaultImageUrl,
                     title = it.track ?: "",
                     subtitle = it.artist,
                     loved = it.loved,
@@ -103,14 +105,14 @@ internal class ShelfStoreRepository(
             }
         }
 
-    private fun topArtistsFlow() = prefs.getTopPeriodAsFlow(index).flatMapLatest { period ->
+    private fun topArtistsFlow() = prefsStore.getTopPeriodAsFlow(index).flatMapLatest { period ->
         database.topQueries.artistTop(period.toLong())
             .asFlow()
             .mapToList(AppCoroutineDispatcher.IO)
             .map { artists ->
                 artists.map {
                     ShelfItem(
-                        image = it.lowArtwork ?: LastikHttpClient.defaultImageUrl,
+                        image = it.lowArtwork ?: UserApi.defaultImageUrl,
                         title = it.name ?: "",
                         hint = "${Formatter.numberToCommasString(it.playCount)} scrobbles",
                         rank = it.rank,
@@ -120,14 +122,14 @@ internal class ShelfStoreRepository(
             }
     }
 
-    private fun topAlbumsFlow() = prefs.getTopPeriodAsFlow(index).flatMapLatest { period ->
+    private fun topAlbumsFlow() = prefsStore.getTopPeriodAsFlow(index).flatMapLatest { period ->
         database.topQueries.albumTop(period.toLong())
             .asFlow()
             .mapToList(AppCoroutineDispatcher.IO)
             .map { albums ->
                 albums.map {
                     ShelfItem(
-                        image = it.lowArtwork ?: LastikHttpClient.defaultImageUrl,
+                        image = it.lowArtwork ?: UserApi.defaultImageUrl,
                         title = it.album ?: "",
                         hint = "${Formatter.numberToCommasString(it.playCount)} scrobbles",
                         subtitle = it.artist,
@@ -138,14 +140,14 @@ internal class ShelfStoreRepository(
             }
     }
 
-    private fun topTracksFlow() = prefs.getTopPeriodAsFlow(index).flatMapLatest { period ->
+    private fun topTracksFlow() = prefsStore.getTopPeriodAsFlow(index).flatMapLatest { period ->
         database.topQueries.trackTop(period.toLong())
             .asFlow()
             .mapToList(AppCoroutineDispatcher.IO)
             .map { tracks ->
                 tracks.map {
                     ShelfItem(
-                        image = it.lowArtwork ?: LastikHttpClient.defaultImageUrl,
+                        image = it.lowArtwork ?: UserApi.defaultImageUrl,
                         title = it.track ?: "",
                         hint = "${Formatter.numberToCommasString(it.playCount)} scrobbles",
                         subtitle = it.artist,
@@ -162,7 +164,7 @@ internal class ShelfStoreRepository(
         .map { tracks ->
             tracks.map {
                 ShelfItem(
-                    image = it.lowArtwork ?: LastikHttpClient.defaultImageUrl,
+                    image = it.lowArtwork ?: UserApi.defaultImageUrl,
                     title = it.track,
                     subtitle = it.artist,
                     hint = Formatter.utsDateToString(it.lovedAt, "d MMM, HH:mm"),
@@ -205,9 +207,9 @@ internal class ShelfStoreRepository(
     }
 
     private fun getShelfPeriod(shelfIndex: Int) = when (shelfIndex) {
-        1 -> prefs.artistsPeriod
-        2 -> prefs.albumsPeriod
-        else -> prefs.tracksPeriod
+        1 -> prefsStore.artistsPeriod
+        2 -> prefsStore.albumsPeriod
+        else -> prefsStore.tracksPeriod
     }
 
     private fun insertScrobble(
