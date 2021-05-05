@@ -22,7 +22,7 @@ object Res {
         //yellow
         val sunflower = Color(0xffffc900)
 
-        val lights = lightColors(primary = sangria)
+        val lights = lightColors(primary = sangria, secondary = crimson)
         val darks = darkColors(primary = crimson)
     }
 
@@ -33,10 +33,6 @@ object Res {
         const val password = "Password"
         const val sign_in = "Sign in"
         const val sign_in_with_last_fm = "Sign in with Last.fm"
-
-        const val updating = "Updating"
-        const val no_information = "No information"
-        const val scrobbling_now = "Scrobbling now"
 
         const val scrobbling_since = "Scrobbling since"
         const val scrobbes = "Scrobbles"

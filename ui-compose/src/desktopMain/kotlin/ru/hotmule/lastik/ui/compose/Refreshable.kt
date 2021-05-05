@@ -12,6 +12,7 @@ import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import ru.hotmule.lastik.ui.compose.res.Res
 
@@ -28,7 +29,7 @@ actual fun Refreshable(
         FloatingActionButton(
             onClick = onRefresh,
             modifier = Modifier
-                .align(Alignment.BottomCenter)
+                .align(Alignment.BottomEnd)
                 .padding(bottom = Res.Dimen.barHeight)
                 .padding(16.dp)
                 .clickable(
@@ -37,7 +38,9 @@ actual fun Refreshable(
                 )
         ) {
             if (isRefreshing) {
-                CircularProgressIndicator()
+                CircularProgressIndicator(
+                    color = Color.Black
+                )
             } else {
                 Icon(
                     imageVector = Icons.Rounded.Refresh,
