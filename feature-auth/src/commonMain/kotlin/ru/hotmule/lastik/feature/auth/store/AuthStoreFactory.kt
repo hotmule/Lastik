@@ -11,11 +11,13 @@ import ru.hotmule.lastik.data.local.ProfileQueries
 import ru.hotmule.lastik.data.prefs.PrefsStore
 import ru.hotmule.lastik.data.remote.api.AuthApi
 import ru.hotmule.lastik.feature.auth.store.AuthStore.*
+import ru.hotmule.lastik.feature.browser.WebBrowser
 import ru.hotmule.lastik.utils.AppCoroutineDispatcher
 
 internal class AuthStoreFactory(
     private val storeFactory: StoreFactory,
     private val queries: ProfileQueries,
+    private val browser: WebBrowser,
     private val prefs: PrefsStore,
     private val api: AuthApi
 ) {
@@ -49,6 +51,7 @@ internal class AuthStoreFactory(
                 is Intent.ChangePassword -> dispatch(Result.PasswordChanged(intent.password))
                 Intent.ChangePasswordVisibility -> dispatch(Result.PasswordVisibilityChanged)
                 Intent.SignIn -> signIn(getState().login, getState().password)
+                Intent.SignInWithLastFm -> browser.open(api.authUrl)
             }
         }
 

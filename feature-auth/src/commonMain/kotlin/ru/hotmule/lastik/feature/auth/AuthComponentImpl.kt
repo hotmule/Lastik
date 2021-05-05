@@ -1,34 +1,30 @@
 package ru.hotmule.lastik.feature.auth
 
 import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.labels
 import com.arkivanov.mvikotlin.extensions.coroutines.states
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import ru.hotmule.lastik.data.local.LastikDatabase
-import ru.hotmule.lastik.data.prefs.PrefsStore
-import ru.hotmule.lastik.data.remote.LastikHttpClient
+import org.kodein.di.DirectDI
+import org.kodein.di.DirectDIAware
+import org.kodein.di.instance
 import ru.hotmule.lastik.feature.auth.AuthComponent.*
 import ru.hotmule.lastik.feature.auth.store.AuthStore.*
 import ru.hotmule.lastik.feature.auth.store.AuthStoreFactory
 import ru.hotmule.lastik.utils.getStore
 
-class AuthComponentImpl(
-    componentContext: ComponentContext,
-    storeFactory: StoreFactory,
-    httpClient: LastikHttpClient,
-    database: LastikDatabase,
-    prefs: PrefsStore,
-    private val output: (Output) -> Unit
-) : AuthComponent, ComponentContext by componentContext {
+internal class AuthComponentImpl(
+    override val directDI: DirectDI,
+    private val componentContext: ComponentContext
+) : AuthComponent, DirectDIAware, ComponentContext by componentContext {
 
     private val store = instanceKeeper.getStore {
         AuthStoreFactory(
-            storeFactory = storeFactory,
-            queries = database.profileQueries,
-            api = httpClient.authApi,
-            prefs = prefs
+            storeFactory = directDI.instance(),
+            queries = directDI.instance(),
+            browser = directDI.instance(),
+            prefs = directDI.instance(),
+            api = directDI.instance()
         ).create()
     }
 
@@ -64,6 +60,6 @@ class AuthComponentImpl(
     }
 
     override fun onSignInWithLastFm() {
-        output(Output.SignInWithLastFm)
+        store.accept(Intent.SignInWithLastFm)
     }
 }

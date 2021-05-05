@@ -11,6 +11,7 @@ internal interface AuthStore : Store<Intent, State, Label> {
         data class ChangePassword(val password: String) : Intent()
         object ChangePasswordVisibility : Intent()
         object SignIn : Intent()
+        object SignInWithLastFm: Intent()
     }
 
     sealed class Result {

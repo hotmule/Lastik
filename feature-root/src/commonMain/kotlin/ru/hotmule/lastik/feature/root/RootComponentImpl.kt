@@ -4,13 +4,7 @@ import com.arkivanov.decompose.*
 import com.arkivanov.decompose.statekeeper.Parcelable
 import com.arkivanov.decompose.statekeeper.Parcelize
 import com.arkivanov.decompose.value.Value
-import com.arkivanov.mvikotlin.core.store.StoreFactory
-import org.kodein.di.DI
-import org.kodein.di.DIAware
-import org.kodein.di.factory
-import org.kodein.di.instance
-import ru.hotmule.lastik.data.local.ProfileQueries
-import ru.hotmule.lastik.data.prefs.PrefsStore
+import org.kodein.di.*
 import ru.hotmule.lastik.feature.auth.AuthComponent
 import ru.hotmule.lastik.feature.library.LibraryComponent
 import ru.hotmule.lastik.feature.root.RootComponent.*
@@ -23,7 +17,7 @@ internal class RootComponentImpl(
     private val componentContext: ComponentContext
 ) : RootComponent, DIAware, ComponentContext by componentContext {
 
-    private val library by factory<ComponentContext,  LibraryComponent>()
+    private val library by factory<ComponentContext, LibraryComponent>()
     private val auth by factory<ComponentContext, AuthComponent>()
 
     private val router = router<Config, Child>(
@@ -38,15 +32,10 @@ internal class RootComponentImpl(
     )
 
     private val store = instanceKeeper.getStore {
-
-        val storeFactory: StoreFactory by instance()
-        val prefsStore: PrefsStore by instance()
-        val queries: ProfileQueries by instance()
-
         RootStoreFactory(
-            storeFactory = storeFactory,
-            prefsStore = prefsStore,
-            queries = queries,
+            storeFactory = direct.instance(),
+            prefsStore = direct.instance(),
+            queries = direct.instance(),
             onSessionChanged = { isActive ->
                 if (isActive)
                     setConfig<Child.Library>(Config.Library)

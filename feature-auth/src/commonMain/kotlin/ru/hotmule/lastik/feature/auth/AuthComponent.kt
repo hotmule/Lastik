@@ -15,10 +15,6 @@ interface AuthComponent {
         data class MessageReceived(val message: String?): Event()
     }
 
-    sealed class Output {
-        object SignInWithLastFm : Output()
-    }
-
     val model: Flow<Model>
 
     val events: Flow<Event>
