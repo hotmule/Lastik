@@ -1,5 +1,5 @@
 # Lastik
-Kotlin Multiplatform + Jet(pack)Brains Compose pet project, based on last.fm/api (in development)
+Kotlin Multiplatform + Jetpack Compose for Desktop pet project, based on www.last.fm/api (in development)
 
 ### Currently supported platforms
 - Android - priority
