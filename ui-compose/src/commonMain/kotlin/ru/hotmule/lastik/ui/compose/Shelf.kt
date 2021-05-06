@@ -227,6 +227,6 @@ expect fun Refreshable(
 )
 
 @Composable
-expect fun remoteImagePainter(data: String): Painter
+expect fun remoteImagePainter(url: String): Painter
 
 expect fun getScreenWidth(): Int

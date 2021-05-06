@@ -6,5 +6,5 @@ import com.google.accompanist.coil.rememberCoilPainter
 
 @Composable
 actual fun remoteImagePainter(
-    data: String
-): Painter = rememberCoilPainter(data)
+    url: String
+): Painter = rememberCoilPainter(url)

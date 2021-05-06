@@ -23,6 +23,7 @@ kotlin {
                 implementation(compose.material)
                 implementation(compose.materialIconsExtended)
 
+                implementation(Libs.Kodein.compose)
                 implementation(Libs.ArkIvanov.Decompose.common)
                 implementation(Libs.ArkIvanov.Decompose.composeExtensions)
             }
@@ -37,6 +38,8 @@ kotlin {
 
         named("desktopMain") {
             dependencies {
+                implementation(project(Module.utils))
+                implementation(Libs.Ktor.Core.common)
                 implementation(compose.desktop.currentOs)
             }
         }

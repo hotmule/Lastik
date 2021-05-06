@@ -18,6 +18,7 @@ fun main() {
     Window("Lastik") {
         DesktopLastikTheme {
             RootContent(
+                di,
                 rememberRootComponent { root(it) }
             )
         }

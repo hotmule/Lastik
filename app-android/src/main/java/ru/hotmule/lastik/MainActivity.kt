@@ -40,6 +40,7 @@ class MainActivity : AppCompatActivity(), DIAware {
                     rootComponent = rememberRootComponent { root(it) }
 
                     RootContent(
+                        di,
                         rootComponent,
                         (insets.top / density).dp,
                         (insets.bottom / density).dp

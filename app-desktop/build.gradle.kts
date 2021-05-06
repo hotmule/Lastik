@@ -15,6 +15,7 @@ dependencies {
     implementation(project(Module.utils))
 
     implementation(Libs.Kodein.common)
+    implementation(Libs.Kodein.compose)
     implementation(Libs.ArkIvanov.MVIKotlin.main)
     implementation(Libs.ArkIvanov.MVIKotlin.common)
     implementation(Libs.ArkIvanov.Decompose.common)
