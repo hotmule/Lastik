@@ -32,4 +32,4 @@ Kotlin Multiplatform + Jet(pack)Brains Compose pet project, based on last.fm/api
 
 ### Screenshots
 <img src="screenshots/resents.jpg" width="275px"> <img src="screenshots/albums.jpg" width="275px"> <img src="screenshots/profile.jpg" width="275px">
-<img src="screenshots/desktop.png" width="790px">
+<img src="screenshots/desktop.png" width="835px">
