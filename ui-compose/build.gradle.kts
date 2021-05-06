@@ -6,26 +6,25 @@ plugins {
 }
 
 kotlin {
-
     sourceSets {
 
         named("commonMain") {
             dependencies {
 
+                implementation(project(Module.Feature.top))
                 implementation(project(Module.Feature.root))
                 implementation(project(Module.Feature.auth))
-                implementation(project(Module.Feature.library))
-                implementation(project(Module.Feature.scrobbles))
-                implementation(project(Module.Feature.profile))
                 implementation(project(Module.Feature.shelf))
-                implementation(project(Module.Feature.top))
+                implementation(project(Module.Feature.library))
+                implementation(project(Module.Feature.profile))
+                implementation(project(Module.Feature.scrobbles))
 
                 implementation(compose.material)
                 implementation(compose.materialIconsExtended)
 
                 implementation(Libs.Kodein.compose)
                 implementation(Libs.ArkIvanov.Decompose.common)
-                implementation(Libs.ArkIvanov.Decompose.composeExtensions)
+                implementation(Libs.ArkIvanov.Decompose.compose)
             }
         }
 

@@ -4,12 +4,11 @@ plugins {
 
 kotlin {
     sourceSets {
+
         named("commonMain") {
             dependencies {
                 implementation(Libs.Kodein.common)
-                implementation(Libs.Settings.common)
-                implementation(Libs.Settings.coroutines)
-                implementation(Libs.Kotlin.Coroutines.core)
+                implementation(Libs.ArkIvanov.Decompose.common)
             }
         }
     }

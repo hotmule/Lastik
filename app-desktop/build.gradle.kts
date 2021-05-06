@@ -7,21 +7,14 @@ plugins {
 
 dependencies {
 
-    implementation(project(Module.Feature.root))
-    implementation(project(Module.Data.remote))
-    implementation(project(Module.Data.local))
-    implementation(project(Module.Data.prefs))
     implementation(project(Module.UI.compose))
-    implementation(project(Module.utils))
+    implementation(project(Module.Feature.root))
+
+    implementation(compose.desktop.currentOs)
 
     implementation(Libs.Kodein.common)
-    implementation(Libs.Kodein.compose)
-    implementation(Libs.ArkIvanov.MVIKotlin.main)
-    implementation(Libs.ArkIvanov.MVIKotlin.common)
     implementation(Libs.ArkIvanov.Decompose.common)
-    implementation(Libs.ArkIvanov.Decompose.composeExtensions)
-    
-    implementation(compose.desktop.currentOs)
+    implementation(Libs.ArkIvanov.Decompose.compose)
 }
 
 compose.desktop {

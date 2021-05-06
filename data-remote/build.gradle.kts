@@ -4,7 +4,6 @@ plugins {
 }
 
 kotlin {
-
     sourceSets {
 
         named("commonMain") {
@@ -16,7 +15,6 @@ kotlin {
                 implementation(Libs.Ktor.Core.common)
                 implementation(Libs.Ktor.Logging.common)
                 implementation(Libs.Ktor.Serialization.common)
-                implementation(Libs.Kotlin.Coroutines.core)
             }
         }
 

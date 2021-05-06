@@ -97,7 +97,7 @@ object Libs {
             private const val version = "0.2.4"
             const val common = "com.arkivanov.decompose:decompose:$version"
             const val jvm = "com.arkivanov.decompose:decompose-jvm:$version"
-            const val composeExtensions = "com.arkivanov.decompose:extensions-compose-jetbrains:$version"
+            const val compose = "com.arkivanov.decompose:extensions-compose-jetbrains:$version"
         }
     }
 

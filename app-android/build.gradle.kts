@@ -31,24 +31,14 @@ android {
 
 dependencies {
 
-    implementation(project(Module.Feature.browser))
-    implementation(project(Module.Feature.root))
-    implementation(project(Module.Data.remote))
-    implementation(project(Module.Data.local))
-    implementation(project(Module.Data.prefs))
     implementation(project(Module.UI.compose))
-    implementation(project(Module.utils))
+    implementation(project(Module.Feature.root))
 
-    implementation(Libs.ArkIvanov.MVIKotlin.main)
-    implementation(Libs.ArkIvanov.MVIKotlin.common)
-    implementation(Libs.ArkIvanov.Decompose.common)
-    implementation(Libs.ArkIvanov.Decompose.composeExtensions)
-
-    implementation(Libs.Kodein.common)
+    implementation(compose.runtime)
     implementation(Libs.Kodein.android)
-
-    implementation(compose.material)
-    implementation(Libs.Accompanist.insets)
     implementation(Libs.AndroidX.appCompat)
+    implementation(Libs.Accompanist.insets)
     implementation(Libs.AndroidX.Compose.activity)
+    implementation(Libs.ArkIvanov.Decompose.common)
+    implementation(Libs.ArkIvanov.Decompose.compose)
 }
