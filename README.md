@@ -2,8 +2,8 @@
 Kotlin Multiplatform + Jetpack Compose for Desktop pet project, based on www.last.fm/api (in development)
 
 ### Currently supported platforms
-- Android - priority
-- Desktop - as a Proof of Concept
+- Android - primary
+- Desktop - not for use, only as a Proof of Concept
 
 ### Used libraries
 
