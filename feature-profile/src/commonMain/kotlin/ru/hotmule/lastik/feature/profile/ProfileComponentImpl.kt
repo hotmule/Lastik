@@ -25,13 +25,12 @@ internal class ProfileComponentImpl internal constructor(
     private val shelf by factory<ShelfComponentParams, ShelfComponent>()
 
     private val router = router<Config, Child>(
-        initialConfiguration = Config.Shelf,
-        componentFactory = { configuration, componentContext ->
-            when (configuration) {
-                is Config.Shelf -> Child.Shelf(shelf(ShelfComponentParams(componentContext, 4)))
-            }
+        initialConfiguration = Config.Shelf
+    ) { configuration, componentContext ->
+        when (configuration) {
+            is Config.Shelf -> Child.Shelf(shelf(ShelfComponentParams(componentContext, 4)))
         }
-    )
+    }
 
     private val store = instanceKeeper.getStore {
         ProfileStoreFactory(
@@ -66,6 +65,7 @@ internal class ProfileComponentImpl internal constructor(
     }
 
     private sealed class Config : Parcelable {
-        @Parcelize object Shelf : Config()
+        @Parcelize
+        object Shelf : Config()
     }
 }

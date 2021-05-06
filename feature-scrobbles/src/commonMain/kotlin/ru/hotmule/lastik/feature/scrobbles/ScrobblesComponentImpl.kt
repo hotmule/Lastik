@@ -21,13 +21,12 @@ internal class ScrobblesComponentImpl(
     private val shelf by factory<ShelfComponentParams, ShelfComponent>()
 
     private val router = router<Config, Child>(
-        initialConfiguration = Config.Shelf,
-        componentFactory = { configuration, componentContext ->
-            when (configuration) {
-                is Config.Shelf -> Child.Shelf(shelf(ShelfComponentParams(componentContext, 0)))
-            }
+        initialConfiguration = Config.Shelf
+    ) { configuration, componentContext ->
+        when (configuration) {
+            is Config.Shelf -> Child.Shelf(shelf(ShelfComponentParams(componentContext, 0)))
         }
-    )
+    }
 
     override val routerState: Value<RouterState<*, Child>> = router.state
 

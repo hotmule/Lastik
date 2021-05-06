@@ -8,7 +8,7 @@ import com.arkivanov.decompose.value.operator.map
 import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.factory
-import ru.hotmule.lastik.feature.library.LibraryComponent.*
+import ru.hotmule.lastik.feature.library.LibraryComponent.Child
 import ru.hotmule.lastik.feature.profile.ProfileComponent
 import ru.hotmule.lastik.feature.scrobbles.ScrobblesComponent
 import ru.hotmule.lastik.feature.top.TopComponent
@@ -24,22 +24,21 @@ internal class LibraryComponentImpl(
     private val top by factory<TopComponentParams, TopComponent>()
 
     private val router = router<Config, Child>(
-        initialConfiguration = Config.Scrobbles,
-        componentFactory = { configuration, componentContext ->
-            when (configuration) {
-                is Config.Scrobbles -> Child.Scrobbles(scrobbles(componentContext))
-                is Config.Artists -> Child.Artists(top(TopComponentParams(componentContext, 1)))
-                is Config.Albums -> Child.Albums(top(TopComponentParams(componentContext, 2)))
-                is Config.Tracks -> Child.Tracks(top(TopComponentParams(componentContext, 3)))
-                is Config.Profile -> Child.Profile(profile(componentContext))
-            }
+        initialConfiguration = Config.Scrobbles
+    ) { configuration, componentContext ->
+        when (configuration) {
+            is Config.Scrobbles -> Child.Scrobbles(scrobbles(componentContext))
+            is Config.Artists -> Child.Artists(top(TopComponentParams(componentContext, 1)))
+            is Config.Albums -> Child.Albums(top(TopComponentParams(componentContext, 2)))
+            is Config.Tracks -> Child.Tracks(top(TopComponentParams(componentContext, 3)))
+            is Config.Profile -> Child.Profile(profile(componentContext))
         }
-    )
+    }
 
     override val routerState: Value<RouterState<*, Child>> = router.state
 
     override val activeChildIndex: Value<Int> = routerState.map {
-        it.activeChild.component.index
+        it.activeChild.instance.index
     }
 
     override fun onShelfSelect(index: Int) {

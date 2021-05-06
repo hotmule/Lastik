@@ -43,20 +43,22 @@ fun ProfileContent(
             )
         },
         content = {
-            Children(component.routerState) { child, _ ->
-                when (child) {
-                    is Child.Shelf -> ShelfContent(
-                        component = child.component,
-                        bottomInset = bottomInset,
-                        header = {
-                            ProfileInfo(
-                                profile = model.profile,
-                                friends = model.friends,
-                                isMoreFriendsLoading = model.isMoreFriendsLoading
-                            )
-                        },
-                        onRefreshHeader = component::onRefresh
-                    )
+            Children(component.routerState) {
+                it.instance.let { child ->
+                    when (child) {
+                        is Child.Shelf -> ShelfContent(
+                            component = child.component,
+                            bottomInset = bottomInset,
+                            header = {
+                                ProfileInfo(
+                                    profile = model.profile,
+                                    friends = model.friends,
+                                    isMoreFriendsLoading = model.isMoreFriendsLoading
+                                )
+                            },
+                            onRefreshHeader = component::onRefresh
+                        )
+                    }
                 }
             }
         }

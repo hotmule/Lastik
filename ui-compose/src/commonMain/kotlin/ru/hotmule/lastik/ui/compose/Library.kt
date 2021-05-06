@@ -43,13 +43,15 @@ private fun LibraryBody(
     topInset: Dp,
     bottomInset: Dp
 ) {
-    Children(routerState) { child, _ ->
-        when (child) {
-            is Child.Scrobbles -> ScrobblesContent(child.component, topInset, bottomInset)
-            is Child.Artists -> TopContent(child.component, topInset, bottomInset)
-            is Child.Albums -> TopContent(child.component, topInset, bottomInset)
-            is Child.Tracks -> TopContent(child.component, topInset, bottomInset)
-            is Child.Profile -> ProfileContent(child.component, topInset, bottomInset)
+    Children(routerState) {
+        it.instance.let { child ->
+            when (child) {
+                is Child.Scrobbles -> ScrobblesContent(child.component, topInset, bottomInset)
+                is Child.Artists -> TopContent(child.component, topInset, bottomInset)
+                is Child.Albums -> TopContent(child.component, topInset, bottomInset)
+                is Child.Tracks -> TopContent(child.component, topInset, bottomInset)
+                is Child.Profile -> ProfileContent(child.component, topInset, bottomInset)
+            }
         }
     }
 }

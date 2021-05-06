@@ -7,7 +7,7 @@ import com.arkivanov.decompose.value.Value
 import org.kodein.di.*
 import ru.hotmule.lastik.feature.auth.AuthComponent
 import ru.hotmule.lastik.feature.library.LibraryComponent
-import ru.hotmule.lastik.feature.root.RootComponent.*
+import ru.hotmule.lastik.feature.root.RootComponent.Child
 import ru.hotmule.lastik.feature.root.store.RootStore
 import ru.hotmule.lastik.feature.root.store.RootStoreFactory
 import ru.hotmule.lastik.utils.getStore
@@ -22,14 +22,13 @@ internal class RootComponentImpl(
 
     private val router = router<Config, Child>(
         initialConfiguration = Config.Library,
-        handleBackButton = true,
-        componentFactory = { configuration, componentContext ->
-            when (configuration) {
-                is Config.Library -> Child.Library(library(componentContext))
-                is Config.Auth -> Child.Auth(auth(componentContext))
-            }
+        handleBackButton = true
+    ) { configuration, componentContext ->
+        when (configuration) {
+            is Config.Library -> Child.Library(library(componentContext))
+            is Config.Auth -> Child.Auth(auth(componentContext))
         }
-    )
+    }
 
     private val store = instanceKeeper.getStore {
         RootStoreFactory(
@@ -56,11 +55,11 @@ internal class RootComponentImpl(
         @Parcelize object Auth : Config()
     }
 
-    private inline fun <reified T: Child> setConfig(
+    private inline fun <reified T : Child> setConfig(
         config: Config
     ) {
-        with (router) {
-            if (state.value.activeChild.component !is T) {
+        with(router) {
+            if (state.value.activeChild.instance !is T) {
                 replaceCurrent(config)
             }
         }

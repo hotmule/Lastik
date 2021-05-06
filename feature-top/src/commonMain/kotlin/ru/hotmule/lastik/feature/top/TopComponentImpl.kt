@@ -21,18 +21,17 @@ internal class TopComponentImpl(
     override val di: DI,
     private val index: Int,
     private val componentContext: ComponentContext
-): TopComponent, DIAware, ComponentContext by componentContext {
+) : TopComponent, DIAware, ComponentContext by componentContext {
 
     private val shelf by factory<ShelfComponentParams, ShelfComponent>()
 
     private val router = router<Config, Child>(
-        initialConfiguration = Config.Shelf,
-        componentFactory = { configuration, componentContext ->
-            when (configuration) {
-                is Config.Shelf -> Child.Shelf(shelf(ShelfComponentParams(componentContext, index)))
-            }
+        initialConfiguration = Config.Shelf
+    ) { configuration, componentContext ->
+        when (configuration) {
+            is Config.Shelf -> Child.Shelf(shelf(ShelfComponentParams(componentContext, index)))
         }
-    )
+    }
 
     private val store = instanceKeeper.getStore {
         TopStoreFactory(
@@ -62,10 +61,11 @@ internal class TopComponentImpl(
 
     override fun onPeriodSelected(index: Int) {
         store.accept(TopStore.Intent.SavePeriod(index))
-        (routerState.value.activeChild.component as Child.Shelf).component.onRefreshItems()
+        (routerState.value.activeChild.instance as Child.Shelf).component.onRefreshItems()
     }
 
     private sealed class Config : Parcelable {
-        @Parcelize object Shelf : Config()
+        @Parcelize
+        object Shelf : Config()
     }
 }

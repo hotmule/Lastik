@@ -31,9 +31,11 @@ fun TopContent(
             )
         },
         content = {
-            Children(component.routerState) { child, _ ->
-                when (child) {
-                    is Child.Shelf -> ShelfContent(child.component, bottomInset)
+            Children(component.routerState) {
+                it.instance.let { child ->
+                    when (child) {
+                        is Child.Shelf -> ShelfContent(child.component, bottomInset)
+                    }
                 }
             }
         }

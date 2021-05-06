@@ -16,10 +16,12 @@ fun RootContent(
     topInset: Dp = 0.dp,
     bottomInset: Dp = 0.dp
 ) = withDI(di) {
-    Children(component.routerState) { child, _ ->
-        when (child) {
-            is Child.Library -> LibraryContent(child.component, topInset, bottomInset)
-            is Child.Auth -> AuthContent(child.component, topInset, bottomInset)
+    Children(component.routerState) {
+        it.instance.let { child ->
+            when (child) {
+                is Child.Library -> LibraryContent(child.component, topInset, bottomInset)
+                is Child.Auth -> AuthContent(child.component, topInset, bottomInset)
+            }
         }
     }
 }

@@ -87,14 +87,14 @@ object Libs {
     object ArkIvanov {
 
         object MVIKotlin {
-            private const val version = "2.0.1"
+            private const val version = "2.0.3"
             const val common = "com.arkivanov.mvikotlin:mvikotlin:$version"
             const val main = "com.arkivanov.mvikotlin:mvikotlin-main:$version"
             const val coroutines = "com.arkivanov.mvikotlin:mvikotlin-extensions-coroutines:$version"
         }
 
         object Decompose {
-            private const val version = "0.1.9"
+            private const val version = "0.2.4"
             const val common = "com.arkivanov.decompose:decompose:$version"
             const val jvm = "com.arkivanov.decompose:decompose-jvm:$version"
             const val composeExtensions = "com.arkivanov.decompose:extensions-compose-jetbrains:$version"
@@ -120,7 +120,7 @@ object Libs {
     }
 
     object Kermit {
-        private const val version = "0.1.7"
+        private const val version = "0.1.8"
         const val common = "co.touchlab:kermit:$version"
     }
 
@@ -136,7 +136,7 @@ object Libs {
     }
 
     object Settings {
-        private const val version = "0.7.5"
+        private const val version = "0.7.6"
         const val common = "com.russhwolf:multiplatform-settings:$version"
         const val coroutines = "com.russhwolf:multiplatform-settings-coroutines:$version"
     }
@@ -153,7 +153,7 @@ object Libs {
     }
 
     object Accompanist {
-        private const val version = "0.8.1"
+        private const val version = "0.9.0"
         const val coil = "com.google.accompanist:accompanist-coil:$version"
         const val insets = "com.google.accompanist:accompanist-insets:$version"
         const val swipeRefresh = "com.google.accompanist:accompanist-swiperefresh:$version"
