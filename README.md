@@ -31,7 +31,5 @@ Kotlin Multiplatform + Jet(pack)Brains Compose pet project, based on last.fm/api
     - [Gradle Versions Plugin](https://github.com/ben-manes/gradle-versions-plugin)
 
 ### Screenshots
-- Android
 <img src="screenshots/resents.jpg" width="260px"> <img src="screenshots/albums.jpg" width="260px"> <img src="screenshots/profile.jpg" width="260px">
-- Desktop
 <img src="screenshots/desktop.png" width="790px">
