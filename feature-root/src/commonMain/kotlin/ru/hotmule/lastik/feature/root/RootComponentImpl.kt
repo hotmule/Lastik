@@ -50,6 +50,14 @@ internal class RootComponentImpl(
         store.accept(RootStore.Intent.ProcessUrl(url))
     }
 
+    override fun onTrackDetected(isPlaying: Boolean?, artist: String?, track: String?, time: Long?) {
+        routerState.value.activeChild.instance.let {
+            if (it is Child.Library) {
+                it.component.onTrackDetected(isPlaying, artist, track, time)
+            }
+        }
+    }
+
     private sealed class Config : Parcelable {
         @Parcelize object Library : Config()
         @Parcelize object Auth : Config()

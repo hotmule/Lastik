@@ -2,6 +2,7 @@ package ru.hotmule.lastik.feature.library
 
 import com.arkivanov.decompose.RouterState
 import com.arkivanov.decompose.value.Value
+import kotlinx.coroutines.flow.Flow
 import ru.hotmule.lastik.feature.profile.ProfileComponent
 import ru.hotmule.lastik.feature.scrobbles.ScrobblesComponent
 import ru.hotmule.lastik.feature.top.TopComponent
@@ -16,9 +17,19 @@ interface LibraryComponent {
         data class Profile(val component: ProfileComponent) : Child(4)
     }
 
+    data class Model(
+        val isPlaying: Boolean = false,
+        val artist: String = "",
+        val track: String = ""
+    )
+
+    val model: Flow<Model>
+
     val routerState: Value<RouterState<*, Child>>
 
     val activeChildIndex: Value<Int>
 
     fun onShelfSelect(index: Int)
+
+    fun onTrackDetected(isPlaying: Boolean?, artist: String?, track: String?, time: Long?)
 }

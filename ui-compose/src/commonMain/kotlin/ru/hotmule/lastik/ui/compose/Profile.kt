@@ -29,8 +29,7 @@ import ru.hotmule.lastik.ui.compose.res.Res
 @Composable
 fun ProfileContent(
     component: ProfileComponent,
-    topInset: Dp,
-    bottomInset: Dp
+    topInset: Dp
 ) {
     val model by component.model.collectAsState(Model())
 
@@ -48,7 +47,6 @@ fun ProfileContent(
                     when (child) {
                         is Child.Shelf -> ShelfContent(
                             component = child.component,
-                            bottomInset = bottomInset,
                             header = {
                                 ProfileInfo(
                                     profile = model.profile,

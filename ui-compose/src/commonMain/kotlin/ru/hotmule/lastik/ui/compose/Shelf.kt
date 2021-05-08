@@ -34,7 +34,6 @@ import ru.hotmule.lastik.ui.compose.res.Res
 @Composable
 fun ShelfContent(
     component: ShelfComponent,
-    bottomInset: Dp,
     header: @Composable () -> Unit = { },
     onRefreshHeader: () -> Unit = { }
 ) {
@@ -49,9 +48,7 @@ fun ShelfContent(
         }
     ) {
         LazyColumn(
-            modifier = Modifier
-                .padding(bottom = Res.Dimen.barHeight + bottomInset)
-                .fillMaxSize()
+            modifier = Modifier.fillMaxSize()
         ) {
 
             item { header() }

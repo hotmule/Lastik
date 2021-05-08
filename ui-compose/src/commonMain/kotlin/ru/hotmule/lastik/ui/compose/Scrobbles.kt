@@ -15,8 +15,7 @@ import ru.hotmule.lastik.ui.compose.res.Res
 @Composable
 fun ScrobblesContent(
     component: ScrobblesComponent,
-    topInset: Dp,
-    bottomInset: Dp
+    topInset: Dp
 ) {
     Scaffold(
         topBar = {
@@ -34,7 +33,7 @@ fun ScrobblesContent(
             Children(component.routerState) {
                 it.instance.let { child ->
                     when (child) {
-                        is ScrobblesComponent.Child.Shelf -> ShelfContent(child.component, bottomInset)
+                        is ScrobblesComponent.Child.Shelf -> ShelfContent(child.component)
                     }
                 }
             }

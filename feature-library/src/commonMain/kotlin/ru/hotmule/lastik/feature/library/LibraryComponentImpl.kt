@@ -5,14 +5,19 @@ import com.arkivanov.decompose.statekeeper.Parcelable
 import com.arkivanov.decompose.statekeeper.Parcelize
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.operator.map
-import org.kodein.di.DI
-import org.kodein.di.DIAware
-import org.kodein.di.factory
+import com.arkivanov.mvikotlin.extensions.coroutines.states
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import org.kodein.di.*
+import ru.hotmule.lastik.feature.library.LibraryComponent.*
 import ru.hotmule.lastik.feature.library.LibraryComponent.Child
+import ru.hotmule.lastik.feature.library.store.LibraryStore.*
+import ru.hotmule.lastik.feature.library.store.LibraryStoreFactory
 import ru.hotmule.lastik.feature.profile.ProfileComponent
 import ru.hotmule.lastik.feature.scrobbles.ScrobblesComponent
 import ru.hotmule.lastik.feature.top.TopComponent
 import ru.hotmule.lastik.feature.top.TopComponentParams
+import ru.hotmule.lastik.utils.getStore
 
 internal class LibraryComponentImpl(
     override val di: DI,
@@ -35,6 +40,20 @@ internal class LibraryComponentImpl(
         }
     }
 
+    private val store = instanceKeeper.getStore {
+        LibraryStoreFactory(
+            storeFactory = direct.instance()
+        ).create()
+    }
+
+    override val model: Flow<Model> = store.states.map {
+        Model(
+            it.isPlaying,
+            it.artist,
+            it.track
+        )
+    }
+
     override val routerState: Value<RouterState<*, Child>> = router.state
 
     override val activeChildIndex: Value<Int> = routerState.map {
@@ -51,6 +70,10 @@ internal class LibraryComponentImpl(
                 else -> Config.Profile
             }
         )
+    }
+
+    override fun onTrackDetected(isPlaying: Boolean?, artist: String?, track: String?, time: Long?) {
+        store.accept(Intent.CheckDetectedTrack(isPlaying, artist, track))
     }
 
     sealed class Config : Parcelable {
