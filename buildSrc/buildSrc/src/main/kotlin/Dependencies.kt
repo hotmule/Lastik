@@ -30,6 +30,7 @@ object Module {
         const val scrobbles = ":feature-scrobbles"
         const val shelf = ":feature-shelf"
         const val browser = ":feature-browser"
+        const val scrobbler = ":feature-scrobbler"
     }
 
     object Data {
@@ -153,7 +154,7 @@ object Libs {
     }
 
     object Accompanist {
-        private const val version = "0.9.0"
+        private const val version = "0.9.1"
         const val coil = "com.google.accompanist:accompanist-coil:$version"
         const val insets = "com.google.accompanist:accompanist-insets:$version"
         const val swipeRefresh = "com.google.accompanist:accompanist-swiperefresh:$version"

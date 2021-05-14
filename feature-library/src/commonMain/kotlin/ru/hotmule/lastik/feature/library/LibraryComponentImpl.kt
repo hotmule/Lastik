@@ -5,19 +5,16 @@ import com.arkivanov.decompose.statekeeper.Parcelable
 import com.arkivanov.decompose.statekeeper.Parcelize
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.operator.map
-import com.arkivanov.mvikotlin.extensions.coroutines.states
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import org.kodein.di.*
+import ru.hotmule.lastik.feature.app.ScrobblerComponent
 import ru.hotmule.lastik.feature.library.LibraryComponent.*
 import ru.hotmule.lastik.feature.library.LibraryComponent.Child
-import ru.hotmule.lastik.feature.library.store.LibraryStore.*
-import ru.hotmule.lastik.feature.library.store.LibraryStoreFactory
 import ru.hotmule.lastik.feature.profile.ProfileComponent
 import ru.hotmule.lastik.feature.scrobbles.ScrobblesComponent
 import ru.hotmule.lastik.feature.top.TopComponent
 import ru.hotmule.lastik.feature.top.TopComponentParams
-import ru.hotmule.lastik.utils.getStore
 
 internal class LibraryComponentImpl(
     override val di: DI,
@@ -27,6 +24,8 @@ internal class LibraryComponentImpl(
     private val scrobbles by factory<ComponentContext, ScrobblesComponent>()
     private val profile by factory<ComponentContext, ProfileComponent>()
     private val top by factory<TopComponentParams, TopComponent>()
+
+    private val scrobbler by instance<ScrobblerComponent>()
 
     private val router = router<Config, Child>(
         initialConfiguration = Config.Scrobbles
@@ -40,17 +39,13 @@ internal class LibraryComponentImpl(
         }
     }
 
-    private val store = instanceKeeper.getStore {
-        LibraryStoreFactory(
-            storeFactory = direct.instance()
-        ).create()
-    }
-
-    override val model: Flow<Model> = store.states.map {
+    override val model: Flow<Model> = scrobbler.model.map {
         Model(
-            it.isPlaying,
-            it.artist,
-            it.track
+            isPlaying = it.isPlaying,
+            artist = it.artist,
+            album = it.album,
+            track = it.track,
+            art = it.art
         )
     }
 
@@ -70,10 +65,6 @@ internal class LibraryComponentImpl(
                 else -> Config.Profile
             }
         )
-    }
-
-    override fun onTrackDetected(isPlaying: Boolean?, artist: String?, track: String?, time: Long?) {
-        store.accept(Intent.CheckDetectedTrack(isPlaying, artist, track))
     }
 
     sealed class Config : Parcelable {

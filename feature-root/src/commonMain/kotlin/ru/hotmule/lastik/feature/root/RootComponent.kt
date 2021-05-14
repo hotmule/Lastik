@@ -15,6 +15,4 @@ interface RootComponent {
     }
 
     fun onUrlReceived(url: String?)
-
-    fun onTrackDetected(isPlaying: Boolean?, artist: String?, track: String?, time: Long?)
 }

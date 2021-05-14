@@ -13,6 +13,7 @@ include(
     ":feature-scrobbles",
     ":feature-shelf",
     ":feature-browser",
+    ":feature-scrobbler",
 
     ":data-prefs",
     ":data-local",

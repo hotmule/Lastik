@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.Flow
 import ru.hotmule.lastik.feature.profile.ProfileComponent
 import ru.hotmule.lastik.feature.scrobbles.ScrobblesComponent
 import ru.hotmule.lastik.feature.top.TopComponent
+import ru.hotmule.lastik.utils.Bitmap
 
 interface LibraryComponent {
 
@@ -20,7 +21,9 @@ interface LibraryComponent {
     data class Model(
         val isPlaying: Boolean = false,
         val artist: String = "",
-        val track: String = ""
+        val album: String? = null,
+        val track: String = "",
+        val art: Bitmap? = null
     )
 
     val model: Flow<Model>
@@ -30,6 +33,4 @@ interface LibraryComponent {
     val activeChildIndex: Value<Int>
 
     fun onShelfSelect(index: Int)
-
-    fun onTrackDetected(isPlaying: Boolean?, artist: String?, track: String?, time: Long?)
 }

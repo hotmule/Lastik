@@ -2,6 +2,10 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel target="15">
+      <module name="Lastik.feature-app.commonMain" target="1.8" />
+      <module name="Lastik.feature-app.commonTest" target="1.8" />
+      <module name="Lastik.feature-app.desktopMain" target="1.8" />
+      <module name="Lastik.feature-app.desktopTest" target="1.8" />
       <module name="Lastik.sdk.commonMain" target="1.8" />
       <module name="Lastik.sdk.commonTest" target="1.8" />
       <module name="Lastik.sdk.desktopMain" target="1.8" />

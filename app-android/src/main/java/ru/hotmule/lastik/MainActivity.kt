@@ -21,21 +21,8 @@ import ru.hotmule.lastik.ui.compose.RootContent
 class MainActivity : AppCompatActivity(), DIAware {
 
     override val di by closestDI()
-
     private val root by factory<ComponentContext, RootComponent>()
-
     private lateinit var rootComponent: RootComponent
-
-    private val trackReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            rootComponent.onTrackDetected(
-                intent?.getBooleanExtra(PlayerCatcherService.IS_PLAYING, false),
-                intent?.getStringExtra(PlayerCatcherService.ARTIST_ARG),
-                intent?.getStringExtra(PlayerCatcherService.TRACK_ARG),
-                intent?.getLongExtra(PlayerCatcherService.TIME_ARG, 0)
-            )
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,18 +47,6 @@ class MainActivity : AppCompatActivity(), DIAware {
                 }
             }
         }
-
-        registerReceiver(
-            trackReceiver,
-            IntentFilter().apply {
-                addAction(PlayerCatcherService.TRACK_DETECTED_ACTION)
-            }
-        )
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        unregisterReceiver(trackReceiver)
     }
 
     override fun onNewIntent(intent: Intent?) {

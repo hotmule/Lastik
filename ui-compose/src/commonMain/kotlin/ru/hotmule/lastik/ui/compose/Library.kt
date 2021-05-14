@@ -8,6 +8,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.jetbrains.Children
 import com.arkivanov.decompose.extensions.compose.jetbrains.asState
 import ru.hotmule.lastik.feature.library.LibraryComponent
@@ -21,13 +22,13 @@ fun LibraryContent(
     topInset: Dp,
     bottomInset: Dp
 ) {
+    val model by component.model.collectAsState(Model())
+
     Box {
 
         val bottomSheetScaffoldState = rememberBottomSheetScaffoldState(
             bottomSheetState = BottomSheetState(BottomSheetValue.Collapsed)
         )
-
-        val model by component.model.collectAsState(Model())
 
         BottomSheetScaffold(
             modifier = Modifier.padding(bottom = Res.Dimen.barHeight + bottomInset),
@@ -38,8 +39,12 @@ fun LibraryContent(
                 )
             },
             scaffoldState = bottomSheetScaffoldState,
+            sheetPeekHeight = if (model.isPlaying) BottomSheetScaffoldDefaults.SheetPeekHeight else 0.dp,
             sheetContent = {
-                NowPlayingTrack()
+                NowPlayingContent(
+                    track = model.track,
+                    artist = model.artist
+                )
             }
         )
 
@@ -70,19 +75,23 @@ private fun LibraryBody(
 }
 
 @Composable
-private fun NowPlayingTrack() {
+private fun NowPlayingContent(
+    track: String,
+    artist: String
+) {
     Column(modifier = Modifier.fillMaxWidth()) {
-        Text("test")
-        Text("test")
-        Text("test")
-        Text("test")
-        Text("test")
-        Text("test")
-        Text("test")
-        Text("test")
-        Text("test")
-        Text("test")
-        Text("test")
+        Text(track)
+        Text(artist)
+        Text(track)
+        Text(artist)
+        Text(track)
+        Text(artist)
+        Text(track)
+        Text(artist)
+        Text(track)
+        Text(artist)
+        Text(track)
+        Text(artist)
     }
 }
 

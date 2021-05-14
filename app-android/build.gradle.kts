@@ -30,15 +30,20 @@ android {
 }
 
 dependencies {
-
+    
+    implementation(project(Module.utils))
     implementation(project(Module.UI.compose))
     implementation(project(Module.Feature.root))
+    implementation(project(Module.Feature.scrobbler))
 
     implementation(compose.runtime)
     implementation(Libs.Kodein.android)
-    implementation(Libs.AndroidX.appCompat)
     implementation(Libs.Accompanist.insets)
+    implementation(Libs.Kotlin.Coroutines.core)
+
+    implementation(Libs.AndroidX.appCompat)
     implementation(Libs.AndroidX.Compose.activity)
+
     implementation(Libs.ArkIvanov.Decompose.common)
     implementation(Libs.ArkIvanov.Decompose.compose)
 }

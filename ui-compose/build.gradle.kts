@@ -11,6 +11,8 @@ kotlin {
         named("commonMain") {
             dependencies {
 
+                implementation(project(Module.utils))
+
                 implementation(project(Module.Feature.top))
                 implementation(project(Module.Feature.root))
                 implementation(project(Module.Feature.auth))
