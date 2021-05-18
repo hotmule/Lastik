@@ -1,12 +1,26 @@
 package ru.hotmule.lastik.ui.compose
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Equalizer
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.painter.BitmapPainter
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.jetbrains.Children
@@ -14,6 +28,7 @@ import com.arkivanov.decompose.extensions.compose.jetbrains.asState
 import ru.hotmule.lastik.feature.library.LibraryComponent
 import ru.hotmule.lastik.feature.library.LibraryComponent.*
 import ru.hotmule.lastik.ui.compose.res.Res
+import ru.hotmule.lastik.utils.Bitmap
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -39,11 +54,13 @@ fun LibraryContent(
                 )
             },
             scaffoldState = bottomSheetScaffoldState,
-            sheetPeekHeight = if (model.isPlaying) BottomSheetScaffoldDefaults.SheetPeekHeight else 0.dp,
+            sheetPeekHeight = if (model.isPlaying) Res.Dimen.shelfItemHeight else 0.dp,
             sheetContent = {
                 NowPlayingContent(
                     track = model.track,
-                    artist = model.artist
+                    artist = model.artist,
+                    art = model.art,
+                    isCollapsed = bottomSheetScaffoldState.bottomSheetState.isCollapsed
                 )
             }
         )
@@ -74,24 +91,74 @@ private fun LibraryBody(
     }
 }
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 private fun NowPlayingContent(
     track: String,
-    artist: String
+    artist: String,
+    art: Bitmap?,
+    isCollapsed: Boolean
 ) {
-    Column(modifier = Modifier.fillMaxWidth()) {
-        Text(track)
-        Text(artist)
-        Text(track)
-        Text(artist)
-        Text(track)
-        Text(artist)
-        Text(track)
-        Text(artist)
-        Text(track)
-        Text(artist)
-        Text(track)
-        Text(artist)
+    Box(modifier = Modifier.fillMaxSize()) {
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(if (isCollapsed) Alignment.TopCenter else Alignment.Center)
+                .height(Res.Dimen.shelfItemHeight)
+        ) {
+
+            if (isCollapsed) {
+                Image(
+                    imageVector = Icons.Rounded.Equalizer,
+                    contentDescription = "Now playing",
+                    colorFilter = ColorFilter.tint(MaterialTheme.colors.onBackground),
+                    modifier = Modifier
+                        .padding(14.dp)
+                        .align(Alignment.CenterVertically)
+                )
+            }
+
+            art.asComposeBitmap()?.let {
+                Image(
+                    painter = BitmapPainter(it),
+                    contentDescription = "artwork",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .align(Alignment.CenterVertically)
+                        .width(if (isCollapsed) 50.dp else 100.dp)
+                        .height(if (isCollapsed) 50.dp else 100.dp)
+                        .clip(shape = RoundedCornerShape(8))
+                )
+            }
+
+            if (isCollapsed) {
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(start = 16.dp, end = 16.dp)
+                        .align(Alignment.CenterVertically)
+                ) {
+
+                    Text(
+                        text = track,
+                        maxLines = 1,
+                        fontWeight = FontWeight.Bold,
+                        style = MaterialTheme.typography.body1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+
+                    CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+                        Text(
+                            text = artist,
+                            style = MaterialTheme.typography.body2,
+                            modifier = Modifier
+                                .padding(top = 8.dp)
+                        )
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -122,3 +189,5 @@ private fun LibraryBottomBar(
         }
     }
 }
+
+expect fun Bitmap?.asComposeBitmap(): ImageBitmap?

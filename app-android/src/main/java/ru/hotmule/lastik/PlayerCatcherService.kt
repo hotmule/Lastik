@@ -1,6 +1,7 @@
 package ru.hotmule.lastik
 
 import android.content.ComponentName
+import android.content.Intent
 import android.media.MediaMetadata
 import android.media.session.MediaController
 import android.media.session.MediaSessionManager
@@ -81,6 +82,8 @@ class PlayerCatcherService : NotificationListenerService(), DIAware {
             }
         }
     }
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int = START_STICKY
 
     override fun onDestroy() {
         super.onDestroy()

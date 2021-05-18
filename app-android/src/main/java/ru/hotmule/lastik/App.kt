@@ -4,6 +4,7 @@ import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import org.kodein.di.*
 import ru.hotmule.lastik.feature.app.scrobblerComponentModule
@@ -30,5 +31,9 @@ class App : Application(), DIAware {
                 )
             )
         }
+
+        startService(
+            Intent(this, PlayerCatcherService::class.java)
+        )
     }
 }

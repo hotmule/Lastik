@@ -31,6 +31,7 @@ object Module {
         const val shelf = ":feature-shelf"
         const val browser = ":feature-browser"
         const val scrobbler = ":feature-scrobbler"
+        const val settings = ":feature-settings"
     }
 
     object Data {
@@ -121,7 +122,7 @@ object Libs {
     }
 
     object Kermit {
-        private const val version = "0.1.8"
+        private const val version = "0.1.9"
         const val common = "co.touchlab:kermit:$version"
     }
 
@@ -131,7 +132,7 @@ object Libs {
     }
 
     object Krypto {
-        private const val version = "2.0.7"
+        private const val version = "2.1.1"
         const val common = "com.soywiz.korlibs.krypto:krypto:$version"
         const val android = "com.soywiz.korlibs.krypto:krypto-android:$version"
     }

@@ -78,7 +78,7 @@ private fun ShelfItemContent(
 ) {
     Box(
         modifier = Modifier
-            .height(82.dp)
+            .height(Res.Dimen.shelfItemHeight)
             .fillMaxWidth()
     ) {
 

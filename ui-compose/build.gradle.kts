@@ -19,6 +19,7 @@ kotlin {
                 implementation(project(Module.Feature.shelf))
                 implementation(project(Module.Feature.library))
                 implementation(project(Module.Feature.profile))
+                implementation(project(Module.Feature.settings))
                 implementation(project(Module.Feature.scrobbles))
 
                 implementation(compose.material)

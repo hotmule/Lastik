@@ -60,6 +60,8 @@ internal class ProfileStoreFactory(
                     val profileId = profileQueries.getProfile().executeAsOneOrNull()?.id
                     loadFriends(false, profileId)
                 }
+                Intent.ProvideMenu -> dispatch(Result.MenuProvided)
+                is Intent.LogOutConfirm -> dispatch(Result.LogOutConfirmationShown(intent.isConfirmed))
                 Intent.LogOut -> prefsStore.clear()
             }
         }
@@ -169,6 +171,8 @@ internal class ProfileStoreFactory(
             is Result.ProfileReceived -> copy(profile = result.profile)
             is Result.FriendsReceived -> copy(friends = result.friends)
             is Result.MoreFriendsLoading -> copy(isMoreFriendsLoading = result.isLoading)
+            Result.MenuProvided -> copy(menuOpened = !menuOpened)
+            is Result.LogOutConfirmationShown -> copy(logOutConfirmationShown = result.isConfirmed)
         }
     }
 }

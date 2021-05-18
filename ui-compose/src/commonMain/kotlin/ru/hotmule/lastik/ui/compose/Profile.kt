@@ -8,7 +8,10 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ExitToApp
+import androidx.compose.material.icons.rounded.ArrowBack
+import androidx.compose.material.icons.rounded.Logout
+import androidx.compose.material.icons.rounded.Menu
+import androidx.compose.material.icons.rounded.Tune
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -17,11 +20,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.arkivanov.decompose.extensions.compose.jetbrains.Children
+import com.arkivanov.decompose.extensions.compose.jetbrains.asState
 import ru.hotmule.lastik.feature.profile.ProfileComponent
 import ru.hotmule.lastik.feature.profile.ProfileComponent.*
 import ru.hotmule.lastik.ui.compose.res.Res
@@ -31,17 +36,113 @@ fun ProfileContent(
     component: ProfileComponent,
     topInset: Dp
 ) {
+
     val model by component.model.collectAsState(Model())
+    val activeChild by component.activeChild.asState()
 
     Scaffold(
         topBar = {
-            ProfileTopBar(
-                topInset = topInset,
-                username = model.profile.username,
-                onLogOut = component::onLogOut
-            )
+            when (activeChild) {
+                is Child.Shelf -> {
+                    ProfileTopBar(
+                        topInset = topInset,
+                        username = model.profile.username,
+                        onMenu = component::onMenu
+                    )
+                }
+                is Child.Settings -> {
+                    SettingsTopBar(
+                        topInset = topInset,
+                        onPop = component::onPop
+                    )
+                }
+            }
         },
         content = {
+            ProfileBody(model, component)
+        }
+    )
+}
+
+@Composable
+private fun ProfileTopBar(
+    topInset: Dp,
+    username: String,
+    onMenu: () -> Unit
+) {
+    TopAppBar(
+        modifier = Modifier.height(Res.Dimen.barHeight + topInset),
+        title = {
+            Text(
+                modifier = Modifier.padding(top = topInset),
+                text = username
+            )
+        },
+        actions = {
+            TopBarButton(
+                topInset = topInset,
+                onClick = onMenu,
+                icon = Icons.Rounded.Menu,
+                contentDescription = "Menu"
+            )
+        }
+    )
+}
+
+@Composable
+private fun SettingsTopBar(
+    topInset: Dp,
+    onPop: () -> Unit
+) {
+    TopAppBar(
+        modifier = Modifier.height(Res.Dimen.barHeight + topInset),
+        title = {
+            Text(
+                modifier = Modifier.padding(top = topInset),
+                text = Res.Array.profileMenu.first()
+            )
+        },
+        navigationIcon = {
+            TopBarButton(
+                topInset = topInset,
+                onClick = onPop,
+                icon = Icons.Rounded.ArrowBack,
+                contentDescription = "Pop"
+            )
+        }
+    )
+}
+
+@Composable
+private fun TopBarButton(
+    topInset: Dp,
+    icon: ImageVector,
+    contentDescription: String,
+    onClick: () -> Unit
+) {
+    IconButton(
+        modifier = Modifier.padding(top = topInset),
+        onClick = { onClick() }
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = contentDescription,
+            tint = Color.White
+        )
+    }
+}
+
+@Composable
+private fun ProfileBody(
+    model: Model,
+    component: ProfileComponent
+) {
+    Box {
+
+        Box(
+            modifier = if (model.menuOpened) Modifier.offset(x = (-250).dp) else Modifier
+        ) {
+
             Children(component.routerState) {
                 it.instance.let { child ->
                     when (child) {
@@ -56,41 +157,84 @@ fun ProfileContent(
                             },
                             onRefreshHeader = component::onRefresh
                         )
+                        is Child.Settings -> SettingsContent(child.component)
                     }
                 }
             }
         }
-    )
+
+        if (model.menuOpened) {
+
+            Column(
+                modifier = Modifier
+                    .width(250.dp)
+                    .fillMaxHeight()
+                    .align(Alignment.CenterEnd)
+            ) {
+
+                Res.Array.profileMenu.forEachIndexed { index, item ->
+
+                    TextButton(
+                        colors = ButtonDefaults.textButtonColors(
+                            contentColor = MaterialTheme.colors.onBackground
+                        ),
+                        onClick = {
+                            when (index) {
+                                0 -> component.onOpenSettings()
+                                else -> component.onLogOut()
+                            }
+                        },
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .fillMaxWidth(),
+                    ) {
+                        Icon(
+                            contentDescription = "menu item $index",
+                            imageVector = when (index) {
+                                0 -> Icons.Rounded.Tune
+                                else -> Icons.Rounded.Logout
+                            }
+                        )
+                        Text(
+                            text = item,
+                            modifier = Modifier
+                                .padding(start = 8.dp)
+                                .weight(1f)
+                        )
+                    }
+                }
+            }
+        }
+
+        if (model.logOutConfirmationShown) {
+
+            AlertDialog(
+                title = { Text(text = Res.String.logging_out)  },
+                text = { Text(text = Res.String.logging_out_confirmation) },
+                onDismissRequest = component::onLogOutCancel,
+                confirmButton = {
+                    TextButton(onClick = component::onLogOutConfirm) {
+                        Text(text = Res.String.confirm)
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = component::onLogOutCancel) {
+                        Text(text = Res.String.cancel)
+                    }
+                }
+            )
+        }
+    }
 }
 
 @Composable
-private fun ProfileTopBar(
-    topInset: Dp,
-    username: String,
-    onLogOut: () -> Unit
-) {
-    TopAppBar(
-        modifier = Modifier.height(Res.Dimen.barHeight + topInset),
-        title = {
-            Text(
-                modifier = Modifier.padding(top = topInset),
-                text = username
-            )
-        },
-        actions = {
-            IconButton(
-                modifier = Modifier.padding(top = topInset),
-                onClick = { onLogOut() }
-            ) {
-                Icon(
-                    imageVector = Icons.Rounded.ExitToApp,
-                    contentDescription = "logOut",
-                    tint = Color.White
-                )
-            }
-        }
-    )
-}
+expect fun AlertDialog(
+    title: @Composable (() -> Unit)?,
+    text: @Composable (() -> Unit)?,
+    onDismissRequest: () -> Unit,
+    confirmButton: @Composable () -> Unit,
+    dismissButton: @Composable (() -> Unit)?
+)
 
 @Composable
 private fun ProfileInfo(

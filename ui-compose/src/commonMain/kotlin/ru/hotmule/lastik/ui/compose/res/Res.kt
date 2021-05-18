@@ -11,6 +11,7 @@ object Res {
 
     object Dimen {
         val barHeight = 56.dp
+        val shelfItemHeight = 82.dp
     }
 
     object Color {
@@ -38,6 +39,11 @@ object Res {
         const val scrobbes = "Scrobbles"
         const val friends = "Friends"
         const val loved_tracks = "Loved tracks"
+
+        const val logging_out = "Logging Out"
+        const val logging_out_confirmation = "Are you sure you want to log out?"
+        const val confirm = "Confirm"
+        const val cancel = "Cancel"
     }
 
     object Array {
@@ -65,6 +71,11 @@ object Res {
             "Last 90 days",
             "Last 30 days",
             "Last 7 days"
+        )
+
+        val profileMenu = arrayOf(
+            "Settings",
+            "Log Out"
         )
     }
 }
