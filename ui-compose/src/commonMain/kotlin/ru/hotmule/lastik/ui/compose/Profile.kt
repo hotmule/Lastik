@@ -296,7 +296,7 @@ private fun ProfileStatistic(
         )
 
         Statistic(
-            title = Res.String.scrobbes,
+            title = Res.String.scrobbles,
             subtitle = playCount,
             modifier = Modifier
                 .align(Alignment.CenterVertically)

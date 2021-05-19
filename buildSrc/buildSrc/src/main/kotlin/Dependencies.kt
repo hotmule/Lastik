@@ -47,9 +47,7 @@ object Module {
 
 object Libs {
 
-    const val gradle = "com.android.tools.build:gradle:4.1.1"
-    const val espresso = "androidx.test.espresso:espresso-core:3.2.0"
-    const val jUnit = "junit:junit:4.13"
+    const val gradle = "com.android.tools.build:gradle:7.1.0-alpha01"
 
     object Kotlin {
 

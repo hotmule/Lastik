@@ -5,25 +5,19 @@ plugins {
     id("lastik-android")
 }
 
-/*
 configurations {
-    create("androidTestApi")
-    create("androidTestDebugApi")
-    create("androidTestReleaseApi")
     create("testApi")
     create("testDebugApi")
     create("testReleaseApi")
+    create("androidTestApi")
+    create("androidTestDebugApi")
+    create("androidTestReleaseApi")
 }
-*/
 
 kotlin {
 
     android()
-    jvm("desktop") {
-        compilations.all {
-            kotlinOptions.jvmTarget = "11"
-        }
-    }
+    jvm("desktop")
 
     tasks.withType<KotlinCompile> {
         kotlinOptions.jvmTarget = "1.8"

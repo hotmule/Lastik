@@ -36,7 +36,7 @@ object Res {
         const val sign_in_with_last_fm = "Sign in with Last.fm"
 
         const val scrobbling_since = "Scrobbling since"
-        const val scrobbes = "Scrobbles"
+        const val scrobbles = "Scrobbles"
         const val friends = "Friends"
         const val loved_tracks = "Loved tracks"
 
@@ -49,7 +49,7 @@ object Res {
     object Array {
 
         val shelves = arrayOf(
-            "Scrobbles",
+            "Resents",
             "Artists",
             "Albums",
             "Tracks",

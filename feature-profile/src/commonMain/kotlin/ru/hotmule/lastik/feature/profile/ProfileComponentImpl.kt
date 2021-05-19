@@ -80,15 +80,15 @@ internal class ProfileComponentImpl internal constructor(
     }
 
     override fun onLogOut() {
-        store.accept(Intent.LogOutConfirm(isConfirmed = true))
+        store.accept(Intent.LogOut(isConfirmShown = true))
     }
 
     override fun onLogOutConfirm() {
-        store.accept(Intent.LogOut)
+        store.accept(Intent.LogOutConfirm)
     }
 
     override fun onLogOutCancel() {
-        store.accept(Intent.LogOutConfirm(isConfirmed = false))
+        store.accept(Intent.LogOut(isConfirmShown = false))
     }
 
     override fun onPop() {

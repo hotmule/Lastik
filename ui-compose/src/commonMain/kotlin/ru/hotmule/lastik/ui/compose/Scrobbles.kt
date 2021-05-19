@@ -24,7 +24,7 @@ fun ScrobblesContent(
                 title = {
                     Text(
                         modifier = Modifier.padding(top = topInset),
-                        text = Res.String.scrobbes
+                        text = Res.String.scrobbles
                     )
                 }
             )

@@ -8,8 +8,8 @@ internal interface ProfileStore : Store<Intent, State, Nothing> {
 
     sealed class Intent {
         object ProvideMenu : Intent()
-        data class LogOutConfirm(val isConfirmed: Boolean) : Intent()
-        object LogOut : Intent()
+        data class LogOut(val isConfirmShown: Boolean) : Intent()
+        object LogOutConfirm : Intent()
         object RefreshProfile : Intent()
         object LoadMoreFriends : Intent()
     }

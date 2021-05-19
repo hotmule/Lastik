@@ -1,6 +1,5 @@
 package ru.hotmule.lastik.ui.compose
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -103,9 +102,10 @@ private fun NowPlayingContent(
 
         Row(
             modifier = Modifier
-                .fillMaxWidth()
-                .align(if (isCollapsed) Alignment.TopCenter else Alignment.Center)
-                .height(Res.Dimen.shelfItemHeight)
+                .padding(14.dp)
+                .wrapContentWidth()
+                .wrapContentHeight()
+                .align(if (isCollapsed) Alignment.TopStart else Alignment.Center)
         ) {
 
             if (isCollapsed) {
@@ -114,21 +114,21 @@ private fun NowPlayingContent(
                     contentDescription = "Now playing",
                     colorFilter = ColorFilter.tint(MaterialTheme.colors.onBackground),
                     modifier = Modifier
-                        .padding(14.dp)
                         .align(Alignment.CenterVertically)
                 )
             }
 
-            art.asComposeBitmap()?.let {
+            art.asComposeBitmap()?.let { bitmap ->
                 Image(
-                    painter = BitmapPainter(it),
+                    painter = BitmapPainter(bitmap),
                     contentDescription = "artwork",
-                    contentScale = ContentScale.Crop,
+                    contentScale = ContentScale.FillWidth,
                     modifier = Modifier
                         .align(Alignment.CenterVertically)
-                        .width(if (isCollapsed) 50.dp else 100.dp)
-                        .height(if (isCollapsed) 50.dp else 100.dp)
-                        .clip(shape = RoundedCornerShape(8))
+                        .padding(start = 14.dp, end = 14.dp)
+                        .clip(shape = RoundedCornerShape(if (isCollapsed) 8 else 2))
+                        .width(if (isCollapsed) 50.dp else 350.dp)
+                        .height(if (isCollapsed) 50.dp else 350.dp)
                 )
             }
 
@@ -136,7 +136,7 @@ private fun NowPlayingContent(
                 Column(
                     modifier = Modifier
                         .weight(1f)
-                        .padding(start = 16.dp, end = 16.dp)
+                        .padding(end = 14.dp)
                         .align(Alignment.CenterVertically)
                 ) {
 

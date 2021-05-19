@@ -61,8 +61,8 @@ internal class ProfileStoreFactory(
                     loadFriends(false, profileId)
                 }
                 Intent.ProvideMenu -> dispatch(Result.MenuProvided)
-                is Intent.LogOutConfirm -> dispatch(Result.LogOutConfirmationShown(intent.isConfirmed))
-                Intent.LogOut -> prefsStore.clear()
+                is Intent.LogOut -> dispatch(Result.LogOutConfirmationShown(intent.isConfirmShown))
+                Intent.LogOutConfirm -> prefsStore.clear()
             }
         }
 
