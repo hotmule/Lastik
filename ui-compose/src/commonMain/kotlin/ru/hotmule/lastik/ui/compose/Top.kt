@@ -12,7 +12,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.arkivanov.decompose.extensions.compose.jetbrains.Children
 import ru.hotmule.lastik.feature.top.TopComponent
 import ru.hotmule.lastik.feature.top.TopComponent.*
 import ru.hotmule.lastik.ui.compose.res.Res
@@ -30,13 +29,7 @@ fun TopContent(
             )
         },
         content = {
-            Children(component.routerState) {
-                it.instance.let { child ->
-                    when (child) {
-                        is Child.Shelf -> ShelfContent(child.component)
-                    }
-                }
-            }
+            ShelfContent(component.shelfComponent)
         }
     )
 }

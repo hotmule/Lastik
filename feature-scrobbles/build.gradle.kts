@@ -1,6 +1,5 @@
 plugins {
     id("lastik-component")
-    id("kotlin-parcelize")
 }
 
 kotlin {

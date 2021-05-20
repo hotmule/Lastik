@@ -8,7 +8,6 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
-import com.arkivanov.decompose.extensions.compose.jetbrains.Children
 import ru.hotmule.lastik.feature.scrobbles.ScrobblesComponent
 import ru.hotmule.lastik.ui.compose.res.Res
 
@@ -30,13 +29,7 @@ fun ScrobblesContent(
             )
         },
         content = {
-            Children(component.routerState) {
-                it.instance.let { child ->
-                    when (child) {
-                        is ScrobblesComponent.Child.Shelf -> ShelfContent(child.component)
-                    }
-                }
-            }
+            ShelfContent(component.shelfComponent)
         }
     )
 }

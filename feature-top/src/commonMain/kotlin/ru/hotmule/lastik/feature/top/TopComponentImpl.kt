@@ -1,11 +1,7 @@
 package ru.hotmule.lastik.feature.top
 
 import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.RouterState
-import com.arkivanov.decompose.router
-import com.arkivanov.decompose.statekeeper.Parcelable
-import com.arkivanov.decompose.statekeeper.Parcelize
-import com.arkivanov.decompose.value.Value
+import com.arkivanov.decompose.childContext
 import com.arkivanov.mvikotlin.extensions.coroutines.states
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -23,15 +19,9 @@ internal class TopComponentImpl(
     private val componentContext: ComponentContext
 ) : TopComponent, DIAware, ComponentContext by componentContext {
 
-    private val shelf by factory<ShelfComponentParams, ShelfComponent>()
-
-    private val router = router<Config, Child>(
-        initialConfiguration = Config.Shelf
-    ) { configuration, componentContext ->
-        when (configuration) {
-            is Config.Shelf -> Child.Shelf(shelf(ShelfComponentParams(componentContext, index)))
-        }
-    }
+    override val shelfComponent = direct.factory<ShelfComponentParams, ShelfComponent>()(
+        ShelfComponentParams(childContext("Top $index"), index)
+    )
 
     private val store = instanceKeeper.getStore {
         TopStoreFactory(
@@ -40,8 +30,6 @@ internal class TopComponentImpl(
             index = index
         ).create()
     }
-
-    override val routerState: Value<RouterState<*, Child>> = router.state
 
     override val model: Flow<Model> = store.states.map {
         Model(
@@ -61,11 +49,6 @@ internal class TopComponentImpl(
 
     override fun onPeriodSelected(index: Int) {
         store.accept(TopStore.Intent.SavePeriod(index))
-        (routerState.value.activeChild.instance as Child.Shelf).component.onRefreshItems()
-    }
-
-    private sealed class Config : Parcelable {
-        @Parcelize
-        object Shelf : Config()
+        shelfComponent.onRefreshItems()
     }
 }
