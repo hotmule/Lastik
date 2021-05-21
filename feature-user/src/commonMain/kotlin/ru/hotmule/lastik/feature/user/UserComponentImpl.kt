@@ -12,13 +12,12 @@ import ru.hotmule.lastik.feature.shelf.ShelfComponent
 import ru.hotmule.lastik.feature.shelf.ShelfComponentParams
 import ru.hotmule.lastik.utils.getStore
 import ru.hotmule.lastik.feature.user.UserComponent.Model
-import ru.hotmule.lastik.feature.user.UserComponent.Output
 import ru.hotmule.lastik.feature.user.store.UserStore.*
 import ru.hotmule.lastik.feature.user.store.UserStoreFactory
 
 internal class UserComponentImpl(
     override val di: DI,
-    private val output: (Output) -> Unit,
+    onSettingsOpen: () -> Unit,
     private val componentContext: ComponentContext
 ): UserComponent, DIAware, ComponentContext by componentContext {
 
@@ -29,11 +28,7 @@ internal class UserComponentImpl(
     override val menuComponent = direct.factory<MenuComponentParams, MenuComponent>()(
         MenuComponentParams(
             componentContext = childContext("Menu"),
-            output = {
-                when (it) {
-                    MenuComponent.Output.SettingsOpened -> output(Output.SettingsOpened)
-                }
-            }
+            onSettingsOpen = onSettingsOpen
         )
     )
 

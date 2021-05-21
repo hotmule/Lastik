@@ -15,7 +15,7 @@ import ru.hotmule.lastik.utils.getStore
 
 internal class MenuComponentImpl(
     override val di: DI,
-    private val output: (Output) -> Unit,
+    private val onSettingsOpen: () -> Unit,
     private val componentContext: ComponentContext,
 ) : MenuComponent, DIAware, ComponentContext by componentContext {
 
@@ -39,7 +39,7 @@ internal class MenuComponentImpl(
 
     override fun onOpenSettings() {
         store.accept(Intent.ProvideMenu)
-        output(Output.SettingsOpened)
+        onSettingsOpen()
     }
 
     override fun onLogOut() {

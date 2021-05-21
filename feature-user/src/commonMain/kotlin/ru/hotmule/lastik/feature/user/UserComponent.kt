@@ -9,10 +9,6 @@ interface UserComponent {
     val lovedTracksComponent: ShelfComponent
     val menuComponent: MenuComponent
 
-    sealed class Output {
-        object SettingsOpened: Output()
-    }
-
     data class Model(
         val info: User = User(),
         val friends: List<User> = listOf(),

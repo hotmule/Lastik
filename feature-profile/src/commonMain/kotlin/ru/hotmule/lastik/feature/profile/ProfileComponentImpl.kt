@@ -26,20 +26,11 @@ internal class ProfileComponentImpl(
         when (configuration) {
             is Config.User -> Child.User(user(UserComponentParams(
                 componentContext = componentContext,
-                output = { output ->
-                    when (output) {
-                        UserComponent.Output.SettingsOpened -> goToSettings()
-                    }
-                }
+                onSettingsOpen = ::goToSettings
             )))
             Config.Settings -> Child.Settings(settings(SettingsComponentParams(
                 componentContext = componentContext,
-                output = { output ->
-                    when (output) {
-                        SettingsComponent.Output.BackPressed -> goBack()
-                    }
-
-                }
+                onBack = ::goBack
             )))
         }
     }
