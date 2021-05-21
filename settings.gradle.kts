@@ -15,6 +15,8 @@ include(
     ":feature-browser",
     ":feature-scrobbler",
     ":feature-settings",
+    ":feature-user",
+    ":feature-menu",
 
     ":data-prefs",
     ":data-local",

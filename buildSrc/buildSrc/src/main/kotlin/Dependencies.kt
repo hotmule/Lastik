@@ -32,6 +32,8 @@ object Module {
         const val browser = ":feature-browser"
         const val scrobbler = ":feature-scrobbler"
         const val settings = ":feature-settings"
+        const val user = ":feature-user"
+        const val menu = ":feature-menu"
     }
 
     object Data {

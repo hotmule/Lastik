@@ -5,11 +5,8 @@ import com.arkivanov.decompose.statekeeper.Parcelable
 import com.arkivanov.decompose.statekeeper.Parcelize
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.operator.map
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 import org.kodein.di.*
 import ru.hotmule.lastik.feature.app.ScrobblerComponent
-import ru.hotmule.lastik.feature.library.LibraryComponent.*
 import ru.hotmule.lastik.feature.library.LibraryComponent.Child
 import ru.hotmule.lastik.feature.profile.ProfileComponent
 import ru.hotmule.lastik.feature.scrobbles.ScrobblesComponent
@@ -25,7 +22,7 @@ internal class LibraryComponentImpl(
     private val profile by factory<ComponentContext, ProfileComponent>()
     private val top by factory<TopComponentParams, TopComponent>()
 
-    private val scrobbler by instance<ScrobblerComponent>()
+    override val scrobblerComponent by instance<ScrobblerComponent>()
 
     private val router = router<Config, Child>(
         initialConfiguration = Config.Scrobbles
@@ -37,16 +34,6 @@ internal class LibraryComponentImpl(
             is Config.Tracks -> Child.Tracks(top(TopComponentParams(componentContext, 3)))
             is Config.Profile -> Child.Profile(profile(componentContext))
         }
-    }
-
-    override val model: Flow<Model> = scrobbler.model.map {
-        Model(
-            isPlaying = it.isPlaying,
-            artist = it.artist,
-            album = it.album,
-            track = it.track,
-            art = it.art
-        )
     }
 
     override val routerState: Value<RouterState<*, Child>> = router.state

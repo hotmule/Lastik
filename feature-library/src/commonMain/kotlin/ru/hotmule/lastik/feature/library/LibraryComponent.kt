@@ -2,13 +2,14 @@ package ru.hotmule.lastik.feature.library
 
 import com.arkivanov.decompose.RouterState
 import com.arkivanov.decompose.value.Value
-import kotlinx.coroutines.flow.Flow
+import ru.hotmule.lastik.feature.app.ScrobblerComponent
 import ru.hotmule.lastik.feature.profile.ProfileComponent
 import ru.hotmule.lastik.feature.scrobbles.ScrobblesComponent
 import ru.hotmule.lastik.feature.top.TopComponent
-import ru.hotmule.lastik.utils.Bitmap
 
 interface LibraryComponent {
+
+    val scrobblerComponent: ScrobblerComponent
 
     sealed class Child(val index: Int) {
         data class Scrobbles(val component: ScrobblesComponent) : Child(0)
@@ -17,16 +18,6 @@ interface LibraryComponent {
         data class Tracks(val component: TopComponent) : Child(3)
         data class Profile(val component: ProfileComponent) : Child(4)
     }
-
-    data class Model(
-        val isPlaying: Boolean = false,
-        val artist: String = "",
-        val album: String? = null,
-        val track: String = "",
-        val art: Bitmap? = null
-    )
-
-    val model: Flow<Model>
 
     val routerState: Value<RouterState<*, Child>>
 
