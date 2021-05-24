@@ -4,15 +4,15 @@ import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
-import ru.hotmule.lastik.feature.app.store.ScrobblerStore.*
+import ru.hotmule.lastik.feature.app.store.NowPlayingStore.*
 import ru.hotmule.lastik.utils.AppCoroutineDispatcher
 
-internal class ScrobblerStoreFactory(
+internal class NowPlayingStoreFactory(
     private val storeFactory: StoreFactory
 ) {
-    fun create(): ScrobblerStore =
-        object : ScrobblerStore, Store<Intent, State, Nothing> by storeFactory.create(
-            ScrobblerStore::class.simpleName,
+    fun create(): NowPlayingStore =
+        object : NowPlayingStore, Store<Intent, State, Nothing> by storeFactory.create(
+            NowPlayingStore::class.simpleName,
             initialState = State(),
             executorFactory = ::ExecutorImpl,
             reducer = ReducerImpl
@@ -23,7 +23,9 @@ internal class ScrobblerStoreFactory(
     ) {
         override suspend fun executeIntent(intent: Intent, getState: () -> State) {
             when (intent) {
-                is Intent.CheckPlayState -> dispatch(Result.PlayStateChanged(intent.isPlaying ?: false))
+                is Intent.CheckPlayState -> dispatch(
+                    Result.PlayStateChanged(intent.isPlaying ?: false)
+                )
                 is Intent.CheckDetectedTrack -> dispatch(
                     if (intent.artist != null && intent.track != null) {
                         Result.TrackDetected(

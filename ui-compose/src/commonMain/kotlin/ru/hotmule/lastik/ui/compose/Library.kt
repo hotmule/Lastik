@@ -24,7 +24,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.jetbrains.Children
 import com.arkivanov.decompose.extensions.compose.jetbrains.asState
-import ru.hotmule.lastik.feature.app.ScrobblerComponent.*
+import ru.hotmule.lastik.feature.app.NowPlayingComponent
+import ru.hotmule.lastik.feature.app.NowPlayingComponent.*
 import ru.hotmule.lastik.feature.library.LibraryComponent
 import ru.hotmule.lastik.feature.library.LibraryComponent.*
 import ru.hotmule.lastik.ui.compose.res.Res
@@ -37,7 +38,7 @@ fun LibraryContent(
     topInset: Dp,
     bottomInset: Dp
 ) {
-    val model by component.scrobblerComponent.model.collectAsState(Model())
+    val model by component.nowPlayingComponent.model.collectAsState(Model())
 
     Box {
 

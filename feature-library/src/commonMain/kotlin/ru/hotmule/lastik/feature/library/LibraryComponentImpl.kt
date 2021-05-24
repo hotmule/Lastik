@@ -6,7 +6,7 @@ import com.arkivanov.decompose.statekeeper.Parcelize
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.operator.map
 import org.kodein.di.*
-import ru.hotmule.lastik.feature.app.ScrobblerComponent
+import ru.hotmule.lastik.feature.app.NowPlayingComponent
 import ru.hotmule.lastik.feature.library.LibraryComponent.Child
 import ru.hotmule.lastik.feature.profile.ProfileComponent
 import ru.hotmule.lastik.feature.scrobbles.ScrobblesComponent
@@ -22,7 +22,7 @@ internal class LibraryComponentImpl(
     private val profile by factory<ComponentContext, ProfileComponent>()
     private val top by factory<TopComponentParams, TopComponent>()
 
-    override val scrobblerComponent by instance<ScrobblerComponent>()
+    override val nowPlayingComponent by instance<NowPlayingComponent>()
 
     private val router = router<Config, Child>(
         initialConfiguration = Config.Scrobbles

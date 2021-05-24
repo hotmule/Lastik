@@ -2,14 +2,14 @@ package ru.hotmule.lastik.feature.library
 
 import com.arkivanov.decompose.RouterState
 import com.arkivanov.decompose.value.Value
-import ru.hotmule.lastik.feature.app.ScrobblerComponent
+import ru.hotmule.lastik.feature.app.NowPlayingComponent
 import ru.hotmule.lastik.feature.profile.ProfileComponent
 import ru.hotmule.lastik.feature.scrobbles.ScrobblesComponent
 import ru.hotmule.lastik.feature.top.TopComponent
 
 interface LibraryComponent {
 
-    val scrobblerComponent: ScrobblerComponent
+    val nowPlayingComponent: NowPlayingComponent
 
     sealed class Child(val index: Int) {
         data class Scrobbles(val component: ScrobblesComponent) : Child(0)

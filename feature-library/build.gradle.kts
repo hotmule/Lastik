@@ -10,7 +10,7 @@ kotlin {
                 implementation(project(Module.Feature.top))
                 implementation(project(Module.Feature.profile))
                 implementation(project(Module.Feature.scrobbles))
-                implementation(project(Module.Feature.scrobbler))
+                implementation(project(Module.Feature.nowPlaying))
             }
         }
     }

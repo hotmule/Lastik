@@ -12,7 +12,7 @@ include(
     ":feature-scrobbles",
     ":feature-shelf",
     ":feature-browser",
-    ":feature-scrobbler",
+    ":feature-now-playing",
     ":feature-settings",
     ":feature-user",
     ":feature-menu",

@@ -34,7 +34,7 @@ dependencies {
     implementation(project(Module.utils))
     implementation(project(Module.UI.compose))
     implementation(project(Module.Feature.root))
-    implementation(project(Module.Feature.scrobbler))
+    implementation(project(Module.Feature.nowPlaying))
 
     implementation(compose.runtime)
     implementation(Libs.Kodein.android)

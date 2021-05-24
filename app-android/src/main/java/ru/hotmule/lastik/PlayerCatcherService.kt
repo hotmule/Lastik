@@ -17,14 +17,14 @@ import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.android.closestDI
 import org.kodein.di.instance
-import ru.hotmule.lastik.feature.app.ScrobblerComponent
+import ru.hotmule.lastik.feature.app.NowPlayingComponent
 import ru.hotmule.lastik.utils.AppCoroutineDispatcher
 
 class PlayerCatcherService : NotificationListenerService(), DIAware {
 
     override val di: DI by closestDI()
 
-    private val scrobblerComponent by instance<ScrobblerComponent>()
+    private val nowPlayingComponent by instance<NowPlayingComponent>()
     private val serviceScope = CoroutineScope(AppCoroutineDispatcher.Main)
 
     companion object {
@@ -61,7 +61,7 @@ class PlayerCatcherService : NotificationListenerService(), DIAware {
         }
 
         serviceScope.launch {
-            scrobblerComponent.model.collect {
+            nowPlayingComponent.model.collect {
                 if (it.isPlaying) {
                     startForeground(
                         SCROBBLE_NOTIFICATION_ID,
@@ -91,13 +91,13 @@ class PlayerCatcherService : NotificationListenerService(), DIAware {
     }
 
     private fun onPlayStateChanged(state: PlaybackState?) {
-        scrobblerComponent.onPlayStateChanged(
+        nowPlayingComponent.onPlayStateChanged(
             isPlaying = state?.state == PlaybackState.STATE_PLAYING
         )
     }
 
     private fun onTrackDetected(metadata: MediaMetadata?) {
-        scrobblerComponent.onTrackDetected(
+        nowPlayingComponent.onTrackDetected(
             artist = metadata?.getString(MediaMetadata.METADATA_KEY_ARTIST),
             album = metadata?.getString(MediaMetadata.METADATA_KEY_ALBUM),
             track = metadata?.getString(MediaMetadata.METADATA_KEY_TITLE),

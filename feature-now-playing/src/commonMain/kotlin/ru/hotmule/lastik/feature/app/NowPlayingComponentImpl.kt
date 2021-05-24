@@ -5,14 +5,14 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import org.kodein.di.DirectDI
 import org.kodein.di.instance
-import ru.hotmule.lastik.feature.app.ScrobblerComponent.*
-import ru.hotmule.lastik.feature.app.store.ScrobblerStore.*
-import ru.hotmule.lastik.feature.app.store.ScrobblerStoreFactory
+import ru.hotmule.lastik.feature.app.NowPlayingComponent.*
+import ru.hotmule.lastik.feature.app.store.NowPlayingStore.*
+import ru.hotmule.lastik.feature.app.store.NowPlayingStoreFactory
 import ru.hotmule.lastik.utils.Bitmap
 
-internal class ScrobblerComponentImpl(directDi: DirectDI) : ScrobblerComponent {
+internal class NowPlayingComponentImpl(directDi: DirectDI) : NowPlayingComponent {
 
-    private val store = ScrobblerStoreFactory(directDi.instance()).create()
+    private val store = NowPlayingStoreFactory(directDi.instance()).create()
 
     override val model: Flow<Model> = store.states.map {
         Model(

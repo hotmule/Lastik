@@ -23,7 +23,7 @@ kotlin {
                 implementation(project(Module.Feature.profile))
                 implementation(project(Module.Feature.settings))
                 implementation(project(Module.Feature.scrobbles))
-                implementation(project(Module.Feature.scrobbler))
+                implementation(project(Module.Feature.nowPlaying))
 
                 implementation(compose.material)
                 implementation(compose.materialIconsExtended)

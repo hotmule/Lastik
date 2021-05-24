@@ -30,7 +30,7 @@ object Module {
         const val scrobbles = ":feature-scrobbles"
         const val shelf = ":feature-shelf"
         const val browser = ":feature-browser"
-        const val scrobbler = ":feature-scrobbler"
+        const val nowPlaying = ":feature-now-playing"
         const val settings = ":feature-settings"
         const val user = ":feature-user"
         const val menu = ":feature-menu"
@@ -138,7 +138,7 @@ object Libs {
     }
 
     object Settings {
-        private const val version = "0.7.6"
+        private const val version = "0.7.7"
         const val common = "com.russhwolf:multiplatform-settings:$version"
         const val coroutines = "com.russhwolf:multiplatform-settings-coroutines:$version"
     }
@@ -146,7 +146,7 @@ object Libs {
     object AndroidX {
 
         const val browser = "androidx.browser:browser:1.3.0"
-        const val appCompat = "androidx.appcompat:appcompat:1.3.0-rc01"
+        const val appCompat = "androidx.appcompat:appcompat:1.3.0"
 
         object Compose {
             const val version = "0.4.0-build188"

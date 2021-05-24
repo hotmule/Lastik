@@ -3,7 +3,7 @@ package ru.hotmule.lastik.feature.app
 import kotlinx.coroutines.flow.Flow
 import ru.hotmule.lastik.utils.Bitmap
 
-interface ScrobblerComponent {
+interface NowPlayingComponent {
 
     data class Model(
         val isPlaying: Boolean = false,

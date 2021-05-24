@@ -4,11 +4,11 @@ plugins {
 
 android {
 
-    compileSdkVersion(Sdk.Version.compile)
+    compileSdk = Sdk.Version.compile
 
     defaultConfig {
-        minSdkVersion(Sdk.Version.min)
-        targetSdkVersion(Sdk.Version.target)
+        minSdk = Sdk.Version.min
+        targetSdk = Sdk.Version.target
     }
 
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
