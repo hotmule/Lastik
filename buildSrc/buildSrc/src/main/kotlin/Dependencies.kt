@@ -53,18 +53,18 @@ object Libs {
 
     object Kotlin {
 
-        const val version = "1.4.32"
+        const val version = "1.5.10"
         const val gradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version"
         const val serialization = "org.jetbrains.kotlin:kotlin-serialization:$version"
 
         object Coroutines {
-            private const val version = "1.4.2"
+            private const val version = "1.5.0"
             const val core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version"
         }
     }
 
     object Ktor {
-        private const val version = "1.5.4"
+        private const val version = "1.6.0"
 
         object Core {
             const val common = "io.ktor:ktor-client-core:$version"
@@ -96,7 +96,7 @@ object Libs {
         }
 
         object Decompose {
-            private const val version = "0.2.4"
+            private const val version = "0.2.6"
             const val common = "com.arkivanov.decompose:decompose:$version"
             const val jvm = "com.arkivanov.decompose:decompose-jvm:$version"
             const val compose = "com.arkivanov.decompose:extensions-compose-jetbrains:$version"
@@ -115,7 +115,7 @@ object Libs {
     }
 
     object Kodein {
-        private const val version = "7.5.0"
+        private const val version = "7.6.0"
         const val common = "org.kodein.di:kodein-di:$version"
         const val compose = "org.kodein.di:kodein-di-framework-compose:$version"
         const val android = "org.kodein.di:kodein-di-framework-android-core:$version"
@@ -127,7 +127,7 @@ object Libs {
     }
 
     object GradleVersions {
-        const val version = "0.38.0"
+        const val version = "0.39.0"
         const val plugin = "com.github.ben-manes.versions"
     }
 
@@ -149,13 +149,13 @@ object Libs {
         const val appCompat = "androidx.appcompat:appcompat:1.3.0"
 
         object Compose {
-            const val version = "0.4.0-build188"
-            const val activity = "androidx.activity:activity-compose:1.3.0-alpha07"
+            const val version = "0.4.0"
+            const val activity = "androidx.activity:activity-compose:1.3.0-beta01"
         }
     }
 
     object Accompanist {
-        private const val version = "0.9.1"
+        private const val version = "0.11.0"
         const val coil = "com.google.accompanist:accompanist-coil:$version"
         const val insets = "com.google.accompanist:accompanist-insets:$version"
         const val swipeRefresh = "com.google.accompanist:accompanist-swiperefresh:$version"

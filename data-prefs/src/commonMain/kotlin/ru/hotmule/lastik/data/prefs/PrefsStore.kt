@@ -8,7 +8,8 @@ import com.russhwolf.settings.nullableString
 import kotlinx.coroutines.flow.map
 
 class PrefsStore(
-    private val settings: ObservableSettings
+    private val packageManager: PackageManager,
+    private val settings: ObservableSettings = packageManager.getSettings()
 ) {
 
     companion object {
@@ -34,6 +35,8 @@ class PrefsStore(
             else -> "tracksPeriod"
         }
     )
+
+    fun getApps() = packageManager.getApps()
 
     fun clear() {
         settings.clear()

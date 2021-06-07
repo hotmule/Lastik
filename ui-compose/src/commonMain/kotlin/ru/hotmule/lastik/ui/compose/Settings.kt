@@ -1,15 +1,19 @@
 package ru.hotmule.lastik.ui.compose
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import ru.hotmule.lastik.feature.settings.SettingsComponent
+import ru.hotmule.lastik.feature.settings.SettingsComponent.*
 import ru.hotmule.lastik.ui.compose.res.Res
 
 @Composable
@@ -25,7 +29,7 @@ fun SettingsContent(
             )
         },
         content = {
-
+            SettingsBody(component)
         }
     )
 }
@@ -56,4 +60,17 @@ private fun SettingsTopBar(
             }
         }
     )
+}
+
+@Composable
+fun SettingsBody(
+    component: SettingsComponent
+) {
+    val model by component.model.collectAsState(Model())
+
+    Column {
+        model.apps.forEach {
+            Text(text = it)
+        }
+    }
 }
