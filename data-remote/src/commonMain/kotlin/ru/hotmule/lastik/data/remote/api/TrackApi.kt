@@ -2,7 +2,7 @@ package ru.hotmule.lastik.data.remote.api
 
 import io.ktor.client.*
 import io.ktor.client.request.*
-import ru.hotmule.lastik.data.prefs.PrefsStore
+import ru.hotmule.lastik.data.sdk.prefs.PrefsStore
 import ru.hotmule.lastik.data.remote.Credentials
 
 class TrackApi(

@@ -5,6 +5,7 @@ import com.arkivanov.mvikotlin.extensions.coroutines.states
 import kotlinx.coroutines.flow.map
 import org.kodein.di.*
 import ru.hotmule.lastik.feature.settings.SettingsComponent.*
+import ru.hotmule.lastik.feature.settings.store.SettingsStore.*
 import ru.hotmule.lastik.feature.settings.store.SettingsStoreFactory
 import ru.hotmule.lastik.utils.getStore
 
@@ -17,17 +18,23 @@ internal class SettingsComponentImpl(
     private val store = instanceKeeper.getStore {
         SettingsStoreFactory(
             storeFactory = instance(),
-            prefs = instance()
+            packageManager = instance(),
+            prefsStore = instance()
         ).create()
     }
 
-    override val model = store.states.map {
+    override val model = store.states.map { state ->
         Model(
-            apps = it.apps
+            isLoading = state.isLoading,
+            apps = state.apps
         )
     }
 
     override fun onBackPressed() {
         onBack()
+    }
+
+    override fun onAppClick(packageName: String) {
+        store.accept(Intent.SaveApp(packageName))
     }
 }

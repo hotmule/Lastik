@@ -7,7 +7,7 @@ import org.kodein.di.DI
 import org.kodein.di.bindFactory
 import org.kodein.di.bindSingleton
 import ru.hotmule.lastik.data.local.localDataModule
-import ru.hotmule.lastik.data.prefs.prefsDataModule
+import ru.hotmule.lastik.data.sdk.sdkDataModule
 import ru.hotmule.lastik.data.remote.remoteDataModule
 import ru.hotmule.lastik.feature.auth.authComponentModule
 import ru.hotmule.lastik.feature.library.libraryComponentModule
@@ -16,7 +16,7 @@ val rootComponentModule = DI.Module("rootComponent") {
 
     import(localDataModule)
     import(remoteDataModule)
-    importOnce(prefsDataModule)
+    importOnce(sdkDataModule)
 
     import(authComponentModule)
     import(libraryComponentModule)

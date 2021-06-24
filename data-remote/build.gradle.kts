@@ -8,7 +8,7 @@ kotlin {
 
         named("commonMain") {
             dependencies {
-                implementation(project(Module.Data.prefs))
+                implementation(project(Module.Data.sdk))
                 implementation(Libs.Kodein.common)
                 implementation(Libs.Krypto.common)
                 implementation(Libs.Kermit.common)

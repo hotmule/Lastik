@@ -14,8 +14,8 @@
             <option value="$PROJECT_DIR$/app-desktop" />
             <option value="$PROJECT_DIR$/buildSrc" />
             <option value="$PROJECT_DIR$/data-local" />
-            <option value="$PROJECT_DIR$/data-prefs" />
             <option value="$PROJECT_DIR$/data-remote" />
+            <option value="$PROJECT_DIR$/data-sdk" />
             <option value="$PROJECT_DIR$/feature-auth" />
             <option value="$PROJECT_DIR$/feature-browser" />
             <option value="$PROJECT_DIR$/feature-library" />

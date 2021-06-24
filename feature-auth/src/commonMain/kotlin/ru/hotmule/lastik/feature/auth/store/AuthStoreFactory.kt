@@ -8,7 +8,7 @@ import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.withContext
 import ru.hotmule.lastik.data.local.ProfileQueries
-import ru.hotmule.lastik.data.prefs.PrefsStore
+import ru.hotmule.lastik.data.sdk.prefs.PrefsStore
 import ru.hotmule.lastik.data.remote.api.AuthApi
 import ru.hotmule.lastik.feature.auth.store.AuthStore.*
 import ru.hotmule.lastik.feature.browser.WebBrowser

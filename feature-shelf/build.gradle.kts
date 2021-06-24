@@ -7,7 +7,7 @@ kotlin {
 
         named("commonMain") {
             dependencies {
-                implementation(project(Module.Data.prefs))
+                implementation(project(Module.Data.sdk))
                 implementation(project(Module.Data.local))
                 implementation(project(Module.Data.remote))
                 implementation(Libs.SqlDelight.coroutines)

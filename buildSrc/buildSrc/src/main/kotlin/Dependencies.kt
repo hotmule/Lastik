@@ -37,7 +37,7 @@ object Module {
     }
 
     object Data {
-        const val prefs = ":data-prefs"
+        const val sdk = ":data-sdk"
         const val local = ":data-local"
         const val remote = ":data-remote"
     }
@@ -49,17 +49,21 @@ object Module {
 
 object Libs {
 
-    const val gradle = "com.android.tools.build:gradle:7.1.0-alpha01"
+    const val gradle = "com.android.tools.build:gradle:7.1.0-alpha02"
 
     object Kotlin {
 
         const val version = "1.5.10"
         const val gradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version"
-        const val serialization = "org.jetbrains.kotlin:kotlin-serialization:$version"
 
         object Coroutines {
             private const val version = "1.5.0"
             const val core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version"
+        }
+
+        object Serialization {
+            const val common = "org.jetbrains.kotlin:kotlin-serialization:$version"
+            const val json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.1"
         }
     }
 
@@ -89,7 +93,7 @@ object Libs {
     object ArkIvanov {
 
         object MVIKotlin {
-            private const val version = "2.0.3"
+            private const val version = "2.0.4"
             const val common = "com.arkivanov.mvikotlin:mvikotlin:$version"
             const val main = "com.arkivanov.mvikotlin:mvikotlin-main:$version"
             const val coroutines = "com.arkivanov.mvikotlin:mvikotlin-extensions-coroutines:$version"
@@ -150,12 +154,12 @@ object Libs {
 
         object Compose {
             const val version = "0.4.0"
-            const val activity = "androidx.activity:activity-compose:1.3.0-beta01"
+            const val activity = "androidx.activity:activity-compose:1.3.0-beta02"
         }
     }
 
     object Accompanist {
-        private const val version = "0.11.0"
+        private const val version = "0.12.0"
         const val coil = "com.google.accompanist:accompanist-coil:$version"
         const val insets = "com.google.accompanist:accompanist-insets:$version"
         const val swipeRefresh = "com.google.accompanist:accompanist-swiperefresh:$version"

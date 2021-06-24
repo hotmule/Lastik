@@ -4,7 +4,7 @@ import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
-import ru.hotmule.lastik.data.prefs.PrefsStore
+import ru.hotmule.lastik.data.sdk.prefs.PrefsStore
 import ru.hotmule.lastik.feature.menu.store.MenuStore.*
 import ru.hotmule.lastik.utils.AppCoroutineDispatcher
 

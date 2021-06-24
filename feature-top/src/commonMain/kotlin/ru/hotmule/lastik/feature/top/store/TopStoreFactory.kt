@@ -6,7 +6,7 @@ import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
 import kotlinx.coroutines.flow.collect
-import ru.hotmule.lastik.data.prefs.PrefsStore
+import ru.hotmule.lastik.data.sdk.prefs.PrefsStore
 import ru.hotmule.lastik.feature.top.store.TopStore.*
 import ru.hotmule.lastik.utils.AppCoroutineDispatcher
 

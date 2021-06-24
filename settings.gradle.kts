@@ -17,7 +17,7 @@ include(
     ":feature-user",
     ":feature-menu",
 
-    ":data-prefs",
+    ":data-sdk",
     ":data-local",
     ":data-remote",
 
