@@ -23,21 +23,37 @@ import ru.hotmule.lastik.utils.AppCoroutineDispatcher
 
 class PlayerCatcherService : NotificationListenerService(), DIAware {
 
+    companion object {
+        private const val SCROBBLE_NOTIFICATION_ID = 1
+    }
+
     override val di: DI by closestDI()
 
     private val nowPlayingComponent by instance<NowPlayingComponent>()
     private val serviceScope = CoroutineScope(AppCoroutineDispatcher.Main)
 
-    companion object {
-        private const val SCROBBLE_NOTIFICATION_ID = 1
-    }
+    private var mediaControllers: List<MediaController>? = null
 
     override fun onCreate() {
         super.onCreate()
 
+        catchPlayers()
+        provideNowPlayingNotification()
+    }
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int = START_STICKY
+
+    override fun onDestroy() {
+        super.onDestroy()
+        serviceScope.cancel()
+    }
+
+    private fun catchPlayers() {
+
         val listener = MediaSessionManager.OnActiveSessionsChangedListener { controllers ->
 
-            controllers?.forEach {
+            mediaControllers = controllers
+            mediaControllers?.forEach {
 
                 onPlayStateChanged(it.playbackState)
                 onTrackDetected(it.packageName, it.metadata)
@@ -63,35 +79,6 @@ class PlayerCatcherService : NotificationListenerService(), DIAware {
             addOnActiveSessionsChangedListener(listener, name)
             listener.onActiveSessionsChanged(getActiveSessions(name))
         }
-
-        serviceScope.launch {
-            nowPlayingComponent.model.collect {
-                if (it.track != null) {
-                    startForeground(
-                        SCROBBLE_NOTIFICATION_ID,
-                        NotificationCompat.Builder(
-                            this@PlayerCatcherService,
-                            getString(R.string.scrobbler_notification_channel_id)
-                        )
-                            .setContentTitle(it.track?.name)
-                            .setContentText(it.track?.artist)
-                            .setSmallIcon(R.drawable.ic_launcher_foreground)
-                            .setLargeIcon(it.track?.art)
-                            .setOngoing(true)
-                            .build()
-                    )
-                } else {
-                    stopForeground(true)
-                }
-            }
-        }
-    }
-
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int = START_STICKY
-
-    override fun onDestroy() {
-        super.onDestroy()
-        serviceScope.cancel()
     }
 
     private fun onPlayStateChanged(state: PlaybackState?) {
@@ -115,5 +102,31 @@ class PlayerCatcherService : NotificationListenerService(), DIAware {
                 metadata?.getString(MediaMetadata.METADATA_KEY_ALBUM_ARTIST)
             )
         )
+    }
+
+    private fun provideNowPlayingNotification() {
+
+        serviceScope.launch {
+            nowPlayingComponent.model.collect {
+
+                if (it.isPlaying) {
+                    startForeground(
+                        SCROBBLE_NOTIFICATION_ID,
+                        NotificationCompat.Builder(
+                            this@PlayerCatcherService,
+                            getString(R.string.scrobbler_notification_channel_id)
+                        )
+                            .setContentTitle(it.track.name)
+                            .setContentText(it.track.artist)
+                            .setSmallIcon(R.drawable.ic_launcher_foreground)
+                            .setLargeIcon(it.track.art)
+                            .setOngoing(true)
+                            .build()
+                    )
+                } else {
+                    stopForeground(true)
+                }
+            }
+        }
     }
 }
