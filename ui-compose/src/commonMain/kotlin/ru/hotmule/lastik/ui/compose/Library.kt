@@ -24,7 +24,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.jetbrains.Children
 import com.arkivanov.decompose.extensions.compose.jetbrains.asState
-import ru.hotmule.lastik.feature.app.NowPlayingComponent
 import ru.hotmule.lastik.feature.app.NowPlayingComponent.*
 import ru.hotmule.lastik.feature.library.LibraryComponent
 import ru.hotmule.lastik.feature.library.LibraryComponent.*
@@ -59,8 +58,6 @@ fun LibraryContent(
             sheetContent = {
                 NowPlayingContent(
                     track = model.track,
-                    artist = model.artist,
-                    art = model.art,
                     isCollapsed = bottomSheetScaffoldState.bottomSheetState.isCollapsed
                 )
             }
@@ -95,10 +92,8 @@ private fun LibraryBody(
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 private fun NowPlayingContent(
-    track: String,
-    artist: String,
-    art: Bitmap?,
-    isCollapsed: Boolean
+    isCollapsed: Boolean,
+    track: Track
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
 
@@ -120,7 +115,7 @@ private fun NowPlayingContent(
                 )
             }
 
-            art.asComposeBitmap()?.let { bitmap ->
+            track.art.asComposeBitmap()?.let { bitmap ->
                 Image(
                     painter = BitmapPainter(bitmap),
                     contentDescription = "artwork",
@@ -142,21 +137,25 @@ private fun NowPlayingContent(
                         .align(Alignment.CenterVertically)
                 ) {
 
-                    Text(
-                        text = track,
-                        maxLines = 1,
-                        fontWeight = FontWeight.Bold,
-                        style = MaterialTheme.typography.body1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-
-                    CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+                    track.name?.let {
                         Text(
-                            text = artist,
-                            style = MaterialTheme.typography.body2,
-                            modifier = Modifier
-                                .padding(top = 8.dp)
+                            text = it,
+                            maxLines = 1,
+                            fontWeight = FontWeight.Bold,
+                            style = MaterialTheme.typography.body1,
+                            overflow = TextOverflow.Ellipsis
                         )
+                    }
+
+                    track.artist?.let {
+                        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+                            Text(
+                                text = it,
+                                style = MaterialTheme.typography.body2,
+                                modifier = Modifier
+                                    .padding(top = 8.dp)
+                            )
+                        }
                     }
                 }
             }

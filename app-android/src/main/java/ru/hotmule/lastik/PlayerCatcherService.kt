@@ -18,6 +18,7 @@ import org.kodein.di.DIAware
 import org.kodein.di.android.closestDI
 import org.kodein.di.instance
 import ru.hotmule.lastik.feature.app.NowPlayingComponent
+import ru.hotmule.lastik.feature.app.NowPlayingComponent.*
 import ru.hotmule.lastik.utils.AppCoroutineDispatcher
 
 class PlayerCatcherService : NotificationListenerService(), DIAware {
@@ -34,26 +35,29 @@ class PlayerCatcherService : NotificationListenerService(), DIAware {
     override fun onCreate() {
         super.onCreate()
 
-        val name = ComponentName(this, this::class.java)
         val listener = MediaSessionManager.OnActiveSessionsChangedListener { controllers ->
 
             controllers?.forEach {
 
                 onPlayStateChanged(it.playbackState)
-                onTrackDetected(it.metadata)
+                onTrackDetected(it.packageName, it.metadata)
 
-                it.registerCallback(object : MediaController.Callback() {
+                it.registerCallback(
+                    object : MediaController.Callback() {
 
-                    override fun onPlaybackStateChanged(state: PlaybackState?) {
-                        onPlayStateChanged(state)
+                        override fun onPlaybackStateChanged(state: PlaybackState?) {
+                            onPlayStateChanged(state)
+                        }
+
+                        override fun onMetadataChanged(metadata: MediaMetadata?) {
+                            onTrackDetected(it.packageName, metadata)
+                        }
                     }
-
-                    override fun onMetadataChanged(metadata: MediaMetadata?) {
-                        onTrackDetected(metadata)
-                    }
-                })
+                )
             }
         }
+
+        val name = ComponentName(this, this::class.java)
 
         getSystemService<MediaSessionManager>()?.apply {
             addOnActiveSessionsChangedListener(listener, name)
@@ -62,17 +66,17 @@ class PlayerCatcherService : NotificationListenerService(), DIAware {
 
         serviceScope.launch {
             nowPlayingComponent.model.collect {
-                if (it.isPlaying) {
+                if (it.track != null) {
                     startForeground(
                         SCROBBLE_NOTIFICATION_ID,
                         NotificationCompat.Builder(
                             this@PlayerCatcherService,
                             getString(R.string.scrobbler_notification_channel_id)
                         )
-                            .setContentTitle(it.track)
-                            .setContentText(it.artist)
+                            .setContentTitle(it.track?.name)
+                            .setContentText(it.track?.artist)
                             .setSmallIcon(R.drawable.ic_launcher_foreground)
-                            .setLargeIcon(it.art)
+                            .setLargeIcon(it.track?.art)
                             .setOngoing(true)
                             .build()
                     )
@@ -96,14 +100,20 @@ class PlayerCatcherService : NotificationListenerService(), DIAware {
         )
     }
 
-    private fun onTrackDetected(metadata: MediaMetadata?) {
+    private fun onTrackDetected(
+        packageName: String,
+        metadata: MediaMetadata?
+    ) {
         nowPlayingComponent.onTrackDetected(
-            artist = metadata?.getString(MediaMetadata.METADATA_KEY_ARTIST),
-            album = metadata?.getString(MediaMetadata.METADATA_KEY_ALBUM),
-            track = metadata?.getString(MediaMetadata.METADATA_KEY_TITLE),
-            art = metadata?.getBitmap(MediaMetadata.METADATA_KEY_ALBUM_ART),
-            duration = metadata?.getLong(MediaMetadata.METADATA_KEY_DURATION),
-            albumArtist = metadata?.getString(MediaMetadata.METADATA_KEY_ALBUM_ARTIST)
+            packageName = packageName,
+            track = Track(
+                metadata?.getString(MediaMetadata.METADATA_KEY_ARTIST),
+                metadata?.getString(MediaMetadata.METADATA_KEY_ALBUM),
+                metadata?.getString(MediaMetadata.METADATA_KEY_TITLE),
+                metadata?.getBitmap(MediaMetadata.METADATA_KEY_ALBUM_ART),
+                metadata?.getLong(MediaMetadata.METADATA_KEY_DURATION),
+                metadata?.getString(MediaMetadata.METADATA_KEY_ALBUM_ARTIST)
+            )
         )
     }
 }

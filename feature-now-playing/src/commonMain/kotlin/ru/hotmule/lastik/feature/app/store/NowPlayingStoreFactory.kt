@@ -4,11 +4,13 @@ import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
+import ru.hotmule.lastik.data.sdk.prefs.PrefsStore
 import ru.hotmule.lastik.feature.app.store.NowPlayingStore.*
 import ru.hotmule.lastik.utils.AppCoroutineDispatcher
 
 internal class NowPlayingStoreFactory(
-    private val storeFactory: StoreFactory
+    private val storeFactory: StoreFactory,
+    private val prefsStore: PrefsStore
 ) {
     fun create(): NowPlayingStore =
         object : NowPlayingStore, Store<Intent, State, Nothing> by storeFactory.create(
@@ -23,21 +25,12 @@ internal class NowPlayingStoreFactory(
     ) {
         override suspend fun executeIntent(intent: Intent, getState: () -> State) {
             when (intent) {
-                is Intent.CheckPlayState -> dispatch(
-                    Result.PlayStateChanged(intent.isPlaying ?: false)
-                )
-                is Intent.CheckDetectedTrack -> dispatch(
-                    if (intent.artist != null && intent.track != null) {
-                        Result.TrackDetected(
-                            artist = intent.albumArtist ?: intent.artist,
-                            track = intent.track,
-                            album = intent.album,
-                            art = intent.art
-                        )
-                    } else {
-                        Result.PlayStateChanged(false)
+                is Intent.CheckPlayState -> dispatch(Result.PlayStateChanged(intent.isPlaying))
+                is Intent.CheckDetectedTrack -> {
+                    if (intent.packageName in prefsStore.getScrobbleApps()) {
+                        dispatch(Result.TrackChecked(intent.track))
                     }
-                )
+                }
             }
         }
     }
@@ -45,12 +38,7 @@ internal class NowPlayingStoreFactory(
     object ReducerImpl : Reducer<State, Result> {
         override fun State.reduce(result: Result): State = when (result) {
             is Result.PlayStateChanged -> copy(isPlaying = result.isPlaying)
-            is Result.TrackDetected -> copy(
-                artist = result.artist,
-                track = result.track,
-                album = result.album,
-                art = result.art
-            )
+            is Result.TrackChecked -> copy(track = result.track,)
         }
     }
 }

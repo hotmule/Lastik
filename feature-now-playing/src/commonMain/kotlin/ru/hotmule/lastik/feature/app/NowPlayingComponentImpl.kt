@@ -12,30 +12,23 @@ import ru.hotmule.lastik.utils.Bitmap
 
 internal class NowPlayingComponentImpl(directDi: DirectDI) : NowPlayingComponent {
 
-    private val store = NowPlayingStoreFactory(directDi.instance()).create()
+    private val store = NowPlayingStoreFactory(
+        storeFactory = directDi.instance(),
+        prefsStore = directDi.instance()
+    ).create()
 
     override val model: Flow<Model> = store.states.map {
         Model(
-            isPlaying = it.isPlaying,
-            artist = it.artist,
-            album = it.album,
             track = it.track,
-            art = it.art
+            isPlaying = it.isPlaying
         )
     }
 
-    override fun onPlayStateChanged(isPlaying: Boolean?) {
+    override fun onPlayStateChanged(isPlaying: Boolean) {
         store.accept(Intent.CheckPlayState(isPlaying))
     }
 
-    override fun onTrackDetected(
-        artist: String?,
-        album: String?,
-        track: String?,
-        art: Bitmap?,
-        duration: Long?,
-        albumArtist: String?
-    ) {
-        store.accept(Intent.CheckDetectedTrack(artist, album, track, art, duration, albumArtist))
+    override fun onTrackDetected(packageName: String, track: Track) {
+        store.accept(Intent.CheckDetectedTrack(packageName, track))
     }
 }
