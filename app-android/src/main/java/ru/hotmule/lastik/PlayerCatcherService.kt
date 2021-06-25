@@ -55,14 +55,14 @@ class PlayerCatcherService : NotificationListenerService(), DIAware {
             mediaControllers = controllers
             mediaControllers?.forEach {
 
-                onPlayStateChanged(it.playbackState)
+                onPlayStateChanged(it.packageName, it.playbackState)
                 onTrackDetected(it.packageName, it.metadata)
 
                 it.registerCallback(
                     object : MediaController.Callback() {
 
                         override fun onPlaybackStateChanged(state: PlaybackState?) {
-                            onPlayStateChanged(state)
+                            onPlayStateChanged(it.packageName, state)
                         }
 
                         override fun onMetadataChanged(metadata: MediaMetadata?) {
@@ -81,8 +81,12 @@ class PlayerCatcherService : NotificationListenerService(), DIAware {
         }
     }
 
-    private fun onPlayStateChanged(state: PlaybackState?) {
+    private fun onPlayStateChanged(
+        packageName: String,
+        state: PlaybackState?
+    ) {
         nowPlayingComponent.onPlayStateChanged(
+            packageName = packageName,
             isPlaying = state?.state == PlaybackState.STATE_PLAYING
         )
     }

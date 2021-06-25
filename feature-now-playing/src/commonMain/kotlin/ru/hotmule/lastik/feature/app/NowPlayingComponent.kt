@@ -21,7 +21,10 @@ interface NowPlayingComponent {
 
     val model: Flow<Model>
 
-    fun onPlayStateChanged(isPlaying: Boolean)
+    fun onPlayStateChanged(
+        packageName: String,
+        isPlaying: Boolean
+    )
 
     fun onTrackDetected(
         packageName: String,

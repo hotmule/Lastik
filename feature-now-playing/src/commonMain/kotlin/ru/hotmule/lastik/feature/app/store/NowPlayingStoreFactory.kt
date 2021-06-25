@@ -24,12 +24,10 @@ internal class NowPlayingStoreFactory(
         AppCoroutineDispatcher.Main
     ) {
         override suspend fun executeIntent(intent: Intent, getState: () -> State) {
-            when (intent) {
-                is Intent.CheckPlayState -> dispatch(Result.PlayStateChanged(intent.isPlaying))
-                is Intent.CheckDetectedTrack -> {
-                    if (intent.packageName in prefsStore.getScrobbleApps()) {
-                        dispatch(Result.TrackChecked(intent.track))
-                    }
+            if (intent.packageName in prefsStore.getScrobbleApps()) {
+                when (intent) {
+                    is Intent.CheckPlayState -> dispatch(Result.PlayStateChanged(intent.isPlaying))
+                    is Intent.CheckDetectedTrack -> dispatch(Result.TrackChecked(intent.track))
                 }
             }
         }

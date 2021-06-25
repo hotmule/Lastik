@@ -8,7 +8,6 @@ import org.kodein.di.instance
 import ru.hotmule.lastik.feature.app.NowPlayingComponent.*
 import ru.hotmule.lastik.feature.app.store.NowPlayingStore.*
 import ru.hotmule.lastik.feature.app.store.NowPlayingStoreFactory
-import ru.hotmule.lastik.utils.Bitmap
 
 internal class NowPlayingComponentImpl(directDi: DirectDI) : NowPlayingComponent {
 
@@ -24,8 +23,8 @@ internal class NowPlayingComponentImpl(directDi: DirectDI) : NowPlayingComponent
         )
     }
 
-    override fun onPlayStateChanged(isPlaying: Boolean) {
-        store.accept(Intent.CheckPlayState(isPlaying))
+    override fun onPlayStateChanged(packageName: String, isPlaying: Boolean) {
+        store.accept(Intent.CheckPlayState(packageName, isPlaying))
     }
 
     override fun onTrackDetected(packageName: String, track: Track) {

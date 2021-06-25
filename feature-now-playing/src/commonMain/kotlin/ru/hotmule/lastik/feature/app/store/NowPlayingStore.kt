@@ -8,9 +8,9 @@ import ru.hotmule.lastik.utils.Bitmap
 
 internal interface NowPlayingStore : Store<Intent, State, Nothing> {
 
-    sealed class Intent {
-        data class CheckDetectedTrack(val packageName: String, val track: Track) : Intent()
-        data class CheckPlayState(val isPlaying: Boolean) : Intent()
+    sealed class Intent(val packageName: String) {
+        data class CheckDetectedTrack(val packName: String, val track: Track) : Intent(packName)
+        data class CheckPlayState(val packName: String, val isPlaying: Boolean) : Intent(packName)
     }
 
     sealed class Result {
