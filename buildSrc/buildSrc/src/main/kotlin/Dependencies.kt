@@ -11,8 +11,8 @@ object App {
 object Sdk {
     object Version {
         const val min = 21
-        const val target = 29
-        const val compile = 29
+        const val target = 30
+        const val compile = 30
         const val buildTools = "30.0.2"
     }
 }
@@ -136,7 +136,7 @@ object Libs {
     }
 
     object Krypto {
-        private const val version = "2.1.1"
+        private const val version = "2.2.0"
         const val common = "com.soywiz.korlibs.krypto:krypto:$version"
         const val android = "com.soywiz.korlibs.krypto:krypto-android:$version"
     }
@@ -149,11 +149,12 @@ object Libs {
 
     object AndroidX {
 
+        const val core = "androidx.core:core-ktx:1.5.0"
         const val browser = "androidx.browser:browser:1.3.0"
         const val appCompat = "androidx.appcompat:appcompat:1.3.0"
 
         object Compose {
-            const val version = "0.4.0"
+            const val version = "0.5.0-build227"
             const val activity = "androidx.activity:activity-compose:1.3.0-beta02"
         }
     }

@@ -4,7 +4,6 @@
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
-    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"/>
 
     <application
             android:name=".App"
@@ -34,8 +33,8 @@
 
         </activity>
 
-        <service android:name=".PlayerCatcherService"
-                 android:label="@string/player_catcher"
+        <service android:name=".feature.now_playing.NowPlayingService"
+                 android:label="@string/now_playing"
                  android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
             <intent-filter>
                 <action android:name="android.service.notification.NotificationListenerService"/>

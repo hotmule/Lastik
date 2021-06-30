@@ -1,10 +1,8 @@
 package ru.hotmule.lastik
 
 import android.content.*
-import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.activity.compose.setContent
 import androidx.compose.ui.unit.dp

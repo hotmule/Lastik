@@ -57,8 +57,10 @@ fun LibraryContent(
             sheetPeekHeight = if (model.isPlaying) Res.Dimen.shelfItemHeight else 0.dp,
             sheetContent = {
                 NowPlayingContent(
+                    isCollapsed = bottomSheetScaffoldState.bottomSheetState.isCollapsed,
                     track = model.track,
-                    isCollapsed = bottomSheetScaffoldState.bottomSheetState.isCollapsed
+                    artist = model.artist,
+                    art = model.art
                 )
             }
         )
@@ -93,7 +95,9 @@ private fun LibraryBody(
 @Composable
 private fun NowPlayingContent(
     isCollapsed: Boolean,
-    track: Track
+    track: String,
+    artist: String,
+    art: Bitmap?
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
 
@@ -115,7 +119,7 @@ private fun NowPlayingContent(
                 )
             }
 
-            track.art.asComposeBitmap()?.let { bitmap ->
+            art.asComposeBitmap()?.let { bitmap ->
                 Image(
                     painter = BitmapPainter(bitmap),
                     contentDescription = "artwork",
@@ -137,25 +141,21 @@ private fun NowPlayingContent(
                         .align(Alignment.CenterVertically)
                 ) {
 
-                    track.name?.let {
-                        Text(
-                            text = it,
-                            maxLines = 1,
-                            fontWeight = FontWeight.Bold,
-                            style = MaterialTheme.typography.body1,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                    }
+                    Text(
+                        text = track,
+                        maxLines = 1,
+                        fontWeight = FontWeight.Bold,
+                        style = MaterialTheme.typography.body1,
+                        overflow = TextOverflow.Ellipsis
+                    )
 
-                    track.artist?.let {
-                        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-                            Text(
-                                text = it,
-                                style = MaterialTheme.typography.body2,
-                                modifier = Modifier
-                                    .padding(top = 8.dp)
-                            )
-                        }
+                    CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+                        Text(
+                            text = artist,
+                            style = MaterialTheme.typography.body2,
+                            modifier = Modifier
+                                .padding(top = 8.dp)
+                        )
                     }
                 }
             }

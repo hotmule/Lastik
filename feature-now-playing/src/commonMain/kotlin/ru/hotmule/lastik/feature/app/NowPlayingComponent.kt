@@ -6,17 +6,19 @@ import ru.hotmule.lastik.utils.Bitmap
 interface NowPlayingComponent {
 
     data class Track(
-        val artist: String? = null,
-        val album: String? = null,
-        val name: String? = null,
+        var artist: String? = null,
+        var album: String? = null,
+        var name: String? = null,
         val art: Bitmap? = null,
         val duration: Long? = null,
-        val albumArtist: String? = null
+        var albumArtist: String? = null
     )
 
     data class Model(
-        val track: Track = Track(),
-        val isPlaying: Boolean = false
+        val isPlaying: Boolean = false,
+        val track: String = "",
+        val artist: String = "",
+        val art: Bitmap? = null
     )
 
     val model: Flow<Model>

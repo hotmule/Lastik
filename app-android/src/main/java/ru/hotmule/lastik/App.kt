@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import org.kodein.di.*
+import ru.hotmule.lastik.feature.now_playing.NowPlayingService
 import ru.hotmule.lastik.feature.root.rootComponentModule
 
 class App : Application(), DIAware {
@@ -32,7 +33,7 @@ class App : Application(), DIAware {
         }
 
         startService(
-            Intent(this, PlayerCatcherService::class.java)
+            Intent(this, NowPlayingService::class.java)
         )
     }
 }

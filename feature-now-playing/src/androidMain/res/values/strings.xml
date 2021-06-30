@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="now_playing">Now playing</string>
+    <string name="scrobbler_notification_channel_name">Scrobbler</string>
+    <string name="scrobbler_notification_channel_id">scrobbler_notification_channel</string>
+</resources>

@@ -1,7 +1,8 @@
-package ru.hotmule.lastik
+package ru.hotmule.lastik.feature.now_playing
 
 import android.content.ComponentName
 import android.content.Intent
+import android.graphics.Bitmap
 import android.media.MediaMetadata
 import android.media.session.MediaController
 import android.media.session.MediaSessionManager
@@ -21,7 +22,7 @@ import ru.hotmule.lastik.feature.app.NowPlayingComponent
 import ru.hotmule.lastik.feature.app.NowPlayingComponent.*
 import ru.hotmule.lastik.utils.AppCoroutineDispatcher
 
-class PlayerCatcherService : NotificationListenerService(), DIAware {
+class NowPlayingService : NotificationListenerService(), DIAware {
 
     companion object {
         private const val SCROBBLE_NOTIFICATION_ID = 1
@@ -38,7 +39,7 @@ class PlayerCatcherService : NotificationListenerService(), DIAware {
         super.onCreate()
 
         catchPlayers()
-        provideNowPlayingNotification()
+        provideNowPlaying()
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int = START_STICKY
@@ -55,8 +56,8 @@ class PlayerCatcherService : NotificationListenerService(), DIAware {
             mediaControllers = controllers
             mediaControllers?.forEach {
 
-                onPlayStateChanged(it.packageName, it.playbackState)
                 onTrackDetected(it.packageName, it.metadata)
+                onPlayStateChanged(it.packageName, it.playbackState)
 
                 it.registerCallback(
                     object : MediaController.Callback() {
@@ -108,7 +109,7 @@ class PlayerCatcherService : NotificationListenerService(), DIAware {
         )
     }
 
-    private fun provideNowPlayingNotification() {
+    private fun provideNowPlaying() {
 
         serviceScope.launch {
             nowPlayingComponent.model.collect {
@@ -116,16 +117,7 @@ class PlayerCatcherService : NotificationListenerService(), DIAware {
                 if (it.isPlaying) {
                     startForeground(
                         SCROBBLE_NOTIFICATION_ID,
-                        NotificationCompat.Builder(
-                            this@PlayerCatcherService,
-                            getString(R.string.scrobbler_notification_channel_id)
-                        )
-                            .setContentTitle(it.track.name)
-                            .setContentText(it.track.artist)
-                            .setSmallIcon(R.drawable.ic_launcher_foreground)
-                            .setLargeIcon(it.track.art)
-                            .setOngoing(true)
-                            .build()
+                        nowPlayingNotification(it.track, it.artist, it.art)
                     )
                 } else {
                     stopForeground(true)
@@ -133,4 +125,16 @@ class PlayerCatcherService : NotificationListenerService(), DIAware {
             }
         }
     }
+
+    private fun nowPlayingNotification(
+        track: String,
+        artist: String,
+        art: Bitmap?,
+    ) = NotificationCompat.Builder(this, getString(R.string.scrobbler_notification_channel_id))
+            .setContentTitle(track)
+            .setContentText(artist)
+            .setSmallIcon(R.drawable.ic_now_playing)
+            .setLargeIcon(art)
+            .setOngoing(true)
+            .build()
 }

@@ -14,12 +14,12 @@ internal interface NowPlayingStore : Store<Intent, State, Nothing> {
     }
 
     sealed class Result {
-        data class TrackChecked(val track: Track) : Result()
         data class PlayStateChanged(val isPlaying: Boolean) : Result()
+        data class TrackDetected(val track: Track) : Result()
     }
 
     data class State(
-        val track: Track = Track(),
-        val isPlaying: Boolean = false
+        val isPlaying: Boolean = false,
+        val track: Track = Track()
     )
 }

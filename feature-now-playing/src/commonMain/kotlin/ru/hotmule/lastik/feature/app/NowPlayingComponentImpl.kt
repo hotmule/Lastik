@@ -13,13 +13,16 @@ internal class NowPlayingComponentImpl(directDi: DirectDI) : NowPlayingComponent
 
     private val store = NowPlayingStoreFactory(
         storeFactory = directDi.instance(),
-        prefsStore = directDi.instance()
+        prefs = directDi.instance(),
+        api = directDi.instance()
     ).create()
 
     override val model: Flow<Model> = store.states.map {
         Model(
-            track = it.track,
-            isPlaying = it.isPlaying
+            isPlaying = it.isPlaying,
+            track = it.track.name ?: "UNKNOWN",
+            artist = it.track.albumArtist ?: it.track.artist ?: "UNKNOWN",
+            art = it.track.art
         )
     }
 
