@@ -154,7 +154,7 @@ object Libs {
         const val appCompat = "androidx.appcompat:appcompat:1.3.0"
 
         object Compose {
-            const val version = "0.5.0-build227"
+            const val version = "0.5.0-build228"
             const val activity = "androidx.activity:activity-compose:1.3.0-beta02"
         }
     }
