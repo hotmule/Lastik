@@ -13,7 +13,9 @@ kotlin {
         named("commonMain") {
             dependencies {
                 implementation(project(Module.Data.remote))
+                implementation(project(Module.Data.local))
                 implementation(project(Module.Data.sdk))
+                implementation(Libs.Kotlin.dateTime)
             }
         }
     }

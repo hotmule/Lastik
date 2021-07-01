@@ -16,12 +16,8 @@ object Res {
 
     object Color {
 
-        //red
         private val sangria = Color(0xff9d0000)
         private val crimson = Color(0xffd50000)
-
-        //yellow
-        val sunflower = Color(0xffffc900)
 
         val lights = lightColors(primary = sangria, secondary = crimson)
         val darks = darkColors(primary = crimson)
@@ -44,6 +40,8 @@ object Res {
         const val logging_out_confirmation = "Are you sure you want to log out?"
         const val confirm = "Confirm"
         const val cancel = "Cancel"
+
+        const val scrobble_apps = "Scrobble apps"
     }
 
     object Array {

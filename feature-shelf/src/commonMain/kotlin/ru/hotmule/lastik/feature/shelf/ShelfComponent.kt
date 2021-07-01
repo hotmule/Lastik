@@ -6,7 +6,6 @@ import ru.hotmule.lastik.data.remote.api.UserApi
 interface ShelfComponent {
 
     data class ShelfItem(
-        val highlighted: Boolean = false,
         val image: String = UserApi.defaultImageUrl,
         val title: String = "",
         val subtitle: String? = null,

@@ -54,7 +54,7 @@ private fun SettingsTopBar(
         title = {
             Text(
                 modifier = Modifier.padding(top = topInset),
-                text = Res.Array.profileMenu.first()
+                text = Res.String.scrobble_apps
             )
         },
         navigationIcon = {
@@ -79,13 +79,13 @@ fun SettingsBody(
 ) {
     val model by component.model.collectAsState(Model())
 
-    Column(
+    Box(
         modifier = Modifier.fillMaxSize()
     ) {
 
         if (model.isLoading) {
             CircularProgressIndicator(
-                modifier = Modifier.align(Alignment.CenterHorizontally)
+                modifier = Modifier.align(Alignment.Center)
             )
         }
 

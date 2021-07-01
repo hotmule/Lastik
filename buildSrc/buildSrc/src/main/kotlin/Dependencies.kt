@@ -52,14 +52,10 @@ object Libs {
     const val gradle = "com.android.tools.build:gradle:7.1.0-alpha02"
 
     object Kotlin {
-
-        const val version = "1.5.10"
+        private const val version = "1.5.10"
         const val gradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version"
-
-        object Coroutines {
-            private const val version = "1.5.0"
-            const val core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version"
-        }
+        const val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0"
+        const val dateTime = "org.jetbrains.kotlinx:kotlinx-datetime:0.2.1"
 
         object Serialization {
             const val common = "org.jetbrains.kotlin:kotlin-serialization:$version"

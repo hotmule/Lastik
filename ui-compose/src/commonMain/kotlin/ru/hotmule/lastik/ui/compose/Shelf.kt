@@ -81,14 +81,6 @@ private fun ShelfItemContent(
             .fillMaxWidth()
     ) {
 
-        if (item.highlighted) {
-            Surface(
-                content = {},
-                color = Res.Color.sunflower.copy(alpha = 0.1f),
-                modifier = Modifier.fillMaxSize()
-            )
-        }
-
         item.playCount?.let {
             Surface(
                 content = {},

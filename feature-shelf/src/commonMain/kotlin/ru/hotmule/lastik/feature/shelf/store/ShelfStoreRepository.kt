@@ -47,6 +47,7 @@ internal class ShelfStoreRepository(
             val items = with(userApi) {
                 when (index) {
                     0 -> getScrobbles(page)?.recent?.tracks
+                        ?.filter { it.attributes?.nowPlaying != "true" }
                     1 -> getTopArtists(page)?.top?.artists
                     2 -> getTopAlbums(page)?.top?.albums
                     3 -> getTopTracks(page)?.top?.tracks
@@ -92,7 +93,6 @@ internal class ShelfStoreRepository(
         .map { scrobbles ->
             scrobbles.map {
                 ShelfItem(
-                    highlighted = it.nowPlaying,
                     image = it.lowArtwork ?: UserApi.defaultImageUrl,
                     title = it.track ?: "",
                     subtitle = it.artist,
@@ -181,7 +181,7 @@ internal class ShelfStoreRepository(
         val artistId = insertArtist(scrobble.artist?.name)
         val albumId = insertAlbum(artistId, scrobble.album?.text, scrobble.images)
         val trackId = upsertScrobbleTrack(artistId, albumId, scrobble.name, scrobble.loved)
-        insertScrobble(trackId, scrobble.date?.uts, scrobble.attributes?.nowPlaying)
+        insertScrobble(trackId, scrobble.date?.uts)
     }
 
     private fun saveTopArtist(artist: LibraryItem) {
@@ -214,11 +214,10 @@ internal class ShelfStoreRepository(
 
     private fun insertScrobble(
         trackId: Long?,
-        trackDate: Long?,
-        nowPlaying: String?
+        trackDate: Long?
     ) {
         if (trackId != null && trackDate != null) {
-            database.scrobbleQueries.insert(trackId, trackDate, nowPlaying == "true")
+            database.scrobbleQueries.insert(trackId, trackDate)
         }
     }
 

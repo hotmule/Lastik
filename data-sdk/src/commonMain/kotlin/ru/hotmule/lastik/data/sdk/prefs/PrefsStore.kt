@@ -9,7 +9,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import ru.hotmule.lastik.data.sdk.packages.Package
 
 class PrefsStore(
     private val factory: SettingsFactory,
