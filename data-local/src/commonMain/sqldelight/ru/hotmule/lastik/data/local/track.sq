@@ -1,3 +1,5 @@
+
+
 CREATE TABLE track (
     id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     artistId INTEGER NOT NULL,
@@ -5,6 +7,8 @@ CREATE TABLE track (
     name TEXT NOT NULL,
     loved INTEGER AS Boolean DEFAULT 0 NOT NULL,
     lovedAt INTEGER,
+    duration INTEGER,
+    albumArtist TEXT,
     UNIQUE (artistId, name),
     FOREIGN KEY (artistId) REFERENCES artist(id) ON DELETE CASCADE,
     FOREIGN KEY (albumId) REFERENCES album(id) ON DELETE CASCADE
@@ -14,7 +18,8 @@ getLovedTracksPageCount:
 SELECT COUNT(track.id) FROM track WHERE lovedAt NOT NULL;
 
 insert:
-INSERT OR IGNORE INTO track(artistId, albumId, name, loved, lovedAt) VALUES (?, ?, ?, ?, ?);
+INSERT OR IGNORE INTO track(artistId, albumId, name, loved, lovedAt)
+VALUES (?, ?, ?, ?, ?);
 
 upsertRecentTrack {
     UPDATE track
@@ -25,6 +30,18 @@ upsertRecentTrack {
     INSERT OR IGNORE
     INTO track(artistId, albumId, name, loved, lovedAt)
     VALUES (:artistId, :albumId, :name, :loved, :lovedAt);
+}
+
+upsertLocalTrack {
+    UPDATE track
+    SET albumId = :albumId,
+        duration = :duration,
+        albumArtist = :albumArtist
+    WHERE artistId = :artistId AND name = :name;
+
+    INSERT OR IGNORE
+    INTO track(artistId, albumId, name, duration, albumArtist)
+    VALUES (:artistId, :albumId, :name, :duration, :albumArtist);
 }
 
 upsertLovedTrack {

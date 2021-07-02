@@ -63,7 +63,7 @@ data class PageAttributes(
 
 @Serializable
 data class LibraryItem(
-    var date: Date? = null,
+    val date: Date? = null,
     val url: String? = null,
     val mbid: String? = null,
     val name: String? = null,

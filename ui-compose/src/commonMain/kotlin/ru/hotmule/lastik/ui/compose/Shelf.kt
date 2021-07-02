@@ -10,6 +10,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.FavoriteBorder
+import androidx.compose.material.icons.rounded.Sync
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
@@ -123,17 +124,32 @@ private fun ShelfItemContent(
                 }
             }
 
-            Image(
-                painter = remoteImagePainter(item.image),
-                contentDescription = "artwork",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .align(Alignment.CenterVertically)
-                    .width(50.dp)
-                    .height(50.dp)
-                    .clip(shape = RoundedCornerShape(8))
-                    .background(Color.LightGray)
-            )
+            if (item.savedRemote == false) {
+
+                Icon(
+                    contentDescription = "savedRemote",
+                    imageVector = Icons.Rounded.Sync,
+                    tint = Color.LightGray,
+                    modifier = Modifier
+                        .align(Alignment.CenterVertically)
+                        .width(50.dp)
+                        .height(50.dp)
+                )
+
+            } else {
+
+                Image(
+                    painter = remoteImagePainter(item.image),
+                    contentDescription = "artwork",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .align(Alignment.CenterVertically)
+                        .width(50.dp)
+                        .height(50.dp)
+                        .clip(shape = RoundedCornerShape(8))
+                        .background(Color.LightGray)
+                )
+            }
 
             Column(
                 modifier = Modifier

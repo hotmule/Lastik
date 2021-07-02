@@ -12,7 +12,8 @@ interface ShelfComponent {
         val hint: String? = null,
         val rank: Int? = null,
         val playCount: Long? = null,
-        val loved: Boolean? = null
+        val loved: Boolean? = null,
+        val savedRemote: Boolean? = null
     )
 
     data class Model(

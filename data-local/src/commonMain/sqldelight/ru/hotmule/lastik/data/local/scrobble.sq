@@ -2,22 +2,25 @@ CREATE TABLE scrobble (
     id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     trackId INTEGER NOT NULL,
     listenedAt INTEGER NOT NULL,
+    savedRemote INTEGER AS Boolean DEFAULT 0,
     UNIQUE (trackId, listenedAt),
     FOREIGN KEY (trackId) REFERENCES track(id) ON DELETE CASCADE
 );
 
 getScrobblesCount:
-SELECT COUNT(id) FROM scrobble;
+SELECT COUNT(id) FROM scrobble WHERE savedRemote = 1;
 
 insert:
-INSERT OR IGNORE INTO scrobble(trackId, listenedAt) VALUES (:trackId, :listenedAt);
+INSERT OR IGNORE INTO scrobble(trackId, listenedAt, savedRemote)
+VALUES (:trackId, :listenedAt, :savedRemote);
 
-deleteAll:
-DELETE FROM scrobble;
+deleteRemote:
+DELETE FROM scrobble WHERE savedRemote = 1;
 
 scrobbleData:
 SELECT
     s.listenedAt,
+    s.savedRemote,
     t.loved,
     t.name AS track,
     ar.name AS artist,

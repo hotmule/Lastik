@@ -11,7 +11,10 @@ import kotlinx.coroutines.withContext
 import kotlinx.datetime.Clock
 import ru.hotmule.lastik.data.local.LastikDatabase
 import ru.hotmule.lastik.data.remote.api.TrackApi
+import ru.hotmule.lastik.data.remote.entities.Image
+import ru.hotmule.lastik.data.remote.entities.LibraryItem
 import ru.hotmule.lastik.data.sdk.prefs.PrefsStore
+import ru.hotmule.lastik.feature.app.NowPlayingComponent
 import ru.hotmule.lastik.feature.app.store.NowPlayingStore.*
 import ru.hotmule.lastik.utils.AppCoroutineDispatcher
 
@@ -81,14 +84,63 @@ internal class NowPlayingStoreFactory(
                                         }
 
                                         delay(delayMillis)
-
-                                        Clock.System.now().epochSeconds
+                                        saveScrobble(getState().track)
                                     }
                                 }
                             }
                         }
                     }
                 }
+            }
+        }
+
+        private fun saveScrobble(track: NowPlayingComponent.Track?) {
+            track?.let {
+                val artistId = insertArtist(it.artist)
+                val albumId = insertAlbum(artistId, it.album)
+                val trackId = insertTrack(artistId, albumId, it.name, it.duration, it.albumArtist)
+                insertScrobble(trackId, Clock.System.now().epochSeconds)
+            }
+        }
+
+        private fun insertArtist(
+            name: String?
+        ) = if (name != null) {
+            with(db.artistQueries) {
+                insert(name)
+                getId(name).executeAsOneOrNull()
+            }
+        } else null
+
+        private fun insertAlbum(
+            artistId: Long?,
+            name: String?
+        ) = if (artistId != null && name != null) {
+            with(db.albumQueries) {
+                insert(artistId, name, null, null)
+                getId(artistId, name).executeAsOneOrNull()
+            }
+        } else null
+
+        private fun insertTrack(
+            artistId: Long?,
+            albumId: Long?,
+            name: String?,
+            duration: Long?,
+            albumArtist: String?
+        ) = if (artistId != null && name != null) {
+            with(db.trackQueries) {
+                upsertLocalTrack(albumId, duration, albumArtist, artistId, name)
+                getId(artistId, name).executeAsOneOrNull()
+            }
+        } else null
+
+        private fun insertScrobble(
+            trackId: Long?,
+            trackDate: Long?
+        ) {
+            if (trackId != null && trackDate != null) {
+                db.scrobbleQueries.insert(trackId, trackDate, false)
             }
         }
     }

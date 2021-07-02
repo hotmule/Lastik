@@ -64,7 +64,7 @@ internal class ShelfStoreRepository(
 
     private fun clearItems() {
         when (index) {
-            0 -> database.scrobbleQueries.deleteAll()
+            0 -> database.scrobbleQueries.deleteRemote()
             1, 2, 3 -> database.topQueries.deleteTop(index.toLong(), getShelfPeriod(index).toLong())
             4 -> database.trackQueries.dropLovedTrackDates()
         }
@@ -97,10 +97,8 @@ internal class ShelfStoreRepository(
                     title = it.track ?: "",
                     subtitle = it.artist,
                     loved = it.loved,
-                    hint = if (it.listenedAt != 0L)
-                        Formatter.utsDateToString(it.listenedAt, "d MMM, HH:mm")
-                    else
-                        "Scrobbling now",
+                    hint = Formatter.utsDateToString(it.listenedAt, "d MMM, HH:mm"),
+                    savedRemote = it.savedRemote
                 )
             }
         }
@@ -174,10 +172,6 @@ internal class ShelfStoreRepository(
         }
 
     private fun saveScrobble(scrobble: LibraryItem) {
-
-        if (scrobble.date?.uts == null && scrobble.attributes?.nowPlaying == "true")
-            scrobble.date = Date(0)
-
         val artistId = insertArtist(scrobble.artist?.name)
         val albumId = insertAlbum(artistId, scrobble.album?.text, scrobble.images)
         val trackId = upsertScrobbleTrack(artistId, albumId, scrobble.name, scrobble.loved)
@@ -217,7 +211,7 @@ internal class ShelfStoreRepository(
         trackDate: Long?
     ) {
         if (trackId != null && trackDate != null) {
-            database.scrobbleQueries.insert(trackId, trackDate)
+            database.scrobbleQueries.insert(trackId, trackDate, true)
         }
     }
 
