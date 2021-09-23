@@ -5,10 +5,6 @@ Kotlin Multiplatform + Jetpack Compose for Desktop pet project, based on www.las
 - Android - primary
 - Desktop - not for use, only as a Proof of Concept
 
-### Screenshots
-<img src="screenshots/resents.jpg" width="275px"> <img src="screenshots/albums.jpg" width="275px"> <img src="screenshots/profile.jpg" width="275px">
-<img src="screenshots/desktop.png" width="835px">
-
 ### Used libraries
 
 - Architecture
@@ -33,3 +29,7 @@ Kotlin Multiplatform + Jetpack Compose for Desktop pet project, based on www.las
     - [Krypto](https://github.com/korlibs/krypto)
     - [Chrome Custom Tabs](https://developer.chrome.com/docs/android/custom-tabs/overview/)
     - [Gradle Versions Plugin](https://github.com/ben-manes/gradle-versions-plugin)
+
+### Screenshots
+<img src="screenshots/resents.jpg" width="275px"> <img src="screenshots/albums.jpg" width="275px"> <img src="screenshots/profile.jpg" width="275px">
+<img src="screenshots/desktop.png" width="835px">
