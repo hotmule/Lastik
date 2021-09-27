@@ -16,7 +16,7 @@ Kotlin Multiplatform + Jetpack Compose for Desktop pet project, based on www.las
     - [SQLDelight](https://github.com/cashapp/sqldelight)
     - [Multiplatform Settings](https://github.com/russhwolf/multiplatform-settings)
 - UI
-    - [Compose for Desktop](https://github.com/jetbrains/compose-jb)
+    - [Compose Multiplatform](https://github.com/jetbrains/compose-jb)
     - [Accompanist](https://github.com/google/accompanist)
         - [Coil](https://github.com/google/accompanist/tree/main/coil)
         - [Insets](https://github.com/google/accompanist/tree/main/insets)  
