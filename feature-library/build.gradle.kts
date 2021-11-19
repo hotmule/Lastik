@@ -11,6 +11,7 @@ kotlin {
                 implementation(project(Module.Feature.profile))
                 implementation(project(Module.Feature.scrobbles))
                 implementation(project(Module.Feature.nowPlaying))
+                implementation(Libs.ArkIvanov.Essenty.parcelable)
             }
         }
     }

@@ -1,6 +1,6 @@
 package ru.hotmule.lastik.feature.library
 
-import com.arkivanov.decompose.RouterState
+import com.arkivanov.decompose.router.RouterState
 import com.arkivanov.decompose.value.Value
 import ru.hotmule.lastik.feature.app.NowPlayingComponent
 import ru.hotmule.lastik.feature.profile.ProfileComponent

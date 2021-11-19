@@ -1,6 +1,5 @@
 package ru.hotmule.lastik.data.remote
 
-import co.touchlab.kermit.Kermit
 import io.ktor.client.*
 import io.ktor.client.features.*
 import io.ktor.client.features.json.*
@@ -16,8 +15,7 @@ import ru.hotmule.lastik.data.sdk.prefs.PrefsStore
 
 class LastikHttpClientFactory(
     private val engineFactory: EngineFactory,
-    private val prefsStore: PrefsStore,
-    private val kermit: Kermit
+    private val prefsStore: PrefsStore
 ) {
     fun create() = HttpClient(engineFactory.create()) {
 
@@ -28,9 +26,9 @@ class LastikHttpClientFactory(
                 level = LogLevel.ALL
                 logger = object : Logger {
                     override fun log(message: String) {
-                        kermit.d("Ktor") {
-                            message
-                        }
+                        co.touchlab.kermit.Logger
+                            .withTag("Ktor")
+                            .d { message }
                     }
                 }
             }

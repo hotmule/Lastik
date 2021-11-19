@@ -23,7 +23,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.jetbrains.Children
-import com.arkivanov.decompose.extensions.compose.jetbrains.asState
+import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import ru.hotmule.lastik.feature.app.NowPlayingComponent.*
 import ru.hotmule.lastik.feature.library.LibraryComponent
 import ru.hotmule.lastik.feature.library.LibraryComponent.*
@@ -169,7 +169,7 @@ private fun LibraryBottomBar(
     bottomInset: Dp,
     modifier: Modifier = Modifier
 ) {
-    val activeIndex by component.activeChildIndex.asState()
+    val activeIndex by component.activeChildIndex.subscribeAsState()
 
     BottomNavigation(
         modifier = modifier.height(Res.Dimen.barHeight + bottomInset)

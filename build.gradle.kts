@@ -4,9 +4,9 @@ plugins {
 
 buildscript {
     repositories {
-        google()
-        jcenter()
+        mavenCentral()
         maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
+        google()
     }
     dependencies {
         classpath(Libs.gradle)
@@ -18,9 +18,9 @@ buildscript {
 
 allprojects {
     repositories {
-        google()
-        jcenter()
+        mavenCentral()
         maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
+        google()
     }
 }
 

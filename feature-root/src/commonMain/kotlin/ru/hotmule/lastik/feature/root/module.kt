@@ -1,6 +1,5 @@
 package ru.hotmule.lastik.feature.root
 
-import co.touchlab.kermit.Kermit
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
 import org.kodein.di.DI
@@ -21,7 +20,6 @@ val rootComponentModule = DI.Module("rootComponent") {
     import(authComponentModule)
     import(libraryComponentModule)
 
-    bindSingleton { Kermit() }
     bindSingleton { DefaultStoreFactory }
 
     bindFactory<ComponentContext, RootComponent> { componentContext ->

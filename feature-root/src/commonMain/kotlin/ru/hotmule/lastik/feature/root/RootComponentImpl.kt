@@ -1,9 +1,12 @@
 package ru.hotmule.lastik.feature.root
 
 import com.arkivanov.decompose.*
-import com.arkivanov.decompose.statekeeper.Parcelable
-import com.arkivanov.decompose.statekeeper.Parcelize
+import com.arkivanov.decompose.router.RouterState
+import com.arkivanov.decompose.router.replaceCurrent
+import com.arkivanov.decompose.router.router
 import com.arkivanov.decompose.value.Value
+import com.arkivanov.essenty.parcelable.Parcelable
+import com.arkivanov.essenty.parcelable.Parcelize
 import org.kodein.di.*
 import ru.hotmule.lastik.feature.auth.AuthComponent
 import ru.hotmule.lastik.feature.library.LibraryComponent

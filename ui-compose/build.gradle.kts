@@ -1,5 +1,3 @@
-import org.jetbrains.compose.compose
-
 plugins {
     id("lastik-multiplatform")
     id("org.jetbrains.compose") version Libs.AndroidX.Compose.version

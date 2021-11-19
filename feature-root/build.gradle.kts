@@ -16,8 +16,8 @@ kotlin {
                 implementation(project(Module.Feature.auth))
                 implementation(project(Module.Feature.library))
 
-                implementation(Libs.Kermit.common)
                 implementation(Libs.ArkIvanov.MVIKotlin.main)
+                implementation(Libs.ArkIvanov.Essenty.parcelable)
             }
         }
     }

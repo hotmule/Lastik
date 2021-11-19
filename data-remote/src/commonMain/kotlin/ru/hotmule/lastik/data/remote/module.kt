@@ -14,7 +14,7 @@ val remoteDataModule = DI.Module("remoteData") {
 
     bindSingleton { Credentials() }
     bindSingleton { EngineFactory(di) }
-    bindSingleton { LastikHttpClientFactory(instance(), instance(), instance()).create() }
+    bindSingleton { LastikHttpClientFactory(instance(), instance()).create() }
 
     bindSingleton { AuthApi(instance(), instance()) }
     bindSingleton { UserApi(instance(), instance(), instance()) }

@@ -1,6 +1,6 @@
 package ru.hotmule.lastik.feature.profile
 
-import com.arkivanov.decompose.RouterState
+import com.arkivanov.decompose.router.RouterState
 import com.arkivanov.decompose.value.Value
 import ru.hotmule.lastik.feature.settings.SettingsComponent
 import ru.hotmule.lastik.feature.user.UserComponent

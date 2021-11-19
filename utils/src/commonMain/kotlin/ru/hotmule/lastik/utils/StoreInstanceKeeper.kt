@@ -1,7 +1,7 @@
 package ru.hotmule.lastik.utils
 
-import com.arkivanov.decompose.instancekeeper.InstanceKeeper
-import com.arkivanov.decompose.instancekeeper.getOrCreate
+import com.arkivanov.essenty.instancekeeper.InstanceKeeper
+import com.arkivanov.essenty.instancekeeper.getOrCreate
 import com.arkivanov.mvikotlin.core.store.Store
 
 fun <T : Store<*, *, *>> InstanceKeeper.getStore(key: Any, factory: () -> T): T =

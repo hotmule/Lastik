@@ -9,6 +9,7 @@ kotlin {
             dependencies {
                 implementation(project(Module.Feature.user))
                 implementation(project(Module.Feature.settings))
+                implementation(Libs.ArkIvanov.Essenty.parcelable)
             }
         }
     }

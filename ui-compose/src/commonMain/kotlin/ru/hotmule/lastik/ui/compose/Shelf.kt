@@ -26,6 +26,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import ru.hotmule.lastik.feature.shelf.ShelfComponent
 import ru.hotmule.lastik.feature.shelf.ShelfComponent.*
@@ -37,33 +38,36 @@ fun ShelfContent(
     header: @Composable () -> Unit = { },
     onRefreshHeader: () -> Unit = { }
 ) {
-    val model by component.model.collectAsState(Model())
-    val scrobbleWidth = provideScrobbleWidth(model.items.firstOrNull()?.playCount)
+    BoxWithConstraints {
 
-    Refreshable(
-        isRefreshing = model.isRefreshing,
-        onRefresh = {
-            component.onRefreshItems()
-            onRefreshHeader()
-        }
-    ) {
-        LazyColumn(
-            modifier = Modifier.fillMaxSize()
+        val model by component.model.collectAsState(Model())
+        val scrobbleWidth = maxWidth / (model.items.firstOrNull()?.playCount?.toInt() ?: 1)
+
+        Refreshable(
+            isRefreshing = model.isRefreshing,
+            onRefresh = {
+                component.onRefreshItems()
+                onRefreshHeader()
+            }
         ) {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize()
+            ) {
 
-            item { header() }
+                item { header() }
 
-            itemsIndexed(model.items) { index, item ->
+                itemsIndexed(model.items) { index, item ->
 
-                ShelfItemContent(
-                    item = item,
-                    scrobbleWidth = scrobbleWidth,
-                    onLove = component::onMakeLove
-                )
+                    ShelfItemContent(
+                        item = item,
+                        scrobbleWidth = scrobbleWidth,
+                        onLove = component::onMakeLove
+                    )
 
-                if (index == model.items.lastIndex) {
-                    AdditionalProgress(model.isMoreLoading)
-                    component.onLoadMoreItems()
+                    if (index == model.items.lastIndex) {
+                        AdditionalProgress(model.isMoreLoading)
+                        component.onLoadMoreItems()
+                    }
                 }
             }
         }
@@ -73,7 +77,7 @@ fun ShelfContent(
 @Composable
 private fun ShelfItemContent(
     item: ShelfItem,
-    scrobbleWidth: Float,
+    scrobbleWidth: Dp,
     onLove: (String, String?, Boolean) -> Unit
 ) {
     Box(
@@ -88,7 +92,7 @@ private fun ShelfItemContent(
                 color = MaterialTheme.colors.primary.copy(alpha = 0.1f),
                 modifier = Modifier
                     .fillMaxHeight()
-                    .width((scrobbleWidth * it).dp)
+                    .width(scrobbleWidth * it.toInt())
                     .align(Alignment.CenterEnd)
             )
         }
@@ -201,12 +205,6 @@ private fun ShelfItemContent(
 }
 
 @Composable
-private fun provideScrobbleWidth(playCount: Long?): Float {
-    val widthInPx = if (playCount != null) getScreenWidth() / playCount.toFloat() else 0f
-    return widthInPx / LocalDensity.current.density
-}
-
-@Composable
 private fun AdditionalProgress(
     isLoading: Boolean
 ) {
@@ -232,5 +230,3 @@ expect fun Refreshable(
 
 @Composable
 expect fun remoteImagePainter(url: String): Painter
-
-expect fun getScreenWidth(): Int

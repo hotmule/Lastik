@@ -6,7 +6,7 @@ import androidx.compose.runtime.Composable
 import ru.hotmule.lastik.ui.compose.res.Res
 
 @Composable
-fun AndroidLastikTheme(
+fun LastikTheme(
     content: @Composable () -> Unit
 ) {
     MaterialTheme(
