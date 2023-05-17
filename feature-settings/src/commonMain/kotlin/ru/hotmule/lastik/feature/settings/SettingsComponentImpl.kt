@@ -1,13 +1,13 @@
 package ru.hotmule.lastik.feature.settings
 
 import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import com.arkivanov.mvikotlin.extensions.coroutines.states
 import kotlinx.coroutines.flow.map
 import org.kodein.di.*
 import ru.hotmule.lastik.feature.settings.SettingsComponent.*
 import ru.hotmule.lastik.feature.settings.store.SettingsStore.*
 import ru.hotmule.lastik.feature.settings.store.SettingsStoreFactory
-import ru.hotmule.lastik.utils.getStore
 
 internal class SettingsComponentImpl(
     override val directDI: DirectDI,

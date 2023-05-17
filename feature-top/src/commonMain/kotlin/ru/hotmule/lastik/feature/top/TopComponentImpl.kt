@@ -2,6 +2,7 @@ package ru.hotmule.lastik.feature.top
 
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.childContext
+import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import com.arkivanov.mvikotlin.extensions.coroutines.states
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -11,7 +12,6 @@ import ru.hotmule.lastik.feature.shelf.ShelfComponentParams
 import ru.hotmule.lastik.feature.top.TopComponent.*
 import ru.hotmule.lastik.feature.top.store.TopStore
 import ru.hotmule.lastik.feature.top.store.TopStoreFactory
-import ru.hotmule.lastik.utils.getStore
 
 internal class TopComponentImpl(
     override val di: DI,

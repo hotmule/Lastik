@@ -20,7 +20,7 @@ val rootComponentModule = DI.Module("rootComponent") {
     import(authComponentModule)
     import(libraryComponentModule)
 
-    bindSingleton { DefaultStoreFactory }
+    bindSingleton { DefaultStoreFactory() }
 
     bindFactory<ComponentContext, RootComponent> { componentContext ->
         RootComponentImpl(di, componentContext)

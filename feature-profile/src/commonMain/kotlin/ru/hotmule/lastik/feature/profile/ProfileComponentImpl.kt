@@ -1,10 +1,7 @@
 package ru.hotmule.lastik.feature.profile
 
 import com.arkivanov.decompose.*
-import com.arkivanov.decompose.router.RouterState
-import com.arkivanov.decompose.router.pop
-import com.arkivanov.decompose.router.push
-import com.arkivanov.decompose.router.router
+import com.arkivanov.decompose.router.stack.*
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.Parcelize
@@ -23,9 +20,11 @@ internal class ProfileComponentImpl(
     private val user by factory<UserComponentParams, UserComponent>()
     private val settings by factory<SettingsComponentParams, SettingsComponent>()
 
-    private val router = router<Config, Child>(
+    private val navigation = StackNavigation<Config>()
+    private val _stack = childStack(
+        source = navigation,
         initialConfiguration = Config.User,
-        handleBackButton = true
+        handleBackButton = true,
     ) { configuration, componentContext ->
         when (configuration) {
             is Config.User -> Child.User(user(UserComponentParams(
@@ -40,14 +39,14 @@ internal class ProfileComponentImpl(
     }
 
     private fun goToSettings() {
-        router.push(Config.Settings)
+        navigation.push(Config.Settings)
     }
 
     private fun goBack() {
-        router.pop()
+        navigation.pop()
     }
 
-    override val routerState: Value<RouterState<*, Child>> = router.state
+    override val stack: Value<ChildStack<*, Child>> = _stack
 
     private sealed class Config : Parcelable {
         @Parcelize object User : Config()

@@ -1,6 +1,6 @@
 package ru.hotmule.lastik.feature.library
 
-import com.arkivanov.decompose.router.RouterState
+import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.value.Value
 import ru.hotmule.lastik.feature.app.NowPlayingComponent
 import ru.hotmule.lastik.feature.profile.ProfileComponent
@@ -19,7 +19,7 @@ interface LibraryComponent {
         data class Profile(val component: ProfileComponent) : Child(4)
     }
 
-    val routerState: Value<RouterState<*, Child>>
+    val stack: Value<ChildStack<*, Child>>
 
     val activeChildIndex: Value<Int>
 

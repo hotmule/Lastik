@@ -2,6 +2,7 @@ package ru.hotmule.lastik.feature.user
 
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.childContext
+import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import com.arkivanov.mvikotlin.extensions.coroutines.states
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -10,7 +11,6 @@ import ru.hotmule.lastik.feature.menu.MenuComponent
 import ru.hotmule.lastik.feature.menu.MenuComponentParams
 import ru.hotmule.lastik.feature.shelf.ShelfComponent
 import ru.hotmule.lastik.feature.shelf.ShelfComponentParams
-import ru.hotmule.lastik.utils.getStore
 import ru.hotmule.lastik.feature.user.UserComponent.Model
 import ru.hotmule.lastik.feature.user.store.UserStore.*
 import ru.hotmule.lastik.feature.user.store.UserStoreFactory

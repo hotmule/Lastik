@@ -1,6 +1,5 @@
 package ru.hotmule.lastik.ui.compose
 
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -15,27 +14,26 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.arkivanov.decompose.extensions.compose.jetbrains.Children
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import ru.hotmule.lastik.feature.app.NowPlayingComponent.*
 import ru.hotmule.lastik.feature.library.LibraryComponent
 import ru.hotmule.lastik.feature.library.LibraryComponent.*
 import ru.hotmule.lastik.ui.compose.res.Res
+import ru.hotmule.lastik.ui.compose.utils.asComposeBitmap
+import ru.hotmule.lastik.ui.compose.utils.navigationBarHeight
+import ru.hotmule.lastik.ui.compose.utils.navigationBarPadding
 import ru.hotmule.lastik.utils.Bitmap
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun LibraryContent(
     component: LibraryComponent,
-    topInset: Dp,
-    bottomInset: Dp
 ) {
     val model by component.nowPlayingComponent.model.collectAsState(Model())
 
@@ -46,11 +44,10 @@ fun LibraryContent(
         )
 
         BottomSheetScaffold(
-            modifier = Modifier.padding(bottom = Res.Dimen.barHeight + bottomInset),
+            modifier = Modifier.padding(bottom = Res.Dimen.barHeight + WindowInsets.navigationBarHeight),
             content = {
                 LibraryBody(
                     component = component,
-                    topInset = topInset
                 )
             },
             scaffoldState = bottomSheetScaffoldState,
@@ -67,7 +64,6 @@ fun LibraryContent(
 
         LibraryBottomBar(
             component = component,
-            bottomInset = bottomInset,
             modifier = Modifier.align(Alignment.BottomCenter)
         )
     }
@@ -76,22 +72,20 @@ fun LibraryContent(
 @Composable
 private fun LibraryBody(
     component: LibraryComponent,
-    topInset: Dp
 ) {
-    Children(component.routerState) {
+    Children(component.stack) {
         it.instance.let { child ->
             when (child) {
-                is Child.Scrobbles -> ScrobblesContent(child.component, topInset)
-                is Child.Artists -> TopContent(child.component, topInset)
-                is Child.Albums -> TopContent(child.component, topInset)
-                is Child.Tracks -> TopContent(child.component, topInset)
-                is Child.Profile -> ProfileContent(child.component, topInset)
+                is Child.Scrobbles -> ScrobblesContent(child.component)
+                is Child.Artists -> TopContent(child.component)
+                is Child.Albums -> TopContent(child.component)
+                is Child.Tracks -> TopContent(child.component)
+                is Child.Profile -> ProfileContent(child.component)
             }
         }
     }
 }
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 private fun NowPlayingContent(
     isCollapsed: Boolean,
@@ -166,19 +160,18 @@ private fun NowPlayingContent(
 @Composable
 private fun LibraryBottomBar(
     component: LibraryComponent,
-    bottomInset: Dp,
     modifier: Modifier = Modifier
 ) {
     val activeIndex by component.activeChildIndex.subscribeAsState()
 
     BottomNavigation(
-        modifier = modifier.height(Res.Dimen.barHeight + bottomInset)
+        modifier = modifier.height(Res.Dimen.barHeight + WindowInsets.navigationBarHeight)
     ) {
         Res.Array.shelves.forEachIndexed { index, shelfTitle ->
             BottomNavigationItem(
                 onClick = { component.onShelfSelect(index) },
                 selected = index == activeIndex,
-                modifier = Modifier.padding(bottom = bottomInset),
+                modifier = Modifier.navigationBarPadding(),
                 label = { Text(shelfTitle) },
                 icon = {
                     Icon(
@@ -190,5 +183,3 @@ private fun LibraryBottomBar(
         }
     }
 }
-
-expect fun Bitmap?.asComposeBitmap(): ImageBitmap?

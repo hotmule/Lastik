@@ -1,6 +1,7 @@
 package ru.hotmule.lastik.data.remote.api
 
 import io.ktor.client.*
+import io.ktor.client.call.*
 import io.ktor.client.request.*
 import ru.hotmule.lastik.data.sdk.prefs.PrefsStore
 import ru.hotmule.lastik.data.remote.Credentials
@@ -34,7 +35,7 @@ class TrackApi(
         track: String,
         artist: String,
         loved: Boolean
-    ) = client.post<Any?> {
+    ) = client.post {
         trackApi(
             if (loved) "love" else "unlove",
             mapOf(
@@ -42,7 +43,7 @@ class TrackApi(
                 "artist" to artist
             )
         )
-    }
+    }.body<Any?>()
 
     suspend fun updateNowPlaying(
         track: String,
@@ -50,7 +51,7 @@ class TrackApi(
         album: String? = null,
         duration: Long? = null,
         albumArtist: String? = null
-    ) = client.post<NowPlayingResponse?> {
+    ) = client.post {
         trackApi(
             "updateNowPlaying",
             mapOf(
@@ -61,5 +62,5 @@ class TrackApi(
                 "albumArtist" to albumArtist
             )
         )
-    }
+    }.body<NowPlayingResponse?>()
 }

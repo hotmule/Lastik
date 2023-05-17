@@ -18,6 +18,15 @@ android {
 
     compileSdk = Sdk.Version.compile
     buildToolsVersion = Sdk.Version.buildTools
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = "17"
+    }
 }
 
 dependencies {
@@ -28,7 +37,6 @@ dependencies {
 
     implementation(compose.runtime)
     implementation(Libs.Kodein.android)
-    implementation(Libs.Accompanist.insets)
 
     implementation(Libs.AndroidX.appCompat)
     implementation(Libs.AndroidX.Compose.activity)

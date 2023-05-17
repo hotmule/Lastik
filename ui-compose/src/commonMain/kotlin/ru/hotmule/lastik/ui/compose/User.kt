@@ -1,5 +1,6 @@
 package ru.hotmule.lastik.ui.compose
 
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -8,7 +9,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Menu
+import androidx.compose.material.icons.rounded.Logout
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
@@ -18,27 +19,28 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ru.hotmule.lastik.feature.menu.MenuComponent
 import ru.hotmule.lastik.ui.compose.res.Res
 import ru.hotmule.lastik.feature.user.UserComponent
 import ru.hotmule.lastik.feature.user.UserComponent.*
+import ru.hotmule.lastik.ui.compose.utils.remoteImagePainter
+import ru.hotmule.lastik.ui.compose.utils.statusBarHeight
+import ru.hotmule.lastik.ui.compose.utils.statusBarPadding
 
 @Composable
 fun UserContent(
     component: UserComponent,
-    topInset: Dp
 ) {
     val model by component.model.collectAsState(Model())
 
     Scaffold(
         topBar = {
             UserTopBar(
-                topInset = topInset,
                 username = model.info.username,
-                onMenu = component.menuComponent::onMenu
+                onLogOut = component.menuComponent::onLogOut,
+                //onMenu = component.menuComponent::onMenu
             )
         },
         content = {
@@ -49,44 +51,51 @@ fun UserContent(
 
 @Composable
 private fun UserTopBar(
-    topInset: Dp,
     username: String,
-    onMenu: () -> Unit
+    onLogOut: () -> Unit,
+    //onMenu: () -> Unit
 ) {
     TopAppBar(
-        modifier = Modifier.height(Res.Dimen.barHeight + topInset),
+        modifier = Modifier.height(
+            Res.Dimen.barHeight + WindowInsets.statusBarHeight
+        ),
         title = {
             Text(
-                modifier = Modifier.padding(top = topInset),
+                modifier = Modifier.statusBarPadding(),
                 text = username
             )
         },
         actions = {
             IconButton(
-                modifier = Modifier.padding(top = topInset),
-                onClick = onMenu
+                modifier = Modifier.statusBarPadding(),
+                onClick = onLogOut,
+                //onClick = onMenu,
             ) {
                 Icon(
-                    imageVector = Icons.Rounded.Menu,
+                    tint = Color.White,
+                    imageVector = Icons.Rounded.Logout,
                     contentDescription = "Menu",
-                    tint = Color.White
+                    //imageVector = Icons.Rounded.Menu,
+                    //contentDescription = "LogOut",
                 )
             }
         }
     )
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun UserBody(
     model: Model,
     component: UserComponent
 ) {
     val menuModel by component.menuComponent.model.collectAsState(MenuComponent.Model())
+    val menuWidth by animateDpAsState(if (menuModel.isMenuOpened) 250.dp else 0.dp)
 
     Box {
 
         Box(
-            modifier = if (menuModel.isMenuOpened) Modifier.offset(x = (-250).dp) else Modifier
+            modifier = Modifier.offset(x = -(menuWidth))
         ) {
             ShelfContent(
                 component = component.lovedTracksComponent,
@@ -101,11 +110,11 @@ private fun UserBody(
             )
         }
 
-        if (menuModel.isMenuOpened) {
+        if (menuWidth > 0.dp) {
             MenuContent(
                 component = component.menuComponent,
                 modifier = Modifier
-                    .width(250.dp)
+                    .width(menuWidth)
                     .fillMaxHeight()
                     .align(Alignment.CenterEnd)
             )
@@ -130,15 +139,6 @@ private fun UserBody(
         }
     }
 }
-
-@Composable
-expect fun AlertDialog(
-    title: @Composable (() -> Unit)?,
-    text: @Composable (() -> Unit)?,
-    onDismissRequest: () -> Unit,
-    confirmButton: @Composable () -> Unit,
-    dismissButton: @Composable (() -> Unit)?
-)
 
 @Composable
 private fun UserInfo(

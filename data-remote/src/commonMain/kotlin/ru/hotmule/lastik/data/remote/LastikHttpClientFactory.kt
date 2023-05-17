@@ -1,12 +1,12 @@
 package ru.hotmule.lastik.data.remote
 
 import io.ktor.client.*
-import io.ktor.client.features.*
-import io.ktor.client.features.json.*
-import io.ktor.client.features.json.serializer.*
-import io.ktor.client.features.logging.*
+import io.ktor.client.plugins.*
+import io.ktor.client.plugins.contentnegotiation.*
+import io.ktor.client.plugins.logging.*
+import io.ktor.client.statement.*
 import io.ktor.http.*
-import io.ktor.utils.io.*
+import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.jsonObject
@@ -34,9 +34,9 @@ class LastikHttpClientFactory(
             }
         }
 
-        install(JsonFeature) {
-            serializer = KotlinxSerializer(
-                kotlinx.serialization.json.Json {
+        install(ContentNegotiation) {
+            json(
+                Json {
                     ignoreUnknownKeys = true
                 }
             )
@@ -58,22 +58,20 @@ class LastikHttpClientFactory(
 
                             var errorMessage = "Unknown error"
 
-                            it.content.readUTF8Line()?.let { error ->
-                                Json.parseToJsonElement(error)
-                                    .jsonObject["message"]
-                                    ?.jsonPrimitive
-                                    ?.contentOrNull
-                                    ?.let { message -> errorMessage = message }
-                            }
+                            Json.parseToJsonElement(it.bodyAsText())
+                                .jsonObject["message"]
+                                ?.jsonPrimitive
+                                ?.contentOrNull
+                                ?.let { message -> errorMessage = message }
 
                             error(errorMessage)
                         }
                     }
                 }
+            }
 
-                handleResponseException { throwable ->
-                    error(throwable.message ?: "Unknown Error")
-                }
+            handleResponseExceptionWithRequest { cause, _ ->
+                error(cause.message ?: "Unknown Error")
             }
         }
     }

@@ -10,7 +10,7 @@ kotlin {
                 implementation(Libs.Kodein.common)
                 implementation(Libs.Settings.common)
                 implementation(Libs.Settings.coroutines)
-                implementation(Libs.Kotlin.coroutines)
+                implementation(Libs.Kotlin.Coroutines.common)
                 implementation(Libs.Kotlin.Serialization.json)
             }
         }

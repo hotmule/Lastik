@@ -1,9 +1,7 @@
 package ru.hotmule.lastik.feature.library
 
 import com.arkivanov.decompose.*
-import com.arkivanov.decompose.router.RouterState
-import com.arkivanov.decompose.router.push
-import com.arkivanov.decompose.router.router
+import com.arkivanov.decompose.router.stack.*
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.operator.map
 import com.arkivanov.essenty.parcelable.Parcelable
@@ -27,7 +25,9 @@ internal class LibraryComponentImpl(
 
     override val nowPlayingComponent by instance<NowPlayingComponent>()
 
-    private val router = router<Config, Child>(
+    private val navigation = StackNavigation<Config>()
+    private val _stack = childStack(
+        source = navigation,
         initialConfiguration = Config.Scrobbles
     ) { configuration, componentContext ->
         when (configuration) {
@@ -39,14 +39,14 @@ internal class LibraryComponentImpl(
         }
     }
 
-    override val routerState: Value<RouterState<*, Child>> = router.state
+    override val stack: Value<ChildStack<*, Child>> = _stack
 
-    override val activeChildIndex: Value<Int> = routerState.map {
-        it.activeChild.instance.index
+    override val activeChildIndex: Value<Int> = stack.map {
+        it.active.instance.index
     }
 
     override fun onShelfSelect(index: Int) {
-        router.push(
+        navigation.bringToFront(
             when (index) {
                 0 -> Config.Scrobbles
                 1 -> Config.Artists

@@ -1,6 +1,7 @@
 package ru.hotmule.lastik.feature.shelf
 
 import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import com.arkivanov.mvikotlin.extensions.coroutines.states
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -11,7 +12,6 @@ import ru.hotmule.lastik.feature.shelf.ShelfComponent.*
 import ru.hotmule.lastik.feature.shelf.store.ShelfStoreRepository
 import ru.hotmule.lastik.feature.shelf.store.ShelfStore.*
 import ru.hotmule.lastik.feature.shelf.store.ShelfStoreFactory
-import ru.hotmule.lastik.utils.getStore
 
 internal class ShelfComponentImpl(
     override val directDI: DirectDI,

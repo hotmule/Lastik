@@ -1,6 +1,7 @@
 package ru.hotmule.lastik.data.remote.api
 
 import io.ktor.client.*
+import io.ktor.client.call.*
 import io.ktor.client.request.*
 import ru.hotmule.lastik.data.remote.Credentials
 import ru.hotmule.lastik.data.remote.entities.SessionResponse
@@ -29,17 +30,17 @@ class AuthApi(
 
     suspend fun getSession(
         token: String
-    ) = client.get<SessionResponse?> {
+    ) = client.get {
         authApi(
             "getSession",
             mapOf("token" to token)
         )
-    }
+    }.body<SessionResponse?>()
 
     suspend fun getMobileSession(
         login: String,
         password: String
-    ) = client.post<SessionResponse?> {
+    ) = client.post {
         authApi(
             "getMobileSession",
             mapOf(
@@ -47,5 +48,5 @@ class AuthApi(
                 "password" to password
             )
         )
-    }
+    }.body<SessionResponse?>()
 }

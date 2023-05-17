@@ -1,9 +1,6 @@
 package ru.hotmule.lastik.ui.compose
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -15,23 +12,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.flow.collect
 import ru.hotmule.lastik.feature.auth.AuthComponent
 import ru.hotmule.lastik.ui.compose.res.Res
+import ru.hotmule.lastik.ui.compose.utils.navigationBarPadding
+import ru.hotmule.lastik.ui.compose.utils.statusBarHeight
+import ru.hotmule.lastik.ui.compose.utils.statusBarPadding
 
 @Composable
 fun AuthContent(
     component: AuthComponent,
-    topInset: Dp,
-    bottomInset: Dp
 ) {
     Scaffold(
         topBar = {
-            AuthBar(
-                topInset = topInset
-            )
+            AuthBar()
         },
         content = {
             AuthBody(
@@ -42,24 +36,21 @@ fun AuthContent(
             AuthMessage(
                 hostState = hostState,
                 component = component,
-                bottomInset = bottomInset
             )
         }
     )
 }
 
 @Composable
-private fun AuthBar(
-    topInset: Dp
-) {
+private fun AuthBar() {
     TopAppBar(
         title = {
             Text(
                 text = Res.String.auth,
-                modifier = Modifier.padding(top = topInset)
+                modifier = Modifier.statusBarPadding()
             )
         },
-        modifier = Modifier.height(Res.Dimen.barHeight + topInset)
+        modifier = Modifier.height(Res.Dimen.barHeight + WindowInsets.statusBarHeight)
     )
 }
 
@@ -161,7 +152,6 @@ private fun AuthBody(
 private fun AuthMessage(
     component: AuthComponent,
     hostState: SnackbarHostState,
-    bottomInset: Dp
 ) {
     SnackbarHost(
         hostState = hostState,
@@ -172,7 +162,7 @@ private fun AuthMessage(
                 Text(hostState.currentSnackbarData?.message ?: "")
             }
         },
-        modifier = Modifier.padding(bottom = bottomInset)
+        modifier = Modifier.navigationBarPadding()
     )
 
     LaunchedEffect("showError") {

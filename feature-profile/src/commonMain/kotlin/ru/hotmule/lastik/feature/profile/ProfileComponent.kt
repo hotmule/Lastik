@@ -1,6 +1,6 @@
 package ru.hotmule.lastik.feature.profile
 
-import com.arkivanov.decompose.router.RouterState
+import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.value.Value
 import ru.hotmule.lastik.feature.settings.SettingsComponent
 import ru.hotmule.lastik.feature.user.UserComponent
@@ -12,5 +12,5 @@ interface ProfileComponent {
         data class Settings(val component: SettingsComponent) : Child()
     }
 
-    val routerState: Value<RouterState<*, Child>>
+    val stack: Value<ChildStack<*, Child>>
 }

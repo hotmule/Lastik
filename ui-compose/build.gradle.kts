@@ -34,15 +34,13 @@ kotlin {
 
         named("androidMain") {
             dependencies {
-                implementation(Libs.Accompanist.coil)
-                implementation(Libs.Accompanist.swipeRefresh)
+                implementation(Libs.Coil.compose)
             }
         }
 
         named("desktopMain") {
             dependencies {
                 implementation(project(Module.utils))
-                implementation(Libs.Ktor.Core.common)
                 implementation(compose.desktop.currentOs)
             }
         }

@@ -14,7 +14,8 @@ kotlin {
                 implementation(Libs.Kermit.common)
                 implementation(Libs.Ktor.Core.common)
                 implementation(Libs.Ktor.Logging.common)
-                implementation(Libs.Ktor.Serialization.common)
+                implementation(Libs.Ktor.Serialization.json)
+                implementation(Libs.Ktor.Serialization.contentNegotiation)
             }
         }
 
@@ -23,7 +24,6 @@ kotlin {
                 implementation(Libs.Ktor.Core.jvm)
                 implementation(Libs.Ktor.Logging.jvm)
                 implementation(Libs.Ktor.Engine.okhttp)
-                implementation(Libs.Ktor.Serialization.jvm)
             }
         }
 
@@ -32,7 +32,6 @@ kotlin {
                 implementation(Libs.Ktor.Core.jvm)
                 implementation(Libs.Ktor.Logging.jvm)
                 implementation(Libs.Ktor.Engine.okhttp)
-                implementation(Libs.Ktor.Serialization.jvm)
             }
         }
     }

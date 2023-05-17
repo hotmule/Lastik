@@ -1,6 +1,7 @@
 package ru.hotmule.lastik.feature.auth
 
 import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import com.arkivanov.mvikotlin.extensions.coroutines.labels
 import com.arkivanov.mvikotlin.extensions.coroutines.states
 import kotlinx.coroutines.flow.Flow
@@ -11,7 +12,6 @@ import org.kodein.di.instance
 import ru.hotmule.lastik.feature.auth.AuthComponent.*
 import ru.hotmule.lastik.feature.auth.store.AuthStore.*
 import ru.hotmule.lastik.feature.auth.store.AuthStoreFactory
-import ru.hotmule.lastik.utils.getStore
 
 internal class AuthComponentImpl(
     override val directDI: DirectDI,

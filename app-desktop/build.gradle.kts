@@ -1,5 +1,3 @@
-import org.jetbrains.compose.compose
-
 plugins {
     kotlin("jvm")
     id("org.jetbrains.compose") version Libs.AndroidX.Compose.version

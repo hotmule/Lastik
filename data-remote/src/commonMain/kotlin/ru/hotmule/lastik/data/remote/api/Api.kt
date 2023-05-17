@@ -1,9 +1,9 @@
 package ru.hotmule.lastik.data.remote.api
 
-import com.soywiz.krypto.md5
 import io.ktor.client.request.*
-import io.ktor.http.takeFrom
+import io.ktor.http.*
 import io.ktor.utils.io.core.*
+import korlibs.crypto.md5
 
 fun HttpRequestBuilder.api(
     params: Map<String, Any?>,

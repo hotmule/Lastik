@@ -1,6 +1,7 @@
 package ru.hotmule.lastik.feature.menu
 
 import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import com.arkivanov.mvikotlin.extensions.coroutines.states
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -11,7 +12,6 @@ import org.kodein.di.instance
 import ru.hotmule.lastik.feature.menu.MenuComponent.*
 import ru.hotmule.lastik.feature.menu.store.MenuStore.*
 import ru.hotmule.lastik.feature.menu.store.MenuStoreFactory
-import ru.hotmule.lastik.utils.getStore
 
 internal class MenuComponentImpl(
     override val di: DI,

@@ -21,6 +21,8 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
 
+        <meta-data android:name="android.max_aspect" android:value="2.4" />
+
         <activity
             android:exported="true"
             android:name="ru.hotmule.lastik.MainActivity"
@@ -44,7 +46,7 @@
 
         </activity>
 
-        <service
+        <!--service
             android:exported="false"
             android:name=".feature.now_playing.NowPlayingService"
             android:label="@string/now_playing"
@@ -54,7 +56,7 @@
                 <action android:name="android.service.notification.NotificationListenerService" />
             </intent-filter>
 
-        </service>
+        </service-->
 
     </application>
 

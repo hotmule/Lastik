@@ -1,19 +1,20 @@
 package ru.hotmule.lastik.feature.root
 
 import com.arkivanov.decompose.*
-import com.arkivanov.decompose.router.RouterState
-import com.arkivanov.decompose.router.replaceCurrent
-import com.arkivanov.decompose.router.router
+import com.arkivanov.decompose.router.stack.ChildStack
+import com.arkivanov.decompose.router.stack.StackNavigation
+import com.arkivanov.decompose.router.stack.childStack
+import com.arkivanov.decompose.router.stack.replaceCurrent
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.Parcelize
+import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import org.kodein.di.*
 import ru.hotmule.lastik.feature.auth.AuthComponent
 import ru.hotmule.lastik.feature.library.LibraryComponent
 import ru.hotmule.lastik.feature.root.RootComponent.Child
 import ru.hotmule.lastik.feature.root.store.RootStore
 import ru.hotmule.lastik.feature.root.store.RootStoreFactory
-import ru.hotmule.lastik.utils.getStore
 
 internal class RootComponentImpl(
     override val di: DI,
@@ -23,7 +24,9 @@ internal class RootComponentImpl(
     private val library by factory<ComponentContext, LibraryComponent>()
     private val auth by factory<ComponentContext, AuthComponent>()
 
-    private val router = router<Config, Child>(
+    private val navigation = StackNavigation<Config>()
+    private val _stack = childStack(
+        source = navigation,
         initialConfiguration = Config.Library,
         handleBackButton = true
     ) { configuration, componentContext ->
@@ -47,7 +50,7 @@ internal class RootComponentImpl(
         ).create()
     }
 
-    override val routerState: Value<RouterState<*, Child>> = router.state
+    override val stack: Value<ChildStack<*, Child>> = _stack
 
     override fun onUrlReceived(url: String?) {
         store.accept(RootStore.Intent.ProcessUrl(url))
@@ -61,10 +64,8 @@ internal class RootComponentImpl(
     private inline fun <reified T : Child> setConfig(
         config: Config
     ) {
-        with(router) {
-            if (state.value.activeChild.instance !is T) {
-                replaceCurrent(config)
-            }
+        if (_stack.value.active.instance !is T) {
+            navigation.replaceCurrent(config)
         }
     }
 }

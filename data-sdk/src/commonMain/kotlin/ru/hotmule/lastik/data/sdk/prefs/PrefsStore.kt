@@ -1,15 +1,16 @@
 package ru.hotmule.lastik.data.sdk.prefs
 
+import com.russhwolf.settings.ExperimentalSettingsApi
 import com.russhwolf.settings.ObservableSettings
 import com.russhwolf.settings.coroutines.getIntFlow
 import com.russhwolf.settings.coroutines.getStringOrNullFlow
 import com.russhwolf.settings.int
 import com.russhwolf.settings.nullableString
 import kotlinx.coroutines.flow.map
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
+@OptIn(ExperimentalSettingsApi::class)
 class PrefsStore(
     private val factory: SettingsFactory,
     private val settings: ObservableSettings = factory.getSettings()
@@ -33,11 +34,12 @@ class PrefsStore(
     val isSessionActive = settings.getStringOrNullFlow("sessionKey").map { it != null }
 
     fun getTopPeriodAsFlow(shelfIndex: Int) = settings.getIntFlow(
-        when (shelfIndex) {
+        key = when (shelfIndex) {
             1 -> "artistsPeriod"
             2 -> "albumsPeriod"
             else -> "tracksPeriod"
-        }
+        },
+        defaultValue = 0
     )
 
     fun getScrobbleApps() = Json.decodeFromString<List<String>>(

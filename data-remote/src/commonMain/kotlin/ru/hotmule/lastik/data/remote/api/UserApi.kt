@@ -1,6 +1,7 @@
 package ru.hotmule.lastik.data.remote.api
 
 import io.ktor.client.*
+import io.ktor.client.call.*
 import io.ktor.client.request.*
 import ru.hotmule.lastik.data.sdk.prefs.PrefsStore
 import ru.hotmule.lastik.data.remote.Credentials
@@ -57,43 +58,43 @@ class UserApi(
     }
 
     suspend fun getInfo(
-    ) = client.get<ProfileResponse?> {
+    ) = client.get {
         userApi("getInfo")
-    }
+    }.body<ProfileResponse?>()
 
     suspend fun getFriends(
         page: Int,
-    ) = client.get<FriendsResponse?> {
+    ) = client.get {
         userApiPage("getFriends", page)
-    }
+    }.body<FriendsResponse?>()
 
     suspend fun getScrobbles(
         page: Int
-    ) = client.get<ScrobblesResponse?> {
+    ) = client.get {
         userApiPage("getRecentTracks", page, "extended" to 1)
-    }
+    }.body<ScrobblesResponse?>()
 
     suspend fun getTopArtists(
         page: Int
-    ) = client.get<ArtistsResponse?> {
+    ) = client.get {
         userApiLibraryPage("getTopArtists", page, periodNames[prefs.artistsPeriod])
-    }
+    }.body<ArtistsResponse?>()
 
     suspend fun getTopAlbums(
         page: Int
-    ) = client.get<AlbumsResponse?> {
+    ) = client.get {
         userApiLibraryPage("getTopAlbums", page, periodNames[prefs.albumsPeriod])
-    }
+    }.body<AlbumsResponse?>()
 
     suspend fun getTopTracks(
         page: Int
-    ) = client.get<TopTracksResponse?> {
+    ) = client.get {
         userApiLibraryPage("getTopTracks", page, periodNames[prefs.tracksPeriod])
-    }
+    }.body<TopTracksResponse?>()
 
     suspend fun getLovedTracks(
         page: Int
-    ) = client.get<LovedTracksResponse?> {
+    ) = client.get {
         userApiPage("getLovedTracks", page)
-    }
+    }.body<LovedTracksResponse?>()
 }

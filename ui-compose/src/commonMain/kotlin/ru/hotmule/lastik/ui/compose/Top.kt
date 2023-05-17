@@ -1,7 +1,6 @@
 package ru.hotmule.lastik.ui.compose
 
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ExpandMore
@@ -10,22 +9,21 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import ru.hotmule.lastik.feature.top.TopComponent
 import ru.hotmule.lastik.feature.top.TopComponent.*
 import ru.hotmule.lastik.ui.compose.res.Res
+import ru.hotmule.lastik.ui.compose.utils.statusBarHeight
+import ru.hotmule.lastik.ui.compose.utils.statusBarPadding
 
 @Composable
 fun TopContent(
     component: TopComponent,
-    topInset: Dp
 ) {
     Scaffold(
         topBar = {
             LastikTopAppBar(
                 component = component,
-                topInset = topInset
             )
         },
         content = {
@@ -37,16 +35,15 @@ fun TopContent(
 @Composable
 private fun LastikTopAppBar(
     component: TopComponent,
-    topInset: Dp
 ) {
     val model by component.model.collectAsState(Model())
 
     TopAppBar(
-        modifier = Modifier.height(Res.Dimen.barHeight + topInset),
+        modifier = Modifier.height(Res.Dimen.barHeight + WindowInsets.statusBarHeight),
         title = {
             model.shelfIndex?.let {
                 Text(
-                    modifier = Modifier.padding(top = topInset),
+                    modifier = Modifier.statusBarPadding(),
                     text = Res.Array.shelves[it]
                 )
             }
@@ -58,10 +55,9 @@ private fun LastikTopAppBar(
                     colors = ButtonDefaults.textButtonColors(
                         contentColor = Color.White
                     ),
-                    modifier = Modifier.padding(
-                        top = topInset,
-                        end = 2.dp
-                    )
+                    modifier = Modifier
+                        .statusBarPadding()
+                        .padding(end = 2.dp)
                 ) {
                     Text(text = Res.Array.periods[it])
                     Icon(Icons.Rounded.ExpandMore, null)
@@ -78,8 +74,25 @@ private fun LastikTopAppBar(
 }
 
 @Composable
-expect fun PeriodDropDown(
+private fun PeriodDropDown(
     expanded: Boolean,
     onDismissRequest: () -> Unit,
     onPeriodSelect: (Int) -> Unit
-)
+) {
+    DropdownMenu(
+        expanded = expanded,
+        onDismissRequest = onDismissRequest
+    ) {
+        Column {
+            Res.Array.periods.forEachIndexed { index, period ->
+                DropdownMenuItem(
+                    onClick = {
+                        onPeriodSelect(index)
+                    }
+                ) {
+                    Text(text = period)
+                }
+            }
+        }
+    }
+}

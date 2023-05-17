@@ -1,11 +1,10 @@
 package ru.hotmule.lastik.ui.compose
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.GridCells
-import androidx.compose.foundation.lazy.LazyVerticalGrid
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
@@ -19,22 +18,22 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ru.hotmule.lastik.feature.settings.SettingsComponent
 import ru.hotmule.lastik.feature.settings.SettingsComponent.*
 import ru.hotmule.lastik.ui.compose.res.Res
+import ru.hotmule.lastik.ui.compose.utils.asComposeBitmap
+import ru.hotmule.lastik.ui.compose.utils.statusBarHeight
+import ru.hotmule.lastik.ui.compose.utils.statusBarPadding
 
 @Composable
 fun SettingsContent(
     component: SettingsComponent,
-    topInset: Dp
 ) {
     Scaffold(
         topBar = {
             SettingsTopBar(
-                topInset = topInset,
                 onPop = component::onBackPressed
             )
         },
@@ -46,20 +45,19 @@ fun SettingsContent(
 
 @Composable
 private fun SettingsTopBar(
-    topInset: Dp,
     onPop: () -> Unit
 ) {
     TopAppBar(
-        modifier = Modifier.height(Res.Dimen.barHeight + topInset),
+        modifier = Modifier.height(Res.Dimen.barHeight + WindowInsets.statusBarHeight),
         title = {
             Text(
-                modifier = Modifier.padding(top = topInset),
+                modifier = Modifier.statusBarPadding(),
                 text = Res.String.scrobble_apps
             )
         },
         navigationIcon = {
             IconButton(
-                modifier = Modifier.padding(top = topInset),
+                modifier = Modifier.statusBarPadding(),
                 onClick = onPop
             ) {
                 Icon(
@@ -72,7 +70,6 @@ private fun SettingsTopBar(
     )
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SettingsBody(
     component: SettingsComponent
@@ -90,7 +87,7 @@ fun SettingsBody(
         }
 
         LazyVerticalGrid(
-            cells = GridCells.Adaptive(124.dp),
+            columns = GridCells.Adaptive(124.dp),
             contentPadding = PaddingValues(12.dp),
             modifier = Modifier.fillMaxSize()
         ) {

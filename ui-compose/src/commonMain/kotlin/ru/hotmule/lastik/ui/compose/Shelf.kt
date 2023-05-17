@@ -11,6 +11,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.FavoriteBorder
 import androidx.compose.material.icons.rounded.Sync
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
@@ -20,9 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -31,46 +32,54 @@ import androidx.compose.ui.unit.dp
 import ru.hotmule.lastik.feature.shelf.ShelfComponent
 import ru.hotmule.lastik.feature.shelf.ShelfComponent.*
 import ru.hotmule.lastik.ui.compose.res.Res
+import ru.hotmule.lastik.ui.compose.utils.remoteImagePainter
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ShelfContent(
     component: ShelfComponent,
     header: @Composable () -> Unit = { },
     onRefreshHeader: () -> Unit = { }
 ) {
-    BoxWithConstraints {
+    val model by component.model.collectAsState(Model())
+    val pullRefreshState = rememberPullRefreshState(
+        refreshing = model.isRefreshing,
+        onRefresh = {
+            component.onRefreshItems()
+            onRefreshHeader()
+        }
+    )
 
-        val model by component.model.collectAsState(Model())
+    BoxWithConstraints(
+        modifier = Modifier.pullRefresh(pullRefreshState)
+    ) {
         val scrobbleWidth = maxWidth / (model.items.firstOrNull()?.playCount?.toInt() ?: 1)
 
-        Refreshable(
-            isRefreshing = model.isRefreshing,
-            onRefresh = {
-                component.onRefreshItems()
-                onRefreshHeader()
-            }
+        LazyColumn(
+            modifier = Modifier.fillMaxSize()
         ) {
-            LazyColumn(
-                modifier = Modifier.fillMaxSize()
-            ) {
 
-                item { header() }
+            item { header() }
 
-                itemsIndexed(model.items) { index, item ->
+            itemsIndexed(model.items) { index, item ->
 
-                    ShelfItemContent(
-                        item = item,
-                        scrobbleWidth = scrobbleWidth,
-                        onLove = component::onMakeLove
-                    )
+                ShelfItemContent(
+                    item = item,
+                    scrobbleWidth = scrobbleWidth,
+                    onLove = component::onMakeLove
+                )
 
-                    if (index == model.items.lastIndex) {
-                        AdditionalProgress(model.isMoreLoading)
-                        component.onLoadMoreItems()
-                    }
+                if (index == model.items.lastIndex) {
+                    AdditionalProgress(model.isMoreLoading)
+                    component.onLoadMoreItems()
                 }
             }
         }
+        PullRefreshIndicator(
+            refreshing = model.isRefreshing,
+            state = pullRefreshState,
+            modifier = Modifier.align(Alignment.TopCenter)
+        )
     }
 }
 
@@ -220,13 +229,3 @@ private fun AdditionalProgress(
         }
     }
 }
-
-@Composable
-expect fun Refreshable(
-    isRefreshing: Boolean,
-    onRefresh: () -> Unit,
-    content: @Composable () -> Unit
-)
-
-@Composable
-expect fun remoteImagePainter(url: String): Painter

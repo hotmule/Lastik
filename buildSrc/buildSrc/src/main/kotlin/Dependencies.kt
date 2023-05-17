@@ -11,9 +11,9 @@ object App {
 object Sdk {
     object Version {
         const val min = 21
-        const val target = 31
-        const val compile = 31
-        const val buildTools = "30.0.3"
+        const val target = 33
+        const val compile = 33
+        const val buildTools = "33.0.2"
     }
 }
 
@@ -49,22 +49,27 @@ object Module {
 
 object Libs {
 
-    const val gradle = "com.android.tools.build:gradle:7.1.0-alpha03"
+    const val gradle = "com.android.tools.build:gradle:7.4.1"
 
     object Kotlin {
-        private const val version = "1.5.31"
+        const val version = "1.8.20"
         const val gradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version"
-        const val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2"
-        const val dateTime = "org.jetbrains.kotlinx:kotlinx-datetime:0.3.1"
+        const val dateTime = "org.jetbrains.kotlinx:kotlinx-datetime:0.4.0"
 
         object Serialization {
             const val common = "org.jetbrains.kotlin:kotlin-serialization:$version"
-            const val json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.1"
+            const val json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1"
+        }
+
+        object Coroutines {
+            const val version = "1.7.1"
+            const val common = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1"
+            const val jvm = "org.jetbrains.kotlinx:kotlinx-coroutines-swing:$version"
         }
     }
 
     object Ktor {
-        private const val version = "1.6.5"
+        private const val version = "2.3.0"
 
         object Core {
             const val common = "io.ktor:ktor-client-core:$version"
@@ -77,8 +82,8 @@ object Libs {
         }
 
         object Serialization {
-            const val common = "io.ktor:ktor-client-serialization:$version"
-            const val jvm = "io.ktor:ktor-client-serialization-jvm:$version"
+            const val json = "io.ktor:ktor-serialization-kotlinx-json:$version"
+            const val contentNegotiation = "io.ktor:ktor-client-content-negotiation:$version"
         }
 
         object Engine {
@@ -89,28 +94,28 @@ object Libs {
     object ArkIvanov {
 
         object MVIKotlin {
-            private const val version = "2.0.4"
+            private const val version = "3.2.1"
             const val common = "com.arkivanov.mvikotlin:mvikotlin:$version"
             const val main = "com.arkivanov.mvikotlin:mvikotlin-main:$version"
             const val coroutines = "com.arkivanov.mvikotlin:mvikotlin-extensions-coroutines:$version"
         }
 
         object Decompose {
-            private const val version = "0.4.0"
+            private const val version = "1.0.0"
             const val common = "com.arkivanov.decompose:decompose:$version"
             const val jvm = "com.arkivanov.decompose:decompose-jvm:$version"
             const val compose = "com.arkivanov.decompose:extensions-compose-jetbrains:$version"
         }
 
         object Essenty {
-            private const val version = "0.2.2"
+            private const val version = "1.1.0"
             const val instanceKeeper = "com.arkivanov.essenty:instance-keeper:$version"
             const val parcelable = "com.arkivanov.essenty:parcelable:$version"
         }
     }
 
     object SqlDelight {
-        private const val version = "1.5.2"
+        private const val version = "1.5.5"
         const val gradlePlugin = "com.squareup.sqldelight:gradle-plugin:$version"
         const val coroutines = "com.squareup.sqldelight:coroutines-extensions:$version"
 
@@ -121,50 +126,48 @@ object Libs {
     }
 
     object Kodein {
-        private const val version = "7.9.0"
+        private const val version = "7.20.1"
         const val common = "org.kodein.di:kodein-di:$version"
         const val compose = "org.kodein.di:kodein-di-framework-compose:$version"
         const val android = "org.kodein.di:kodein-di-framework-android-core:$version"
     }
 
     object Kermit {
-        private const val version = "1.0.0"
+        private const val version = "1.2.2"
         const val common = "co.touchlab:kermit:$version"
     }
 
     object GradleVersions {
-        const val version = "0.39.0"
+        const val version = "0.46.0"
         const val plugin = "com.github.ben-manes.versions"
     }
 
     object Krypto {
-        private const val version = "2.4.7"
+        private const val version = "4.0.0"
         const val common = "com.soywiz.korlibs.krypto:krypto:$version"
         const val android = "com.soywiz.korlibs.krypto:krypto-android:$version"
     }
 
     object Settings {
-        private const val version = "0.8.1"
+        private const val version = "1.0.0"
         const val common = "com.russhwolf:multiplatform-settings:$version"
         const val coroutines = "com.russhwolf:multiplatform-settings-coroutines:$version"
     }
 
     object AndroidX {
 
-        const val core = "androidx.core:core-ktx:1.7.0"
-        const val browser = "androidx.browser:browser:1.4.0"
-        const val appCompat = "androidx.appcompat:appcompat:1.4.0"
+        const val core = "androidx.core:core-ktx:1.10.1"
+        const val browser = "androidx.browser:browser:1.5.0"
+        const val appCompat = "androidx.appcompat:appcompat:1.6.1"
 
         object Compose {
-            const val version = "1.0.0-alpha4-build418"
-            const val activity = "androidx.activity:activity-compose:1.3.0"
+            const val version = "1.4.0"
+            const val activity = "androidx.activity:activity-compose:1.7.1"
         }
     }
 
-    object Accompanist {
-        private const val version = "0.15.0"
-        const val coil = "com.google.accompanist:accompanist-coil:$version"
-        const val insets = "com.google.accompanist:accompanist-insets:$version"
-        const val swipeRefresh = "com.google.accompanist:accompanist-swiperefresh:$version"
+    object Coil {
+        private const val version = "2.3.0"
+        const val compose = "io.coil-kt:coil-compose:$version"
     }
 }
