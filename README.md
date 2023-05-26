@@ -19,7 +19,7 @@ Kotlin Multiplatform + Jetpack Compose for Desktop pet project, based on www.las
     - [Multiplatform Settings](https://github.com/russhwolf/multiplatform-settings)
 - UI
     - [Compose Multiplatform](https://github.com/jetbrains/compose-jb)
-    - [Coil](https://github.com/google/accompanist](https://github.com/coil-kt/coil)
+    - [Coil](https://github.com/coil-kt/coil)
 
 - Kotlinx
   - [Coroutines](https://github.com/Kotlin/kotlinx.coroutines)
