@@ -5,7 +5,7 @@ Kotlin Multiplatform + Jetpack Compose for Desktop pet project, based on www.las
 
 ### Currently supported platforms
 - Android - primary
-- Desktop - not for use, only as a Proof of Concept
+- Desktop - not for use, only as a PoC
 
 ### Used libraries
 
@@ -19,10 +19,8 @@ Kotlin Multiplatform + Jetpack Compose for Desktop pet project, based on www.las
     - [Multiplatform Settings](https://github.com/russhwolf/multiplatform-settings)
 - UI
     - [Compose Multiplatform](https://github.com/jetbrains/compose-jb)
-    - [Accompanist](https://github.com/google/accompanist)
-        - [Coil](https://github.com/google/accompanist/tree/main/coil)
-        - [Insets](https://github.com/google/accompanist/tree/main/insets)  
-        - [Swipe Refresh](https://github.com/google/accompanist/tree/main/swiperefresh)
+    - [Coil](https://github.com/google/accompanist](https://github.com/coil-kt/coil)
+
 - Kotlinx
   - [Coroutines](https://github.com/Kotlin/kotlinx.coroutines)
   - [Serialization](https://github.com/Kotlin/kotlinx.serialization)  
@@ -33,5 +31,5 @@ Kotlin Multiplatform + Jetpack Compose for Desktop pet project, based on www.las
     - [Gradle Versions Plugin](https://github.com/ben-manes/gradle-versions-plugin)
 
 ### Screenshots
-<img src="screenshots/resents.jpg" width="275px"> <img src="screenshots/albums.jpg" width="275px"> <img src="screenshots/profile.jpg" width="275px">
+<img src="screenshots/resents.jpg" width="270px"> <img src="screenshots/albums.jpg" width="270px"> <img src="screenshots/profile.jpg" width="270px">
 <img src="screenshots/desktop.png" width="835px">
