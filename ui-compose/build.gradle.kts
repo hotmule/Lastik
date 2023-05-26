@@ -1,9 +1,14 @@
 plugins {
-    id("lastik-multiplatform")
+    kotlin("multiplatform")
+    id("lastik-android")
     id("org.jetbrains.compose") version Libs.AndroidX.Compose.version
 }
 
 kotlin {
+
+    android()
+    jvm("desktop")
+
     sourceSets {
 
         named("commonMain") {

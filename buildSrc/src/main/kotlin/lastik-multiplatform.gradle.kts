@@ -7,4 +7,5 @@ kotlin {
 
     android()
     jvm("desktop")
+    ios()
 }
