@@ -52,7 +52,7 @@ object Libs {
     const val gradle = "com.android.tools.build:gradle:7.4.1"
 
     object Kotlin {
-        const val version = "1.8.20"
+        const val version = "1.8.10"
         const val gradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version"
         const val dateTime = "org.jetbrains.kotlinx:kotlinx-datetime:0.4.0"
 
@@ -88,6 +88,7 @@ object Libs {
 
         object Engine {
             const val okhttp = "io.ktor:ktor-client-okhttp:$version"
+            const val darwin = "io.ktor:ktor-client-darwin:$version"
         }
     }
 
@@ -103,7 +104,6 @@ object Libs {
         object Decompose {
             private const val version = "1.0.0"
             const val common = "com.arkivanov.decompose:decompose:$version"
-            const val jvm = "com.arkivanov.decompose:decompose-jvm:$version"
             const val compose = "com.arkivanov.decompose:extensions-compose-jetbrains:$version"
         }
 
@@ -111,6 +111,7 @@ object Libs {
             private const val version = "1.1.0"
             const val instanceKeeper = "com.arkivanov.essenty:instance-keeper:$version"
             const val parcelable = "com.arkivanov.essenty:parcelable:$version"
+            const val lifecycle = "com.arkivanov.essenty:lifecycle:$version"
         }
     }
 
@@ -122,6 +123,7 @@ object Libs {
         object Driver {
             const val android = "com.squareup.sqldelight:android-driver:$version"
             const val sqlite = "com.squareup.sqldelight:sqlite-driver:$version"
+            const val native = "com.squareup.sqldelight:native-driver:$version"
         }
     }
 

@@ -4,22 +4,7 @@
   <component name="GradleSettings">
     <option name="linkedExternalProjectsSettings">
       <GradleProjectSettings>
-        <compositeConfiguration>
-          <compositeBuild compositeDefinitionSource="SCRIPT">
-            <builds>
-              <build path="$PROJECT_DIR$/buildSrc" name="buildSrc">
-                <projects>
-                  <project path="$PROJECT_DIR$/buildSrc" />
-                </projects>
-              </build>
-              <build path="$PROJECT_DIR$/buildSrc/buildSrc" name="buildSrc">
-                <projects>
-                  <project path="$PROJECT_DIR$/buildSrc/buildSrc" />
-                </projects>
-              </build>
-            </builds>
-          </compositeBuild>
-        </compositeConfiguration>
+        <option name="testRunner" value="GRADLE" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="gradleJvm" value="Android Studio java home" />
         <option name="modules">
@@ -28,7 +13,6 @@
             <option value="$PROJECT_DIR$/app-android" />
             <option value="$PROJECT_DIR$/app-desktop" />
             <option value="$PROJECT_DIR$/buildSrc" />
-            <option value="$PROJECT_DIR$/buildSrc/buildSrc" />
             <option value="$PROJECT_DIR$/data-local" />
             <option value="$PROJECT_DIR$/data-remote" />
             <option value="$PROJECT_DIR$/data-sdk" />

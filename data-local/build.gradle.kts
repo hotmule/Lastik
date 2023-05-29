@@ -21,6 +21,11 @@ kotlin {
                 api(Libs.SqlDelight.Driver.sqlite)
             }
         }
+        named("iosSimulatorArm64Main") {
+            dependencies {
+                api(Libs.SqlDelight.Driver.native)
+            }
+        }
     }
 }
 

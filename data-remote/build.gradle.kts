@@ -34,6 +34,12 @@ kotlin {
                 implementation(Libs.Ktor.Engine.okhttp)
             }
         }
+
+        named("iosSimulatorArm64Main") {
+            dependencies {
+                implementation(Libs.Ktor.Engine.darwin)
+            }
+        }
     }
 }
 
