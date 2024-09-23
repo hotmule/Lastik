@@ -1,5 +1,5 @@
 plugins {
-    id("lastik-multiplatform")
+    id("lastik.multiplatform")
 }
 
 kotlin {
@@ -7,16 +7,16 @@ kotlin {
 
         named("commonMain") {
             dependencies {
-                implementation(Libs.Kotlin.Coroutines.common)
-                implementation(Libs.ArkIvanov.MVIKotlin.common)
-                implementation(Libs.ArkIvanov.Decompose.common)
-                implementation(Libs.ArkIvanov.Essenty.instanceKeeper)
+                implementation(libs.kotlinx.coroutines.core)
+                implementation(libs.mvikotlin)
+                implementation(libs.decompose)
+                implementation(libs.essenty.instance.keeper)
             }
         }
 
         named("desktopMain") {
             dependencies {
-                implementation(Libs.Kotlin.Coroutines.jvm)
+                implementation(libs.kotlinx.coroutines.swing)
             }
         }
     }

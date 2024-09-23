@@ -1,5 +1,5 @@
 plugins {
-    id("lastik-multiplatform")
+    id("lastik.multiplatform")
 }
 
 kotlin {
@@ -7,13 +7,13 @@ kotlin {
         
         named("commonMain") {
             dependencies {
-                implementation(Libs.Kodein.common)
+                implementation(libs.kodein)
             }
         }
 
         named("androidMain") {
             dependencies {
-                implementation(Libs.AndroidX.browser)
+                implementation(libs.androidx.browser)
             }
         }
     }

@@ -1,5 +1,5 @@
 plugins {
-    id("lastik-multiplatform")
+    id("lastik.multiplatform")
     kotlin("plugin.serialization")
 }
 
@@ -8,30 +8,30 @@ kotlin {
 
         named("commonMain") {
             dependencies {
-                implementation(project(Module.Data.sdk))
-                implementation(Libs.Kodein.common)
-                implementation(Libs.Krypto.common)
-                implementation(Libs.Kermit.common)
-                implementation(Libs.Ktor.Core.common)
-                implementation(Libs.Ktor.Logging.common)
-                implementation(Libs.Ktor.Serialization.json)
-                implementation(Libs.Ktor.Serialization.contentNegotiation)
+                implementation(projects.dataSdk)
+                implementation(libs.kodein)
+                implementation(libs.krypto)
+                implementation(libs.kermit)
+                implementation(libs.ktor.core)
+                implementation(libs.ktor.logging)
+                implementation(libs.ktor.serialization.json)
+                implementation(libs.ktor.content.negotiation)
             }
         }
 
         named("androidMain") {
             dependencies {
-                implementation(Libs.Ktor.Core.jvm)
-                implementation(Libs.Ktor.Logging.jvm)
-                implementation(Libs.Ktor.Engine.okhttp)
+                implementation(libs.ktor.okhttp)
+                implementation(libs.ktor.core.jvm)
+                implementation(libs.ktor.logging.jvm)
             }
         }
 
         named("desktopMain") {
             dependencies {
-                implementation(Libs.Ktor.Core.jvm)
-                implementation(Libs.Ktor.Logging.jvm)
-                implementation(Libs.Ktor.Engine.okhttp)
+                implementation(libs.ktor.okhttp)
+                implementation(libs.ktor.core.jvm)
+                implementation(libs.ktor.logging.jvm)
             }
         }
     }
@@ -40,6 +40,10 @@ kotlin {
 android {
 
     defaultConfig {
+
+        buildFeatures {
+            buildConfig = true
+        }
 
         buildConfigField(
             "String",

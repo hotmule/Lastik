@@ -1,5 +1,6 @@
 package ru.hotmule.lastik.feature.now_playing
 
+import Lastik.R
 import android.content.ComponentName
 import android.content.Intent
 import android.graphics.Bitmap

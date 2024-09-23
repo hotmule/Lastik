@@ -1,5 +1,6 @@
 package ru.hotmule.lastik
 
+import Lastik.R
 import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager

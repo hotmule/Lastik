@@ -1,5 +1,5 @@
 plugins {
-    id("lastik-component-mvi")
+    id("lastik.component.mvi")
     id("kotlin-parcelize")
 }
 
@@ -9,15 +9,15 @@ kotlin {
         named("commonMain") {
             dependencies {
                 
-                implementation(project(Module.Data.sdk))
-                implementation(project(Module.Data.local))
-                implementation(project(Module.Data.remote))
+                implementation(projects.dataSdk)
+                implementation(projects.dataLocal)
+                implementation(projects.dataRemote)
 
-                implementation(project(Module.Feature.auth))
-                implementation(project(Module.Feature.library))
+                implementation(projects.featureAuth)
+                implementation(projects.featureLibrary)
 
-                implementation(Libs.ArkIvanov.MVIKotlin.main)
-                implementation(Libs.ArkIvanov.Essenty.parcelable)
+                implementation(libs.mvikotlin.main)
+                implementation(libs.essenty.parcelable)
             }
         }
     }

@@ -1,0 +1,81 @@
+[versions]
+application-id = "ru.hotmule.lastik"
+build-tools = "34.0.0"
+min-sdk = "21"
+target-sdk = "34"
+version-code = "1"
+version-name = "1.0"
+
+gradle = "8.6.1"
+kotlin = "1.8.20"
+kotlinx-datetime = "0.4.0"
+kotlinx-coroutines = "1.7.1"
+kotlinx-serialization-json = "1.5.1"
+ktor = "2.3.0"
+mvikotlin = "3.2.1"
+decompose = "1.0.0"
+essenty = "1.1.0"
+sqldelight = "1.5.5"
+coil = "2.3.0"
+kodein = "7.20.1"
+kermit = "1.2.2"
+krypto = "4.0.0"
+settings = "1.0.0"
+androidx-core = "1.10.1"
+androidx-browser = "1.5.0"
+androidx-appcompat = "1.6.1"
+androidx-activity-compose = "1.7.1"
+compose = "1.4.0"
+
+[libraries]
+gradle = { group = "com.android.tools.build", name = "gradle", version.ref = "gradle" }
+
+kotlin-gradle = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+kotlin-serialization = { group = "org.jetbrains.kotlin", name = "kotlin-serialization", version.ref = "kotlin" }
+
+kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinx-datetime" }
+kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
+kotlinx-coroutines-swing = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-swing", version.ref = "kotlinx-coroutines" }
+kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-serialization-json" }
+
+ktor-core = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor" }
+ktor-core-jvm = { group = "io.ktor", name = "ktor-client-core-jvm", version.ref = "ktor" }
+ktor-okhttp = { group = "io.ktor", name = "ktor-client-okhttp", version.ref = "ktor" }
+ktor-logging = { group = "io.ktor", name = "ktor-client-logging", version.ref = "ktor" }
+ktor-logging-jvm = { group = "io.ktor", name = "ktor-client-logging-jvm", version.ref = "ktor" }
+ktor-serialization-json = { group = "io.ktor", name = "ktor-serialization-kotlinx-json", version.ref = "ktor" }
+ktor-content-negotiation = { group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktor" }
+
+mvikotlin = { group = "com.arkivanov.mvikotlin", name = "mvikotlin", version.ref = "mvikotlin" }
+mvikotlin-main = { group = "com.arkivanov.mvikotlin", name = "mvikotlin-main", version.ref = "mvikotlin" }
+mvikotlin-coroutines = { group = "com.arkivanov.mvikotlin", name = "mvikotlin-extensions-coroutines", version.ref = "mvikotlin" }
+decompose = { group = "com.arkivanov.decompose", name = "decompose", version.ref = "decompose" }
+decompose-jvm = { group = "com.arkivanov.decompose", name = "decompose-jvm", version.ref = "decompose" }
+decompose-compose = { group = "com.arkivanov.decompose", name = "extensions-compose-jetbrains", version.ref = "decompose" }
+essenty-parcelable = { group = "com.arkivanov.essenty", name = "parcelable", version.ref = "essenty" }
+essenty-instance-keeper = { group = "com.arkivanov.essenty", name = "instance-keeper", version.ref = "essenty" }
+
+sqldelight-gradle = { group = "com.squareup.sqldelight", name = "gradle-plugin", version.ref = "sqldelight" }
+sqldelight-coroutines = { group = "com.squareup.sqldelight", name = "coroutines-extensions", version.ref = "sqldelight" }
+sqldelight-driver-sqlite = { group = "com.squareup.sqldelight", name = "sqlite-driver", version.ref = "sqldelight" }
+sqldelight-driver-android = { group = "com.squareup.sqldelight", name = "android-driver", version.ref = "sqldelight" }
+
+kodein = { group = "org.kodein.di", name = "kodein-di", version.ref = "kodein" }
+kodein-compose = { group = "org.kodein.di", name = "kodein-di-framework-compose", version.ref = "kodein" }
+kodein-android-core = { group = "org.kodein.di", name = "kodein-di-framework-android-core", version.ref = "kodein" }
+
+settings = { group = "com.russhwolf", name = "multiplatform-settings", version.ref = "settings" }
+settings-coroutines = { group = "com.russhwolf", name = "multiplatform-settings-coroutines", version.ref = "settings" }
+
+androidx-core = { group = "androidx.core", name = "core-ktx", version.ref = "androidx-core" }
+androidx-browser = { group = "androidx.browser", name = "browser", version.ref = "androidx-browser" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidx-appcompat" }
+androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "androidx-activity-compose" }
+
+coil = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
+kermit = { group = "co.touchlab", name = "kermit", version.ref = "kermit" }
+krypto = { group = "com.soywiz.korlibs.krypto", name = "krypto", version.ref = "krypto" }
+
+[plugins]
+compose = { id = "org.jetbrains.compose", version.ref = "compose" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }

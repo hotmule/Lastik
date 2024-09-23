@@ -1,5 +1,5 @@
 plugins {
-    id("lastik-multiplatform")
+    id("lastik.multiplatform")
     id("com.squareup.sqldelight")
 }
 
@@ -7,18 +7,18 @@ kotlin {
     sourceSets {
         named("commonMain") {
             dependencies {
-                implementation(Libs.Kodein.common)
-                implementation(Libs.SqlDelight.coroutines)
+                implementation(libs.kodein)
+                implementation(libs.sqldelight.coroutines)
             }
         }
         named("androidMain") {
             dependencies {
-                api(Libs.SqlDelight.Driver.android)
+                api(libs.sqldelight.driver.android)
             }
         }
         named("desktopMain") {
             dependencies {
-                api(Libs.SqlDelight.Driver.sqlite)
+                api(libs.sqldelight.driver.sqlite)
             }
         }
     }

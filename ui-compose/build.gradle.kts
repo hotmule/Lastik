@@ -1,6 +1,7 @@
 plugins {
-    id("lastik-multiplatform")
-    id("org.jetbrains.compose") version Libs.AndroidX.Compose.version
+    id("lastik.multiplatform")
+    alias(libs.plugins.compose)
+    //alias(libs.plugins.compose.compiler)
 }
 
 kotlin {
@@ -9,38 +10,38 @@ kotlin {
         named("commonMain") {
             dependencies {
 
-                implementation(project(Module.utils))
+                implementation(projects.utils)
 
-                implementation(project(Module.Feature.top))
-                implementation(project(Module.Feature.root))
-                implementation(project(Module.Feature.auth))
-                implementation(project(Module.Feature.user))
-                implementation(project(Module.Feature.menu))
-                implementation(project(Module.Feature.shelf))
-                implementation(project(Module.Feature.library))
-                implementation(project(Module.Feature.profile))
-                implementation(project(Module.Feature.settings))
-                implementation(project(Module.Feature.scrobbles))
-                implementation(project(Module.Feature.nowPlaying))
+                implementation(projects.featureTop)
+                implementation(projects.featureRoot)
+                implementation(projects.featureAuth)
+                implementation(projects.featureUser)
+                implementation(projects.featureMenu)
+                implementation(projects.featureShelf)
+                implementation(projects.featureLibrary)
+                implementation(projects.featureProfile)
+                implementation(projects.featureSettings)
+                implementation(projects.featureScrobbles)
+                implementation(projects.featureNowPlaying)
 
                 implementation(compose.material)
                 implementation(compose.materialIconsExtended)
 
-                implementation(Libs.Kodein.compose)
-                implementation(Libs.ArkIvanov.Decompose.common)
-                implementation(Libs.ArkIvanov.Decompose.compose)
+                implementation(libs.decompose)
+                implementation(libs.decompose.compose)
+                implementation(libs.kodein.compose)
             }
         }
 
         named("androidMain") {
             dependencies {
-                implementation(Libs.Coil.compose)
+                implementation(libs.coil)
             }
         }
 
         named("desktopMain") {
             dependencies {
-                implementation(project(Module.utils))
+                implementation(projects.utils)
                 implementation(compose.desktop.currentOs)
             }
         }
