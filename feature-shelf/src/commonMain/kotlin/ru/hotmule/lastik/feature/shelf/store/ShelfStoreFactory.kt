@@ -4,8 +4,7 @@ import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
-import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
-import kotlinx.coroutines.flow.*
+import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ru.hotmule.lastik.feature.shelf.store.ShelfStore.*
@@ -24,32 +23,30 @@ internal class ShelfStoreFactory(
         reducer = ReducerImpl
     ) {}
 
-    private inner class ExecutorImpl : SuspendExecutor<Intent, Unit, State, Result, Nothing>(
+    private inner class ExecutorImpl : CoroutineExecutor<Intent, Unit, State, Result, Nothing>(
         AppCoroutineDispatcher.Main
     ) {
 
-        override suspend fun executeAction(
-            action: Unit,
-            getState: () -> State
-        ) {
-            withContext(AppCoroutineDispatcher.Main) {
-                launch { collectItems() }
-                launch { loadPage(true) }
+        override fun executeAction(action: Unit) {
+            scope.launch {
+                withContext(AppCoroutineDispatcher.Main) {
+                    launch { collectItems() }
+                    launch { loadPage(true) }
+                }
             }
         }
 
-        override suspend fun executeIntent(
-            intent: Intent,
-            getState: () -> State
-        ) {
-            when (intent) {
-                Intent.RefreshItems -> loadPage(true)
-                Intent.LoadMoreItems -> loadPage(false)
-                is Intent.MakeLove -> makeLove(
-                    artist = intent.subtitle ?: "",
-                    track = intent.title,
-                    isLoved = !intent.isLoved
-                )
+        override fun executeIntent(intent: Intent) {
+            scope.launch {
+                when (intent) {
+                    Intent.RefreshItems -> loadPage(true)
+                    Intent.LoadMoreItems -> loadPage(false)
+                    is Intent.MakeLove -> makeLove(
+                        artist = intent.subtitle ?: "",
+                        track = intent.title,
+                        isLoved = !intent.isLoved
+                    )
+                }
             }
         }
 
@@ -92,11 +89,11 @@ internal class ShelfStoreFactory(
 
     private object ReducerImpl : Reducer<State, Result> {
 
-        override fun State.reduce(result: Result): State = when (result) {
-            is Result.ItemsReceived -> copy(items = result.items)
+        override fun State.reduce(msg: Result): State = when (msg) {
+            is Result.ItemsReceived -> copy(items = msg.items)
             is Result.Loading -> copy(
-                isRefreshing = result.isLoading && result.isFirstPage,
-                isMoreLoading = result.isLoading && !result.isFirstPage
+                isRefreshing = msg.isLoading && msg.isFirstPage,
+                isMoreLoading = msg.isLoading && !msg.isFirstPage
             )
         }
     }

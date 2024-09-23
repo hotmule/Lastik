@@ -4,8 +4,7 @@ import com.arkivanov.decompose.*
 import com.arkivanov.decompose.router.stack.*
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.operator.map
-import com.arkivanov.essenty.parcelable.Parcelable
-import com.arkivanov.essenty.parcelable.Parcelize
+import kotlinx.serialization.Serializable
 import org.kodein.di.*
 import ru.hotmule.lastik.feature.app.NowPlayingComponent
 import ru.hotmule.lastik.feature.library.LibraryComponent.Child
@@ -28,6 +27,7 @@ internal class LibraryComponentImpl(
     private val navigation = StackNavigation<Config>()
     private val _stack = childStack(
         source = navigation,
+        serializer = Config.serializer(),
         initialConfiguration = Config.Scrobbles
     ) { configuration, componentContext ->
         when (configuration) {
@@ -57,11 +57,17 @@ internal class LibraryComponentImpl(
         )
     }
 
-    sealed class Config : Parcelable {
-        @Parcelize object Scrobbles : Config()
-        @Parcelize object Artists : Config()
-        @Parcelize object Albums : Config()
-        @Parcelize object Tracks : Config()
-        @Parcelize object Profile : Config()
+    @Serializable
+    sealed class Config {
+        @Serializable
+        data object Scrobbles : Config()
+        @Serializable
+        data object Artists : Config()
+        @Serializable
+        data object Albums : Config()
+        @Serializable
+        data object Tracks : Config()
+        @Serializable
+        data object Profile : Config()
     }
 }

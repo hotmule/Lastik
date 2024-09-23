@@ -2,7 +2,7 @@ CREATE TABLE top (
     id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     type INTEGER NOT NULL,
     period INTEGER NOT NULL,
-    rank INTEGER AS Int NOT NULL,
+    rank INTEGER NOT NULL,
     itemId INTEGER NOT NULL,
     playCount INTEGER,
     UNIQUE (type, period, rank)

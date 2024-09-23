@@ -1,9 +1,9 @@
 package ru.hotmule.lastik.data.sdk.packages
 
-import ru.hotmule.lastik.utils.Bitmap
+import coil3.Image
 
 data class Package(
     val name: String,
     val label: String,
-    val bitmap: Bitmap
+    val icon: Image,
 )

@@ -3,7 +3,7 @@ package ru.hotmule.lastik.ui.compose
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Logout
+import androidx.compose.material.icons.automirrored.rounded.Logout
 import androidx.compose.material.icons.rounded.Tune
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -39,7 +39,7 @@ fun MenuContent(
                     contentDescription = "menu item $index",
                     imageVector = when (index) {
                         0 -> Icons.Rounded.Tune
-                        else -> Icons.Rounded.Logout
+                        else -> Icons.AutoMirrored.Rounded.Logout
                     }
                 )
                 Text(

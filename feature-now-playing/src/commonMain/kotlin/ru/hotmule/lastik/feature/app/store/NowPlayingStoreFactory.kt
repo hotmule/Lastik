@@ -3,7 +3,7 @@ package ru.hotmule.lastik.feature.app.store
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
-import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
+import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -11,8 +11,6 @@ import kotlinx.coroutines.withContext
 import kotlinx.datetime.Clock
 import ru.hotmule.lastik.data.local.LastikDatabase
 import ru.hotmule.lastik.data.remote.api.TrackApi
-import ru.hotmule.lastik.data.remote.entities.Image
-import ru.hotmule.lastik.data.remote.entities.LibraryItem
 import ru.hotmule.lastik.data.sdk.prefs.PrefsStore
 import ru.hotmule.lastik.feature.app.NowPlayingComponent
 import ru.hotmule.lastik.feature.app.store.NowPlayingStore.*
@@ -37,54 +35,56 @@ internal class NowPlayingStoreFactory(
             reducer = ReducerImpl
         ) {}
 
-    private inner class ExecutorImpl : SuspendExecutor<Intent, Nothing, State, Result, Nothing>(
+    private inner class ExecutorImpl : CoroutineExecutor<Intent, Nothing, State, Result, Nothing>(
         AppCoroutineDispatcher.Main
     ) {
         private var scrobbleJob: Job? = null
 
-        override suspend fun executeIntent(intent: Intent, getState: () -> State) {
-            if (intent.packageName in prefs.getScrobbleApps()) {
-                when (intent) {
-                    is Intent.CheckDetectedTrack -> dispatch(Result.TrackDetected(intent.track))
-                    is Intent.CheckPlayState -> {
+        override fun executeIntent(intent: Intent) {
+            scope.launch {
+                if (intent.packageName in prefs.getScrobbleApps()) {
+                    when (intent) {
+                        is Intent.CheckDetectedTrack -> dispatch(Result.TrackDetected(intent.track))
+                        is Intent.CheckPlayState -> {
 
-                        dispatch(Result.PlayStateChanged(intent.isPlaying))
+                            dispatch(Result.PlayStateChanged(intent.isPlaying))
 
-                        if (!intent.isPlaying) {
+                            if (!intent.isPlaying) {
 
-                            scrobbleJob?.cancel()
+                                scrobbleJob?.cancel()
 
-                        } else {
+                            } else {
 
-                            val track = getState().track?.name
-                            val artist = getState().track?.artist
-                            val duration = getState().track?.duration ?: 0
+                                val track = state().track?.name
+                                val artist = state().track?.artist
+                                val duration = state().track?.duration ?: 0
 
-                            if (track != null &&
-                                artist != null &&
-                                duration > MIN_DURATION
-                            ) {
-                                withContext(AppCoroutineDispatcher.IO) {
-                                    launch {
-                                        api.updateNowPlaying(
-                                            track,
-                                            artist,
-                                            getState().track?.album,
-                                            getState().track?.duration?.div(1000),
-                                            getState().track?.albumArtist
-                                        )
-                                    }
-                                }
-
-                                scrobbleJob = withContext(AppCoroutineDispatcher.IO) {
-                                    launch {
-
-                                        val delayMillis = with (duration / 2) {
-                                            if (this < MAX_DELAY) this else MAX_DELAY
+                                if (track != null &&
+                                    artist != null &&
+                                    duration > MIN_DURATION
+                                ) {
+                                    withContext(AppCoroutineDispatcher.IO) {
+                                        launch {
+                                            api.updateNowPlaying(
+                                                track,
+                                                artist,
+                                                state().track?.album,
+                                                state().track?.duration?.div(1000),
+                                                state().track?.albumArtist
+                                            )
                                         }
+                                    }
 
-                                        delay(delayMillis)
-                                        saveScrobble(getState().track)
+                                    scrobbleJob = withContext(AppCoroutineDispatcher.IO) {
+                                        launch {
+
+                                            val delayMillis = with(duration / 2) {
+                                                if (this < MAX_DELAY) this else MAX_DELAY
+                                            }
+
+                                            delay(delayMillis)
+                                            saveScrobble(state().track)
+                                        }
                                     }
                                 }
                             }
@@ -146,9 +146,9 @@ internal class NowPlayingStoreFactory(
     }
 
     object ReducerImpl : Reducer<State, Result> {
-        override fun State.reduce(result: Result): State = when (result) {
-            is Result.PlayStateChanged -> copy(isPlaying = result.isPlaying)
-            is Result.TrackDetected -> copy(track = result.track)
+        override fun State.reduce(msg: Result): State = when (msg) {
+            is Result.PlayStateChanged -> copy(isPlaying = msg.isPlaying)
+            is Result.TrackDetected -> copy(track = msg.track)
             Result.TrackIncorrect -> copy(
                 isPlaying = false,
                 track = null

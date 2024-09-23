@@ -3,8 +3,8 @@ package ru.hotmule.lastik.feature.root.store
 import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
-import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
-import kotlinx.coroutines.flow.collect
+import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
+import kotlinx.coroutines.launch
 import ru.hotmule.lastik.data.local.ProfileQueries
 import ru.hotmule.lastik.data.sdk.prefs.PrefsStore
 import ru.hotmule.lastik.feature.root.store.RootStore.Intent
@@ -24,21 +24,19 @@ internal class RootStoreFactory(
             executorFactory = ::ExecutorImpl
         ) {}
 
-    private inner class ExecutorImpl : SuspendExecutor<Intent, Unit, Unit, Unit, Unit>(
+    private inner class ExecutorImpl : CoroutineExecutor<Intent, Unit, Unit, Unit, Unit>(
         AppCoroutineDispatcher.Main
     ) {
-        override suspend fun executeAction(
-            action: Unit, getState: () -> Unit
-        ) {
-            prefsStore.isSessionActive.collect {
-                if (!it) queries.deleteAll()
-                onSessionChanged(it)
+        override fun executeAction(action: Unit) {
+            scope.launch {
+                prefsStore.isSessionActive.collect {
+                    if (!it) queries.deleteAll()
+                    onSessionChanged(it)
+                }
             }
         }
 
-        override suspend fun executeIntent(
-            intent: Intent, getState: () -> Unit
-        ) {
+        override fun executeIntent(intent: Intent) {
             when (intent) {
                 is Intent.ProcessUrl -> intent.url?.let {
                     if (it.contains("token")) {

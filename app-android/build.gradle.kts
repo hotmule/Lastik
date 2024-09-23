@@ -1,7 +1,7 @@
 plugins {
     id("lastik.android.application")
     alias(libs.plugins.compose)
-    //alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.compose.compiler)
 }
 
 dependencies {
@@ -17,5 +17,4 @@ dependencies {
     implementation(libs.androidx.activity.compose)
 
     implementation(libs.decompose)
-    implementation(libs.decompose.compose)
 }

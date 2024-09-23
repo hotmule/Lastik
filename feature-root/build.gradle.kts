@@ -1,6 +1,6 @@
 plugins {
     id("lastik.component.mvi")
-    id("kotlin-parcelize")
+    id("kotlinx-serialization")
 }
 
 kotlin {
@@ -17,7 +17,6 @@ kotlin {
                 implementation(projects.featureLibrary)
 
                 implementation(libs.mvikotlin.main)
-                implementation(libs.essenty.parcelable)
             }
         }
     }

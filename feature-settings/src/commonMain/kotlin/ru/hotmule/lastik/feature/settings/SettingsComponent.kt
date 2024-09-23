@@ -1,14 +1,14 @@
 package ru.hotmule.lastik.feature.settings
 
+import coil3.Image
 import kotlinx.coroutines.flow.Flow
-import ru.hotmule.lastik.utils.Bitmap
 
 interface SettingsComponent {
 
     data class Package(
         val name: String = "",
         val label: String = "",
-        val bitmap: Bitmap? = null,
+        val icon: Image? = null,
         var isEnabled: Boolean = false
     )
 

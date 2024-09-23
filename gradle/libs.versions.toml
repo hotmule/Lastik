@@ -6,26 +6,26 @@ target-sdk = "34"
 version-code = "1"
 version-name = "1.0"
 
-gradle = "8.6.1"
-kotlin = "1.8.20"
-kotlinx-datetime = "0.4.0"
-kotlinx-coroutines = "1.7.1"
-kotlinx-serialization-json = "1.5.1"
-ktor = "2.3.0"
-mvikotlin = "3.2.1"
-decompose = "1.0.0"
-essenty = "1.1.0"
-sqldelight = "1.5.5"
-coil = "2.3.0"
-kodein = "7.20.1"
-kermit = "1.2.2"
-krypto = "4.0.0"
-settings = "1.0.0"
-androidx-core = "1.10.1"
-androidx-browser = "1.5.0"
-androidx-appcompat = "1.6.1"
-androidx-activity-compose = "1.7.1"
-compose = "1.4.0"
+gradle = "8.5.2"
+kotlin = "2.0.20"
+kotlinx-datetime = "0.6.1"
+kotlinx-coroutines = "1.9.0"
+kotlinx-serialization-json = "1.7.3"
+ktor = "2.3.12"
+mvikotlin = "4.2.0"
+decompose = "3.1.0"
+essenty = "2.1.0"
+sqldelight = "2.0.2"
+coil = "3.0.0-alpha10"
+kodein = "7.22.0"
+kermit = "2.0.4"
+krypto = "4.0.10"
+settings = "1.2.0"
+androidx-core = "1.13.1"
+androidx-browser = "1.8.0"
+androidx-appcompat = "1.7.0"
+androidx-activity-compose = "1.9.2"
+compose = "1.7.0-beta02"
 
 [libraries]
 gradle = { group = "com.android.tools.build", name = "gradle", version.ref = "gradle" }
@@ -50,15 +50,13 @@ mvikotlin = { group = "com.arkivanov.mvikotlin", name = "mvikotlin", version.ref
 mvikotlin-main = { group = "com.arkivanov.mvikotlin", name = "mvikotlin-main", version.ref = "mvikotlin" }
 mvikotlin-coroutines = { group = "com.arkivanov.mvikotlin", name = "mvikotlin-extensions-coroutines", version.ref = "mvikotlin" }
 decompose = { group = "com.arkivanov.decompose", name = "decompose", version.ref = "decompose" }
-decompose-jvm = { group = "com.arkivanov.decompose", name = "decompose-jvm", version.ref = "decompose" }
-decompose-compose = { group = "com.arkivanov.decompose", name = "extensions-compose-jetbrains", version.ref = "decompose" }
-essenty-parcelable = { group = "com.arkivanov.essenty", name = "parcelable", version.ref = "essenty" }
+decompose-compose = { group = "com.arkivanov.decompose", name = "extensions-compose", version.ref = "decompose" }
 essenty-instance-keeper = { group = "com.arkivanov.essenty", name = "instance-keeper", version.ref = "essenty" }
 
-sqldelight-gradle = { group = "com.squareup.sqldelight", name = "gradle-plugin", version.ref = "sqldelight" }
-sqldelight-coroutines = { group = "com.squareup.sqldelight", name = "coroutines-extensions", version.ref = "sqldelight" }
-sqldelight-driver-sqlite = { group = "com.squareup.sqldelight", name = "sqlite-driver", version.ref = "sqldelight" }
-sqldelight-driver-android = { group = "com.squareup.sqldelight", name = "android-driver", version.ref = "sqldelight" }
+sqldelight-gradle = { group = "app.cash.sqldelight", name = "gradle-plugin", version.ref = "sqldelight" }
+sqldelight-coroutines = { group = "app.cash.sqldelight", name = "coroutines-extensions", version.ref = "sqldelight" }
+sqldelight-driver-sqlite = { group = "app.cash.sqldelight", name = "sqlite-driver", version.ref = "sqldelight" }
+sqldelight-driver-android = { group = "app.cash.sqldelight", name = "android-driver", version.ref = "sqldelight" }
 
 kodein = { group = "org.kodein.di", name = "kodein-di", version.ref = "kodein" }
 kodein-compose = { group = "org.kodein.di", name = "kodein-di-framework-compose", version.ref = "kodein" }
@@ -72,7 +70,10 @@ androidx-browser = { group = "androidx.browser", name = "browser", version.ref =
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidx-appcompat" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "androidx-activity-compose" }
 
-coil = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
+coil-core = { group = "io.coil-kt.coil3", name = "coil-core", version.ref = "coil" }
+coil-ktor = { group = "io.coil-kt.coil3", name = "coil-network-ktor2", version.ref = "coil" }
+coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil" }
+
 kermit = { group = "co.touchlab", name = "kermit", version.ref = "kermit" }
 krypto = { group = "com.soywiz.korlibs.krypto", name = "krypto", version.ref = "krypto" }
 

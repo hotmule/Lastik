@@ -4,8 +4,8 @@ import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
-import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
-import kotlinx.coroutines.flow.collect
+import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
+import kotlinx.coroutines.launch
 import ru.hotmule.lastik.data.sdk.prefs.PrefsStore
 import ru.hotmule.lastik.feature.top.store.TopStore.*
 import ru.hotmule.lastik.utils.AppCoroutineDispatcher
@@ -24,19 +24,18 @@ internal class TopStoreFactory(
             reducer = ReducerImpl
         ) {}
 
-    private inner class ExecutorImpl : SuspendExecutor<Intent, Unit, State, Result, Nothing>(
+    private inner class ExecutorImpl : CoroutineExecutor<Intent, Unit, State, Result, Nothing>(
         AppCoroutineDispatcher.Main
     ) {
-        override suspend fun executeAction(
-            action: Unit,
-            getState: () -> State
-        ) {
-            prefsStore.getTopPeriodAsFlow(index).collect {
-                dispatch(Result.PeriodSelected(it))
+        override fun executeAction(action: Unit) {
+            scope.launch {
+                prefsStore.getTopPeriodAsFlow(index).collect {
+                    dispatch(Result.PeriodSelected(it))
+                }
             }
         }
 
-        override suspend fun executeIntent(intent: Intent, getState: () -> State) {
+        override fun executeIntent(intent: Intent) {
             when (intent) {
                 Intent.OpenPeriods -> dispatch(Result.PeriodsOpened)
                 Intent.ClosePeriods -> dispatch(Result.PeriodsClosed)
@@ -57,11 +56,11 @@ internal class TopStoreFactory(
 
     private object ReducerImpl : Reducer<State, Result> {
 
-        override fun State.reduce(result: Result): State = when (result) {
+        override fun State.reduce(msg: Result): State = when (msg) {
             Result.PeriodsOpened -> copy(periodsOpened = true)
             Result.PeriodsClosed -> copy(periodsOpened = false)
             is Result.PeriodSelected -> copy(
-                periodIndex = result.index,
+                periodIndex = msg.index,
                 periodsOpened = false
             )
         }

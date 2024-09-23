@@ -15,9 +15,6 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import ru.hotmule.lastik.feature.auth.AuthComponent
 import ru.hotmule.lastik.ui.compose.res.Res
-import ru.hotmule.lastik.ui.compose.utils.navigationBarPadding
-import ru.hotmule.lastik.ui.compose.utils.statusBarHeight
-import ru.hotmule.lastik.ui.compose.utils.statusBarPadding
 
 @Composable
 fun AuthContent(
@@ -47,10 +44,12 @@ private fun AuthBar() {
         title = {
             Text(
                 text = Res.String.auth,
-                modifier = Modifier.statusBarPadding()
+                modifier = Modifier.statusBarsPadding()
             )
         },
-        modifier = Modifier.height(Res.Dimen.barHeight + WindowInsets.statusBarHeight)
+        modifier = Modifier.height(
+            Res.Dimen.barHeight + WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
+        )
     )
 }
 
@@ -69,8 +68,8 @@ private fun AuthBody(
         OutlinedTextField(
             label = { Text(Res.String.username) },
             value = model.username,
-            keyboardOptions = KeyboardOptions(
-                autoCorrect = false
+            keyboardOptions = KeyboardOptions.Default.copy(
+                autoCorrectEnabled = false
             ),
             onValueChange = {
                 component.onLoginChanged(it)
@@ -81,8 +80,8 @@ private fun AuthBody(
         OutlinedTextField(
             label = { Text(Res.String.password) },
             value = model.password,
-            keyboardOptions = KeyboardOptions(
-                autoCorrect = false,
+            keyboardOptions = KeyboardOptions.Default.copy(
+                autoCorrectEnabled = false,
                 keyboardType = KeyboardType.Password
             ),
             visualTransformation = if (model.isPasswordVisible) {
@@ -162,7 +161,7 @@ private fun AuthMessage(
                 Text(hostState.currentSnackbarData?.message ?: "")
             }
         },
-        modifier = Modifier.navigationBarPadding()
+        modifier = Modifier.navigationBarsPadding()
     )
 
     LaunchedEffect("showError") {

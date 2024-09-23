@@ -4,8 +4,8 @@ import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
-import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
-import kotlinx.coroutines.flow.collect
+import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ru.hotmule.lastik.data.local.ProfileQueries
 import ru.hotmule.lastik.data.sdk.prefs.PrefsStore
@@ -29,29 +29,27 @@ internal class AuthStoreFactory(
         reducer = ReducerImpl
     ) {}
 
-    private inner class ExecutorImpl : SuspendExecutor<Intent, Unit, State, Result, Label>(
+    private inner class ExecutorImpl : CoroutineExecutor<Intent, Unit, State, Result, Label>(
         AppCoroutineDispatcher.Main
     ) {
 
-        override suspend fun executeAction(
-            action: Unit,
-            getState: () -> State
-        ) {
-            prefs.tokenAsFlow.collect {
-                if (it != null) getSession(it)
+        override fun executeAction(action: Unit) {
+            scope.launch {
+                prefs.tokenAsFlow.collect {
+                    if (it != null) getSession(it)
+                }
             }
         }
 
-        override suspend fun executeIntent(
-            intent: Intent,
-            getState: () -> State
-        ) {
-            when (intent) {
-                is Intent.ChangeLogin -> dispatch(Result.LoginChanged(intent.login))
-                is Intent.ChangePassword -> dispatch(Result.PasswordChanged(intent.password))
-                Intent.ChangePasswordVisibility -> dispatch(Result.PasswordVisibilityChanged)
-                Intent.SignIn -> signIn(getState().login, getState().password)
-                Intent.SignInWithLastFm -> browser.open(api.authUrl)
+        override fun executeIntent(intent: Intent) {
+            scope.launch {
+                when (intent) {
+                    is Intent.ChangeLogin -> dispatch(Result.LoginChanged(intent.login))
+                    is Intent.ChangePassword -> dispatch(Result.PasswordChanged(intent.password))
+                    Intent.ChangePasswordVisibility -> dispatch(Result.PasswordVisibilityChanged)
+                    Intent.SignIn -> signIn(state().login, state().password)
+                    Intent.SignInWithLastFm -> browser.open(api.authUrl)
+                }
             }
         }
 
@@ -97,11 +95,11 @@ internal class AuthStoreFactory(
 
     private object ReducerImpl : Reducer<State, Result> {
 
-        override fun State.reduce(result: Result): State = when (result) {
-            is Result.LoginChanged -> copy(login = result.login)
-            is Result.PasswordChanged -> copy(password = result.password)
+        override fun State.reduce(msg: Result): State = when (msg) {
+            is Result.LoginChanged -> copy(login = msg.login)
+            is Result.PasswordChanged -> copy(password = msg.password)
             Result.PasswordVisibilityChanged -> copy(isPasswordVisible = !isPasswordVisible)
-            is Result.Loading -> copy(isLoading = result.isLoading)
+            is Result.Loading -> copy(isLoading = msg.isLoading)
         }
     }
 }

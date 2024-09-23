@@ -1,14 +1,13 @@
 package ru.hotmule.lastik.feature.user.store
 
+import app.cash.sqldelight.coroutines.asFlow
+import app.cash.sqldelight.coroutines.mapToList
+import app.cash.sqldelight.coroutines.mapToOneOrNull
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
-import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
-import com.squareup.sqldelight.runtime.coroutines.asFlow
-import com.squareup.sqldelight.runtime.coroutines.mapToList
-import com.squareup.sqldelight.runtime.coroutines.mapToOneOrNull
-import kotlinx.coroutines.flow.collect
+import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ru.hotmule.lastik.data.local.FriendQueries
@@ -34,29 +33,27 @@ internal class UserStoreFactory(
         reducer = ReducerImpl
     ) {}
 
-    private inner class ExecutorImpl : SuspendExecutor<Intent, Unit, State, Result, Nothing>(
+    private inner class ExecutorImpl : CoroutineExecutor<Intent, Unit, State, Result, Nothing>(
         AppCoroutineDispatcher.Main
     ) {
-        override suspend fun executeAction(
-            action: Unit,
-            getState: () -> State
-        ) {
-            withContext(AppCoroutineDispatcher.Main) {
-                launch { collectProfile() }
-                launch { collectFriends() }
-                launch { refreshInfo() }
+        override fun executeAction(action: Unit) {
+            scope.launch {
+                withContext(AppCoroutineDispatcher.Main) {
+                    launch { collectProfile() }
+                    launch { collectFriends() }
+                    launch { refreshInfo() }
+                }
             }
         }
 
-        override suspend fun executeIntent(
-            intent: Intent,
-            getState: () -> State
-        ) {
-            when (intent) {
-                Intent.Refresh -> refreshInfo()
-                Intent.LoadMoreFriends -> {
-                    val profileId = profileQueries.getProfile().executeAsOneOrNull()?.id
-                    loadFriends(false, profileId)
+        override fun executeIntent(intent: Intent) {
+            scope.launch {
+                when (intent) {
+                    Intent.Refresh -> refreshInfo()
+                    Intent.LoadMoreFriends -> {
+                        val profileId = profileQueries.getProfile().executeAsOneOrNull()?.id
+                        loadFriends(false, profileId)
+                    }
                 }
             }
         }
@@ -165,10 +162,10 @@ internal class UserStoreFactory(
     }
 
     object ReducerImpl : Reducer<State, Result> {
-        override fun State.reduce(result: Result): State = when (result) {
-            is Result.ProfileReceived -> copy(info = result.profile)
-            is Result.FriendsReceived -> copy(friends = result.friends)
-            is Result.MoreFriendsLoading -> copy(isMoreFriendsLoading = result.isLoading)
+        override fun State.reduce(msg: Result): State = when (msg) {
+            is Result.ProfileReceived -> copy(info = msg.profile)
+            is Result.FriendsReceived -> copy(friends = msg.friends)
+            is Result.MoreFriendsLoading -> copy(isMoreFriendsLoading = msg.isLoading)
         }
     }
 }

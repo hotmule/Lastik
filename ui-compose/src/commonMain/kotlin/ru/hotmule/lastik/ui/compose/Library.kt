@@ -14,23 +14,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
-import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
+import coil3.Image
+import coil3.compose.AsyncImage
+import coil3.toBitmap
+import com.arkivanov.decompose.extensions.compose.stack.Children
+import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import ru.hotmule.lastik.feature.app.NowPlayingComponent.*
 import ru.hotmule.lastik.feature.library.LibraryComponent
 import ru.hotmule.lastik.feature.library.LibraryComponent.*
 import ru.hotmule.lastik.ui.compose.res.Res
-import ru.hotmule.lastik.ui.compose.utils.asComposeBitmap
-import ru.hotmule.lastik.ui.compose.utils.navigationBarHeight
-import ru.hotmule.lastik.ui.compose.utils.navigationBarPadding
-import ru.hotmule.lastik.utils.Bitmap
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun LibraryContent(
     component: LibraryComponent,
@@ -40,11 +38,17 @@ fun LibraryContent(
     Box {
 
         val bottomSheetScaffoldState = rememberBottomSheetScaffoldState(
-            bottomSheetState = BottomSheetState(BottomSheetValue.Collapsed)
+            bottomSheetState = BottomSheetState(
+                initialValue = BottomSheetValue.Collapsed,
+                density = LocalDensity.current
+            )
         )
 
         BottomSheetScaffold(
-            modifier = Modifier.padding(bottom = Res.Dimen.barHeight + WindowInsets.navigationBarHeight),
+            modifier = Modifier.padding(
+                bottom = Res.Dimen.barHeight +
+                        WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+            ),
             content = {
                 LibraryBody(
                     component = component,
@@ -91,7 +95,7 @@ private fun NowPlayingContent(
     isCollapsed: Boolean,
     track: String,
     artist: String,
-    art: Bitmap?
+    art: Image?
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
 
@@ -113,9 +117,9 @@ private fun NowPlayingContent(
                 )
             }
 
-            art.asComposeBitmap()?.let { bitmap ->
-                Image(
-                    painter = BitmapPainter(bitmap),
+            if (art != null) {
+                AsyncImage(
+                    model = art.toBitmap(),
                     contentDescription = "artwork",
                     contentScale = ContentScale.FillWidth,
                     modifier = Modifier
@@ -165,13 +169,13 @@ private fun LibraryBottomBar(
     val activeIndex by component.activeChildIndex.subscribeAsState()
 
     BottomNavigation(
-        modifier = modifier.height(Res.Dimen.barHeight + WindowInsets.navigationBarHeight)
+        modifier = modifier
     ) {
         Res.Array.shelves.forEachIndexed { index, shelfTitle ->
             BottomNavigationItem(
                 onClick = { component.onShelfSelect(index) },
                 selected = index == activeIndex,
-                modifier = Modifier.navigationBarPadding(),
+                modifier = Modifier.navigationBarsPadding(),
                 label = { Text(shelfTitle) },
                 icon = {
                     Icon(

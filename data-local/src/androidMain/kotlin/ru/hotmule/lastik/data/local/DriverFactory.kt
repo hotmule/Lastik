@@ -2,8 +2,8 @@ package ru.hotmule.lastik.data.local
 
 import android.content.Context
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.squareup.sqldelight.android.AndroidSqliteDriver
-import com.squareup.sqldelight.db.SqlDriver
+import app.cash.sqldelight.db.SqlDriver
+import app.cash.sqldelight.driver.android.AndroidSqliteDriver
 import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.instance

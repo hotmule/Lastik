@@ -4,7 +4,8 @@ import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
-import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
+import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
+import kotlinx.coroutines.launch
 import ru.hotmule.lastik.data.sdk.packages.PackageManager
 import ru.hotmule.lastik.data.sdk.prefs.PrefsStore
 import ru.hotmule.lastik.feature.settings.SettingsComponent.*
@@ -25,36 +26,37 @@ internal class SettingsStoreFactory(
             reducer = ReducerImpl
         ) {}
 
-    private inner class ExecutorImpl : SuspendExecutor<Intent, Unit, State, Result, Nothing>(
+    private inner class ExecutorImpl : CoroutineExecutor<Intent, Unit, State, Result, Nothing>(
         AppCoroutineDispatcher.Main
     ) {
-        override suspend fun executeAction(action: Unit, getState: () -> State) {
+        override fun executeAction(action: Unit) {
+            scope.launch {
+                dispatch(Result.Loading(true))
 
-            dispatch(Result.Loading(true))
+                val scrobbleAppPackageNames = prefsStore.getScrobbleApps()
 
-            val scrobbleAppPackageNames = prefsStore.getScrobbleApps()
-
-            dispatch(
-                Result.AppsUpdated(
-                    packageManager.getApps().map {
-                        Package(
-                            name = it.name,
-                            label = it.label,
-                            bitmap = it.bitmap,
-                            isEnabled = it.name in scrobbleAppPackageNames
-                        )
-                    }
+                dispatch(
+                    Result.AppsUpdated(
+                        packageManager.getApps().map {
+                            Package(
+                                name = it.name,
+                                label = it.label,
+                                icon = it.icon,
+                                isEnabled = it.name in scrobbleAppPackageNames
+                            )
+                        }
+                    )
                 )
-            )
 
-            dispatch(Result.Loading(false))
+                dispatch(Result.Loading(false))
+            }
         }
 
-        override suspend fun executeIntent(intent: Intent, getState: () -> State) {
+        override fun executeIntent(intent: Intent) {
             when (intent) {
                 is Intent.SaveApp -> {
 
-                    val checkedApp = getState().apps.find { it.name == intent.packageName }
+                    val checkedApp = state().apps.find { it.name == intent.packageName }
 
                     prefsStore.saveScrobbleApp(
                         packageName = intent.packageName,
@@ -63,7 +65,7 @@ internal class SettingsStoreFactory(
 
                     dispatch(
                         Result.AppsUpdated(
-                            getState().apps.apply {
+                            state().apps.apply {
                                 get(indexOf(checkedApp)).apply {
                                     isEnabled = !isEnabled
                                 }
@@ -76,10 +78,10 @@ internal class SettingsStoreFactory(
     }
 
     object ReducerImpl : Reducer<State, Result> {
-        override fun State.reduce(result: Result): State = when (result) {
-            is Result.Loading -> copy(isLoading = result.isLoading)
+        override fun State.reduce(msg: Result): State = when (msg) {
+            is Result.Loading -> copy(isLoading = msg.isLoading)
             is Result.AppsUpdated -> copy(
-                apps = result.apps.sortedWith(
+                apps = msg.apps.sortedWith(
                     compareBy(
                         { !it.isEnabled },
                         { it.label }

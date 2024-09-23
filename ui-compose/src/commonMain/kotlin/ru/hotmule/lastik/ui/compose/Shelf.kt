@@ -29,10 +29,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
 import ru.hotmule.lastik.feature.shelf.ShelfComponent
 import ru.hotmule.lastik.feature.shelf.ShelfComponent.*
 import ru.hotmule.lastik.ui.compose.res.Res
-import ru.hotmule.lastik.ui.compose.utils.remoteImagePainter
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -151,8 +151,8 @@ private fun ShelfItemContent(
 
             } else {
 
-                Image(
-                    painter = remoteImagePainter(item.image),
+                AsyncImage(
+                    model = item.image,
                     contentDescription = "artwork",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier

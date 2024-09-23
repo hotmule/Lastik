@@ -13,7 +13,7 @@ class MultiplatformConventionPlugin : Plugin<Project> {
                 apply("kotlin-multiplatform")
             }
             extensions.configure<KotlinMultiplatformExtension> {
-                android()
+                androidTarget()
                 jvm("desktop")
             }
         }

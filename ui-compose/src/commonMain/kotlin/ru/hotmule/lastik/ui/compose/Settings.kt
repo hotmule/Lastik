@@ -1,13 +1,12 @@
 package ru.hotmule.lastik.ui.compose
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ArrowBack
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
@@ -15,17 +14,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil3.compose.AsyncImage
+import coil3.toBitmap
 import ru.hotmule.lastik.feature.settings.SettingsComponent
 import ru.hotmule.lastik.feature.settings.SettingsComponent.*
 import ru.hotmule.lastik.ui.compose.res.Res
-import ru.hotmule.lastik.ui.compose.utils.asComposeBitmap
-import ru.hotmule.lastik.ui.compose.utils.statusBarHeight
-import ru.hotmule.lastik.ui.compose.utils.statusBarPadding
 
 @Composable
 fun SettingsContent(
@@ -48,20 +45,22 @@ private fun SettingsTopBar(
     onPop: () -> Unit
 ) {
     TopAppBar(
-        modifier = Modifier.height(Res.Dimen.barHeight + WindowInsets.statusBarHeight),
+        modifier = Modifier.height(
+            Res.Dimen.barHeight + WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
+        ),
         title = {
             Text(
-                modifier = Modifier.statusBarPadding(),
+                modifier = Modifier.statusBarsPadding(),
                 text = Res.String.scrobble_apps
             )
         },
         navigationIcon = {
             IconButton(
-                modifier = Modifier.statusBarPadding(),
+                modifier = Modifier.statusBarsPadding(),
                 onClick = onPop
             ) {
                 Icon(
-                    imageVector = Icons.Rounded.ArrowBack,
+                    imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
                     contentDescription = "Pop",
                     tint = Color.White
                 )
@@ -118,11 +117,9 @@ private fun CheckableApp(
             Column(
                 modifier = Modifier.padding(8.dp)
             ) {
-
-                appPackage.bitmap.asComposeBitmap()?.let {
-
-                    Image(
-                        painter = BitmapPainter(it),
+                appPackage.icon?.let { icon ->
+                    AsyncImage(
+                        model = icon.toBitmap(),
                         contentDescription = appPackage.label,
                         contentScale = ContentScale.FillWidth,
                         modifier = Modifier

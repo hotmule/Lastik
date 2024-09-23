@@ -1,7 +1,7 @@
 package ru.hotmule.lastik.ui.compose
 
 import androidx.compose.runtime.Composable
-import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
+import com.arkivanov.decompose.extensions.compose.stack.Children
 import ru.hotmule.lastik.feature.profile.ProfileComponent
 import ru.hotmule.lastik.feature.profile.ProfileComponent.*
 

@@ -3,8 +3,7 @@ package ru.hotmule.lastik.feature.profile
 import com.arkivanov.decompose.*
 import com.arkivanov.decompose.router.stack.*
 import com.arkivanov.decompose.value.Value
-import com.arkivanov.essenty.parcelable.Parcelable
-import com.arkivanov.essenty.parcelable.Parcelize
+import kotlinx.serialization.Serializable
 import org.kodein.di.*
 import ru.hotmule.lastik.feature.profile.ProfileComponent.Child
 import ru.hotmule.lastik.feature.settings.SettingsComponent
@@ -23,6 +22,7 @@ internal class ProfileComponentImpl(
     private val navigation = StackNavigation<Config>()
     private val _stack = childStack(
         source = navigation,
+        serializer = Config.serializer(),
         initialConfiguration = Config.User,
         handleBackButton = true,
     ) { configuration, componentContext ->
@@ -48,8 +48,11 @@ internal class ProfileComponentImpl(
 
     override val stack: Value<ChildStack<*, Child>> = _stack
 
-    private sealed class Config : Parcelable {
-        @Parcelize object User : Config()
-        @Parcelize object Settings : Config()
+    @Serializable
+    private sealed class Config {
+        @Serializable
+        data object User : Config()
+        @Serializable
+        data object Settings : Config()
     }
 }

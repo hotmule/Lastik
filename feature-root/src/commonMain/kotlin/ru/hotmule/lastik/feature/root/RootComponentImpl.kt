@@ -6,9 +6,8 @@ import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.replaceCurrent
 import com.arkivanov.decompose.value.Value
-import com.arkivanov.essenty.parcelable.Parcelable
-import com.arkivanov.essenty.parcelable.Parcelize
 import com.arkivanov.mvikotlin.core.instancekeeper.getStore
+import kotlinx.serialization.Serializable
 import org.kodein.di.*
 import ru.hotmule.lastik.feature.auth.AuthComponent
 import ru.hotmule.lastik.feature.library.LibraryComponent
@@ -27,6 +26,7 @@ internal class RootComponentImpl(
     private val navigation = StackNavigation<Config>()
     private val _stack = childStack(
         source = navigation,
+        serializer = Config.serializer(),
         initialConfiguration = Config.Library,
         handleBackButton = true
     ) { configuration, componentContext ->
@@ -56,9 +56,12 @@ internal class RootComponentImpl(
         store.accept(RootStore.Intent.ProcessUrl(url))
     }
 
-    private sealed class Config : Parcelable {
-        @Parcelize object Library : Config()
-        @Parcelize object Auth : Config()
+    @Serializable
+    private sealed class Config {
+        @Serializable
+        data object Library : Config()
+        @Serializable
+        data object Auth : Config()
     }
 
     private inline fun <reified T : Child> setConfig(

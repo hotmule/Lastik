@@ -1,7 +1,8 @@
 package ru.hotmule.lastik.feature.shelf.store
 
-import com.squareup.sqldelight.runtime.coroutines.asFlow
-import com.squareup.sqldelight.runtime.coroutines.mapToList
+import app.cash.sqldelight.coroutines.asFlow
+import app.cash.sqldelight.coroutines.mapToList
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
@@ -10,13 +11,13 @@ import ru.hotmule.lastik.data.local.LastikDatabase
 import ru.hotmule.lastik.data.sdk.prefs.PrefsStore
 import ru.hotmule.lastik.data.remote.api.TrackApi
 import ru.hotmule.lastik.data.remote.api.UserApi
-import ru.hotmule.lastik.data.remote.entities.Date
 import ru.hotmule.lastik.data.remote.entities.Image
 import ru.hotmule.lastik.data.remote.entities.LibraryItem
 import ru.hotmule.lastik.feature.shelf.ShelfComponent.*
 import ru.hotmule.lastik.utils.AppCoroutineDispatcher
 import ru.hotmule.lastik.utils.Formatter
 
+@OptIn(ExperimentalCoroutinesApi::class)
 internal class ShelfStoreRepository(
     private val database: LastikDatabase,
     private val prefsStore: PrefsStore,
@@ -113,7 +114,7 @@ internal class ShelfStoreRepository(
                         image = it.lowArtwork ?: UserApi.defaultImageUrl,
                         title = it.name ?: "",
                         hint = "${Formatter.numberToCommasString(it.playCount)} scrobbles",
-                        rank = it.rank,
+                        rank = it.rank.toInt(),
                         playCount = it.playCount,
                     )
                 }
@@ -131,7 +132,7 @@ internal class ShelfStoreRepository(
                         title = it.album ?: "",
                         hint = "${Formatter.numberToCommasString(it.playCount)} scrobbles",
                         subtitle = it.artist,
-                        rank = it.rank,
+                        rank = it.rank.toInt(),
                         playCount = it.playCount
                     )
                 }
@@ -149,7 +150,7 @@ internal class ShelfStoreRepository(
                         title = it.track ?: "",
                         hint = "${Formatter.numberToCommasString(it.playCount)} scrobbles",
                         subtitle = it.artist,
-                        rank = it.rank,
+                        rank = it.rank.toInt(),
                         playCount = it.playCount
                     )
                 }
@@ -223,7 +224,7 @@ internal class ShelfStoreRepository(
         playCount: Long?
     ) {
         if (itemId != null && rank != null) {
-            database.topQueries.insert(index.toLong(), period, rank, itemId, playCount)
+            database.topQueries.insert(index.toLong(), period, rank.toLong(), itemId, playCount)
         }
     }
 

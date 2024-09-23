@@ -7,6 +7,7 @@ kotlin {
         named("commonMain") {
             dependencies {
                 implementation(projects.dataSdk)
+                implementation(libs.coil.core)
             }
         }
     }

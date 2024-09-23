@@ -13,8 +13,6 @@ import androidx.compose.ui.unit.dp
 import ru.hotmule.lastik.feature.top.TopComponent
 import ru.hotmule.lastik.feature.top.TopComponent.*
 import ru.hotmule.lastik.ui.compose.res.Res
-import ru.hotmule.lastik.ui.compose.utils.statusBarHeight
-import ru.hotmule.lastik.ui.compose.utils.statusBarPadding
 
 @Composable
 fun TopContent(
@@ -39,11 +37,13 @@ private fun LastikTopAppBar(
     val model by component.model.collectAsState(Model())
 
     TopAppBar(
-        modifier = Modifier.height(Res.Dimen.barHeight + WindowInsets.statusBarHeight),
+        modifier = Modifier.height(
+            Res.Dimen.barHeight + WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
+        ),
         title = {
             model.shelfIndex?.let {
                 Text(
-                    modifier = Modifier.statusBarPadding(),
+                    modifier = Modifier.statusBarsPadding(),
                     text = Res.Array.shelves[it]
                 )
             }
@@ -56,7 +56,7 @@ private fun LastikTopAppBar(
                         contentColor = Color.White
                     ),
                     modifier = Modifier
-                        .statusBarPadding()
+                        .statusBarsPadding()
                         .padding(end = 2.dp)
                 ) {
                     Text(text = Res.Array.periods[it])

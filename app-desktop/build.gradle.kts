@@ -1,7 +1,7 @@
 plugins {
     kotlin("jvm")
     alias(libs.plugins.compose)
-    //alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.compose.compiler)
 }
 
 dependencies {
@@ -13,7 +13,6 @@ dependencies {
 
     implementation(libs.kodein)
     implementation(libs.decompose)
-    implementation(libs.decompose.compose)
 }
 
 compose.desktop {

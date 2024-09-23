@@ -1,7 +1,7 @@
 package ru.hotmule.lastik.feature.app
 
+import coil3.Image
 import kotlinx.coroutines.flow.Flow
-import ru.hotmule.lastik.utils.Bitmap
 
 interface NowPlayingComponent {
 
@@ -9,7 +9,7 @@ interface NowPlayingComponent {
         var artist: String? = null,
         var album: String? = null,
         var name: String? = null,
-        val art: Bitmap? = null,
+        val art: Image? = null,
         val duration: Long? = null,
         var albumArtist: String? = null
     )
@@ -18,7 +18,7 @@ interface NowPlayingComponent {
         val isPlaying: Boolean = false,
         val track: String = "",
         val artist: String = "",
-        val art: Bitmap? = null
+        val art: Image? = null
     )
 
     val model: Flow<Model>

@@ -1,7 +1,6 @@
 package ru.hotmule.lastik.ui.compose
 
 import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
@@ -9,7 +8,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Logout
+import androidx.compose.material.icons.automirrored.rounded.Logout
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
@@ -21,13 +20,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil3.compose.AsyncImage
 import ru.hotmule.lastik.feature.menu.MenuComponent
 import ru.hotmule.lastik.ui.compose.res.Res
 import ru.hotmule.lastik.feature.user.UserComponent
 import ru.hotmule.lastik.feature.user.UserComponent.*
-import ru.hotmule.lastik.ui.compose.utils.remoteImagePainter
-import ru.hotmule.lastik.ui.compose.utils.statusBarHeight
-import ru.hotmule.lastik.ui.compose.utils.statusBarPadding
 
 @Composable
 fun UserContent(
@@ -57,33 +54,32 @@ private fun UserTopBar(
 ) {
     TopAppBar(
         modifier = Modifier.height(
-            Res.Dimen.barHeight + WindowInsets.statusBarHeight
+            Res.Dimen.barHeight + WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
         ),
         title = {
             Text(
-                modifier = Modifier.statusBarPadding(),
+                modifier = Modifier.statusBarsPadding(),
                 text = username
             )
         },
         actions = {
             IconButton(
-                modifier = Modifier.statusBarPadding(),
+                modifier = Modifier.statusBarsPadding(),
                 onClick = onLogOut,
                 //onClick = onMenu,
             ) {
                 Icon(
                     tint = Color.White,
-                    imageVector = Icons.Rounded.Logout,
-                    contentDescription = "Menu",
+                    imageVector = Icons.AutoMirrored.Rounded.Logout,
+                    contentDescription = "LogOut",
                     //imageVector = Icons.Rounded.Menu,
-                    //contentDescription = "LogOut",
+                    //contentDescription = "Menu",
                 )
             }
         }
     )
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun UserBody(
     model: Model,
@@ -214,8 +210,8 @@ private fun UserImage(
     modifier: Modifier = Modifier,
     url: String
 ) {
-    Image(
-        painter = remoteImagePainter(url),
+    AsyncImage(
+        model = url,
         contentDescription = "profileImage",
         contentScale = ContentScale.Crop,
         modifier = modifier

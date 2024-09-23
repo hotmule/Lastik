@@ -1,6 +1,6 @@
 plugins {
     id("lastik.multiplatform")
-    id("com.squareup.sqldelight")
+    id("app.cash.sqldelight")
 }
 
 kotlin {
@@ -25,7 +25,9 @@ kotlin {
 }
 
 sqldelight {
-    database("LastikDatabase") {
-        packageName = "ru.hotmule.lastik.data.local"
+    databases {
+        create("LastikDatabase") {
+            packageName.set("ru.hotmule.lastik.data.local")
+        }
     }
 }

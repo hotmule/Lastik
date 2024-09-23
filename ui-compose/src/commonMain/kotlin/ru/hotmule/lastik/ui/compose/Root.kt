@@ -1,7 +1,7 @@
 package ru.hotmule.lastik.ui.compose
 
 import androidx.compose.runtime.Composable
-import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
+import com.arkivanov.decompose.extensions.compose.stack.Children
 import org.kodein.di.DI
 import org.kodein.di.compose.withDI
 import ru.hotmule.lastik.feature.root.RootComponent

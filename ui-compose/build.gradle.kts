@@ -1,7 +1,7 @@
 plugins {
     id("lastik.multiplatform")
     alias(libs.plugins.compose)
-    //alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.compose.compiler)
 }
 
 kotlin {
@@ -27,21 +27,17 @@ kotlin {
                 implementation(compose.material)
                 implementation(compose.materialIconsExtended)
 
+                implementation(libs.coil.ktor)
+                implementation(libs.coil.compose)
+
                 implementation(libs.decompose)
                 implementation(libs.decompose.compose)
                 implementation(libs.kodein.compose)
             }
         }
 
-        named("androidMain") {
-            dependencies {
-                implementation(libs.coil)
-            }
-        }
-
         named("desktopMain") {
             dependencies {
-                implementation(projects.utils)
                 implementation(compose.desktop.currentOs)
             }
         }

@@ -1,6 +1,6 @@
 plugins {
     id("lastik.component")
-    id("kotlin-parcelize")
+    id("kotlinx-serialization")
 }
 
 kotlin {
@@ -9,7 +9,6 @@ kotlin {
             dependencies {
                 implementation(projects.featureUser)
                 implementation(projects.featureSettings)
-                implementation(libs.essenty.parcelable)
             }
         }
     }

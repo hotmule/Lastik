@@ -7,6 +7,7 @@ kotlin {
         named("commonMain") {
             dependencies {
                 implementation(projects.utils)
+                implementation(libs.coil.core)
                 implementation(libs.kodein)
                 implementation(libs.settings)
                 implementation(libs.settings.coroutines)

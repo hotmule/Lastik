@@ -1,7 +1,10 @@
 package ru.hotmule.lastik.ui.compose
 
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
@@ -9,8 +12,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import ru.hotmule.lastik.feature.scrobbles.ScrobblesComponent
 import ru.hotmule.lastik.ui.compose.res.Res
-import ru.hotmule.lastik.ui.compose.utils.statusBarHeight
-import ru.hotmule.lastik.ui.compose.utils.statusBarPadding
 
 @Composable
 fun ScrobblesContent(
@@ -20,11 +21,12 @@ fun ScrobblesContent(
         topBar = {
             TopAppBar(
                 modifier = Modifier.height(
-                    Res.Dimen.barHeight + WindowInsets.statusBarHeight
+                    Res.Dimen.barHeight +
+                            WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
                 ),
                 title = {
                     Text(
-                        modifier = Modifier.statusBarPadding(),
+                        modifier = Modifier.statusBarsPadding(),
                         text = Res.String.scrobbles
                     )
                 }

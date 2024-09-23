@@ -36,8 +36,8 @@ class MainActivity : AppCompatActivity(), DIAware {
         }
     }
 
-    override fun onNewIntent(intent: Intent?) {
+    override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        rootComponent.onUrlReceived(intent?.data?.toString())
+        rootComponent.onUrlReceived(intent.data?.toString())
     }
 }

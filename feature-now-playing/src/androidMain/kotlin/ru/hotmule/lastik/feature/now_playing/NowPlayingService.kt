@@ -11,6 +11,8 @@ import android.media.session.PlaybackState
 import android.service.notification.NotificationListenerService
 import androidx.core.app.NotificationCompat
 import androidx.core.content.getSystemService
+import coil3.asImage
+import coil3.toBitmap
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
@@ -102,7 +104,7 @@ class NowPlayingService : NotificationListenerService(), DIAware {
                 metadata?.getString(MediaMetadata.METADATA_KEY_ARTIST),
                 metadata?.getString(MediaMetadata.METADATA_KEY_ALBUM),
                 metadata?.getString(MediaMetadata.METADATA_KEY_TITLE),
-                metadata?.getBitmap(MediaMetadata.METADATA_KEY_ALBUM_ART),
+                metadata?.getBitmap(MediaMetadata.METADATA_KEY_ALBUM_ART)?.asImage(),
                 metadata?.getLong(MediaMetadata.METADATA_KEY_DURATION),
                 metadata?.getString(MediaMetadata.METADATA_KEY_ALBUM_ARTIST)
             )
@@ -117,7 +119,7 @@ class NowPlayingService : NotificationListenerService(), DIAware {
                 if (it.isPlaying) {
                     startForeground(
                         SCROBBLE_NOTIFICATION_ID,
-                        nowPlayingNotification(it.track, it.artist, it.art)
+                        nowPlayingNotification(it.track, it.artist, it.art?.toBitmap())
                     )
                 } else {
                     stopForeground(true)

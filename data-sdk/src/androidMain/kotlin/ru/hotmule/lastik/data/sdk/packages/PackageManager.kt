@@ -4,10 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.drawable.BitmapDrawable
-import kotlinx.coroutines.Dispatchers
+import coil3.asImage
 import kotlinx.coroutines.withContext
 import org.kodein.di.DI
 import org.kodein.di.DIAware
@@ -31,21 +28,7 @@ actual class PackageManager actual constructor(override val di: DI) : DIAware {
                 Package(
                     name = it.packageName,
                     label = it.loadLabel(context.packageManager).toString(),
-                    bitmap = with (it.loadIcon(context.packageManager)) {
-
-                        val bitmap = Bitmap.createBitmap(
-                            intrinsicWidth,
-                            intrinsicHeight,
-                            Bitmap.Config.ARGB_8888
-                        )
-
-                        val canvas = Canvas(bitmap)
-
-                        setBounds(0, 0, canvas.width, canvas.height)
-                        draw(canvas)
-
-                        bitmap
-                    }
+                    icon = it.loadIcon(context.packageManager).asImage()
                 )
             }
     }
