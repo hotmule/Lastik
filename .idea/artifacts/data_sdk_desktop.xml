@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" name="data-sdk-desktop">
-    <output-path>$PROJECT_DIR$/data-sdk/build/libs</output-path>
-    <root id="archive" name="data-sdk-desktop.jar">
-      <element id="module-output" name="Lastik.data-sdk.desktopMain" />
-    </root>
-  </artifact>
-</component>

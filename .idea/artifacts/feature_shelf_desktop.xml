@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" name="feature-shelf-desktop">
-    <output-path>$PROJECT_DIR$/feature-shelf/build/libs</output-path>
-    <root id="archive" name="feature-shelf-desktop.jar">
-      <element id="module-output" name="Lastik.feature-shelf.desktopMain" />
-    </root>
-  </artifact>
-</component>

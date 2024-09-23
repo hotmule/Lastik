@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" name="feature-now-playing-desktop">
-    <output-path>$PROJECT_DIR$/feature-now-playing/build/libs</output-path>
-    <root id="archive" name="feature-now-playing-desktop.jar">
-      <element id="module-output" name="Lastik.feature-now-playing.desktopMain" />
-    </root>
-  </artifact>
-</component>

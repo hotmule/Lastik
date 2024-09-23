@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" name="ui-compose-desktop">
-    <output-path>$PROJECT_DIR$/ui-compose/build/libs</output-path>
-    <root id="archive" name="ui-compose-desktop.jar">
-      <element id="module-output" name="Lastik.ui-compose.desktopMain" />
-    </root>
-  </artifact>
-</component>
