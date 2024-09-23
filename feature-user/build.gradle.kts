@@ -1,16 +1,16 @@
 plugins {
-    id("lastik-component-mvi")
+    id("lastik.component.mvi")
 }
 
 kotlin {
     sourceSets {
         named("commonMain") {
             dependencies {
-                implementation(project(Module.Data.local))
-                implementation(project(Module.Data.remote))
-                implementation(project(Module.Feature.shelf))
-                implementation(project(Module.Feature.menu))
-                implementation(Libs.SqlDelight.coroutines)
+                implementation(projects.dataLocal)
+                implementation(projects.dataRemote)
+                implementation(projects.featureShelf)
+                implementation(projects.featureMenu)
+                implementation(libs.sqldelight.coroutines)
             }
         }
     }

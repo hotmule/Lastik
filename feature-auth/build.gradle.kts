@@ -1,5 +1,5 @@
 plugins {
-    id("lastik-component-mvi")
+    id("lastik.component.mvi")
 }
 
 kotlin {
@@ -7,10 +7,10 @@ kotlin {
 
         named("commonMain") {
             dependencies {
-                implementation(project(Module.Data.sdk))
-                implementation(project(Module.Data.local))
-                implementation(project(Module.Data.remote))
-                implementation(project(Module.Feature.browser))
+                implementation(projects.dataSdk)
+                implementation(projects.dataLocal)
+                implementation(projects.dataRemote)
+                implementation(projects.featureBrowser)
             }
         }
     }

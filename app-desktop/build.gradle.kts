@@ -1,18 +1,19 @@
 plugins {
     kotlin("jvm")
-    id("org.jetbrains.compose") version Libs.AndroidX.Compose.version
+    alias(libs.plugins.compose)
+    //alias(libs.plugins.compose.compiler)
 }
 
 dependencies {
 
-    implementation(project(Module.UI.compose))
-    implementation(project(Module.Feature.root))
+    implementation(projects.uiCompose)
+    implementation(projects.featureRoot)
 
     implementation(compose.desktop.currentOs)
 
-    implementation(Libs.Kodein.common)
-    implementation(Libs.ArkIvanov.Decompose.common)
-    implementation(Libs.ArkIvanov.Decompose.compose)
+    implementation(libs.kodein)
+    implementation(libs.decompose)
+    implementation(libs.decompose.compose)
 }
 
 compose.desktop {

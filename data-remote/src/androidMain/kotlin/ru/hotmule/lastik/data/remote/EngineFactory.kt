@@ -1,5 +1,6 @@
 package ru.hotmule.lastik.data.remote
 
+import Lastik.BuildConfig
 import android.content.Context
 import android.webkit.WebView
 import io.ktor.client.engine.*

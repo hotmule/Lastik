@@ -1,5 +1,5 @@
 plugins {
-    id("lastik-component")
+    id("lastik.component")
 }
 
 kotlin {
@@ -7,7 +7,7 @@ kotlin {
 
         named("commonMain") {
             dependencies {
-                implementation(project(Module.Feature.shelf))
+                implementation(projects.featureShelf)
             }
         }
     }

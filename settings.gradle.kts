@@ -1,4 +1,5 @@
 rootProject.name = "Lastik"
+
 include(
 
     ":app-android",
@@ -26,8 +27,11 @@ include(
 )
 
 pluginManagement {
+    includeBuild("build-logic")
     repositories {
         gradlePluginPortal()
         maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
     }
 }
+
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")

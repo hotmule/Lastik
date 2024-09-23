@@ -1,21 +1,21 @@
 plugins {
-    id("lastik-component-mvi")
+    id("lastik.component.mvi")
 }
 
 kotlin {
     sourceSets {
         named("androidMain") {
             dependencies {
-                implementation(Libs.Kodein.android)
-                implementation(Libs.AndroidX.core)
+                implementation(libs.androidx.core)
+                implementation(libs.kodein.android.core)
             }
         }
         named("commonMain") {
             dependencies {
-                implementation(project(Module.Data.remote))
-                implementation(project(Module.Data.local))
-                implementation(project(Module.Data.sdk))
-                implementation(Libs.Kotlin.dateTime)
+                implementation(projects.dataSdk)
+                implementation(projects.dataLocal)
+                implementation(projects.dataRemote)
+                implementation(libs.kotlinx.datetime)
             }
         }
     }

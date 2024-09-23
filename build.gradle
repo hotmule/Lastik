@@ -1,0 +1,33 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url = "https://maven.pkg.jetbrains.space/public/p/compose/dev" }
+        google()
+    }
+    dependencies {
+        classpath(libs.gradle)
+        classpath(libs.kotlin.gradle)
+        classpath(libs.kotlin.serialization)
+        classpath(libs.sqldelight.gradle)
+    }
+}
+
+allprojects {
+    repositories {
+        mavenCentral()
+        maven { url = "https://maven.pkg.jetbrains.space/public/p/compose/dev" }
+        google()
+    }
+}
+
+subprojects {
+    afterEvaluate { subproject ->
+        if (subproject.hasProperty("android")) {
+            subproject.android {
+                if (namespace == null) {
+                    namespace = subproject.group
+                }
+            }
+        }
+    }
+}
