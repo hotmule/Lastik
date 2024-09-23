@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" name="feature-settings-desktop">
-    <output-path>$PROJECT_DIR$/feature-settings/build/libs</output-path>
-    <root id="archive" name="feature-settings-desktop.jar">
-      <element id="module-output" name="Lastik.feature-settings.desktopMain" />
-    </root>
-  </artifact>
-</component>

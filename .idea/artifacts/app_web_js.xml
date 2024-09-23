@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" name="app-web-js">
-    <output-path>$PROJECT_DIR$/app-web/build/libs</output-path>
-    <root id="archive" name="app-web-js.jar">
-      <element id="module-output" name="Lastik.app-web.jsMain" />
-    </root>
-  </artifact>
-</component>
