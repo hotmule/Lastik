@@ -3,14 +3,13 @@ package ru.hotmule.lastik.data.remote.api
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
+import ru.hotmule.lastik.data.remote.BuildKonfig
 import ru.hotmule.lastik.data.sdk.prefs.PrefsStore
-import ru.hotmule.lastik.data.remote.Credentials
 import ru.hotmule.lastik.data.remote.entities.NowPlayingResponse
 
 class TrackApi(
     private val client: HttpClient,
     private val prefs: PrefsStore,
-    private val credentials: Credentials
 ) {
 
     private fun HttpRequestBuilder.trackApi(
@@ -18,10 +17,10 @@ class TrackApi(
         parameters: Map<String, Any?>
     ) {
         api(
-            secret = credentials.secret,
+            secret = BuildKonfig.secret,
             params = parameters + mutableMapOf(
                 "method" to "track.$method",
-                "api_key" to credentials.apiKey,
+                "api_key" to BuildKonfig.apiKey,
                 "sk" to prefs.sessionKey,
             ).apply {
                 prefs.token?.let { set("token", it) }

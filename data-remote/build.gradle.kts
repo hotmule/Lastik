@@ -1,6 +1,9 @@
+import com.codingfeline.buildkonfig.compiler.FieldSpec
+
 plugins {
     id("lastik.multiplatform")
     kotlin("plugin.serialization")
+    id("com.codingfeline.buildkonfig")
 }
 
 kotlin {
@@ -38,22 +41,24 @@ kotlin {
 }
 
 android {
-
     defaultConfig {
-
         buildFeatures {
             buildConfig = true
         }
+    }
+}
 
+buildkonfig {
+    packageName = "ru.hotmule.lastik.data.remote"
+    defaultConfigs {
         buildConfigField(
-            "String",
-            "API_KEY",
+            FieldSpec.Type.STRING,
+            "apiKey",
             project.property("apiKey") as String
         )
-
         buildConfigField(
-            "String",
-            "SECRET",
+            FieldSpec.Type.STRING,
+            "secret",
             project.property("secret") as String
         )
     }

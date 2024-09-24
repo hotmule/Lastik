@@ -9,6 +9,7 @@ buildscript {
         classpath(libs.kotlin.gradle)
         classpath(libs.kotlin.serialization)
         classpath(libs.sqldelight.gradle)
+        classpath(libs.konfig)
     }
 }
 

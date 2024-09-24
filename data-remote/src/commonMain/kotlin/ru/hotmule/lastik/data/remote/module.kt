@@ -12,11 +12,10 @@ val remoteDataModule = DI.Module("remoteData") {
 
     importOnce(sdkDataModule)
 
-    bindSingleton { Credentials() }
     bindSingleton { EngineFactory(di) }
     bindSingleton { LastikHttpClientFactory(instance(), instance()).create() }
 
-    bindSingleton { AuthApi(instance(), instance()) }
-    bindSingleton { UserApi(instance(), instance(), instance()) }
-    bindSingleton { TrackApi(instance(), instance(), instance()) }
+    bindSingleton { AuthApi(instance()) }
+    bindSingleton { UserApi(instance(), instance()) }
+    bindSingleton { TrackApi(instance(), instance()) }
 }

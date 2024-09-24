@@ -3,12 +3,11 @@ package ru.hotmule.lastik.data.remote.api
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
-import ru.hotmule.lastik.data.remote.Credentials
+import ru.hotmule.lastik.data.remote.BuildKonfig
 import ru.hotmule.lastik.data.remote.entities.SessionResponse
 
 class AuthApi(
-    private val client: HttpClient,
-    private val credentials: Credentials
+    private val client: HttpClient
 ) {
 
     private fun HttpRequestBuilder.authApi(
@@ -18,14 +17,14 @@ class AuthApi(
         api(
             params = parameters + mutableMapOf(
                 "method" to "auth.$method",
-                "api_key" to credentials.apiKey
+                "api_key" to BuildKonfig.apiKey
             ),
-            secret = credentials.secret
+            secret = BuildKonfig.secret
         )
     }
 
     val authUrl = "http://www.last.fm/api/auth/" + "?" +
-            "api_key=${credentials.apiKey}" + "&" +
+            "api_key=${BuildKonfig.apiKey}" + "&" +
             "cb=hotmule://lastik"
 
     suspend fun getSession(

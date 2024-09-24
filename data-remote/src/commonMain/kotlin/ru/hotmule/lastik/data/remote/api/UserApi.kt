@@ -3,14 +3,13 @@ package ru.hotmule.lastik.data.remote.api
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
+import ru.hotmule.lastik.data.remote.BuildKonfig
 import ru.hotmule.lastik.data.sdk.prefs.PrefsStore
-import ru.hotmule.lastik.data.remote.Credentials
 import ru.hotmule.lastik.data.remote.entities.*
 
 class UserApi(
     private val client: HttpClient,
     private val prefs: PrefsStore,
-    private val credentials: Credentials
 ) {
 
     companion object {
@@ -31,7 +30,7 @@ class UserApi(
             params + mapOf(
                 "method" to "user.$method",
                 "user" to "hotmu1e",
-                "api_key" to credentials.apiKey
+                "api_key" to BuildKonfig.apiKey
             )
         )
     }

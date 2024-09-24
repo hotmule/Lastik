@@ -20,6 +20,7 @@ coil = "3.0.0-alpha10"
 kodein = "7.22.0"
 kermit = "2.0.4"
 krypto = "4.0.10"
+kofing = "0.15.2"
 settings = "1.2.0"
 androidx-core = "1.13.1"
 androidx-browser = "1.8.0"
@@ -76,6 +77,7 @@ coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref 
 
 kermit = { group = "co.touchlab", name = "kermit", version.ref = "kermit" }
 krypto = { group = "com.soywiz.korlibs.krypto", name = "krypto", version.ref = "krypto" }
+konfig = { group = "com.codingfeline.buildkonfig", name = "buildkonfig-gradle-plugin", version.ref = "kofing" }
 
 [plugins]
 compose = { id = "org.jetbrains.compose", version.ref = "compose" }
