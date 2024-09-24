@@ -5,7 +5,12 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.AccountCircle
+import androidx.compose.material.icons.rounded.Album
+import androidx.compose.material.icons.rounded.Audiotrack
 import androidx.compose.material.icons.rounded.Equalizer
+import androidx.compose.material.icons.rounded.Face
+import androidx.compose.material.icons.rounded.History
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
@@ -24,10 +29,12 @@ import coil3.compose.AsyncImage
 import coil3.toBitmap
 import com.arkivanov.decompose.extensions.compose.stack.Children
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
+import lastik.ui_compose.generated.resources.Res
+import lastik.ui_compose.generated.resources.shelves
+import org.jetbrains.compose.resources.stringArrayResource
 import ru.hotmule.lastik.feature.app.NowPlayingComponent.*
 import ru.hotmule.lastik.feature.library.LibraryComponent
 import ru.hotmule.lastik.feature.library.LibraryComponent.*
-import ru.hotmule.lastik.ui.compose.res.Res
 
 @Composable
 fun LibraryContent(
@@ -46,7 +53,7 @@ fun LibraryContent(
 
         BottomSheetScaffold(
             modifier = Modifier.padding(
-                bottom = Res.Dimen.barHeight +
+                bottom = 56.dp +
                         WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
             ),
             content = {
@@ -55,7 +62,7 @@ fun LibraryContent(
                 )
             },
             scaffoldState = bottomSheetScaffoldState,
-            sheetPeekHeight = if (model.isPlaying) Res.Dimen.shelfItemHeight else 0.dp,
+            sheetPeekHeight = if (model.isPlaying) 56.dp else 0.dp,
             sheetContent = {
                 NowPlayingContent(
                     isCollapsed = bottomSheetScaffoldState.bottomSheetState.isCollapsed,
@@ -167,11 +174,19 @@ private fun LibraryBottomBar(
     modifier: Modifier = Modifier
 ) {
     val activeIndex by component.activeChildIndex.subscribeAsState()
+    val shelves = stringArrayResource(Res.array.shelves)
+    val icons = arrayOf(
+        Icons.Rounded.History,
+        Icons.Rounded.Face,
+        Icons.Rounded.Album,
+        Icons.Rounded.Audiotrack,
+        Icons.Rounded.AccountCircle
+    )
 
     BottomNavigation(
         modifier = modifier
     ) {
-        Res.Array.shelves.forEachIndexed { index, shelfTitle ->
+        shelves.forEachIndexed { index, shelfTitle ->
             BottomNavigationItem(
                 onClick = { component.onShelfSelect(index) },
                 selected = index == activeIndex,
@@ -180,7 +195,7 @@ private fun LibraryBottomBar(
                 icon = {
                     Icon(
                         contentDescription = shelfTitle,
-                        imageVector = Res.Array.shelfIcons[index]
+                        imageVector = icons[index]
                     )
                 }
             )

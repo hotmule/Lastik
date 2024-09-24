@@ -11,7 +11,7 @@ import org.kodein.di.DIAware
 import org.kodein.di.android.closestDI
 import org.kodein.di.factory
 import ru.hotmule.lastik.feature.root.RootComponent
-import ru.hotmule.lastik.ui.compose.LastikTheme
+import ru.hotmule.lastik.ui.compose.theme.LastikTheme
 import ru.hotmule.lastik.ui.compose.RootContent
 
 class MainActivity : AppCompatActivity(), DIAware {

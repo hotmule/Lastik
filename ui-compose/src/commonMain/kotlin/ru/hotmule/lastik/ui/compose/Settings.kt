@@ -20,9 +20,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import coil3.toBitmap
+import lastik.ui_compose.generated.resources.Res
+import lastik.ui_compose.generated.resources.scrobble_apps
+import org.jetbrains.compose.resources.stringResource
 import ru.hotmule.lastik.feature.settings.SettingsComponent
 import ru.hotmule.lastik.feature.settings.SettingsComponent.*
-import ru.hotmule.lastik.ui.compose.res.Res
+import ru.hotmule.lastik.ui.compose.common.LastikTopAppBar
 
 @Composable
 fun SettingsContent(
@@ -44,16 +47,8 @@ fun SettingsContent(
 private fun SettingsTopBar(
     onPop: () -> Unit
 ) {
-    TopAppBar(
-        modifier = Modifier.height(
-            Res.Dimen.barHeight + WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
-        ),
-        title = {
-            Text(
-                modifier = Modifier.statusBarsPadding(),
-                text = Res.String.scrobble_apps
-            )
-        },
+    LastikTopAppBar(
+        title = stringResource(Res.string.scrobble_apps),
         navigationIcon = {
             IconButton(
                 modifier = Modifier.statusBarsPadding(),

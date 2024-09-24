@@ -8,8 +8,10 @@ import androidx.compose.material.icons.rounded.Tune
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import lastik.ui_compose.generated.resources.Res
+import lastik.ui_compose.generated.resources.profileMenu
+import org.jetbrains.compose.resources.stringArrayResource
 import ru.hotmule.lastik.feature.menu.MenuComponent
-import ru.hotmule.lastik.ui.compose.res.Res
 
 @Composable
 fun MenuContent(
@@ -19,7 +21,7 @@ fun MenuContent(
     Column(
         modifier = modifier
     ) {
-        Res.Array.profileMenu.forEachIndexed { index, item ->
+        stringArrayResource(Res.array.profileMenu).forEachIndexed { index, item ->
 
             TextButton(
                 colors = ButtonDefaults.textButtonColors(

@@ -1,0 +1,46 @@
+<resources>
+
+    <!--Log in-->
+    <string name="authorization">Authorization</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="sign_in">Sign in</string>
+    <string name="sign_in_with_last_fm">Sign in with Last.fm</string>
+
+    <!--Log out-->
+    <string name="logging_out">Logging Out</string>
+    <string name="logging_out_confirmation">Are you sure you want to log out?</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
+
+    <!--Main-->
+    <string-array name="shelves">
+        <item>Resents</item>
+        <item>Artists</item>
+        <item>Albums</item>
+        <item>Tracks</item>
+        <item>Profile</item>
+    </string-array>
+    <string-array name="periods">
+        <item>All time</item>
+        <item>Last 365 days</item>
+        <item>Last 180 days</item>
+        <item>Last 90 days</item>
+        <item>Last 30 days</item>
+        <item>Last 7 days</item>
+    </string-array>
+
+    <!--Profile-->
+    <string name="scrobbling_since">Scrobbling since</string>
+    <string name="scrobbles">Scrobbles</string>
+    <string name="friends">Friends</string>
+    <string name="loved_tracks">Loved tracks</string>
+    <string-array name="profileMenu">
+        <item>Settings</item>
+        <item>Log out</item>
+    </string-array>
+
+    <!--Settings-->
+    <string name="scrobble_apps">Scrobble apps</string>
+
+</resources>

@@ -13,8 +13,15 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import lastik.ui_compose.generated.resources.Res
+import lastik.ui_compose.generated.resources.authorization
+import lastik.ui_compose.generated.resources.password
+import lastik.ui_compose.generated.resources.sign_in
+import lastik.ui_compose.generated.resources.sign_in_with_last_fm
+import lastik.ui_compose.generated.resources.username
+import org.jetbrains.compose.resources.stringResource
 import ru.hotmule.lastik.feature.auth.AuthComponent
-import ru.hotmule.lastik.ui.compose.res.Res
+import ru.hotmule.lastik.ui.compose.common.LastikTopAppBar
 
 @Composable
 fun AuthContent(
@@ -22,7 +29,9 @@ fun AuthContent(
 ) {
     Scaffold(
         topBar = {
-            AuthBar()
+            LastikTopAppBar(
+                title = stringResource(Res.string.authorization),
+            )
         },
         content = {
             AuthBody(
@@ -39,21 +48,6 @@ fun AuthContent(
 }
 
 @Composable
-private fun AuthBar() {
-    TopAppBar(
-        title = {
-            Text(
-                text = Res.String.auth,
-                modifier = Modifier.statusBarsPadding()
-            )
-        },
-        modifier = Modifier.height(
-            Res.Dimen.barHeight + WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
-        )
-    )
-}
-
-@Composable
 private fun AuthBody(
     component: AuthComponent
 ) {
@@ -66,7 +60,7 @@ private fun AuthBody(
             .fillMaxWidth()
     ) {
         OutlinedTextField(
-            label = { Text(Res.String.username) },
+            label = { Text(stringResource(Res.string.username)) },
             value = model.username,
             keyboardOptions = KeyboardOptions.Default.copy(
                 autoCorrectEnabled = false
@@ -78,7 +72,7 @@ private fun AuthBody(
         )
 
         OutlinedTextField(
-            label = { Text(Res.String.password) },
+            label = { Text(stringResource(Res.string.password)) },
             value = model.password,
             keyboardOptions = KeyboardOptions.Default.copy(
                 autoCorrectEnabled = false,
@@ -121,7 +115,7 @@ private fun AuthBody(
                 .padding(top = 8.dp)
                 .height(56.dp)
         ) {
-            Text(Res.String.sign_in)
+            Text(stringResource(Res.string.sign_in))
         }
 
         TextButton(
@@ -134,7 +128,7 @@ private fun AuthBody(
                 .padding(top = 8.dp)
                 .height(56.dp)
         ) {
-            Text(Res.String.sign_in_with_last_fm)
+            Text(stringResource(Res.string.sign_in_with_last_fm))
         }
 
         if (model.isLoading) {

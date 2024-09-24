@@ -21,10 +21,20 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
+import lastik.ui_compose.generated.resources.Res
+import lastik.ui_compose.generated.resources.cancel
+import lastik.ui_compose.generated.resources.confirm
+import lastik.ui_compose.generated.resources.friends
+import lastik.ui_compose.generated.resources.logging_out
+import lastik.ui_compose.generated.resources.logging_out_confirmation
+import lastik.ui_compose.generated.resources.loved_tracks
+import lastik.ui_compose.generated.resources.scrobbles
+import lastik.ui_compose.generated.resources.scrobbling_since
+import org.jetbrains.compose.resources.stringResource
 import ru.hotmule.lastik.feature.menu.MenuComponent
-import ru.hotmule.lastik.ui.compose.res.Res
 import ru.hotmule.lastik.feature.user.UserComponent
 import ru.hotmule.lastik.feature.user.UserComponent.*
+import ru.hotmule.lastik.ui.compose.common.LastikTopAppBar
 
 @Composable
 fun UserContent(
@@ -52,16 +62,8 @@ private fun UserTopBar(
     onLogOut: () -> Unit,
     //onMenu: () -> Unit
 ) {
-    TopAppBar(
-        modifier = Modifier.height(
-            Res.Dimen.barHeight + WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
-        ),
-        title = {
-            Text(
-                modifier = Modifier.statusBarsPadding(),
-                text = username
-            )
-        },
+    LastikTopAppBar(
+        title = username,
         actions = {
             IconButton(
                 modifier = Modifier.statusBarsPadding(),
@@ -118,17 +120,17 @@ private fun UserBody(
 
         if (menuModel.isLogOutShown) {
             AlertDialog(
-                title = { Text(text = Res.String.logging_out) },
-                text = { Text(text = Res.String.logging_out_confirmation) },
+                title = { Text(text = stringResource(Res.string.logging_out)) },
+                text = { Text(text = stringResource(Res.string.logging_out_confirmation)) },
                 onDismissRequest = component.menuComponent::onLogOutCancel,
                 confirmButton = {
                     TextButton(onClick = component.menuComponent::onLogOutConfirm) {
-                        Text(text = Res.String.confirm)
+                        Text(text = stringResource(Res.string.confirm))
                     }
                 },
                 dismissButton = {
                     TextButton(onClick = component.menuComponent::onLogOutCancel) {
-                        Text(text = Res.String.cancel)
+                        Text(text = stringResource(Res.string.cancel))
                     }
                 }
             )
@@ -151,7 +153,7 @@ private fun UserInfo(
         )
 
         TitleText(
-            title = Res.String.friends,
+            title = stringResource(Res.string.friends),
             modifier = Modifier.padding(start = 16.dp)
         )
 
@@ -161,7 +163,7 @@ private fun UserInfo(
         )
 
         TitleText(
-            title = Res.String.loved_tracks,
+            title = stringResource(Res.string.loved_tracks),
             modifier = Modifier.padding(start = 16.dp, top = 24.dp, bottom = 4.dp)
         )
     }
@@ -188,7 +190,7 @@ private fun UserStatistic(
         )
 
         Statistic(
-            title = Res.String.scrobbling_since,
+            title = stringResource(Res.string.scrobbling_since),
             subtitle = scrobblingSince,
             modifier = Modifier
                 .align(Alignment.CenterVertically)
@@ -196,7 +198,7 @@ private fun UserStatistic(
         )
 
         Statistic(
-            title = Res.String.scrobbles,
+            title = stringResource(Res.string.scrobbles),
             subtitle = playCount,
             modifier = Modifier
                 .align(Alignment.CenterVertically)

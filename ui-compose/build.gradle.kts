@@ -26,6 +26,7 @@ kotlin {
 
                 implementation(compose.material)
                 implementation(compose.materialIconsExtended)
+                implementation(compose.components.resources)
 
                 implementation(libs.coil.ktor)
                 implementation(libs.coil.compose)

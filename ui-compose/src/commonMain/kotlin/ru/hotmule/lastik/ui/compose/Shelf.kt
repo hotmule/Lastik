@@ -32,7 +32,8 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import ru.hotmule.lastik.feature.shelf.ShelfComponent
 import ru.hotmule.lastik.feature.shelf.ShelfComponent.*
-import ru.hotmule.lastik.ui.compose.res.Res
+
+private val shelfItemHeight = 82.dp
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -53,7 +54,8 @@ fun ShelfContent(
     BoxWithConstraints(
         modifier = Modifier.pullRefresh(pullRefreshState)
     ) {
-        val scrobbleWidth = maxWidth / (model.items.firstOrNull()?.playCount?.toInt() ?: 1)
+        val playCount = model.items.firstOrNull()?.playCount?.toInt() ?: 1
+        val scrobbleWidth = if (playCount > 1) maxWidth / playCount else 0.dp
 
         LazyColumn(
             modifier = Modifier.fillMaxSize()
@@ -91,7 +93,7 @@ private fun ShelfItemContent(
 ) {
     Box(
         modifier = Modifier
-            .height(Res.Dimen.shelfItemHeight)
+            .height(shelfItemHeight)
             .fillMaxWidth()
     ) {
 
@@ -220,7 +222,7 @@ private fun AdditionalProgress(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(82.dp)
+            .height(shelfItemHeight)
     ) {
         if (isLoading) {
             CircularProgressIndicator(

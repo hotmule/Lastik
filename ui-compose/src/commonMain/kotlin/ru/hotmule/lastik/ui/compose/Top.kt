@@ -10,9 +10,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import lastik.ui_compose.generated.resources.Res
+import lastik.ui_compose.generated.resources.periods
+import lastik.ui_compose.generated.resources.shelves
+import org.jetbrains.compose.resources.stringArrayResource
 import ru.hotmule.lastik.feature.top.TopComponent
 import ru.hotmule.lastik.feature.top.TopComponent.*
-import ru.hotmule.lastik.ui.compose.res.Res
+import ru.hotmule.lastik.ui.compose.common.LastikTopAppBar
 
 @Composable
 fun TopContent(
@@ -20,9 +24,7 @@ fun TopContent(
 ) {
     Scaffold(
         topBar = {
-            LastikTopAppBar(
-                component = component,
-            )
+            PeriodsAppBar(component)
         },
         content = {
             ShelfContent(component.shelfComponent)
@@ -31,64 +33,61 @@ fun TopContent(
 }
 
 @Composable
-private fun LastikTopAppBar(
+private fun PeriodsAppBar(
     component: TopComponent,
 ) {
     val model by component.model.collectAsState(Model())
+    val shelfIndex = model.shelfIndex
+    val periodIndex = model.periodIndex
 
-    TopAppBar(
-        modifier = Modifier.height(
-            Res.Dimen.barHeight + WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
-        ),
-        title = {
-            model.shelfIndex?.let {
-                Text(
-                    modifier = Modifier.statusBarsPadding(),
-                    text = Res.Array.shelves[it]
-                )
-            }
+    LastikTopAppBar(
+        title = if (shelfIndex != null) {
+            stringArrayResource(Res.array.shelves)[shelfIndex]
+        } else {
+            ""
         },
         actions = {
-            model.periodIndex?.let {
-                TextButton(
+            if (periodIndex != null) {
+                PeriodsDropDownButton(
+                    periodIndex = periodIndex,
+                    isExpanded = model.periodsOpened,
                     onClick = component::onPeriodsOpen,
-                    colors = ButtonDefaults.textButtonColors(
-                        contentColor = Color.White
-                    ),
-                    modifier = Modifier
-                        .statusBarsPadding()
-                        .padding(end = 2.dp)
-                ) {
-                    Text(text = Res.Array.periods[it])
-                    Icon(Icons.Rounded.ExpandMore, null)
-                }
+                    onDismissRequest = component::onPeriodsClose,
+                    onPeriodSelect = component::onPeriodSelected,
+                )
             }
-
-            PeriodDropDown(
-                expanded = model.periodsOpened,
-                onDismissRequest = component::onPeriodsClose,
-                onPeriodSelect = component::onPeriodSelected
-            )
         }
     )
 }
 
 @Composable
-private fun PeriodDropDown(
-    expanded: Boolean,
+private fun PeriodsDropDownButton(
+    periodIndex: Int,
+    isExpanded: Boolean,
+    onClick: () -> Unit,
     onDismissRequest: () -> Unit,
     onPeriodSelect: (Int) -> Unit
 ) {
+    TextButton(
+        onClick = onClick,
+        colors = ButtonDefaults.textButtonColors(
+            contentColor = Color.White
+        ),
+        modifier = Modifier
+            .statusBarsPadding()
+            .padding(end = 2.dp)
+    ) {
+        Text(text = stringArrayResource(Res.array.periods)[periodIndex])
+        Icon(Icons.Rounded.ExpandMore, null)
+    }
     DropdownMenu(
-        expanded = expanded,
+        expanded = isExpanded,
         onDismissRequest = onDismissRequest
     ) {
         Column {
-            Res.Array.periods.forEachIndexed { index, period ->
+            stringArrayResource(Res.array.periods).forEachIndexed { index, period ->
                 DropdownMenuItem(
-                    onClick = {
-                        onPeriodSelect(index)
-                    }
+                    onClick = { onPeriodSelect(index) }
                 ) {
                     Text(text = period)
                 }

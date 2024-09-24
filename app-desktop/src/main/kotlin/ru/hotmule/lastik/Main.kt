@@ -9,7 +9,7 @@ import org.kodein.di.DI
 import org.kodein.di.factory
 import ru.hotmule.lastik.feature.root.RootComponent
 import ru.hotmule.lastik.feature.root.rootComponentModule
-import ru.hotmule.lastik.ui.compose.LastikTheme
+import ru.hotmule.lastik.ui.compose.theme.LastikTheme
 
 fun main() = singleWindowApplication(
     title = "Lastik"
