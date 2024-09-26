@@ -1,9 +1,30 @@
 package ru.hotmule.lastik.ui.compose
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.BottomNavigation
+import androidx.compose.material.BottomNavigationItem
+import androidx.compose.material.BottomSheetScaffold
+import androidx.compose.material.BottomSheetState
+import androidx.compose.material.BottomSheetValue
+import androidx.compose.material.ContentAlpha
+import androidx.compose.material.Icon
+import androidx.compose.material.LocalContentAlpha
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AccountCircle
 import androidx.compose.material.icons.rounded.Album
@@ -11,6 +32,7 @@ import androidx.compose.material.icons.rounded.Audiotrack
 import androidx.compose.material.icons.rounded.Equalizer
 import androidx.compose.material.icons.rounded.Face
 import androidx.compose.material.icons.rounded.History
+import androidx.compose.material.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
@@ -32,18 +54,16 @@ import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import lastik.ui_compose.generated.resources.Res
 import lastik.ui_compose.generated.resources.shelves
 import org.jetbrains.compose.resources.stringArrayResource
-import ru.hotmule.lastik.feature.app.NowPlayingComponent.*
+import ru.hotmule.lastik.feature.app.NowPlayingComponent
 import ru.hotmule.lastik.feature.library.LibraryComponent
-import ru.hotmule.lastik.feature.library.LibraryComponent.*
 
 @Composable
 fun LibraryContent(
     component: LibraryComponent,
 ) {
-    val model by component.nowPlayingComponent.model.collectAsState(Model())
+    val model by component.nowPlayingComponent.model.collectAsState(NowPlayingComponent.Model())
 
     Box {
-
         val bottomSheetScaffoldState = rememberBottomSheetScaffoldState(
             bottomSheetState = BottomSheetState(
                 initialValue = BottomSheetValue.Collapsed,
@@ -87,11 +107,11 @@ private fun LibraryBody(
     Children(component.stack) {
         it.instance.let { child ->
             when (child) {
-                is Child.Scrobbles -> ScrobblesContent(child.component)
-                is Child.Artists -> TopContent(child.component)
-                is Child.Albums -> TopContent(child.component)
-                is Child.Tracks -> TopContent(child.component)
-                is Child.Profile -> ProfileContent(child.component)
+                is LibraryComponent.Child.Scrobbles -> MainContent(child.component)
+                is LibraryComponent.Child.Artists -> TopContent(child.component)
+                is LibraryComponent.Child.Albums -> TopContent(child.component)
+                is LibraryComponent.Child.Tracks -> TopContent(child.component)
+                is LibraryComponent.Child.Profile -> UserContent(child.component)
             }
         }
     }
@@ -105,7 +125,6 @@ private fun NowPlayingContent(
     art: Image?
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
-
         Row(
             modifier = Modifier
                 .padding(14.dp)
@@ -145,7 +164,6 @@ private fun NowPlayingContent(
                         .padding(end = 14.dp)
                         .align(Alignment.CenterVertically)
                 ) {
-
                     Text(
                         text = track,
                         maxLines = 1,

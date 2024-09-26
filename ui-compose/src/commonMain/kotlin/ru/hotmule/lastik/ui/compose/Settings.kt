@@ -1,10 +1,27 @@
 package ru.hotmule.lastik.ui.compose
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.material.*
+import androidx.compose.material.Card
+import androidx.compose.material.Checkbox
+import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.ContentAlpha
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.LocalContentAlpha
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.runtime.Composable
@@ -21,10 +38,9 @@ import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import coil3.toBitmap
 import lastik.ui_compose.generated.resources.Res
-import lastik.ui_compose.generated.resources.scrobble_apps
+import lastik.ui_compose.generated.resources.scrobble_settings
 import org.jetbrains.compose.resources.stringResource
 import ru.hotmule.lastik.feature.settings.SettingsComponent
-import ru.hotmule.lastik.feature.settings.SettingsComponent.*
 import ru.hotmule.lastik.ui.compose.common.LastikTopAppBar
 
 @Composable
@@ -48,7 +64,7 @@ private fun SettingsTopBar(
     onPop: () -> Unit
 ) {
     LastikTopAppBar(
-        title = stringResource(Res.string.scrobble_apps),
+        title = stringResource(Res.string.scrobble_settings),
         navigationIcon = {
             IconButton(
                 modifier = Modifier.statusBarsPadding(),
@@ -68,7 +84,7 @@ private fun SettingsTopBar(
 fun SettingsBody(
     component: SettingsComponent
 ) {
-    val model by component.model.collectAsState(Model())
+    val model by component.model.collectAsState(SettingsComponent.Model())
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -99,7 +115,7 @@ fun SettingsBody(
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun CheckableApp(
-    appPackage: Package,
+    appPackage: SettingsComponent.Package,
     onClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -108,7 +124,6 @@ private fun CheckableApp(
         onClick = { onClick(appPackage.name) }
     ) {
         Box {
-
             Column(
                 modifier = Modifier.padding(8.dp)
             ) {

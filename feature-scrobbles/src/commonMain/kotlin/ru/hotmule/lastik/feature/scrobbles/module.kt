@@ -5,11 +5,16 @@ import org.kodein.di.DI
 import org.kodein.di.bindFactory
 import ru.hotmule.lastik.feature.shelf.shelfComponentModule
 
+data class ScrobblesComponentParams(
+    val componentContext: ComponentContext,
+    val onSettingsOpen: () -> Unit
+)
+
 val scrobblesComponentModule = DI.Module("scrobblesComponent") {
 
     importOnce(shelfComponentModule)
 
-    bindFactory<ComponentContext, ScrobblesComponent> { componentContext ->
-        ScrobblesComponentImpl(di, componentContext)
+    bindFactory<ScrobblesComponentParams, ScrobblesComponent> { params ->
+        ScrobblesComponentImpl(di, params.onSettingsOpen, params.componentContext)
     }
 }

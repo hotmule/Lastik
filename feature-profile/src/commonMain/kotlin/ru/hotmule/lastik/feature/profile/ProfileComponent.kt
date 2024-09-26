@@ -1,16 +1,35 @@
 package ru.hotmule.lastik.feature.profile
 
-import com.arkivanov.decompose.router.stack.ChildStack
-import com.arkivanov.decompose.value.Value
-import ru.hotmule.lastik.feature.settings.SettingsComponent
-import ru.hotmule.lastik.feature.user.UserComponent
+import kotlinx.coroutines.flow.Flow
+import ru.hotmule.lastik.feature.shelf.ShelfComponent
 
 interface ProfileComponent {
 
-    sealed class Child {
-        data class User(val component: UserComponent) : Child()
-        data class Settings(val component: SettingsComponent) : Child()
-    }
+    val lovedTracksComponent: ShelfComponent
 
-    val stack: Value<ChildStack<*, Child>>
+    data class Model(
+        val info: Profile = Profile(),
+        val friends: List<Profile> = listOf(),
+        val isMoreFriendsLoading: Boolean = false,
+        val isLogOutShown: Boolean = false
+    )
+
+    data class Profile(
+        val username: String = "",
+        val image: String = "",
+        val playCount: String = "",
+        val scrobblingSince: String = ""
+    )
+
+    val model: Flow<Model>
+
+    fun onRefresh()
+
+    fun onLoadMoreFriends()
+
+    fun onLogOut()
+
+    fun onLogOutConfirm()
+
+    fun onLogOutCancel()
 }

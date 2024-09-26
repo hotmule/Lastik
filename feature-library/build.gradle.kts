@@ -8,8 +8,8 @@ kotlin {
         named("commonMain") {
             dependencies {
                 implementation(projects.featureTop)
+                implementation(projects.featureMain)
                 implementation(projects.featureProfile)
-                implementation(projects.featureScrobbles)
                 implementation(projects.featureNowPlaying)
             }
         }

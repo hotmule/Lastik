@@ -1,24 +1,30 @@
 package ru.hotmule.lastik.feature.library
 
-import com.arkivanov.decompose.*
-import com.arkivanov.decompose.router.stack.*
+import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.router.stack.ChildStack
+import com.arkivanov.decompose.router.stack.StackNavigation
+import com.arkivanov.decompose.router.stack.bringToFront
+import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.operator.map
 import kotlinx.serialization.Serializable
-import org.kodein.di.*
+import org.kodein.di.DI
+import org.kodein.di.DIAware
+import org.kodein.di.factory
+import org.kodein.di.instance
 import ru.hotmule.lastik.feature.app.NowPlayingComponent
 import ru.hotmule.lastik.feature.library.LibraryComponent.Child
-import ru.hotmule.lastik.feature.profile.ProfileComponent
-import ru.hotmule.lastik.feature.scrobbles.ScrobblesComponent
+import ru.hotmule.lastik.feature.main.MainComponent
 import ru.hotmule.lastik.feature.top.TopComponent
 import ru.hotmule.lastik.feature.top.TopComponentParams
+import ru.hotmule.lastik.feature.profile.ProfileComponent
 
 internal class LibraryComponentImpl(
     override val di: DI,
     private val componentContext: ComponentContext
 ) : LibraryComponent, DIAware, ComponentContext by componentContext {
 
-    private val scrobbles by factory<ComponentContext, ScrobblesComponent>()
+    private val scrobbles by factory<ComponentContext, MainComponent>()
     private val profile by factory<ComponentContext, ProfileComponent>()
     private val top by factory<TopComponentParams, TopComponent>()
 

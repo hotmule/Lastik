@@ -1,12 +1,25 @@
 package ru.hotmule.lastik.ui.compose
 
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.*
+import androidx.compose.material.AlertDialog
+import androidx.compose.material.ContentAlpha
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.LocalContentAlpha
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
+import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.Logout
 import androidx.compose.runtime.Composable
@@ -31,23 +44,20 @@ import lastik.ui_compose.generated.resources.loved_tracks
 import lastik.ui_compose.generated.resources.scrobbles
 import lastik.ui_compose.generated.resources.scrobbling_since
 import org.jetbrains.compose.resources.stringResource
-import ru.hotmule.lastik.feature.menu.MenuComponent
-import ru.hotmule.lastik.feature.user.UserComponent
-import ru.hotmule.lastik.feature.user.UserComponent.*
+import ru.hotmule.lastik.feature.profile.ProfileComponent
 import ru.hotmule.lastik.ui.compose.common.LastikTopAppBar
 
 @Composable
 fun UserContent(
-    component: UserComponent,
+    component: ProfileComponent,
 ) {
-    val model by component.model.collectAsState(Model())
+    val model by component.model.collectAsState(ProfileComponent.Model())
 
     Scaffold(
         topBar = {
             UserTopBar(
                 username = model.info.username,
-                onLogOut = component.menuComponent::onLogOut,
-                //onMenu = component.menuComponent::onMenu
+                onLogOut = component::onLogOut,
             )
         },
         content = {
@@ -60,7 +70,6 @@ fun UserContent(
 private fun UserTopBar(
     username: String,
     onLogOut: () -> Unit,
-    //onMenu: () -> Unit
 ) {
     LastikTopAppBar(
         title = username,
@@ -68,14 +77,11 @@ private fun UserTopBar(
             IconButton(
                 modifier = Modifier.statusBarsPadding(),
                 onClick = onLogOut,
-                //onClick = onMenu,
             ) {
                 Icon(
                     tint = Color.White,
                     imageVector = Icons.AutoMirrored.Rounded.Logout,
                     contentDescription = "LogOut",
-                    //imageVector = Icons.Rounded.Menu,
-                    //contentDescription = "Menu",
                 )
             }
         }
@@ -84,64 +90,44 @@ private fun UserTopBar(
 
 @Composable
 private fun UserBody(
-    model: Model,
-    component: UserComponent
+    model: ProfileComponent.Model,
+    component: ProfileComponent
 ) {
-    val menuModel by component.menuComponent.model.collectAsState(MenuComponent.Model())
-    val menuWidth by animateDpAsState(if (menuModel.isMenuOpened) 250.dp else 0.dp)
-
-    Box {
-
-        Box(
-            modifier = Modifier.offset(x = -(menuWidth))
-        ) {
-            ShelfContent(
-                component = component.lovedTracksComponent,
-                header = {
-                    UserInfo(
-                        profile = model.info,
-                        friends = model.friends,
-                        isMoreFriendsLoading = model.isMoreFriendsLoading
-                    )
-                },
-                onRefreshHeader = component::onRefresh
+    ShelfContent(
+        component = component.lovedTracksComponent,
+        header = {
+            UserInfo(
+                profile = model.info,
+                friends = model.friends,
+                isMoreFriendsLoading = model.isMoreFriendsLoading
             )
-        }
+        },
+        onRefreshHeader = component::onRefresh
+    )
 
-        if (menuWidth > 0.dp) {
-            MenuContent(
-                component = component.menuComponent,
-                modifier = Modifier
-                    .width(menuWidth)
-                    .fillMaxHeight()
-                    .align(Alignment.CenterEnd)
-            )
-        }
-
-        if (menuModel.isLogOutShown) {
-            AlertDialog(
-                title = { Text(text = stringResource(Res.string.logging_out)) },
-                text = { Text(text = stringResource(Res.string.logging_out_confirmation)) },
-                onDismissRequest = component.menuComponent::onLogOutCancel,
-                confirmButton = {
-                    TextButton(onClick = component.menuComponent::onLogOutConfirm) {
-                        Text(text = stringResource(Res.string.confirm))
-                    }
-                },
-                dismissButton = {
-                    TextButton(onClick = component.menuComponent::onLogOutCancel) {
-                        Text(text = stringResource(Res.string.cancel))
-                    }
+    if (model.isLogOutShown) {
+        AlertDialog(
+            title = { Text(text = stringResource(Res.string.logging_out)) },
+            text = { Text(text = stringResource(Res.string.logging_out_confirmation)) },
+            onDismissRequest = component::onLogOutCancel,
+            confirmButton = {
+                TextButton(onClick = component::onLogOutConfirm) {
+                    Text(text = stringResource(Res.string.confirm))
                 }
-            )
-        }
+            },
+            dismissButton = {
+                TextButton(onClick = component::onLogOutCancel) {
+                    Text(text = stringResource(Res.string.cancel))
+                }
+            }
+        )
     }
 }
 
 @Composable
 private fun UserInfo(
-    profile: User,
-    friends: List<User>,
+    profile: ProfileComponent.Profile,
+    friends: List<ProfileComponent.Profile>,
     isMoreFriendsLoading: Boolean
 ) {
     Column {
@@ -262,7 +248,7 @@ private fun TitleText(
 
 @Composable
 private fun Friends(
-    friends: List<User>,
+    friends: List<ProfileComponent.Profile>,
     isMoreLoading: Boolean
 ) {
     LazyRow(
@@ -288,7 +274,7 @@ private fun Friends(
 @Composable
 private fun Friend(
     modifier: Modifier = Modifier,
-    friend: User
+    friend: ProfileComponent.Profile,
 ) {
     Column(
         modifier = modifier.width(72.dp)

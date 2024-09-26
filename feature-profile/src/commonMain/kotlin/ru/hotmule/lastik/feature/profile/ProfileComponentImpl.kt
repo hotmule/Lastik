@@ -1,58 +1,67 @@
 package ru.hotmule.lastik.feature.profile
 
-import com.arkivanov.decompose.*
-import com.arkivanov.decompose.router.stack.*
-import com.arkivanov.decompose.value.Value
-import kotlinx.serialization.Serializable
-import org.kodein.di.*
-import ru.hotmule.lastik.feature.profile.ProfileComponent.Child
-import ru.hotmule.lastik.feature.settings.SettingsComponent
-import ru.hotmule.lastik.feature.settings.SettingsComponentParams
-import ru.hotmule.lastik.feature.user.UserComponent
-import ru.hotmule.lastik.feature.user.UserComponentParams
+import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.childContext
+import com.arkivanov.mvikotlin.core.instancekeeper.getStore
+import com.arkivanov.mvikotlin.extensions.coroutines.states
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import org.kodein.di.DI
+import org.kodein.di.DIAware
+import org.kodein.di.direct
+import org.kodein.di.factory
+import org.kodein.di.instance
+import ru.hotmule.lastik.feature.shelf.ShelfComponent
+import ru.hotmule.lastik.feature.shelf.ShelfComponentParams
+import ru.hotmule.lastik.feature.profile.ProfileComponent.Model
+import ru.hotmule.lastik.feature.profile.store.ProfileStore
+import ru.hotmule.lastik.feature.profile.store.ProfileStoreFactory
 
 internal class ProfileComponentImpl(
     override val di: DI,
     private val componentContext: ComponentContext
-) : ProfileComponent, DIAware, ComponentContext by componentContext {
+): ProfileComponent, DIAware, ComponentContext by componentContext {
 
-    private val user by factory<UserComponentParams, UserComponent>()
-    private val settings by factory<SettingsComponentParams, SettingsComponent>()
+    override val lovedTracksComponent = direct.factory<ShelfComponentParams, ShelfComponent>()(
+        ShelfComponentParams(childContext("Profile"), 4)
+    )
 
-    private val navigation = StackNavigation<Config>()
-    private val _stack = childStack(
-        source = navigation,
-        serializer = Config.serializer(),
-        initialConfiguration = Config.User,
-        handleBackButton = true,
-    ) { configuration, componentContext ->
-        when (configuration) {
-            is Config.User -> Child.User(user(UserComponentParams(
-                componentContext = componentContext,
-                onSettingsOpen = ::goToSettings
-            )))
-            Config.Settings -> Child.Settings(settings(SettingsComponentParams(
-                componentContext = componentContext,
-                onBack = ::goBack
-            )))
-        }
+    private val store = instanceKeeper.getStore {
+        ProfileStoreFactory(
+            storeFactory = direct.instance(),
+            profileQueries = direct.instance(),
+            friendQueries = direct.instance(),
+            prefs = direct.instance(),
+            api = direct.instance(),
+        ).create()
     }
 
-    private fun goToSettings() {
-        navigation.push(Config.Settings)
+    override val model: Flow<Model> = store.states.map {
+        Model(
+            info = it.info,
+            friends = it.friends,
+            isMoreFriendsLoading = it.isMoreFriendsLoading,
+            isLogOutShown = it.isLogOutShown,
+        )
     }
 
-    private fun goBack() {
-        navigation.pop()
+    override fun onRefresh() {
+        store.accept(ProfileStore.Intent.Refresh)
     }
 
-    override val stack: Value<ChildStack<*, Child>> = _stack
+    override fun onLoadMoreFriends() {
+        store.accept(ProfileStore.Intent.LoadMoreFriends)
+    }
 
-    @Serializable
-    private sealed class Config {
-        @Serializable
-        data object User : Config()
-        @Serializable
-        data object Settings : Config()
+    override fun onLogOut() {
+        store.accept(ProfileStore.Intent.LogOut)
+    }
+
+    override fun onLogOutCancel() {
+        store.accept(ProfileStore.Intent.LogOutCancel)
+    }
+
+    override fun onLogOutConfirm() {
+        store.accept(ProfileStore.Intent.LogOutConfirm)
     }
 }

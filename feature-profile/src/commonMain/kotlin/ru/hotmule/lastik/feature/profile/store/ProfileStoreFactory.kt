@@ -1,4 +1,4 @@
-package ru.hotmule.lastik.feature.user.store
+package ru.hotmule.lastik.feature.profile.store
 
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
@@ -14,28 +14,31 @@ import ru.hotmule.lastik.data.local.FriendQueries
 import ru.hotmule.lastik.data.local.ProfileQueries
 import ru.hotmule.lastik.data.remote.api.UserApi
 import ru.hotmule.lastik.data.remote.entities.User
+import ru.hotmule.lastik.data.sdk.prefs.PrefsStore
 import ru.hotmule.lastik.utils.AppCoroutineDispatcher
 import ru.hotmule.lastik.utils.Formatter
-import ru.hotmule.lastik.feature.user.UserComponent
-import ru.hotmule.lastik.feature.user.store.UserStore.*
+import ru.hotmule.lastik.feature.profile.ProfileComponent
 
-internal class UserStoreFactory(
+internal class ProfileStoreFactory(
     private val storeFactory: StoreFactory,
     private val profileQueries: ProfileQueries,
     private val friendQueries: FriendQueries,
-    private val api: UserApi
+    private val prefs: PrefsStore,
+    private val api: UserApi,
 ) {
-    fun create(): UserStore = object : UserStore, Store<Intent, State, Nothing> by storeFactory.create(
-        name = UserStore::class.simpleName,
-        initialState = State(),
-        bootstrapper = SimpleBootstrapper(Unit),
-        executorFactory = ::ExecutorImpl,
-        reducer = ReducerImpl
-    ) {}
+    fun create(): ProfileStore = object : ProfileStore,
+        Store<ProfileStore.Intent, ProfileStore.State, Nothing> by storeFactory.create(
+            name = ProfileStore::class.simpleName,
+            initialState = ProfileStore.State(),
+            bootstrapper = SimpleBootstrapper(Unit),
+            executorFactory = ::ExecutorImpl,
+            reducer = ReducerImpl
+        ) {}
 
-    private inner class ExecutorImpl : CoroutineExecutor<Intent, Unit, State, Result, Nothing>(
-        AppCoroutineDispatcher.Main
-    ) {
+    private inner class ExecutorImpl :
+        CoroutineExecutor<ProfileStore.Intent, Unit, ProfileStore.State, ProfileStore.Result, Nothing>(
+            AppCoroutineDispatcher.Main
+        ) {
         override fun executeAction(action: Unit) {
             scope.launch {
                 withContext(AppCoroutineDispatcher.Main) {
@@ -46,14 +49,17 @@ internal class UserStoreFactory(
             }
         }
 
-        override fun executeIntent(intent: Intent) {
+        override fun executeIntent(intent: ProfileStore.Intent) {
             scope.launch {
                 when (intent) {
-                    Intent.Refresh -> refreshInfo()
-                    Intent.LoadMoreFriends -> {
+                    ProfileStore.Intent.Refresh -> refreshInfo()
+                    ProfileStore.Intent.LoadMoreFriends -> {
                         val profileId = profileQueries.getProfile().executeAsOneOrNull()?.id
                         loadFriends(false, profileId)
                     }
+                    ProfileStore.Intent.LogOut -> dispatch(ProfileStore.Result.LoggingOut)
+                    ProfileStore.Intent.LogOutCancel -> dispatch(ProfileStore.Result.LoggingOutCanceled)
+                    ProfileStore.Intent.LogOutConfirm -> prefs.clear()
                 }
             }
         }
@@ -64,8 +70,8 @@ internal class UserStoreFactory(
                 .mapToOneOrNull(AppCoroutineDispatcher.IO)
                 .collect {
                     dispatch(
-                        Result.ProfileReceived(
-                            UserComponent.User(
+                        ProfileStore.Result.ProfileReceived(
+                            ProfileComponent.Profile(
                                 username = it?.userName ?: "",
                                 image = it?.lowResImage ?: UserApi.defaultImageUrl,
                                 playCount = Formatter.numberToCommasString(it?.playCount),
@@ -86,9 +92,9 @@ internal class UserStoreFactory(
                     .mapToList(AppCoroutineDispatcher.IO)
                     .collect { friends ->
                         dispatch(
-                            Result.FriendsReceived(
+                            ProfileStore.Result.FriendsReceived(
                                 friends.map {
-                                    UserComponent.User(
+                                    ProfileComponent.Profile(
                                         username = it.userName ?: "",
                                         image = it.lowResImage ?: UserApi.defaultImageUrl
                                     )
@@ -122,7 +128,7 @@ internal class UserStoreFactory(
                         val page = if (isFirstPage) 1 else friendsCount / 50 + 1
                         val friends = api.getFriends(page)?.friends?.user
 
-                        with (friendQueries) {
+                        with(friendQueries) {
                             transaction {
                                 if (isFirstPage) deleteAll(profileId)
                                 insertFriends(profileId, friends)
@@ -161,11 +167,13 @@ internal class UserStoreFactory(
         }
     }
 
-    object ReducerImpl : Reducer<State, Result> {
-        override fun State.reduce(msg: Result): State = when (msg) {
-            is Result.ProfileReceived -> copy(info = msg.profile)
-            is Result.FriendsReceived -> copy(friends = msg.friends)
-            is Result.MoreFriendsLoading -> copy(isMoreFriendsLoading = msg.isLoading)
+    object ReducerImpl : Reducer<ProfileStore.State, ProfileStore.Result> {
+        override fun ProfileStore.State.reduce(msg: ProfileStore.Result): ProfileStore.State = when (msg) {
+            is ProfileStore.Result.ProfileReceived -> copy(info = msg.profile)
+            is ProfileStore.Result.FriendsReceived -> copy(friends = msg.friends)
+            is ProfileStore.Result.MoreFriendsLoading -> copy(isMoreFriendsLoading = msg.isLoading)
+            is ProfileStore.Result.LoggingOut -> copy(isLogOutShown = true)
+            is ProfileStore.Result.LoggingOutCanceled -> copy(isLogOutShown = false)
         }
     }
 }

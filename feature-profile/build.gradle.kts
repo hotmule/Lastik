@@ -1,14 +1,16 @@
 plugins {
-    id("lastik.component")
-    id("kotlinx-serialization")
+    id("lastik.component.mvi")
 }
 
 kotlin {
     sourceSets {
         named("commonMain") {
             dependencies {
-                implementation(projects.featureUser)
-                implementation(projects.featureSettings)
+                implementation(projects.dataSdk)
+                implementation(projects.dataLocal)
+                implementation(projects.dataRemote)
+                implementation(projects.featureShelf)
+                implementation(libs.sqldelight.coroutines)
             }
         }
     }

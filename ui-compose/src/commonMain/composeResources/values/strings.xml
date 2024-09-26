@@ -13,7 +13,7 @@
     <string name="confirm">Confirm</string>
     <string name="cancel">Cancel</string>
 
-    <!--Main-->
+    <!--Library-->
     <string-array name="shelves">
         <item>Resents</item>
         <item>Artists</item>
@@ -35,12 +35,8 @@
     <string name="scrobbles">Scrobbles</string>
     <string name="friends">Friends</string>
     <string name="loved_tracks">Loved tracks</string>
-    <string-array name="profileMenu">
-        <item>Settings</item>
-        <item>Log out</item>
-    </string-array>
 
     <!--Settings-->
-    <string name="scrobble_apps">Scrobble apps</string>
+    <string name="scrobble_settings">Scrobble settings</string>
 
 </resources>
