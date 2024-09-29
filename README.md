@@ -11,6 +11,7 @@ Kotlin Multiplatform + Jetpack Compose for Desktop pet project, based on www.las
 
 - Architecture
     - [Kodein](https://github.com/Kodein-Framework/Kodein-DI)
+    - [Essenty](https://github.com/arkivanov/Essenty)
     - [MVIKotlin](https://github.com/arkivanov/MVIKotlin)
     - [Decompose](https://github.com/arkivanov/Decompose)
 - Data
