@@ -2,7 +2,7 @@ package ru.hotmule.lastik.feature.library
 
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.value.Value
-import ru.hotmule.lastik.feature.app.NowPlayingComponent
+import ru.hotmule.lastik.feature.now.playing.NowPlayingComponent
 import ru.hotmule.lastik.feature.main.MainComponent
 import ru.hotmule.lastik.feature.top.TopComponent
 import ru.hotmule.lastik.feature.profile.ProfileComponent

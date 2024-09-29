@@ -1,4 +1,4 @@
-package ru.hotmule.lastik.feature.app
+package ru.hotmule.lastik.feature.now.playing
 
 import org.kodein.di.DI
 import org.kodein.di.bindSingleton

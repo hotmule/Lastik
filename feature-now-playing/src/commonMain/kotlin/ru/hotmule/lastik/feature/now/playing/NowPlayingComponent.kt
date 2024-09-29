@@ -1,4 +1,4 @@
-package ru.hotmule.lastik.feature.app
+package ru.hotmule.lastik.feature.now.playing
 
 import coil3.Image
 import kotlinx.coroutines.flow.Flow

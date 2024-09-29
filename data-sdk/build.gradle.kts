@@ -4,7 +4,12 @@ plugins {
 
 kotlin {
     sourceSets {
-        named("commonMain") {
+        androidMain {
+            dependencies {
+                implementation(libs.androidx.core)
+            }
+        }
+        commonMain {
             dependencies {
                 implementation(projects.utils)
                 implementation(libs.coil.core)

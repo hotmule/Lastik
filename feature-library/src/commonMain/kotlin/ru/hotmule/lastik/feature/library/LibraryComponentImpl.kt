@@ -12,7 +12,7 @@ import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.factory
 import org.kodein.di.instance
-import ru.hotmule.lastik.feature.app.NowPlayingComponent
+import ru.hotmule.lastik.feature.now.playing.NowPlayingComponent
 import ru.hotmule.lastik.feature.library.LibraryComponent.Child
 import ru.hotmule.lastik.feature.main.MainComponent
 import ru.hotmule.lastik.feature.top.TopComponent

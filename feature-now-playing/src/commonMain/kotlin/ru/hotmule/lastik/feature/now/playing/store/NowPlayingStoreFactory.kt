@@ -1,4 +1,4 @@
-package ru.hotmule.lastik.feature.app.store
+package ru.hotmule.lastik.feature.now.playing.store
 
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
@@ -12,8 +12,7 @@ import kotlinx.datetime.Clock
 import ru.hotmule.lastik.data.local.LastikDatabase
 import ru.hotmule.lastik.data.remote.api.TrackApi
 import ru.hotmule.lastik.data.sdk.prefs.PrefsStore
-import ru.hotmule.lastik.feature.app.NowPlayingComponent
-import ru.hotmule.lastik.feature.app.store.NowPlayingStore.*
+import ru.hotmule.lastik.feature.now.playing.NowPlayingComponent
 import ru.hotmule.lastik.utils.AppCoroutineDispatcher
 
 internal class NowPlayingStoreFactory(
@@ -28,26 +27,33 @@ internal class NowPlayingStoreFactory(
     }
 
     fun create(): NowPlayingStore =
-        object : NowPlayingStore, Store<Intent, State, Nothing> by storeFactory.create(
-            NowPlayingStore::class.simpleName,
-            initialState = State(),
-            executorFactory = ::ExecutorImpl,
-            reducer = ReducerImpl
-        ) {}
+        object : NowPlayingStore,
+            Store<NowPlayingStore.Intent, NowPlayingStore.State, Nothing> by storeFactory.create(
+                NowPlayingStore::class.simpleName,
+                initialState = NowPlayingStore.State(),
+                executorFactory = ::ExecutorImpl,
+                reducer = ReducerImpl
+            ) {}
 
-    private inner class ExecutorImpl : CoroutineExecutor<Intent, Nothing, State, Result, Nothing>(
-        AppCoroutineDispatcher.Main
-    ) {
+    private inner class ExecutorImpl :
+        CoroutineExecutor<NowPlayingStore.Intent, Nothing, NowPlayingStore.State, NowPlayingStore.Result, Nothing>(
+            AppCoroutineDispatcher.Main
+        ) {
         private var scrobbleJob: Job? = null
 
-        override fun executeIntent(intent: Intent) {
+        override fun executeIntent(intent: NowPlayingStore.Intent) {
             scope.launch {
                 if (intent.packageName in prefs.getScrobbleApps()) {
                     when (intent) {
-                        is Intent.CheckDetectedTrack -> dispatch(Result.TrackDetected(intent.track))
-                        is Intent.CheckPlayState -> {
+                        is NowPlayingStore.Intent.CheckDetectedTrack -> dispatch(
+                            NowPlayingStore.Result.TrackDetected(
+                                intent.track
+                            )
+                        )
 
-                            dispatch(Result.PlayStateChanged(intent.isPlaying))
+                        is NowPlayingStore.Intent.CheckPlayState -> {
+
+                            dispatch(NowPlayingStore.Result.PlayStateChanged(intent.isPlaying))
 
                             if (!intent.isPlaying) {
 
@@ -65,6 +71,7 @@ internal class NowPlayingStoreFactory(
                                 ) {
                                     withContext(AppCoroutineDispatcher.IO) {
                                         launch {
+                                            /*
                                             api.updateNowPlaying(
                                                 track,
                                                 artist,
@@ -72,6 +79,7 @@ internal class NowPlayingStoreFactory(
                                                 state().track?.duration?.div(1000),
                                                 state().track?.albumArtist
                                             )
+                                            */
                                         }
                                     }
 
@@ -83,7 +91,7 @@ internal class NowPlayingStoreFactory(
                                             }
 
                                             delay(delayMillis)
-                                            saveScrobble(state().track)
+                                            //saveScrobble(state().track)
                                         }
                                     }
                                 }
@@ -145,14 +153,15 @@ internal class NowPlayingStoreFactory(
         }
     }
 
-    object ReducerImpl : Reducer<State, Result> {
-        override fun State.reduce(msg: Result): State = when (msg) {
-            is Result.PlayStateChanged -> copy(isPlaying = msg.isPlaying)
-            is Result.TrackDetected -> copy(track = msg.track)
-            Result.TrackIncorrect -> copy(
-                isPlaying = false,
-                track = null
-            )
-        }
+    object ReducerImpl : Reducer<NowPlayingStore.State, NowPlayingStore.Result> {
+        override fun NowPlayingStore.State.reduce(msg: NowPlayingStore.Result): NowPlayingStore.State =
+            when (msg) {
+                is NowPlayingStore.Result.PlayStateChanged -> copy(isPlaying = msg.isPlaying)
+                is NowPlayingStore.Result.TrackDetected -> copy(track = msg.track)
+                NowPlayingStore.Result.TrackIncorrect -> copy(
+                    isPlaying = false,
+                    track = null
+                )
+            }
     }
 }

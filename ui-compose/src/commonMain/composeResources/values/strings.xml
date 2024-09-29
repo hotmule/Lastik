@@ -38,5 +38,7 @@
 
     <!--Settings-->
     <string name="scrobble_settings">Scrobble settings</string>
+    <string name="grant_notifications_access">To enable scrobbling you should</string>
+    <string name="grant_notifications_access_link">grant access to device &amp; app notifications</string>
 
 </resources>

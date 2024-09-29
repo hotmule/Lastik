@@ -54,7 +54,7 @@ import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import lastik.ui_compose.generated.resources.Res
 import lastik.ui_compose.generated.resources.shelves
 import org.jetbrains.compose.resources.stringArrayResource
-import ru.hotmule.lastik.feature.app.NowPlayingComponent
+import ru.hotmule.lastik.feature.now.playing.NowPlayingComponent
 import ru.hotmule.lastik.feature.library.LibraryComponent
 
 @Composable
@@ -82,7 +82,7 @@ fun LibraryContent(
                 )
             },
             scaffoldState = bottomSheetScaffoldState,
-            sheetPeekHeight = if (model.isPlaying) 56.dp else 0.dp,
+            sheetPeekHeight = if (model.isPlaying) 82.dp else 0.dp,
             sheetContent = {
                 NowPlayingContent(
                     isCollapsed = bottomSheetScaffoldState.bottomSheetState.isCollapsed,

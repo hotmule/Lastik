@@ -1,7 +1,7 @@
 [versions]
 application-id = "ru.hotmule.lastik"
 build-tools = "34.0.0"
-min-sdk = "21"
+min-sdk = "22"
 target-sdk = "34"
 version-code = "1"
 version-name = "1.0"

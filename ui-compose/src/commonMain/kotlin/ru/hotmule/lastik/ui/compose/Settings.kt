@@ -32,12 +32,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.LinkAnnotation
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextLinkStyles
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withLink
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import coil3.toBitmap
 import lastik.ui_compose.generated.resources.Res
+import lastik.ui_compose.generated.resources.grant_notifications_access
+import lastik.ui_compose.generated.resources.grant_notifications_access_link
 import lastik.ui_compose.generated.resources.scrobble_settings
 import org.jetbrains.compose.resources.stringResource
 import ru.hotmule.lastik.feature.settings.SettingsComponent
@@ -86,13 +93,35 @@ fun SettingsBody(
 ) {
     val model by component.model.collectAsState(SettingsComponent.Model())
 
-    Box(
+    Column(
         modifier = Modifier.fillMaxSize()
     ) {
+        if (!model.isNotificationsAccessGranted) {
+            Text(
+                modifier = Modifier.padding(16.dp),
+                text = buildAnnotatedString {
+                    val text = stringResource(Res.string.grant_notifications_access)
+                    val link = stringResource(Res.string.grant_notifications_access_link)
+                    append(text)
+                    append(" ")
+                    withLink(
+                        link = LinkAnnotation.Clickable(
+                            tag = link,
+                            linkInteractionListener = { component.onNotificationsAccessRequest() },
+                            styles = TextLinkStyles(style = SpanStyle(color = Color.Cyan))
+                        )
+                    ) {
+                        append(link)
+                    }
+                },
+            )
+        }
 
         if (model.isLoading) {
             CircularProgressIndicator(
-                modifier = Modifier.align(Alignment.Center)
+                modifier = Modifier
+                    .padding(16.dp)
+                    .align(Alignment.CenterHorizontally)
             )
         }
 

@@ -45,17 +45,17 @@
 
         </activity>
 
-        <!--service
+        <service
+            android:name="ru.hotmule.lastik.feature.now.playing.NowPlayingService"
+            android:label="Now playing"
             android:exported="false"
-            android:name=".feature.now_playing.NowPlayingService"
-            android:label="@string/now_playing"
             android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
 
             <intent-filter>
                 <action android:name="android.service.notification.NotificationListenerService" />
             </intent-filter>
 
-        </service-->
+        </service>
 
     </application>
 

@@ -1,13 +1,12 @@
-package ru.hotmule.lastik.feature.app
+package ru.hotmule.lastik.feature.now.playing
 
 import com.arkivanov.mvikotlin.extensions.coroutines.states
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import org.kodein.di.DirectDI
 import org.kodein.di.instance
-import ru.hotmule.lastik.feature.app.NowPlayingComponent.*
-import ru.hotmule.lastik.feature.app.store.NowPlayingStore.*
-import ru.hotmule.lastik.feature.app.store.NowPlayingStoreFactory
+import ru.hotmule.lastik.feature.now.playing.store.NowPlayingStore
+import ru.hotmule.lastik.feature.now.playing.store.NowPlayingStoreFactory
 
 internal class NowPlayingComponentImpl(directDi: DirectDI) : NowPlayingComponent {
 
@@ -18,8 +17,8 @@ internal class NowPlayingComponentImpl(directDi: DirectDI) : NowPlayingComponent
         db = directDi.instance()
     ).create()
 
-    override val model: Flow<Model> = store.states.map {
-        Model(
+    override val model: Flow<NowPlayingComponent.Model> = store.states.map {
+        NowPlayingComponent.Model(
             isPlaying = it.isPlaying,
             track = it.track?.name ?: "UNKNOWN",
             artist = it.track?.albumArtist ?: it.track?.artist ?: "UNKNOWN",
@@ -28,10 +27,10 @@ internal class NowPlayingComponentImpl(directDi: DirectDI) : NowPlayingComponent
     }
 
     override fun onPlayStateChanged(packageName: String, isPlaying: Boolean) {
-        store.accept(Intent.CheckPlayState(packageName, isPlaying))
+        store.accept(NowPlayingStore.Intent.CheckPlayState(packageName, isPlaying))
     }
 
-    override fun onTrackDetected(packageName: String, track: Track) {
-        store.accept(Intent.CheckDetectedTrack(packageName, track))
+    override fun onTrackDetected(packageName: String, track: NowPlayingComponent.Track) {
+        store.accept(NowPlayingStore.Intent.CheckDetectedTrack(packageName, track))
     }
 }
